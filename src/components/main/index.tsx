@@ -27,11 +27,10 @@ import { DrawerFilter } from "./drawer-filter";
 import { ModalFilterPreset } from "./modal-filter-preset";
 
 type ContentMainProps = {
-  navOpen: boolean;
   openNav: () => void;
 };
 
-export const ContentMain = (props: ContentMainProps) => {
+export const ContentMain = ({ openNav }: ContentMainProps) => {
   const dispatch = useAppDispatch();
 
   const device = useAppSelector(selectDevice);
@@ -294,7 +293,7 @@ export const ContentMain = (props: ContentMainProps) => {
   return (
     <>
       <AppBar
-        openNav={props.openNav}
+        openNav={openNav}
         indent={user.isDesigner || user.isEditor}
         openFilter={openFilter}
         openShare={openShare}

@@ -41,7 +41,7 @@ type ContentHistoryProps = {
   openNav: () => void;
 };
 
-export const ContentHistory = (props: ContentHistoryProps) => {
+export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
   const dispatch = useAppDispatch();
 
   const bottomNav = useAppSelector(selectBottomNav);
@@ -179,7 +179,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
         {bottomNav ? tabRow : null}
         <TopAppBarRow>
           <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
+            <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
             <TopAppBarTitle>{pageTitle.history}</TopAppBarTitle>
           </TopAppBarSection>
           {clearFilterButton}

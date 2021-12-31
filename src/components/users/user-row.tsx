@@ -15,7 +15,6 @@ import { Autocomplete } from "@c/util/autocomplete";
 import firebase from "@s/firebase";
 import { selectAllDesigners } from "@s/main";
 import { selectUser } from "@s/user";
-import { User } from "@s/users/constructors";
 import type { UserType } from "@s/users/types";
 import { arrayIncludes, hasKey, iconObject, ordinal, truncate } from "@s/util/functions";
 import { Delete, Save } from "@i";
@@ -28,13 +27,12 @@ type UserRowProps = {
 
 const roles = ["designer", "editor", "admin"] as const;
 
-export const UserRow = (props: UserRowProps) => {
+export const UserRow = ({ delete: deleteFn, getUsers, user: propsUser }: UserRowProps) => {
   const currentUser = useAppSelector(selectUser);
 
   const allDesigners = useAppSelector(selectAllDesigners);
 
-  const blankUser = new User();
-  const [user, updateUser] = useImmer<UserType>(blankUser);
+  const [user, updateUser] = useImmer<UserType>(propsUser);
   const [edited, setEdited] = useState(false);
   const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState("");
@@ -44,11 +42,11 @@ export const UserRow = (props: UserRowProps) => {
   };
 
   useEffect(() => {
-    if (props.user !== user) {
-      updateUser(props.user);
+    if (propsUser !== user) {
+      updateUser(user);
       setEdited(false);
     }
-  }, [props.user]);
+  }, [propsUser]);
 
   const handleFocus = (e: FocusEvent<HTMLInputElement>) => setFocused(e.target.name);
   const handleBlur = () => setFocused("");
@@ -89,7 +87,7 @@ export const UserRow = (props: UserRowProps) => {
         result.data.admin === user.admin
       ) {
         queue.notify({ title: "Successfully edited user permissions." });
-        props.getUsers();
+        getUsers();
       } else if (result.data.error) {
         queue.notify({ title: "Failed to edit user permissions: " + result.data.error });
       } else {
@@ -112,12 +110,7 @@ export const UserRow = (props: UserRowProps) => {
   );
   const deleteButton =
     user.email === currentUser.email || user.email === "ben.j.durrant@gmail.com" ? null : (
-      <IconButton
-        onClick={() => {
-          props.delete(user);
-        }}
-        icon={iconObject(<Delete />)}
-      />
+      <IconButton onClick={() => deleteFn(user)} icon={iconObject(<Delete />)} />
     );
   return (
     <DataTableRow>

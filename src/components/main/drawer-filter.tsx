@@ -50,7 +50,7 @@ type DrawerFilterProps = {
   openPreset: (preset: PresetType) => void;
 };
 
-export const DrawerFilter = (props: DrawerFilterProps) => {
+export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }: DrawerFilterProps) => {
   const device = useAppSelector(selectDevice);
   const page = useAppSelector(selectPage);
 
@@ -91,7 +91,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
       ...new Whitelist(favorites, bought, hidden, profiles, shipped, regions, vendorMode, vendors),
     };
     const newPreset = { ...new Preset("", global, newWhitelist) };
-    props.openPreset(newPreset);
+    openPreset(newPreset);
   };
 
   const savePreset = () => {
@@ -109,12 +109,12 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
         vendors,
       },
     };
-    props.openPreset(modifiedPreset);
+    openPreset(modifiedPreset);
   };
 
   const deletePreset = () => {
     if (preset.id !== "default") {
-      props.deletePreset(preset);
+      deleteFn(preset);
     }
   };
 
@@ -217,7 +217,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   const dismissible = device === "desktop" && view !== "compact";
 
   const closeIcon = dismissible
-    ? withTooltip(<IconButton className="close-icon" icon="close" onClick={props.close} />, "Close")
+    ? withTooltip(<IconButton className="close-icon" icon="close" onClick={close} />, "Close")
     : null;
 
   const newPresetButton = user.isAdmin ? (
@@ -345,8 +345,8 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
     <Drawer
       dismissible={dismissible}
       modal={!dismissible}
-      open={props.open}
-      onClose={props.close}
+      open={open}
+      onClose={close}
       className="filter-drawer drawer-right"
     >
       <DrawerHeader>

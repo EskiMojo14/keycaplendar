@@ -19,7 +19,7 @@ type DialogShareFavoritesProps = {
   close: () => void;
 };
 
-export const DialogShareFavorites = (props: DialogShareFavoritesProps) => {
+export const DialogShareFavorites = ({ open, close }: DialogShareFavoritesProps) => {
   const dispatch = useAppDispatch();
 
   const docShareName = useAppSelector(selectShareName);
@@ -67,7 +67,7 @@ export const DialogShareFavorites = (props: DialogShareFavoritesProps) => {
   };
 
   return (
-    <Dialog open={props.open} onClose={props.close} className="share-dialog">
+    <Dialog open={open} onClose={close} className="share-dialog">
       <DialogTitle>Share favorites</DialogTitle>
       <DialogContent>
         <div className="group">

@@ -36,11 +36,10 @@ import "./index.scss";
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
 type ContentStatisticsProps = {
-  navOpen: boolean;
   openNav: () => void;
 };
 
-export const ContentStatistics = (props: ContentStatisticsProps) => {
+export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
   const device = useAppSelector(selectDevice);
   const bottomNav = useAppSelector(selectBottomNav);
 
@@ -399,7 +398,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
         {bottomNav ? tabRow : null}
         <TopAppBarRow>
           <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
+            <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
             <TopAppBarTitle>{device !== "mobile" ? pageTitle.statistics : null}</TopAppBarTitle>
           </TopAppBarSection>
           <TopAppBarSection alignEnd>{hasKey(buttons, statisticsTab) ? buttons[statisticsTab] : null}</TopAppBarSection>

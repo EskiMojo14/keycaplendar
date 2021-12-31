@@ -27,7 +27,6 @@ import firebase from "@s/firebase";
 import { selectAllDesigners } from "@s/main";
 import { selectUser } from "@s/user";
 import { userRoleIcons } from "@s/users/constants";
-import { User } from "@s/users/constructors";
 import type { UserType } from "@s/users/types";
 import { hasKey, iconObject, ordinal } from "@s/util/functions";
 import { Delete, Save } from "@i";
@@ -40,15 +39,13 @@ type UserCardProps = {
 
 const roles = ["designer", "editor", "admin"] as const;
 
-export const UserCard = (props: UserCardProps) => {
+export const UserCard = ({ delete: deleteFn, getUsers, user: propsUser }: UserCardProps) => {
   const device = useAppSelector(selectDevice);
 
   const currentUser = useAppSelector(selectUser);
 
   const allDesigners = useAppSelector(selectAllDesigners);
-
-  const blankUser = new User();
-  const [user, updateUser] = useImmer<UserType>(blankUser);
+  const [user, updateUser] = useImmer<UserType>(propsUser);
   const [edited, setEdited] = useState(false);
   const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState("");
@@ -58,11 +55,11 @@ export const UserCard = (props: UserCardProps) => {
   };
 
   useEffect(() => {
-    if (props.user !== user) {
-      updateUser(props.user);
+    if (propsUser !== user) {
+      updateUser(user);
       setEdited(false);
     }
-  }, [props.user]);
+  }, [propsUser]);
 
   const handleFocus = (e: FocusEvent<HTMLInputElement>) => setFocused(e.target.name);
   const handleBlur = () => setFocused("");
@@ -103,7 +100,7 @@ export const UserCard = (props: UserCardProps) => {
         result.data.admin === user.admin
       ) {
         queue.notify({ title: "Successfully edited user permissions." });
-        props.getUsers();
+        getUsers();
       } else if (result.data.error) {
         queue.notify({ title: "Failed to edit user permissions: " + result.data.error });
       } else {
@@ -127,12 +124,7 @@ export const UserCard = (props: UserCardProps) => {
   );
   const deleteButton =
     user.email === currentUser.email || user.email === "ben.j.durrant@gmail.com" ? null : (
-      <IconButton
-        onClick={() => {
-          props.delete(user);
-        }}
-        icon={iconObject(<Delete />)}
-      />
+      <IconButton onClick={() => deleteFn(user)} icon={iconObject(<Delete />)} />
     );
   return (
     <Card className="user">
@@ -140,7 +132,7 @@ export const UserCard = (props: UserCardProps) => {
         <ListItem ripple={false} className="three-line">
           <Avatar src={user.photoURL} className="mdc-list-item__graphic" size="xlarge" />
           <ListItemText>
-            <div className="overline">{props.user.nickname}</div>
+            <div className="overline">{user.nickname}</div>
             <ListItemPrimaryText>{user.displayName}</ListItemPrimaryText>
             <ListItemSecondaryText>{user.email}</ListItemSecondaryText>
           </ListItemText>

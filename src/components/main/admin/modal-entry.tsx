@@ -12,7 +12,6 @@ import { TextField } from "@rmwc/textfield";
 import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
-import cloneDeep from "lodash.clonedeep";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
@@ -84,7 +83,7 @@ type ModalCreateProps = {
   open: boolean;
 };
 
-export const ModalCreate = (props: ModalCreateProps) => {
+export const ModalCreate = ({ close, open }: ModalCreateProps) => {
   const device = useAppSelector(selectDevice);
 
   const user = useAppSelector(selectUser);
@@ -149,10 +148,10 @@ export const ModalCreate = (props: ModalCreateProps) => {
     if (!user.isEditor && user.isDesigner) {
       updateState(keyedUpdate("designer", [user.nickname]));
     }
-  }, [props.open]);
+  }, [open]);
 
   const closeModal = () => {
-    props.close();
+    close();
     updateState(initialState);
     setUploadingImage(false);
     setUploadingDoc(false);
@@ -462,12 +461,12 @@ export const ModalCreate = (props: ModalCreateProps) => {
     <BoolWrapper
       condition={useDrawer}
       trueWrapper={(children) => (
-        <Drawer modal open={props.open} onClose={closeModal} className="drawer-right entry-modal">
+        <Drawer modal open={open} onClose={closeModal} className="drawer-right entry-modal">
           {children}
         </Drawer>
       )}
       falseWrapper={(children) => (
-        <FullScreenDialog open={props.open} onClose={closeModal} className="entry-modal">
+        <FullScreenDialog open={open} onClose={closeModal} className="entry-modal">
           {children}
         </FullScreenDialog>
       )}
@@ -844,7 +843,7 @@ type ModalEditProps = ModalCreateProps & {
   set: SetType;
 };
 
-export const ModalEdit = (props: ModalEditProps) => {
+export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
   const device = useAppSelector(selectDevice);
 
   const user = useAppSelector(selectUser);
@@ -912,16 +911,15 @@ export const ModalEdit = (props: ModalEditProps) => {
   const [focused, setFocused] = useState("");
 
   useEffect(() => {
-    if (props.open) {
+    if (open) {
       setValues();
     } else {
       setTimeout(closeModal, 300);
     }
-  }, [props.open]);
+  }, [open]);
 
   const setValues = () => {
     let gbLaunch = "";
-    const set = cloneDeep(props.set);
     if (set.gbLaunch) {
       if (set.gbMonth) {
         const twoNumRegExp = /^\d{4}-\d{1,2}-\d{2}$/g;
@@ -966,7 +964,7 @@ export const ModalEdit = (props: ModalEditProps) => {
   };
 
   const closeModal = () => {
-    props.close();
+    close();
     updateState(initialState);
     setUploadingImage(false);
     setUploadingDoc(false);
@@ -1151,7 +1149,7 @@ export const ModalEdit = (props: ModalEditProps) => {
               updateState(keyedUpdate("imageURL", downloadURL));
               editEntry(downloadURL);
               const fileNameRegex = /keysets%2F(.*)\?/;
-              const regexMatch = props.set.image.match(fileNameRegex);
+              const regexMatch = set.image.match(fileNameRegex);
               if (regexMatch) {
                 const [, imageName] = regexMatch;
                 const folders = await getStorageFolders();
@@ -1297,12 +1295,12 @@ export const ModalEdit = (props: ModalEditProps) => {
     <BoolWrapper
       condition={useDrawer}
       trueWrapper={(children) => (
-        <Drawer modal open={props.open} onClose={closeModal} className="drawer-right entry-modal">
+        <Drawer modal open={open} onClose={closeModal} className="drawer-right entry-modal">
           {children}
         </Drawer>
       )}
       falseWrapper={(children) => (
-        <FullScreenDialog open={props.open} onClose={closeModal} className="entry-modal">
+        <FullScreenDialog open={open} onClose={closeModal} className="entry-modal">
           {children}
         </FullScreenDialog>
       )}

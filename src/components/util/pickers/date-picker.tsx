@@ -78,7 +78,7 @@ export type DatePickerProps = Overwrite<
     value: string;
     fallbackValue?: string;
     onChange: (val: string) => void;
-    helpTextProps?: TextFieldHelperTextProps;
+    helpTextProps?: Partial<TextFieldHelperTextProps>;
     modalProps?: Omit<
       Common<MenuHTMLProps & MenuSurfaceProps, DialogProps & HTMLProps<HTMLElement>>,
       "anchorCorner" | "open" | "renderToPortal"
@@ -103,6 +103,8 @@ export const DatePicker = ({
   allowQuarter,
   showNowButton,
   saveOnClose,
+  required,
+  helpTextProps = {},
   ...props
 }: DatePickerProps) => {
   const device = useAppSelector(selectDevice);
@@ -111,7 +113,7 @@ export const DatePicker = ({
   const landscape = orientation === "landscape";
 
   const [touched, setTouched] = useState(false);
-  const invalid = touched ? invalidDate(value, month, props.required, allowQuarter, pickerProps?.disableFuture) : false;
+  const invalid = touched ? invalidDate(value, month, required, allowQuarter, pickerProps?.disableFuture) : false;
 
   const validFallback = invalidDate(fallbackValue || "") ? "" : fallbackValue;
 
@@ -254,6 +256,7 @@ export const DatePicker = ({
             setOpen(false);
           }
         }}
+        required={required}
         invalid={!!invalid}
         helpText={{
           persistent: true,
@@ -261,7 +264,7 @@ export const DatePicker = ({
           children: invalid
             ? capitalise(invalid)
             : `Format: ${month ? "YYYY-MM" : "YYYY-MM-DD"}${allowQuarter ? " or Q1-4 YYYY" : ""}`,
-          ...(props.helpTextProps || {}),
+          ...helpTextProps,
         }}
         trailingIcon={
           useInline

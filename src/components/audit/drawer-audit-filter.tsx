@@ -18,7 +18,7 @@ type DrawerAuditFilterProps = {
   open: boolean;
 };
 
-export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
+export const DrawerAuditFilter = ({ close, handleFilterChange, open }: DrawerAuditFilterProps) => {
   const dispatch = useAppDispatch();
 
   const device = useAppSelector(selectDevice);
@@ -30,7 +30,7 @@ export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
 
   const closeButton =
     device === "desktop"
-      ? withTooltip(<IconButton className="close-icon" icon="close" onClick={props.close} />, "Close")
+      ? withTooltip(<IconButton className="close-icon" icon="close" onClick={close} />, "Close")
       : null;
   const handleLengthChange = (e: ChangeEvent<HTMLInputElement>) => {
     const length = parseInt(e.target.value);
@@ -41,11 +41,11 @@ export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
   };
   return (
     <Drawer
-      open={props.open}
+      open={open}
       dismissible={device === "desktop"}
       modal={device !== "desktop"}
       className="drawer-right audit-filter"
-      onClose={props.close}
+      onClose={close}
     >
       <DrawerHeader>
         <DrawerTitle>Filters</DrawerTitle>
@@ -98,7 +98,7 @@ export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
             value={filterAction}
             className="action-select"
             onChange={(e) => {
-              props.handleFilterChange(e, "filterAction");
+              handleFilterChange(e, "filterAction");
             }}
           />
         </div>
@@ -113,7 +113,7 @@ export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
             value={filterUser}
             className="user-select"
             onChange={(e) => {
-              props.handleFilterChange(e, "filterUser");
+              handleFilterChange(e, "filterUser");
             }}
           />
         </div>

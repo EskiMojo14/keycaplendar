@@ -60,7 +60,7 @@ export type TimePickerProps = Overwrite<
     value: string;
     fallbackValue?: string;
     onChange: (val: string) => void;
-    helpTextProps?: TextFieldHelperTextProps;
+    helpTextProps?: Partial<TextFieldHelperTextProps>;
     modalProps?: Omit<
       Common<MenuHTMLProps & MenuSurfaceProps, DialogProps & HTMLProps<HTMLElement>>,
       "anchorCorner" | "open" | "renderToPortal"
@@ -81,6 +81,8 @@ export const TimePicker = ({
   onChange,
   showNowButton,
   saveOnClose,
+  required,
+  helpTextProps = {},
   ...props
 }: TimePickerProps) => {
   const device = useAppSelector(selectDevice);
@@ -89,7 +91,7 @@ export const TimePicker = ({
   const landscape = orientation === "landscape";
 
   const [touched, setTouched] = useState(false);
-  const invalid = touched ? invalidTime(value, props.required) : false;
+  const invalid = touched ? invalidTime(value, required) : false;
 
   const validFallback = invalidTime(fallbackValue || "") ? "" : fallbackValue;
 
@@ -211,12 +213,13 @@ export const TimePicker = ({
             setOpen(false);
           }
         }}
+        required={required}
         invalid={!!invalid}
         helpText={{
           persistent: true,
           validationMsg: true,
           children: invalid ? capitalise(invalid) : "Format: HH:YY (24hr)",
-          ...(props.helpTextProps || {}),
+          ...helpTextProps,
         }}
         trailingIcon={
           useInline

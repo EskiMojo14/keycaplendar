@@ -22,9 +22,7 @@ import "./content.scss";
 
 type ContentProps = HTMLAttributes<HTMLDivElement>;
 
-export const Content = (props: ContentProps) => {
-  const { className, ...filteredProps } = props;
-
+export const Content = ({ className, ...filteredProps }: ContentProps) => {
   const device = useAppSelector(selectDevice);
   const bottomNav = useAppSelector(selectBottomNav);
 
@@ -56,8 +54,8 @@ export const Content = (props: ContentProps) => {
     }
   }, [device, navEdited]);
 
-  const contentMain = arrayIncludes(mainPages, page) ? <ContentMain navOpen={navOpen} openNav={openNav} /> : null;
-  const contentStatistics = page === "statistics" ? <ContentStatistics navOpen={navOpen} openNav={openNav} /> : null;
+  const contentMain = arrayIncludes(mainPages, page) ? <ContentMain openNav={openNav} /> : null;
+  const contentStatistics = page === "statistics" ? <ContentStatistics openNav={openNav} /> : null;
   const contentChangelog = page === "history" ? <ContentHistory openNav={openNav} /> : null;
   const contentAudit = page === "audit" && user.isAdmin ? <ContentAudit openNav={openNav} /> : null;
   const contentUsers = page === "users" && user.isAdmin ? <ContentUsers openNav={openNav} /> : null;

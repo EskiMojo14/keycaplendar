@@ -27,8 +27,7 @@ type RecentSetCardProps = {
   openDetails: (set: SetType) => void;
 };
 
-export const RecentSetCard = (props: RecentSetCardProps) => {
-  const { recentSet, filtered, selected } = props;
+export const RecentSetCard = ({ recentSet, filtered, selected, filterChangelog, openDetails }: RecentSetCardProps) => {
   const { currentSet: set, deleted } = recentSet;
   const favorites = useAppSelector(selectFavorites);
   const bought = useAppSelector(selectBought);
@@ -36,7 +35,7 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
   const [pages, setPages] = useState<string[]>([]);
 
   useEffect(() => {
-    if (props.recentSet.currentSet) {
+    if (recentSet.currentSet) {
       const falsePages: Record<MainPage, boolean> = {
         calendar: false,
         live: false,
@@ -52,7 +51,7 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
       const keysetPages = objectKeys(pageBools).filter((key) => pageBools[key]);
       setPages(keysetPages);
     }
-  }, [props.recentSet.currentSet]);
+  }, [recentSet.currentSet]);
 
   return (
     <Card className={classNames("set-changelog", { "mdc-card--selected": selected, deleted })}>
@@ -60,13 +59,7 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
         condition={!!set}
         wrapper={(children) => (
           <CardPrimaryAction
-            onClick={
-              set
-                ? () => {
-                    props.openDetails(set);
-                  }
-                : undefined
-            }
+            onClick={set ? () => openDetails(set) : undefined}
             className={classNames({ "mdc-card__primary-action--selected": selected })}
           >
             {children}
@@ -112,7 +105,7 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
           outlined
           label={filtered ? "Clear filter" : "Filter changelog"}
           icon={filtered ? iconObject(<FilterVariantRemove />) : "filter_list"}
-          onClick={() => props.filterChangelog(recentSet)}
+          onClick={() => filterChangelog(recentSet)}
         />
       </div>
       {pages.length > 0 ? (

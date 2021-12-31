@@ -21,9 +21,7 @@ type UpdateEntryProps = {
   pin: (entry: UpdateEntryType) => void;
 };
 
-export const UpdateEntry = (props: UpdateEntryProps) => {
-  const { entry } = props;
-
+export const UpdateEntry = ({ entry, edit, delete: deleteFn, pin }: UpdateEntryProps) => {
   const user = useAppSelector(selectUser);
 
   const urlEntry = useAppSelector(selectURLEntry);
@@ -56,31 +54,13 @@ export const UpdateEntry = (props: UpdateEntryProps) => {
           label={entry.pinned ? "Unpin" : "Pin"}
           icon={iconObject(<PushPin />)}
           className={classNames({ secondary: entry.pinned })}
-          onClick={() => {
-            props.pin(entry);
-          }}
+          onClick={() => pin(entry)}
         />
         <CardActionButton icon={iconObject(<Share />)} label="Share" onClick={copyLink} />
       </CardActionButtons>
       <CardActionIcons>
-        {withTooltip(
-          <CardActionIcon
-            icon={iconObject(<Edit />)}
-            onClick={() => {
-              props.edit(entry);
-            }}
-          />,
-          "Edit"
-        )}
-        {withTooltip(
-          <CardActionIcon
-            icon={iconObject(<Delete />)}
-            onClick={() => {
-              props.delete(entry);
-            }}
-          />,
-          "Delete"
-        )}
+        {withTooltip(<CardActionIcon icon={iconObject(<Edit />)} onClick={() => edit(entry)} />, "Edit")}
+        {withTooltip(<CardActionIcon icon={iconObject(<Delete />)} onClick={() => deleteFn(entry)} />, "Delete")}
       </CardActionIcons>
     </CardActions>
   ) : (

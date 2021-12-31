@@ -16,8 +16,17 @@ type AutocompleteProps = HTMLAttributes<HTMLElement> & {
   listSplit?: boolean;
 };
 
-export const Autocomplete = (props: AutocompleteProps) => {
-  const { array, className, minChars, open, prop, query, listSplit, select, ...filteredProps } = props;
+export const Autocomplete = ({
+  array,
+  className,
+  minChars,
+  open,
+  prop,
+  query,
+  listSplit,
+  select,
+  ...filteredProps
+}: AutocompleteProps) => {
   const splitQuery = query.split(", ");
   const { [splitQuery.length - 1]: lastItem } = splitQuery;
   const useQuery = listSplit ? lastItem : query;
@@ -68,8 +77,17 @@ export const Autocomplete = (props: AutocompleteProps) => {
 
 const bemClasses = new BEMHelper("autocomplete-mobile");
 
-export const AutocompleteMobile = (props: AutocompleteProps) => {
-  const { array, className, minChars, open, prop, query, listSplit, select, ...filteredProps } = props;
+export const AutocompleteMobile = ({
+  array,
+  className,
+  minChars,
+  open,
+  prop,
+  query,
+  listSplit,
+  select,
+  ...filteredProps
+}: AutocompleteProps) => {
   const splitQuery = query.split(", ");
   const { [splitQuery.length - 1]: lastItem } = splitQuery;
   const useQuery = listSplit ? lastItem : query;

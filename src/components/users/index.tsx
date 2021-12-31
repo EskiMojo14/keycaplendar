@@ -69,7 +69,7 @@ type ContentUsersProps = {
   openNav: () => void;
 };
 
-export const ContentUsers = (props: ContentUsersProps) => {
+export const ContentUsers = ({ openNav }: ContentUsersProps) => {
   const dispatch = useAppDispatch();
 
   const device = useAppSelector(selectDevice);
@@ -176,7 +176,7 @@ export const ContentUsers = (props: ContentUsersProps) => {
       <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav })}>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
+            <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
             <TopAppBarTitle>{pageTitle.users}</TopAppBarTitle>
           </TopAppBarSection>
           <TopAppBarSection alignEnd>

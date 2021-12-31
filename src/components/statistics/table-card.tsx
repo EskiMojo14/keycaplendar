@@ -55,14 +55,23 @@ type TableCardProps = {
   summary?: boolean;
 };
 
-export const TableCard = (props: TableCardProps) => {
+export const TableCard = ({
+  data,
+  unit,
+  category,
+  defaultType,
+  breakdownData,
+  overline,
+  note,
+  summary,
+}: TableCardProps) => {
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  useEffect(() => setSelectedIndex(-1), [props.category]);
+  useEffect(() => setSelectedIndex(-1), [category]);
   const chartData =
-    selectedIndex >= 0 && props.summary && props.breakdownData
-      ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
-      : props.data;
-  const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "line");
+    selectedIndex >= 0 && summary && breakdownData
+      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
+      : data;
+  const [graphType, setGraphType] = useState<"bar" | "line">(defaultType || "line");
   const chartOptions: ILineChartOptions = {
     showArea: true,
     chartPadding: {
@@ -74,7 +83,7 @@ export const TableCard = (props: TableCardProps) => {
     axisX: {
       labelInterpolationFnc: (value: number, index: number) =>
         is<any[]>(chartData.chartData.series[0]) && chartData.chartData.series[0].length >= 16
-          ? index % (chartData.chartData.series[0].length >= 24 && !props.summary ? 3 : 2) === 0
+          ? index % (chartData.chartData.series[0].length >= 24 && !summary ? 3 : 2) === 0
             ? value
             : null
           : value,
@@ -85,7 +94,7 @@ export const TableCard = (props: TableCardProps) => {
     plugins: [
       chartistPluginAxisTitle({
         axisX: {
-          axisTitle: props.unit.split(" ")[0],
+          axisTitle: unit.split(" ")[0],
           axisClass: "ct-axis-title",
           offset: {
             x: 0,
@@ -127,10 +136,10 @@ export const TableCard = (props: TableCardProps) => {
       />
     ) : null;
   const selectChips =
-    props.summary && props.breakdownData ? (
+    summary && breakdownData ? (
       <div className="table-chips-container">
         <ChipSet choice>
-          {[...props.breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
+          {[...breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
             <Chip
               key={obj.name}
               label={obj.name}
@@ -144,16 +153,16 @@ export const TableCard = (props: TableCardProps) => {
       </div>
     ) : null;
   return (
-    <Card className={classNames("table-card", { "full-span": props.summary })}>
+    <Card className={classNames("table-card", { "full-span": summary })}>
       <div className="title-container">
         <div className="text-container">
-          {props.overline ? (
+          {overline ? (
             <Typography use="overline" tag="h3">
-              {props.overline}
+              {overline}
             </Typography>
           ) : null}
           <Typography use="headline5" tag="h1">
-            {props.data.name}
+            {data.name}
           </Typography>
           <Typography use="subtitle2" tag="p">
             {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
@@ -195,7 +204,7 @@ export const TableCard = (props: TableCardProps) => {
               <DataTableHead>
                 <DataTableRow>
                   <DataTableHeadCell>Average</DataTableHeadCell>
-                  <DataTableHeadCell alignEnd>{props.unit}</DataTableHeadCell>
+                  <DataTableHeadCell alignEnd>{unit}</DataTableHeadCell>
                 </DataTableRow>
               </DataTableHead>
               <DataTableBody>
@@ -226,9 +235,9 @@ export const TableCard = (props: TableCardProps) => {
           </DataTable>
         </div>
         {selectChips}
-        {props.note ? (
+        {note ? (
           <Typography use="caption" tag="p" className="note">
-            {props.note}
+            {note}
           </Typography>
         ) : null}
       </div>

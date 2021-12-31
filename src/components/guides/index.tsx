@@ -38,7 +38,7 @@ type ContentGuidesProps = {
   openNav: () => void;
 };
 
-export const ContentGuides = (props: ContentGuidesProps) => {
+export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   const dispatch = useAppDispatch();
 
   const device = useAppSelector(selectDevice);
@@ -235,7 +235,7 @@ export const ContentGuides = (props: ContentGuidesProps) => {
       >
         <TopAppBarRow>
           <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
+            <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
             {leftButtons}
           </TopAppBarSection>
           {rightButtons}

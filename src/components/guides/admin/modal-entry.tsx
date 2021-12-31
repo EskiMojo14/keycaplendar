@@ -29,7 +29,7 @@ type ModalCreateProps = {
   getEntries: () => void;
 };
 
-export const ModalCreate = (props: ModalCreateProps) => {
+export const ModalCreate = ({ open, onClose, getEntries }: ModalCreateProps) => {
   const device = useAppSelector(selectDevice);
   const user = useAppSelector(selectUser);
 
@@ -39,13 +39,13 @@ export const ModalCreate = (props: ModalCreateProps) => {
   const [description, setDescription] = useState("");
   const [body, setBody] = useState("");
   useEffect(() => {
-    if (!props.open) {
+    if (!open) {
       setTags([]);
       setTitle("");
       setDescription("");
       setBody("");
     }
-  }, [props.open]);
+  }, [open]);
   const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
     if (name === "tags") {
       setTags(value.split(", "));
@@ -87,8 +87,8 @@ export const ModalCreate = (props: ModalCreateProps) => {
         .then((docRef) => {
           console.log("Document written with ID: ", docRef.id);
           queue.notify({ title: "Entry written successfully." });
-          props.onClose();
-          props.getEntries();
+          onClose();
+          getEntries();
         })
         .catch((error) => {
           console.error("Error adding document: ", error);
@@ -103,12 +103,12 @@ export const ModalCreate = (props: ModalCreateProps) => {
     <BoolWrapper
       condition={useDrawer}
       trueWrapper={(children) => (
-        <Drawer modal open={props.open} onClose={props.onClose} className="drawer-right guide-entry-modal">
+        <Drawer modal open={open} onClose={onClose} className="drawer-right guide-entry-modal">
           {children}
         </Drawer>
       )}
       falseWrapper={(children) => (
-        <FullScreenDialog open={props.open} onClose={props.onClose} className="guide-entry-modal">
+        <FullScreenDialog open={open} onClose={onClose} className="guide-entry-modal">
           {children}
         </FullScreenDialog>
       )}
@@ -127,7 +127,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
           falseWrapper={(children) => (
             <TopAppBarSection alignStart>
-              <TopAppBarNavigationIcon icon="close" onClick={props.onClose} />
+              <TopAppBarNavigationIcon icon="close" onClick={onClose} />
               <TopAppBarTitle>{children}</TopAppBarTitle>
             </TopAppBarSection>
           )}
@@ -225,8 +225,7 @@ type ModalEditProps = {
   getEntries: () => void;
 };
 
-export const ModalEdit = (props: ModalEditProps) => {
-  const { entry } = props;
+export const ModalEdit = ({ entry, onClose, open, getEntries }: ModalEditProps) => {
   const device = useAppSelector(selectDevice);
   const user = useAppSelector(selectUser);
 
@@ -236,7 +235,7 @@ export const ModalEdit = (props: ModalEditProps) => {
   const [description, setDescription] = useState("");
   const [body, setBody] = useState("");
   useEffect(() => {
-    if (props.open) {
+    if (open) {
       setVisibility(entry.visibility);
       setTags(entry.tags);
       setTitle(entry.title);
@@ -249,7 +248,7 @@ export const ModalEdit = (props: ModalEditProps) => {
       setDescription("");
       setBody("");
     }
-  }, [props.open, entry]);
+  }, [open, entry]);
 
   const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
     if (name === "tags") {
@@ -292,8 +291,8 @@ export const ModalEdit = (props: ModalEditProps) => {
         })
         .then(() => {
           queue.notify({ title: "Entry edited successfully." });
-          props.onClose();
-          props.getEntries();
+          onClose();
+          getEntries();
         })
         .catch((error) => {
           console.error("Error adding document: ", error);
@@ -308,12 +307,12 @@ export const ModalEdit = (props: ModalEditProps) => {
     <BoolWrapper
       condition={useDrawer}
       trueWrapper={(children) => (
-        <Drawer modal open={props.open} onClose={props.onClose} className="drawer-right guide-entry-modal">
+        <Drawer modal open={open} onClose={onClose} className="drawer-right guide-entry-modal">
           {children}
         </Drawer>
       )}
       falseWrapper={(children) => (
-        <FullScreenDialog open={props.open} onClose={props.onClose} className="guide-entry-modal">
+        <FullScreenDialog open={open} onClose={onClose} className="guide-entry-modal">
           {children}
         </FullScreenDialog>
       )}
@@ -332,7 +331,7 @@ export const ModalEdit = (props: ModalEditProps) => {
           trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
           falseWrapper={(children) => (
             <TopAppBarSection alignStart>
-              <TopAppBarNavigationIcon icon="close" onClick={props.onClose} />
+              <TopAppBarNavigationIcon icon="close" onClick={onClose} />
               <TopAppBarTitle>{children}</TopAppBarTitle>
             </TopAppBarSection>
           )}

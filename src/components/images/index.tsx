@@ -77,7 +77,7 @@ type ContentImagesProps = {
   openNav: () => void;
 };
 
-export const ContentImages = (props: ContentImagesProps) => {
+export const ContentImages = ({ openNav }: ContentImagesProps) => {
   const dispatch = useAppDispatch();
 
   const device = useAppSelector(selectDevice);
@@ -210,7 +210,7 @@ export const ContentImages = (props: ContentImagesProps) => {
             {contextual ? (
               withTooltip(<TopAppBarActionItem icon="close" onClick={clearChecked} />, "Close", { align: tooltipAlign })
             ) : (
-              <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
+              <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
             )}
             <TopAppBarTitle>{contextual ? `${checkedImages.length} selected` : pageTitle.images}</TopAppBarTitle>
           </TopAppBarSection>

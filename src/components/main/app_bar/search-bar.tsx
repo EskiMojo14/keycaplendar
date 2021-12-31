@@ -19,7 +19,7 @@ type SearchBarPersistentProps = {
   setSearch: (search: string) => void;
 };
 
-export const SearchBarPersistent = (props: SearchBarPersistentProps) => {
+export const SearchBarPersistent = ({ search, setSearch }: SearchBarPersistentProps) => {
   const filteredSets = useAppSelector(selectFilteredSets);
 
   const [expanded, setExpanded] = useState(false);
@@ -27,13 +27,13 @@ export const SearchBarPersistent = (props: SearchBarPersistentProps) => {
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
 
   useEffect(() => {
-    setExpanded(props.search.length !== 0);
+    setExpanded(search.length !== 0);
     createSearchTerms();
-  }, [props.search]);
+  }, [search]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setExpanded(e.target.value.length !== 0);
-    props.setSearch(e.target.value);
+    setSearch(e.target.value);
   };
   const handleFocus = () => {
     setFocused(true);
@@ -66,12 +66,12 @@ export const SearchBarPersistent = (props: SearchBarPersistentProps) => {
     setSearchTerms(searchTerms);
   };
   const autoCompleteSearch = (_prop: string, value: string) => {
-    props.setSearch(value);
+    setSearch(value);
     setFocused(false);
   };
   const clearInput = () => {
     setExpanded(false);
-    props.setSearch("");
+    setSearch("");
   };
   return (
     <MenuSurfaceAnchor className={bemClasses("anchor")}>
@@ -86,7 +86,7 @@ export const SearchBarPersistent = (props: SearchBarPersistentProps) => {
         <TextField
           outlined
           className={bemClasses("field")}
-          value={props.search}
+          value={search}
           autoComplete="off"
           placeholder="Search"
           icon="search"
@@ -101,7 +101,7 @@ export const SearchBarPersistent = (props: SearchBarPersistentProps) => {
         open={focused}
         prop="search"
         array={searchTerms}
-        query={props.search}
+        query={search}
         select={autoCompleteSearch}
         onFocus={handleFocus}
         onBlur={handleBlur}
@@ -118,7 +118,7 @@ type SearchBarModalProps = {
   setSearch: (search: string) => void;
 };
 
-export const SearchBarModal = (props: SearchBarModalProps) => {
+export const SearchBarModal = ({ close, open: propsOpen, search, setSearch }: SearchBarModalProps) => {
   const filteredSets = useAppSelector(selectFilteredSets);
 
   const [opening, setOpening] = useState(false);
@@ -129,21 +129,21 @@ export const SearchBarModal = (props: SearchBarModalProps) => {
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
 
   useEffect(() => {
-    setOpen(props.open);
+    setOpen(propsOpen);
   }, []);
   useEffect(() => {
-    if (props.open) {
+    if (propsOpen) {
       openBar();
     } else {
       closeBar();
     }
-  }, [props.open]);
+  }, [propsOpen]);
   useEffect(() => {
-    if (!open && props.search.length > 0) {
+    if (!open && search.length > 0) {
       openBar();
     }
     createSearchTerms();
-  }, [props.search]);
+  }, [search]);
 
   const openBar = () => {
     setOpen(true);
@@ -163,15 +163,15 @@ export const SearchBarModal = (props: SearchBarModalProps) => {
   const closeBar = () => {
     setClosing(true);
     setTimeout(() => {
-      props.close();
+      close();
       setOpen(false);
       setClosing(false);
-      props.setSearch("");
+      setSearch("");
     }, 200);
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    props.setSearch(e.target.value);
+    setSearch(e.target.value);
   };
   const handleFocus = () => {
     setFocused(true);
@@ -205,11 +205,11 @@ export const SearchBarModal = (props: SearchBarModalProps) => {
     setSearchTerms(searchTerms);
   };
   const autoCompleteSearch = (_prop: string, value: string) => {
-    props.setSearch(value);
+    setSearch(value);
     setFocused(false);
   };
   const clearInput = () => {
-    props.setSearch("");
+    setSearch("");
   };
   return (
     <div
@@ -228,7 +228,7 @@ export const SearchBarModal = (props: SearchBarModalProps) => {
           id="search"
           outlined
           className={bemClasses("field")}
-          value={props.search}
+          value={search}
           autoComplete="off"
           placeholder="Search"
           icon={{
@@ -247,7 +247,7 @@ export const SearchBarModal = (props: SearchBarModalProps) => {
         open={focused && open}
         prop="search"
         array={searchTerms}
-        query={props.search}
+        query={search}
         select={autoCompleteSearch}
         minChars={1}
       />
@@ -263,22 +263,22 @@ type SearchAppBarProps = {
   setSearch: (search: string) => void;
 };
 
-export const SearchAppBar = (props: SearchAppBarProps) => {
+export const SearchAppBar = ({ close, open, openBar, search, setSearch }: SearchAppBarProps) => {
   const filteredSets = useAppSelector(selectFilteredSets);
 
   const [focused, setFocused] = useState(false);
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
 
   useEffect(() => {
-    if (props.search.length > 0) {
-      props.openBar();
+    if (search.length > 0) {
+      openBar();
       setTimeout(() => scrollTop(), 300);
     }
     createSearchTerms();
-  }, [props.search]);
+  }, [search]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    props.setSearch(e.target.value);
+    setSearch(e.target.value);
   };
   const handleFocus = () => {
     setFocused(true);
@@ -311,18 +311,18 @@ export const SearchAppBar = (props: SearchAppBarProps) => {
     setSearchTerms(searchTerms);
   };
   const autoCompleteSearch = (_prop: string, value: string) => {
-    props.setSearch(value);
+    setSearch(value);
     setFocused(false);
   };
   const clearInput = () => {
-    props.setSearch("");
+    setSearch("");
   };
   const scrollTop = () => {
     window.scrollTo(0, 0);
   };
   return (
     <>
-      <TopAppBar fixed className={classNames("search-app-bar", { "search-app-bar--open": props.open })}>
+      <TopAppBar fixed className={classNames("search-app-bar", { "search-app-bar--open": open })}>
         <TopAppBarRow>
           <div className={bemClasses({ modifiers: "modal open" })}>
             <div className={bemClasses("field-container")}>
@@ -330,14 +330,14 @@ export const SearchAppBar = (props: SearchAppBarProps) => {
                 id="search"
                 outlined
                 className={bemClasses("field")}
-                value={props.search}
+                value={search}
                 autoComplete="off"
                 placeholder="Search"
                 icon={{
                   icon: "arrow_back",
                   tabIndex: 0,
                   onClick: () => {
-                    props.close();
+                    close();
                     clearInput();
                   },
                 }}
@@ -349,10 +349,10 @@ export const SearchAppBar = (props: SearchAppBarProps) => {
               />
             </div>
             <AutocompleteMobile
-              open={focused && props.open}
+              open={focused && open}
               prop="search"
               array={searchTerms}
-              query={props.search}
+              query={search}
               select={autoCompleteSearch}
               minChars={1}
             />

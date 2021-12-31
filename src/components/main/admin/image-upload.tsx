@@ -18,7 +18,7 @@ type ImageUploadProps = {
   setImage: (image: Blob | File | null) => void;
 };
 
-export const ImageUpload = (props: ImageUploadProps) => {
+export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
   const [imageBase64, setImageBase64] = useState("");
   const [imageLink, setImageLink] = useState("");
   const [imageFromURL, setImageFromURL] = useState(true);
@@ -27,12 +27,12 @@ export const ImageUpload = (props: ImageUploadProps) => {
   const [hasImage, setHasImage] = useState(false);
 
   useEffect(() => {
-    if (props.image) {
-      if (is<string>(props.image)) {
-        setImageBase64(props.image);
+    if (image) {
+      if (is<string>(image)) {
+        setImageBase64(image);
         setHasImage(true);
       } else {
-        previewImage(props.image);
+        previewImage(image);
       }
     } else {
       setImageBase64("");
@@ -42,7 +42,7 @@ export const ImageUpload = (props: ImageUploadProps) => {
       setLoading(false);
       setHasImage(false);
     }
-  }, [props.image]);
+  }, [image]);
 
   const previewImage = (image: Blob | File) => {
     const reader = new FileReader();
@@ -70,7 +70,7 @@ export const ImageUpload = (props: ImageUploadProps) => {
       .then((response) => response.blob())
       .then((blob) => {
         setLoading(false);
-        props.setImage(blob);
+        setImage(blob);
       })
       .catch((err) => {
         setLoading(false);
@@ -116,7 +116,7 @@ export const ImageUpload = (props: ImageUploadProps) => {
         setDragOver(false);
         setLoading(false);
       } else {
-        props.setImage(file);
+        setImage(file);
         setDragOver(false);
       }
     }
@@ -131,7 +131,7 @@ export const ImageUpload = (props: ImageUploadProps) => {
     } = e;
     if (files) {
       const [file] = files;
-      props.setImage(file);
+      setImage(file);
       setDragOver(false);
     }
   };
@@ -159,7 +159,7 @@ export const ImageUpload = (props: ImageUploadProps) => {
   ) : null;
   const areaInner = hasImage ? (
     <div className="image-display-image" style={{ backgroundImage: "url(" + imageBase64 + ")" }} />
-  ) : loading ? null : props.desktop && !imageFromURL ? (
+  ) : loading ? null : desktop && !imageFromURL ? (
     <div className="drag-label">
       <Icon icon={iconObject(<AddPhotoAlternate />, { size: "medium" })} />
       <Typography use="body2" tag="p" className="caption">

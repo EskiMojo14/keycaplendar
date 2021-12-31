@@ -46,7 +46,7 @@ type DrawerDetailsProps = {
   set: SetType;
 };
 
-export const DrawerDetails = (props: DrawerDetailsProps) => {
+export const DrawerDetails = ({ close, open, openSales, set, edit, delete: deleteSet }: DrawerDetailsProps) => {
   const device = useAppSelector(selectDevice);
   const page = useAppSelector(selectPage);
 
@@ -61,7 +61,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
 
   const copyLink = () => {
     const arr = window.location.href.split("/");
-    const url = arr[0] + "//" + arr[2] + "?keysetAlias=" + props.set.alias;
+    const url = arr[0] + "//" + arr[2] + "?keysetAlias=" + set.alias;
     navigator.clipboard
       .writeText(url)
       .then(() => {
@@ -83,19 +83,15 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
       }
     }
   };
-  useEffect(setScroll, [search, JSON.stringify(props.set)]);
+  useEffect(setScroll, [search, JSON.stringify(set)]);
   useEffect(() => {
     const drawerContent = document.querySelector(".details-drawer .mdc-drawer__content");
     if (drawerContent) {
       drawerContent.scrollTop = 0;
     }
-  }, [JSON.stringify(props.set)]);
+  }, [JSON.stringify(set)]);
 
   const dismissible = device === "desktop" && view !== "compact" && arrayIncludes(mainPages, page);
-  const set = { ...props.set };
-  if (!set.image) {
-    set.image = "";
-  }
   const today = DateTime.utc();
   let gbLaunch: DateTime | string = "";
   let gbEnd: DateTime | null = null;
@@ -174,7 +170,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
     });
     shippedLine =
       gbEnd && gbEnd <= today ? (
-        props.set.shipped ? (
+        set.shipped ? (
           <Typography use="body2" tag="p">
             This set has shipped.
           </Typography>
@@ -239,7 +235,6 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
         </List>
       </div>
     ) : null;
-  const { edit, delete: deleteSet } = props;
   const editorButtons =
     (user.isEditor || (user.isDesigner && set.designer && set.designer.includes(user.nickname))) &&
     edit &&
@@ -253,13 +248,13 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
             danger
             label="Delete"
             icon={iconObject(<Delete />)}
-            onClick={() => deleteSet(props.set)}
+            onClick={() => deleteSet(set)}
           />
         ) : null}
       </div>
     ) : null;
   const lichButton =
-    props.set.colorway === "Lich" ? <IconButton onClick={toggleLichTheme} icon={iconObject(<Palette />)} /> : null;
+    set.colorway === "Lich" ? <IconButton onClick={toggleLichTheme} icon={iconObject(<Palette />)} /> : null;
   const userButtons = user.email ? (
     <>
       {withTooltip(
@@ -267,42 +262,42 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
           icon="favorite_border"
           onIcon={iconObject(<Favorite />)}
           className="favorite"
-          checked={favorites.includes(props.set.id)}
-          onClick={() => toggleFavorite(props.set.id)}
+          checked={favorites.includes(set.id)}
+          onClick={() => toggleFavorite(set.id)}
         />,
-        favorites.includes(props.set.id) ? "Unfavorite" : "Favorite"
+        favorites.includes(set.id) ? "Unfavorite" : "Favorite"
       )}
       {withTooltip(
         <IconButton
           icon={iconObject(<ShoppingBasketOff />)}
           onIcon={iconObject(<ShoppingBasket />)}
           className="bought"
-          checked={bought.includes(props.set.id)}
-          onClick={() => toggleBought(props.set.id)}
+          checked={bought.includes(set.id)}
+          onClick={() => toggleBought(set.id)}
         />,
-        bought.includes(props.set.id) ? "Bought" : "Not bought"
+        bought.includes(set.id) ? "Bought" : "Not bought"
       )}
       {withTooltip(
         <IconButton
           icon={iconObject(<Visibility />)}
           onIcon={iconObject(<VisibilityOff />)}
           className="hide"
-          checked={hidden.includes(props.set.id)}
-          onClick={() => toggleHidden(props.set.id)}
+          checked={hidden.includes(set.id)}
+          onClick={() => toggleHidden(set.id)}
         />,
-        hidden.includes(props.set.id) ? "Unhide" : "Hide"
+        hidden.includes(set.id) ? "Unhide" : "Hide"
       )}
     </>
   ) : null;
   const closeIcon = dismissible
-    ? withTooltip(<IconButton className="close-icon" icon="close" onClick={props.close} />, "Close")
+    ? withTooltip(<IconButton className="close-icon" icon="close" onClick={close} />, "Close")
     : null;
-  const salesButton = props.set.sales?.img ? (
-    <Button outlined label="Sales" icon="bar_chart" onClick={() => props.openSales(set)} />
+  const salesButton = set.sales?.img ? (
+    <Button outlined label="Sales" icon="bar_chart" onClick={() => openSales(set)} />
   ) : null;
-  const notes = props.set.notes ? (
+  const notes = set.notes ? (
     <Typography use="caption" tag="p" className="multiline">
-      {props.set.notes}
+      {set.notes}
     </Typography>
   ) : null;
   const searchChips = arrayIncludes(mainPages, page) ? (
@@ -319,7 +314,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
               onClick={() => {
                 setSearch(value);
                 if (!dismissible) {
-                  props.close();
+                  close();
                 }
               }}
             />
@@ -332,8 +327,8 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
     <Drawer
       dismissible={dismissible}
       modal={!dismissible}
-      open={props.open}
-      onClose={props.close}
+      open={open}
+      onClose={close}
       className="details-drawer drawer-right"
     >
       <DrawerHeader>
@@ -346,7 +341,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
         <div>
           <div
             className="details-image"
-            style={{ backgroundImage: "url(" + set.image.replace("keysets", "card") + ")" }}
+            style={{ backgroundImage: "url(" + (set.image?.replace("keysets", "card") ?? "") + ")" }}
           ></div>
           <div className="details-text">
             <Typography use="overline" tag="h3">

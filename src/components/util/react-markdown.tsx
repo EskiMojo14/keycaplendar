@@ -34,9 +34,8 @@ import { SegmentedButton, SegmentedButtonSegment } from "./segmented-button";
 import "./react-markdown.scss";
 
 const input = Object.assign(
-  (props: Record<string, any>) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { type, node, ...allProps } = props;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ({ type, node, ...allProps }: Record<string, any>) => {
     if (type === "checkbox") {
       return <Checkbox {...allProps} />;
     } else {
@@ -47,15 +46,12 @@ const input = Object.assign(
 );
 
 const dataTableContainer = Object.assign(
-  (props: Record<string, any>) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { node, children, ...allProps } = props;
-    return (
-      <DataTable {...allProps}>
-        <DataTableContent>{children}</DataTableContent>
-      </DataTable>
-    );
-  },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ({ node, children, ...allProps }: Record<string, any>) => (
+    <DataTable {...allProps}>
+      <DataTableContent>{children}</DataTableContent>
+    </DataTable>
+  ),
   { displayName: "Custom table" }
 );
 
@@ -80,28 +76,31 @@ const customComponents = {
 
 type CustomReactMarkdownProps = ReactMarkdownOptions;
 
-export const CustomReactMarkdown = (props: CustomReactMarkdownProps) => {
-  const { components, className, children, ...filteredProps } = props;
-  return (
-    <ReactMarkdown
-      remarkPlugins={[gfm]}
-      components={{ ...customComponents, ...components }}
-      className={classNames("markdown", className)}
-      {...filteredProps}
-    >
-      {children}
-    </ReactMarkdown>
-  );
-};
+export const CustomReactMarkdown = ({ components, className, ...filteredProps }: CustomReactMarkdownProps) => (
+  <ReactMarkdown
+    remarkPlugins={[gfm]}
+    components={{ ...customComponents, ...components }}
+    className={classNames("markdown", className)}
+    {...filteredProps}
+  />
+);
+
 const bemClasses = new BEMHelper("markdown-editor");
 
 type CustomReactMdeProps = Omit<ReactMdeProps, "generateMarkdownPreview" | "onTabChange" | "selectedTab"> & {
   required?: boolean;
 };
 
-export const CustomReactMde = (props: CustomReactMdeProps) => {
+export const CustomReactMde = ({
+  toolbarCommands,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { toolbarCommands, l18n, classes, childProps, required, value, ...filteredProps } = props;
+  l18n,
+  classes,
+  childProps,
+  required,
+  value,
+  ...filteredProps
+}: CustomReactMdeProps) => {
   const customCommands: CommandMap = {
     h1: headerOneCommand,
     h2: headerTwoCommand,

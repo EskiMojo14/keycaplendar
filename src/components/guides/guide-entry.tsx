@@ -19,8 +19,7 @@ type GuideEntryProps = {
   delete: (entry: GuideEntryType) => void;
 };
 
-export const GuideEntry = (props: GuideEntryProps) => {
-  const { entry } = props;
+export const GuideEntry = ({ entry, edit, delete: deleteFn }: GuideEntryProps) => {
   const dispatch = useAppDispatch();
 
   const user = useAppSelector(selectUser);
@@ -58,7 +57,7 @@ export const GuideEntry = (props: GuideEntryProps) => {
           <CardActionIcon
             icon={iconObject(<Edit />)}
             onClick={() => {
-              props.edit(entry);
+              edit(entry);
             }}
           />,
           "Edit"
@@ -67,7 +66,7 @@ export const GuideEntry = (props: GuideEntryProps) => {
           <CardActionIcon
             icon={iconObject(<Delete />)}
             onClick={() => {
-              props.delete(entry);
+              deleteFn(entry);
             }}
           />,
           "Delete"

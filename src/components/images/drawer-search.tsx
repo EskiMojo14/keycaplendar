@@ -29,11 +29,11 @@ type DrawerSearchProps = {
   unusedImages: ImageType[];
 };
 
-export const DrawerSearch = (props: DrawerSearchProps) => {
+export const DrawerSearch = ({ close, images, open, unusedImages }: DrawerSearchProps) => {
   const device = useAppSelector(selectDevice);
   const dismissible = device === "desktop";
   const closeIcon = dismissible
-    ? withTooltip(<IconButton className="close-icon" icon="close" onClick={props.close} />, "Close")
+    ? withTooltip(<IconButton className="close-icon" icon="close" onClick={close} />, "Close")
     : null;
 
   const [search, setSearch] = useState("");
@@ -47,7 +47,7 @@ export const DrawerSearch = (props: DrawerSearchProps) => {
     setRegexSearch(!regexSearch);
   };
 
-  const searchedImages = props.images.filter((image) => {
+  const searchedImages = images.filter((image) => {
     if (regexSearch) {
       const regex = new RegExp(search);
       return regex.test(image.name) && search.length > 1;
@@ -60,8 +60,8 @@ export const DrawerSearch = (props: DrawerSearchProps) => {
       dismissible={dismissible}
       modal={!dismissible}
       className="drawer-right search-drawer"
-      open={props.open}
-      onClose={props.close}
+      open={open}
+      onClose={close}
     >
       <DrawerHeader>
         <DrawerTitle>Search</DrawerTitle>
@@ -104,11 +104,7 @@ export const DrawerSearch = (props: DrawerSearchProps) => {
                 image.name
               )}
               <ListItemMeta>
-                <Checkbox
-                  checked={!props.unusedImages.map((image) => image.name).includes(image.name)}
-                  readOnly
-                  disabled
-                />
+                <Checkbox checked={!unusedImages.map(({ name }) => name).includes(image.name)} readOnly disabled />
               </ListItemMeta>
             </ListItem>
           ))}

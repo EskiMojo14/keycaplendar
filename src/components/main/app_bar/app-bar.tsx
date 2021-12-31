@@ -34,7 +34,7 @@ type AppBarProps = {
   openShare: () => void;
 };
 
-export const AppBar = (props: AppBarProps) => {
+export const AppBar = ({ indent, openFilter, openNav, openShare }: AppBarProps) => {
   const device = useAppSelector(selectDevice);
   const view = useAppSelector(selectView);
   const bottomNav = useAppSelector(selectBottomNav);
@@ -71,19 +71,15 @@ export const AppBar = (props: AppBarProps) => {
   const shareButton =
     page === "favorites" && user.email && linkedFavorites.array.length === 0
       ? withTooltip(
-          <TopAppBarActionItem
-            style={{ "--animation-delay": 4 }}
-            icon={iconObject(<Share />)}
-            onClick={props.openShare}
-          />,
+          <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon={iconObject(<Share />)} onClick={openShare} />,
           "Share",
           { align: tooltipAlign }
         )
       : null;
 
-  const indent = props.indent && bottomNav ? <AppBarIndent /> : null;
+  const indentEl = indent && bottomNav ? <AppBarIndent /> : null;
 
-  const searchBar = indent ? (
+  const searchBar = indentEl ? (
     <SearchAppBar open={searchOpen} openBar={openSearch} close={closeSearch} search={search} setSearch={setSearch} />
   ) : null;
   const buttons = (
@@ -98,7 +94,7 @@ export const AppBar = (props: AppBarProps) => {
         )}
       </MenuSurfaceAnchor>
       {withTooltip(
-        <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openFilter} />,
+        <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={openFilter} />,
         "Filter",
         {
           align: tooltipAlign,
@@ -115,14 +111,14 @@ export const AppBar = (props: AppBarProps) => {
         )}
       </MenuSurfaceAnchor>
       {device === "desktop" ? shareButton : null}
-      {device !== "desktop" && !indent ? (
+      {device !== "desktop" && !indentEl ? (
         <div>
           <SearchBarModal open={searchOpen} close={closeSearch} search={search} setSearch={setSearch} />
           {page === "favorites" && user.email && linkedFavorites.array.length === 0 ? (
             <MenuSurfaceAnchor>
               <Menu anchorCorner="bottomLeft" open={moreOpen} onClose={closeMore}>
                 <MenuItem onClick={openSearch}>Search</MenuItem>
-                <MenuItem onClick={props.openShare}>Share</MenuItem>
+                <MenuItem onClick={openShare}>Share</MenuItem>
               </Menu>
               <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="more_vert" onClick={openMore} />
             </MenuSurfaceAnchor>
@@ -134,12 +130,12 @@ export const AppBar = (props: AppBarProps) => {
           )}
         </div>
       ) : null}
-      {indent ? (
+      {indentEl ? (
         page === "favorites" && user.email && linkedFavorites.array.length === 0 ? (
           <MenuSurfaceAnchor>
             <Menu anchorCorner="bottomLeft" open={moreOpen} onClose={closeMore}>
               <MenuItem onClick={openSearch}>Search</MenuItem>
-              <MenuItem onClick={props.openShare}>Share</MenuItem>
+              <MenuItem onClick={openShare}>Share</MenuItem>
             </Menu>
             <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="more_vert" onClick={openMore} />
           </MenuSurfaceAnchor>
@@ -152,7 +148,7 @@ export const AppBar = (props: AppBarProps) => {
       ) : null}
     </>
   );
-  const leftButtons = !indent ? (
+  const leftButtons = !indentEl ? (
     <TopAppBarTitle>
       {pageTitle[page] +
         (page === "favorites" && linkedFavorites.displayName ? `: ${linkedFavorites.displayName}` : "")}
@@ -160,7 +156,7 @@ export const AppBar = (props: AppBarProps) => {
   ) : (
     buttons
   );
-  const rightButtons = !indent ? <TopAppBarSection alignEnd>{buttons}</TopAppBarSection> : null;
+  const rightButtons = !indentEl ? <TopAppBarSection alignEnd>{buttons}</TopAppBarSection> : null;
   return (
     <>
       {searchBar}
@@ -168,16 +164,16 @@ export const AppBar = (props: AppBarProps) => {
         fixed
         className={classNames({
           "bottom-app-bar": bottomNav,
-          "bottom-app-bar--indent": indent,
+          "bottom-app-bar--indent": indentEl,
           "search-open": searchOpen && device !== "desktop" && !bottomNav,
         })}
       >
         <TopAppBarRow>
           <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
+            <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
             {leftButtons}
           </TopAppBarSection>
-          {indent}
+          {indentEl}
           {rightButtons}
         </TopAppBarRow>
         <LinearProgress closed={!loading} />

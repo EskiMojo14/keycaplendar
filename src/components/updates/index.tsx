@@ -31,7 +31,7 @@ type ContentUpdatesProps = {
   openNav: () => void;
 };
 
-export const ContentUpdates = (props: ContentUpdatesProps) => {
+export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
   const device = useAppSelector(selectDevice);
 
   const bottomNav = useAppSelector(selectBottomNav);
@@ -130,7 +130,7 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
       >
         <TopAppBarRow>
           <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
+            <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
             <TopAppBarTitle>{pageTitle.updates}</TopAppBarTitle>
           </TopAppBarSection>
           {indent}

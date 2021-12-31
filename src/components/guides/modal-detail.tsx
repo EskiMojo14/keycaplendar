@@ -32,9 +32,7 @@ type ModalCreateProps = {
   entry: GuideEntryType;
 };
 
-export const ModalDetail = (props: ModalCreateProps) => {
-  const { entry } = props;
-
+export const ModalDetail = ({ entry, open, onClose, edit, delete: deleteFn }: ModalCreateProps) => {
   const dispatch = useAppDispatch();
 
   const device = useAppSelector(selectDevice);
@@ -51,7 +49,7 @@ export const ModalDetail = (props: ModalCreateProps) => {
     } else {
       dispatch(setFilteredTag(tag));
     }
-    props.onClose();
+    onClose();
   };
 
   const copyLink = () => {
@@ -75,7 +73,7 @@ export const ModalDetail = (props: ModalCreateProps) => {
           <IconButton
             icon={iconObject(<Edit />)}
             onClick={() => {
-              props.edit(entry);
+              edit(entry);
             }}
           />,
           "Edit"
@@ -84,7 +82,7 @@ export const ModalDetail = (props: ModalCreateProps) => {
           <IconButton
             icon={iconObject(<Delete />)}
             onClick={() => {
-              props.delete(entry);
+              deleteFn(entry);
             }}
           />,
           "Delete"
@@ -97,7 +95,7 @@ export const ModalDetail = (props: ModalCreateProps) => {
           <TopAppBarActionItem
             icon={iconObject(<Edit />)}
             onClick={() => {
-              props.edit(entry);
+              edit(entry);
             }}
           />,
           "Edit"
@@ -106,7 +104,7 @@ export const ModalDetail = (props: ModalCreateProps) => {
           <TopAppBarActionItem
             icon={iconObject(<Delete />)}
             onClick={() => {
-              props.edit(entry);
+              edit(entry);
             }}
           />,
           "Delete"
@@ -119,12 +117,12 @@ export const ModalDetail = (props: ModalCreateProps) => {
     <BoolWrapper
       condition={useDrawer}
       trueWrapper={(children) => (
-        <Drawer modal open={props.open} onClose={props.onClose} className="drawer-right guide-detail-modal">
+        <Drawer modal open={open} onClose={onClose} className="drawer-right guide-detail-modal">
           {children}
         </Drawer>
       )}
       falseWrapper={(children) => (
-        <FullScreenDialog open={props.open} onClose={props.onClose} className="guide-detail-modal">
+        <FullScreenDialog open={open} onClose={onClose} className="guide-detail-modal">
           {children}
         </FullScreenDialog>
       )}
@@ -143,7 +141,7 @@ export const ModalDetail = (props: ModalCreateProps) => {
           trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
           falseWrapper={(children) => (
             <TopAppBarSection alignStart>
-              <TopAppBarNavigationIcon icon="close" onClick={props.onClose} />
+              <TopAppBarNavigationIcon icon="close" onClick={onClose} />
               <TopAppBarTitle>{children}</TopAppBarTitle>
             </TopAppBarSection>
           )}

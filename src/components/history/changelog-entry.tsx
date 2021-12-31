@@ -41,7 +41,7 @@ type DataObject = {
 
 const domainRegex = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
 
-export const ChangelogEntry = (props: ChangelogEntryProps) => {
+export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
   const icons = {
     created: "add_circle_outline",
     updated: "update",
@@ -53,11 +53,11 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
   const dateProps = ["icDate", "gbLaunch", "gbEnd"] as const;
 
   const data: DataObject =
-    props.action.action === "updated"
-      ? { before: props.action.before, after: props.action.after }
-      : { data: props.action.action === "deleted" ? props.action.before : props.action.after };
+    action.action === "updated"
+      ? { before: action.before, after: action.after }
+      : { data: action.action === "deleted" ? action.before : action.after };
 
-  const timestamp = DateTime.fromISO(props.action.timestamp, { zone: "utc" });
+  const timestamp = DateTime.fromISO(action.timestamp, { zone: "utc" });
   const formattedTimestamp = timestamp.toFormat(`d'${ordinal(timestamp.day)}' MMM yyyy HH:mm`);
 
   const constructRows = (dataObj = data, properties = auditProperties): ReactNode => {
@@ -151,7 +151,7 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
                 <DataTableCell>{auditPropertiesFormatted[prop]}</DataTableCell>
                 <DataTableCell
                   hasFormControl={arrayIncludes(boolProps, prop) && is<boolean>(useData)}
-                  className={props.action.action === "created" ? "after" : "before"}
+                  className={action.action === "created" ? "after" : "before"}
                 >
                   {contents}
                 </DataTableCell>
@@ -331,10 +331,10 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
       className="changelog-entry"
       handle={
         <ListItem>
-          <ListItemGraphic icon={icons[props.action.action]} />
+          <ListItemGraphic icon={icons[action.action]} />
           <ListItemText>
-            <div className="overline">{props.action.action}</div>
-            <ListItemPrimaryText>{props.action.title}</ListItemPrimaryText>
+            <div className="overline">{action.action}</div>
+            <ListItemPrimaryText>{action.title}</ListItemPrimaryText>
             <ListItemSecondaryText>{formattedTimestamp}</ListItemSecondaryText>
           </ListItemText>
           <ListItemMeta icon="expand_more" />
@@ -346,8 +346,8 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
           <DataTableHead>
             <DataTableRow>
               <DataTableHeadCell>Property</DataTableHeadCell>
-              <DataTableHeadCell>{props.action.action === "updated" ? "Before" : "Data"}</DataTableHeadCell>
-              {props.action.action === "updated" ? <DataTableHeadCell>After</DataTableHeadCell> : null}
+              <DataTableHeadCell>{action.action === "updated" ? "Before" : "Data"}</DataTableHeadCell>
+              {action.action === "updated" ? <DataTableHeadCell>After</DataTableHeadCell> : null}
             </DataTableRow>
           </DataTableHead>
           <DataTableBody>{constructRows()}</DataTableBody>

@@ -28,7 +28,7 @@ type EntriesDrawerProps = {
   detailEntry: GuideEntryType;
 };
 
-export const EntriesList = (props: EntriesDrawerProps) => {
+export const EntriesList = ({ openEntry, detailEntry }: EntriesDrawerProps) => {
   const dispatch = useAppDispatch();
 
   const device = useAppSelector(selectDevice);
@@ -116,9 +116,9 @@ export const EntriesList = (props: EntriesDrawerProps) => {
                     <ListItem
                       key={entry.id}
                       onClick={() => {
-                        props.openEntry(entry);
+                        openEntry(entry);
                       }}
-                      selected={props.detailEntry.id === entry.id}
+                      selected={detailEntry.id === entry.id}
                     >
                       <ListItemGraphic icon={iconObject(<Article />)} />
                       <ListItemText>

@@ -9,10 +9,10 @@ type MenuViewProps = {
   open: boolean;
 };
 
-export const MenuView = (props: MenuViewProps) => {
+export const MenuView = ({ onClose, open }: MenuViewProps) => {
   const view = useAppSelector(selectView);
   return (
-    <Menu anchorCorner="bottomLeft" open={props.open} onClose={props.onClose}>
+    <Menu anchorCorner="bottomLeft" open={open} onClose={onClose}>
       {allViews.map((key) => (
         <MenuItem key={key} selected={view === key} onClick={() => setView(key)}>
           {viewNames[key]}

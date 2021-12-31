@@ -39,7 +39,7 @@ type ContentAuditProps = {
   openNav: () => void;
 };
 
-export const ContentAudit = (props: ContentAuditProps) => {
+export const ContentAudit = ({ openNav }: ContentAuditProps) => {
   const dispatch = useAppDispatch();
 
   const device = useAppSelector(selectDevice);
@@ -146,7 +146,7 @@ export const ContentAudit = (props: ContentAuditProps) => {
       <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav })}>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
+            <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
             <TopAppBarTitle>{pageTitle.audit}</TopAppBarTitle>
           </TopAppBarSection>
           <TopAppBarSection alignEnd>

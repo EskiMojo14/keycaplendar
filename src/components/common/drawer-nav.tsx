@@ -24,7 +24,7 @@ type DrawerNavProps = {
   open: boolean;
 };
 
-export const DrawerNav = (props: DrawerNavProps) => {
+export const DrawerNav = ({ close, open }: DrawerNavProps) => {
   const device = useAppSelector(selectDevice);
   const bottomNav = useAppSelector(selectBottomNav);
 
@@ -42,7 +42,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
   const setPage = (page: Page) => {
     setMainPage(page);
     if (!dismissible) {
-      props.close();
+      close();
     }
   };
 
@@ -152,7 +152,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
       <IconButton
         className={classNames({ "rtl-flip": !bottomNav })}
         icon={bottomNav ? "close" : "chevron_left"}
-        onClick={props.close}
+        onClick={close}
       />
     ) : null;
 
@@ -161,8 +161,8 @@ export const DrawerNav = (props: DrawerNavProps) => {
       className={classNames("nav", { rail: dismissible, "drawer-bottom": bottomNav })}
       dismissible={dismissible}
       modal={!dismissible}
-      open={props.open}
-      onClose={props.close}
+      open={open}
+      onClose={close}
     >
       <DrawerHeader>
         <img className="logo" src={logo} alt="logo" />

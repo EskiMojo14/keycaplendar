@@ -15,34 +15,32 @@ type DialogDeleteProps = {
   set: SetType;
 };
 
-export const DialogDelete = (props: DialogDeleteProps) => {
+export const DialogDelete = ({ close, open, openSnackbar, set }: DialogDeleteProps) => {
   const user = useAppSelector(selectUser);
   const deleteEntry = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     firestore
       .collection("keysets")
-      .doc(props.set.id as KeysetId)
+      .doc(set.id as KeysetId)
       .set({
         latestEditor: user.id,
       } as KeysetDoc)
       .then(() => {
-        props.openSnackbar();
+        openSnackbar();
         getData();
       })
       .catch((error) => {
         console.error("Error deleting document: ", error);
         queue.notify({ title: "Error deleting document: " + error });
       });
-    props.close();
+    close();
   };
   return (
-    <Dialog open={props.open}>
-      <DialogTitle>{`Delete ${props.set.profile} ${props.set.colorway}`}</DialogTitle>
-      <DialogContent>
-        {`Are you sure you want to delete the entry for ${props.set.profile} ${props.set.colorway}`}?
-      </DialogContent>
+    <Dialog open={open}>
+      <DialogTitle>{`Delete ${set.profile} ${set.colorway}`}</DialogTitle>
+      <DialogContent>{`Are you sure you want to delete the entry for ${set.profile} ${set.colorway}`}?</DialogContent>
       <DialogActions>
-        <DialogButton action="close" onClick={props.close} isDefaultAction>
+        <DialogButton action="close" onClick={close} isDefaultAction>
           Cancel
         </DialogButton>
         <DialogButton /*action="accept"*/ className="delete" onClick={deleteEntry}>

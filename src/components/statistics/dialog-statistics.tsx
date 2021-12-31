@@ -13,14 +13,14 @@ type DialogStatisticsProps = {
   open: boolean;
 };
 
-export const DialogStatistics = (props: DialogStatisticsProps) => {
+export const DialogStatistics = ({ open, onClose }: DialogStatisticsProps) => {
   const statisticsTab = useAppSelector(selectTab);
   const settings = useAppSelector(selectSettings);
 
   const [statistics, setStatistics] = useState<Categories | Properties>("profile");
 
   useEffect(() => {
-    if (props.open) {
+    if (open) {
       const key =
         statisticsTab === "duration"
           ? "durationGroup"
@@ -31,7 +31,7 @@ export const DialogStatistics = (props: DialogStatisticsProps) => {
         setStatistics(settings[key]);
       }
     }
-  }, [props.open]);
+  }, [open]);
 
   const handleChange = (stats: Categories | Properties) => {
     setStatistics(stats);
@@ -48,9 +48,9 @@ export const DialogStatistics = (props: DialogStatisticsProps) => {
   return (
     <Dialog
       className="statistics-dialog"
-      open={props.open}
+      open={open}
       onClose={() => {
-        props.onClose();
+        onClose();
       }}
     >
       <DialogTitle>Change category</DialogTitle>

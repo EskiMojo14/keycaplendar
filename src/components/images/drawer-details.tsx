@@ -17,17 +17,17 @@ type DrawerDetailsProps = {
   open: boolean;
 };
 
-export const DrawerDetails = (props: DrawerDetailsProps) => {
+export const DrawerDetails = ({ close, image, metadata, open }: DrawerDetailsProps) => {
   const device = useAppSelector(selectDevice);
   const dismissible = device === "desktop";
   const closeIcon = dismissible
-    ? withTooltip(<IconButton className="close-icon" icon="close" onClick={props.close} />, "Close")
+    ? withTooltip(<IconButton className="close-icon" icon="close" onClick={close} />, "Close")
     : null;
   const imageProps = {
     name: "File name",
     fullPath: "Path",
   };
-  const metadata = {
+  const metadataLabels = {
     size: "File size",
     contentType: "Type",
     timeCreated: "Created",
@@ -38,8 +38,8 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
       dismissible={dismissible}
       modal={!dismissible}
       className="drawer-right details-drawer image-details"
-      open={props.open}
-      onClose={props.close}
+      open={open}
+      onClose={close}
     >
       <DrawerHeader>
         <DrawerTitle>Details</DrawerTitle>
@@ -47,7 +47,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
       </DrawerHeader>
       <DrawerContent>
         <div className="image-container">
-          <img className="image" src={props.image.src} alt={props.image.name} />
+          <img className="image" src={image.src} alt={image.name} />
         </div>
         <List twoLine className="details-list">
           <div className="subheader">
@@ -57,25 +57,25 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
             <ListItem key={key} disabled>
               <ListItemText>
                 <ListItemPrimaryText>{imageProps[key]}</ListItemPrimaryText>
-                <ListItemSecondaryText>{props.image[key]}</ListItemSecondaryText>
+                <ListItemSecondaryText>{image[key]}</ListItemSecondaryText>
               </ListItemText>
             </ListItem>
           ))}
           <div className="subheader">
             <Typography use="caption">Metadata</Typography>
           </div>
-          {objectKeys(metadata).map((key) => (
+          {objectKeys(metadataLabels).map((key) => (
             <ListItem key={key} disabled>
               <ListItemText>
-                <ListItemPrimaryText>{metadata[key]}</ListItemPrimaryText>
+                <ListItemPrimaryText>{metadataLabels[key]}</ListItemPrimaryText>
                 <ListItemSecondaryText>
                   {key === "updated" || key === "timeCreated"
-                    ? DateTime.fromISO(props.metadata[key], { zone: "utc" }).toFormat(
-                        `d'${ordinal(DateTime.fromISO(props.metadata[key], { zone: "utc" }).day)}' MMMM yyyy, HH:mm:ss`
+                    ? DateTime.fromISO(metadata[key], { zone: "utc" }).toFormat(
+                        `d'${ordinal(DateTime.fromISO(metadata[key], { zone: "utc" }).day)}' MMMM yyyy, HH:mm:ss`
                       )
                     : key === "size"
-                    ? formatBytes(props.metadata[key])
-                    : props.metadata[key]}
+                    ? formatBytes(metadata[key])
+                    : metadata[key]}
                 </ListItemSecondaryText>
               </ListItemText>
             </ListItem>

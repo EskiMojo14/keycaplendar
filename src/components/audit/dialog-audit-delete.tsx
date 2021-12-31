@@ -8,21 +8,21 @@ type DialogAuditDeleteProps = {
   open: boolean;
 };
 
-export const DialogAuditDelete = (props: DialogAuditDeleteProps) => (
-  <Dialog open={props.open}>
+export const DialogAuditDelete = ({ close, deleteAction, deleteActionFn, open }: DialogAuditDeleteProps) => (
+  <Dialog open={open}>
     <DialogTitle>Delete Action</DialogTitle>
     <DialogContent>
-      Are you sure you want to delete the changelog entry with the ID {props.deleteAction.changelogId}?
+      Are you sure you want to delete the changelog entry with the ID {deleteAction.changelogId}?
     </DialogContent>
     <DialogActions>
-      <DialogButton action="close" onClick={props.close} isDefaultAction>
+      <DialogButton action="close" onClick={close} isDefaultAction>
         Cancel
       </DialogButton>
       <DialogButton
         action="accept"
         className="delete"
         onClick={() => {
-          props.deleteActionFn(props.deleteAction);
+          deleteActionFn(deleteAction);
         }}
       >
         Delete

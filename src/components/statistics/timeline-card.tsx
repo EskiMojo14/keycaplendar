@@ -121,21 +121,29 @@ type ShippedCardProps = {
   note?: ReactNode;
 };
 
-export const ShippedCard = (props: ShippedCardProps) => {
+export const ShippedCard = ({
+  data,
+  breakdownData,
+  months,
+  summary,
+  defaultType = "bar",
+  overline,
+  note,
+}: ShippedCardProps) => {
   const device = useAppSelector(selectDevice);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "bar");
+  const [graphType, setGraphType] = useState<"bar" | "line">(defaultType);
   const chartData =
-    selectedIndex >= 0 && props.summary && props.breakdownData
-      ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
-      : props.data;
+    selectedIndex >= 0 && summary && breakdownData
+      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
+      : data;
   const barChart =
     graphType === "bar" ? (
       <ChartistGraph
-        className={device === "desktop" || props.summary ? "ct-double-octave" : "ct-major-twelfth"}
+        className={device === "desktop" || summary ? "ct-double-octave" : "ct-major-twelfth"}
         data={{
           series: [chartData.timeline.shipped, chartData.timeline.unshipped] as IChartistData["series"],
-          labels: props.months.map((label) => label.split(" ").join("\n")),
+          labels: months.map((label) => label.split(" ").join("\n")),
         }}
         type={"Bar"}
         options={chartOptions("Month (GB end)")}
@@ -145,10 +153,10 @@ export const ShippedCard = (props: ShippedCardProps) => {
   const lineChart =
     graphType === "line" ? (
       <ChartistGraph
-        className={device === "desktop" || props.summary ? "ct-double-octave" : "ct-major-twelfth"}
+        className={device === "desktop" || summary ? "ct-double-octave" : "ct-major-twelfth"}
         data={{
           series: [chartData.timeline.shipped, chartData.timeline.unshipped] as IChartistData["series"],
-          labels: props.months.map((label) => label.split(" ").join("\n")),
+          labels: months.map((label) => label.split(" ").join("\n")),
         }}
         type={"Line"}
         listener={listener}
@@ -157,10 +165,10 @@ export const ShippedCard = (props: ShippedCardProps) => {
       />
     ) : null;
   const selectChips =
-    props.summary && props.breakdownData ? (
+    summary && breakdownData ? (
       <div className="timeline-chips-container">
         <ChipSet choice>
-          {[...props.breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
+          {[...breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
             <Chip
               key={obj.name}
               label={obj.name}
@@ -177,13 +185,13 @@ export const ShippedCard = (props: ShippedCardProps) => {
     <Card className="timeline-card full-span">
       <div className="title-container">
         <div className="text-container">
-          {props.overline ? (
+          {overline ? (
             <Typography use="overline" tag="h3">
-              {props.overline}
+              {overline}
             </Typography>
           ) : null}
           <Typography use="headline5" tag="h1">
-            {props.data.name}
+            {data.name}
           </Typography>
           <Typography use="subtitle2" tag="p">
             {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
@@ -246,9 +254,9 @@ export const ShippedCard = (props: ShippedCardProps) => {
           </DataTable>
         </div>
         {selectChips}
-        {props.note ? (
+        {note ? (
           <Typography use="caption" tag="p" className="note">
-            {props.note}
+            {note}
           </Typography>
         ) : null}
       </div>
@@ -270,16 +278,28 @@ type TimelinesCardProps = {
   note?: ReactNode;
 };
 
-export const TimelinesCard = (props: TimelinesCardProps) => {
+export const TimelinesCard = ({
+  data,
+  months,
+  singleTheme,
+  defaultType = "bar",
+  summary,
+  category,
+  focusable,
+  allProfiles,
+  breakdownData,
+  overline,
+  note,
+}: TimelinesCardProps) => {
   const [onlyFocused, setOnlyFocused] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  useEffect(() => setSelectedIndex(-1), [props.category]);
+  useEffect(() => setSelectedIndex(-1), [category]);
   const chartData =
-    selectedIndex >= 0 && props.summary && props.breakdownData
-      ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
-      : props.data;
+    selectedIndex >= 0 && summary && breakdownData
+      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
+      : data;
   const [focused, setFocused] = useState<number[]>([]);
-  const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "bar");
+  const [graphType, setGraphType] = useState<"bar" | "line">(defaultType);
   const setFocus = (index: number) => {
     const newFocused = addOrRemove([...focused], index);
     setFocused(newFocused);
@@ -291,7 +311,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
         chartData.timeline.series,
         (series): series is { index: number } => typeof series === "object" && hasKey(series, "index")
       ) &&
-      chartData.timeline.series.length !== props.allProfiles?.length
+      chartData.timeline.series.length !== allProfiles?.length
     ) {
       allIndexes = chartData.timeline.series.map((series) => series.index);
     } else {
@@ -304,11 +324,11 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
   const clearFocus = () => {
     setFocused([]);
   };
-  useEffect(clearFocus, [props.category]);
+  useEffect(clearFocus, [category]);
   const chartSeries =
     onlyFocused &&
-    props.focusable &&
-    props.allProfiles &&
+    focusable &&
+    allProfiles &&
     arrayEveryType(
       chartData.timeline.series,
       (series): series is { data: any; index: number } => hasKey(series, "data") && hasKey(series, "index")
@@ -322,7 +342,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
       <ChartistGraph
         className="ct-double-octave"
         data={{
-          labels: props.months.map((label) => label.split(" ").join("\n")),
+          labels: months.map((label) => label.split(" ").join("\n")),
           series: chartSeries,
         }}
         type={"Bar"}
@@ -335,7 +355,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
       <ChartistGraph
         className="ct-double-octave"
         data={{
-          labels: props.months.map((label) => label.split(" ").join("\n")),
+          labels: months.map((label) => label.split(" ").join("\n")),
           series: chartSeries,
         }}
         type={"Line"}
@@ -345,10 +365,10 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
       />
     ) : null;
   const selectChips =
-    props.summary && props.breakdownData ? (
+    summary && breakdownData ? (
       <div className="timeline-chips-container">
         <ChipSet choice>
-          {[...props.breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
+          {[...breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
             <Chip
               key={obj.name}
               label={obj.name}
@@ -362,7 +382,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
       </div>
     ) : null;
   const focusButtons =
-    props.focusable && props.allProfiles ? (
+    focusable && allProfiles ? (
       <>
         {withTooltip(
           <IconButton
@@ -389,10 +409,10 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
       </>
     ) : null;
   const focusChips =
-    props.focusable && props.allProfiles ? (
+    focusable && allProfiles ? (
       <div className="timeline-chips-container focus-chips">
         <ChipSet choice>
-          {props.allProfiles.map((profile, index) => {
+          {allProfiles.map((profile, index) => {
             if (chartData.timeline.profiles.includes(profile) || chartData.timeline.profiles.length === 0) {
               return (
                 <Chip
@@ -416,13 +436,13 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
     <Card className="timeline-card full-span">
       <div className="title-container">
         <div className="text-container">
-          {props.overline ? (
+          {overline ? (
             <Typography use="overline" tag="h3">
-              {props.overline}
+              {overline}
             </Typography>
           ) : null}
           <Typography use="headline5" tag="h1">
-            {props.data.name}
+            {data.name}
           </Typography>
           <Typography use="subtitle2" tag="p">
             {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
@@ -433,23 +453,23 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
           <SegmentedButton toggle>
             {withTooltip(
               <SegmentedButtonSegment
-                icon={props.singleTheme ? "bar_chart" : "stacked_bar_chart"}
+                icon={singleTheme ? "bar_chart" : "stacked_bar_chart"}
                 selected={graphType === "bar"}
                 onClick={() => {
                   setGraphType("bar");
                 }}
               />,
-              props.singleTheme ? "Bar chart" : "Stacked bar chart"
+              singleTheme ? "Bar chart" : "Stacked bar chart"
             )}
             {withTooltip(
               <SegmentedButtonSegment
-                icon={props.singleTheme ? "show_chart" : "multiline_chart"}
+                icon={singleTheme ? "show_chart" : "multiline_chart"}
                 selected={graphType === "line"}
                 onClick={() => {
                   setGraphType("line");
                 }}
               />,
-              props.singleTheme ? "Line chart" : "Multiline chart"
+              singleTheme ? "Line chart" : "Multiline chart"
             )}
           </SegmentedButton>
         </div>
@@ -459,10 +479,10 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
           className={classNames(
             "timeline-chart-container timelines",
             {
-              single: props.singleTheme,
+              single: singleTheme,
               focused: focused.length > 0,
             },
-            typeof props.singleTheme === "string" ? props.singleTheme : "",
+            typeof singleTheme === "string" ? singleTheme : "",
             focused.map((index) => `series-index-${index}`)
           )}
         >
@@ -471,9 +491,9 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
         </div>
         {selectChips}
         {focusChips}
-        {props.note ? (
+        {note ? (
           <Typography use="caption" tag="p" className="note">
-            {props.note}
+            {note}
           </Typography>
         ) : null}
       </div>

@@ -113,6 +113,7 @@ module.exports = {
         enforceForRenamedProperties: true,
       },
     ],
+    "react/destructuring-assignment": ["error", "always"],
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "sort-imports": [

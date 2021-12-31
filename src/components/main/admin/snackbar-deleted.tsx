@@ -15,20 +15,28 @@ type SnackbarDeletedProps = {
   set: SetType;
 };
 
-export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
+export const SnackbarDeleted = ({ set: { id, ...set }, open, close }: SnackbarDeletedProps) => {
+  const closeBar = (recreated = false) => {
+    if (!recreated) {
+      const fileNameRegex = /keysets%2F(.*)\?/;
+      const regexMatch = set.image.match(fileNameRegex);
+      if (regexMatch) {
+        const [, imageName] = regexMatch;
+        deleteImages(imageName);
+      }
+    }
+    close();
+  };
   const user = useAppSelector(selectUser);
   const recreateEntry = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const {
-      set: { id, ...set },
-    } = props;
     firestore
       .collection("keysets")
       .doc(id as KeysetId)
       .set(
         {
           ...set,
-          gbLaunch: props.set.gbMonth ? props.set.gbLaunch.slice(0, 7) : props.set.gbLaunch,
+          gbLaunch: set.gbMonth ? set.gbLaunch.slice(0, 7) : set.gbLaunch,
           latestEditor: user.id,
         },
         { merge: true }
@@ -42,7 +50,7 @@ export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
         console.error("Error recreating document: ", error);
         queue.notify({ title: "Error recreating document: " + error });
       });
-    close(true);
+    closeBar(true);
   };
   const deleteImages = async (name: string) => {
     const folders = await getStorageFolders();
@@ -56,22 +64,11 @@ export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
         console.log(error);
       });
   };
-  const close = (recreated = false) => {
-    if (!recreated) {
-      const fileNameRegex = /keysets%2F(.*)\?/;
-      const regexMatch = props.set.image.match(fileNameRegex);
-      if (regexMatch) {
-        const [, imageName] = regexMatch;
-        deleteImages(imageName);
-      }
-    }
-    props.close();
-  };
   return (
     <Snackbar
-      open={props.open}
-      message={`${props.set.profile} ${props.set.colorway} has been deleted.`}
-      onClose={() => close()}
+      open={open}
+      message={`${set.profile} ${set.colorway} has been deleted.`}
+      onClose={() => closeBar()}
       action={<SnackbarAction label="Undo" onClick={recreateEntry} />}
       dismissesOnAction={false}
     />

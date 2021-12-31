@@ -61,7 +61,7 @@ type ContentSettingsProps = {
   openNav: () => void;
 };
 
-export const ContentSettings = (props: ContentSettingsProps) => {
+export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
   const dispatch = useAppDispatch();
   const {
     applyTheme,
@@ -327,7 +327,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
       <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNavSetting })}>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
+            <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
             <TopAppBarTitle>{pageTitle.settings}</TopAppBarTitle>
           </TopAppBarSection>
         </TopAppBarRow>

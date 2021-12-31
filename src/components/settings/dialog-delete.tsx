@@ -8,7 +8,7 @@ type DialogDeleteProps = {
   signOut: () => void;
 };
 
-export const DialogDelete = (props: DialogDeleteProps) => {
+export const DialogDelete = ({ open, close, signOut }: DialogDeleteProps) => {
   const deleteAccount = () => {
     const deleteFn = firebase.functions().httpsCallable("deleteOwnUser");
     deleteFn()
@@ -28,9 +28,9 @@ export const DialogDelete = (props: DialogDeleteProps) => {
             `Failed to delete account: ${error}. Please contact keycaplendar@gmail.com if this issue reoccurs.`
           );
         } else {
-          props.close();
+          close();
           queue.notify({ title: "Account deleted." });
-          props.signOut();
+          signOut();
         }
       })
       .catch((error) => {
@@ -41,14 +41,14 @@ export const DialogDelete = (props: DialogDeleteProps) => {
       });
   };
   return (
-    <Dialog open={props.open} onClose={props.close}>
+    <Dialog open={open} onClose={close}>
       <DialogTitle>Delete account</DialogTitle>
       <DialogContent>
         Are you sure you want to delete your account and all associated information? You will lose all information
         stored in the database, such as presets and favorites. This cannot be undone.
       </DialogContent>
       <DialogActions>
-        <DialogButton onClick={props.close}>Cancel</DialogButton>
+        <DialogButton onClick={close}>Cancel</DialogButton>
         <DialogButton className="delete" onClick={deleteAccount}>
           Delete
         </DialogButton>

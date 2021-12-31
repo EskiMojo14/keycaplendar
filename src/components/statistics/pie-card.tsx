@@ -30,25 +30,25 @@ type StatusCardProps = {
   note?: ReactNode;
 };
 
-export const StatusCard = (props: StatusCardProps) => {
+export const StatusCard = ({ data, breakdownData, summary, overline, note }: StatusCardProps) => {
   const device = useAppSelector(selectDevice);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const chartData =
-    selectedIndex >= 0 && props.summary && props.breakdownData
-      ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
-      : props.data;
+    selectedIndex >= 0 && summary && breakdownData
+      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
+      : data;
   const chartOptions: IPieChartOptions = {
     donut: true,
     donutWidth: "50%",
     showLabel: false,
     plugins: [chartistTooltip()],
   };
-  const sideways = props.summary && device === "desktop";
+  const sideways = summary && device === "desktop";
   const selectChips =
-    props.summary && props.breakdownData ? (
+    summary && breakdownData ? (
       <div className="pie-chips-container">
         <ChipSet choice>
-          {[...props.breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
+          {[...breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
             <Chip
               key={obj.name}
               label={obj.name}
@@ -64,18 +64,18 @@ export const StatusCard = (props: StatusCardProps) => {
   return (
     <Card
       className={classNames("pie-card", {
-        "full-span": props.summary,
+        "full-span": summary,
         sideways,
       })}
     >
       <div className="title-container">
-        {props.overline ? (
+        {overline ? (
           <Typography use="overline" tag="h3">
-            {props.overline}
+            {overline}
           </Typography>
         ) : null}
         <Typography use="headline5" tag="h1">
-          {props.data.name}
+          {data.name}
         </Typography>
         <Typography use="subtitle2" tag="p">
           {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
@@ -138,9 +138,9 @@ export const StatusCard = (props: StatusCardProps) => {
         </div>
       </div>
       {selectChips}
-      {props.note ? (
+      {note ? (
         <Typography use="caption" tag="p" className="note">
-          {props.note}
+          {note}
         </Typography>
       ) : null}
     </Card>

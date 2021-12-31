@@ -34,23 +34,23 @@ type AuditEntryProps = {
   timestamp: DateTime;
 };
 
-export const AuditEntry = (props: AuditEntryProps) => {
+export const AuditEntry = ({ action, openDeleteDialog, timestamp }: AuditEntryProps) => {
   const documentRow = (
     <DataTableRow>
       <DataTableCell>documentId</DataTableCell>
-      <DataTableCell colSpan={props.action.action === "created" ? 1 : 2}>{props.action.documentId}</DataTableCell>
+      <DataTableCell colSpan={action.action === "created" ? 1 : 2}>{action.documentId}</DataTableCell>
     </DataTableRow>
   );
   const changelogRow = (
     <DataTableRow>
       <DataTableCell>changelogId</DataTableCell>
-      <DataTableCell colSpan={props.action.action === "created" ? 1 : 2}>{props.action.changelogId}</DataTableCell>
+      <DataTableCell colSpan={action.action === "created" ? 1 : 2}>{action.changelogId}</DataTableCell>
     </DataTableRow>
   );
-  const emailRow = props.action.user.email ? (
+  const emailRow = action.user.email ? (
     <DataTableRow>
       <DataTableCell>userEmail</DataTableCell>
-      <DataTableCell colSpan={props.action.action === "created" ? 1 : 2}>{props.action.user.email}</DataTableCell>
+      <DataTableCell colSpan={action.action === "created" ? 1 : 2}>{action.user.email}</DataTableCell>
     </DataTableRow>
   ) : null;
   const arrayProps: string[] = ["designer"];
@@ -65,18 +65,16 @@ export const AuditEntry = (props: AuditEntryProps) => {
     <CollapsibleList
       handle={
         <ListItem>
-          <ListItemGraphic icon={icons[props.action.action]} />
+          <ListItemGraphic icon={icons[action.action]} />
           <ListItemText>
-            <div className="overline">{props.action.action}</div>
+            <div className="overline">{action.action}</div>
             <ListItemPrimaryText>
-              {props.action.action !== "deleted"
-                ? `${props.action.after.profile} ${props.action.after.colorway}`
-                : `${props.action.before.profile} ${props.action.before.colorway}`}
+              {action.action !== "deleted"
+                ? `${action.after.profile} ${action.after.colorway}`
+                : `${action.before.profile} ${action.before.colorway}`}
             </ListItemPrimaryText>
             <ListItemSecondaryText>
-              {`${props.action.user.nickname}, ${props.timestamp.toFormat(
-                `d'${ordinal(props.timestamp.day)}' MMM yyyy HH:mm`
-              )}`}
+              {`${action.user.nickname}, ${timestamp.toFormat(`d'${ordinal(timestamp.day)}' MMM yyyy HH:mm`)}`}
             </ListItemSecondaryText>
           </ListItemText>
           <ListItemMeta icon="expand_more" />
@@ -88,26 +86,26 @@ export const AuditEntry = (props: AuditEntryProps) => {
           <DataTableHead>
             <DataTableRow>
               <DataTableHeadCell>Property</DataTableHeadCell>
-              <DataTableHeadCell>{props.action.action === "updated" ? "Before" : "Data"}</DataTableHeadCell>
-              {props.action.action === "updated" ? <DataTableHeadCell>After</DataTableHeadCell> : null}
+              <DataTableHeadCell>{action.action === "updated" ? "Before" : "Data"}</DataTableHeadCell>
+              {action.action === "updated" ? <DataTableHeadCell>After</DataTableHeadCell> : null}
             </DataTableRow>
           </DataTableHead>
           <DataTableBody>
             {auditProperties.map((property, index) => {
               const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
               if (
-                props.action.action === "updated" &&
-                hasKey(props.action.before, property) &&
-                hasKey(props.action.after, property) &&
+                action.action === "updated" &&
+                hasKey(action.before, property) &&
+                hasKey(action.after, property) &&
                 ((property !== "profile" && property !== "colorway") ||
                   ((property === "profile" || property === "colorway") &&
-                    !isEqual(props.action.before[property], props.action.after[property])))
+                    !isEqual(action.before[property], action.after[property])))
               ) {
-                const beforeProp: Partial<KeysetDoc>[keyof KeysetDoc] = props.action.before[property]
-                  ? props.action.before[property]
+                const beforeProp: Partial<KeysetDoc>[keyof KeysetDoc] = action.before[property]
+                  ? action.before[property]
                   : "";
-                const afterProp: Partial<KeysetDoc>[keyof KeysetDoc] = props.action.after[property]
-                  ? props.action.after[property]
+                const afterProp: Partial<KeysetDoc>[keyof KeysetDoc] = action.after[property]
+                  ? action.after[property]
                   : "";
                 if (
                   !arrayProps.includes(property) &&
@@ -139,10 +137,10 @@ export const AuditEntry = (props: AuditEntryProps) => {
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (property === "vendors" && props.action.before.vendors && props.action.after.vendors) {
-                  const beforeVendors = alphabeticalSortProp([...props.action.before.vendors], "region");
+                } else if (property === "vendors" && action.before.vendors && action.after.vendors) {
+                  const beforeVendors = alphabeticalSortProp([...action.before.vendors], "region");
 
-                  const afterVendors = alphabeticalSortProp([...props.action.after.vendors], "region");
+                  const afterVendors = alphabeticalSortProp([...action.after.vendors], "region");
 
                   const moreVendors = afterVendors.length >= beforeVendors.length ? afterVendors : beforeVendors;
                   return moreVendors.map((_vendor, index) => {
@@ -321,8 +319,8 @@ export const AuditEntry = (props: AuditEntryProps) => {
                   );
                 }
                 return null;
-              } else if (props.action.action === "created" || props.action.action === "deleted") {
-                const docData = props.action.action === "created" ? props.action.after : props.action.before;
+              } else if (action.action === "created" || action.action === "deleted") {
+                const docData = action.action === "created" ? action.after : action.before;
                 const prop = hasKey(docData, property) && docData[property] ? docData[property] : "";
                 if (
                   !arrayProps.includes(property) &&
@@ -334,7 +332,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
-                      <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
+                      <DataTableCell className={action.action === "created" ? "after" : "before"}>
                         <span className="highlight">{prop}</span>
                       </DataTableCell>
                     </DataTableRow>
@@ -343,7 +341,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
-                      <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
+                      <DataTableCell className={action.action === "created" ? "after" : "before"}>
                         <span className="highlight">{prop.join(", ")}</span>
                       </DataTableCell>
                     </DataTableRow>
@@ -353,7 +351,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                   return docData.vendors.map((vendor, index) => (
                     <DataTableRow key={vendor.name + index}>
                       <DataTableCell>{property + index}</DataTableCell>
-                      <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
+                      <DataTableCell className={action.action === "created" ? "after" : "before"}>
                         <div>
                           <span className="highlight">ID: {vendor.id}</span>
                         </div>
@@ -385,7 +383,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
-                      <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
+                      <DataTableCell className={action.action === "created" ? "after" : "before"}>
                         <span className="highlight">
                           <a href={prop} target="_blank" rel="noopener noreferrer">
                             {prop.match(domain)}
@@ -398,7 +396,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
-                      <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
+                      <DataTableCell className={action.action === "created" ? "after" : "before"}>
                         <Checkbox checked={prop} disabled />
                       </DataTableCell>
                     </DataTableRow>
@@ -408,7 +406,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
-                      <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
+                      <DataTableCell className={action.action === "created" ? "after" : "before"}>
                         <div>
                           <span className="highlight">
                             Image:{" "}
@@ -440,7 +438,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
           label="delete"
           className="delete"
           onClick={() => {
-            props.openDeleteDialog(props.action);
+            openDeleteDialog(action);
           }}
         />
       </div>
