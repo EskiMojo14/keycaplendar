@@ -6,25 +6,29 @@ import "./full-screen-dialog.scss";
 
 const bemClasses = new BEMHelper("full-screen-dialog");
 
-type DivProps = HTMLAttributes<HTMLDivElement>;
-
-type FullScreenDialogProps = DivProps & {
+type FullScreenDialogProps = HTMLAttributes<HTMLDivElement> & {
   open: boolean;
   onClose: () => void;
 };
 
-export const FullScreenDialog = (props: FullScreenDialogProps) => {
-  const [open, setOpen] = useState(!!props.open);
+export const FullScreenDialog = ({
+  children,
+  className,
+  onClose,
+  open: propsOpen,
+  ...filteredProps
+}: FullScreenDialogProps) => {
+  const [open, setOpen] = useState(!!propsOpen);
   const [opening, setOpening] = useState(false);
   const [animate, setAnimate] = useState(false);
   const [closing, setClosing] = useState(false);
   useEffect(() => {
-    if (props.open) {
+    if (propsOpen) {
       openDialog();
     } else {
       closeDialog();
     }
-  }, [props.open]);
+  }, [propsOpen]);
   const openDialog = () => {
     setOpen(true);
     setAnimate(true);
@@ -39,15 +43,11 @@ export const FullScreenDialog = (props: FullScreenDialogProps) => {
   const closeDialog = () => {
     setClosing(true);
     setTimeout(() => {
-      if (props.onClose) {
-        props.onClose();
-      }
+      onClose?.();
       setOpen(false);
       setClosing(false);
     }, 400);
   };
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { open: propsOpen, onClose, ...filteredProps } = props;
   return (
     <>
       <div
@@ -59,31 +59,23 @@ export const FullScreenDialog = (props: FullScreenDialogProps) => {
             closing,
             animate,
           },
-          extra: props.className,
+          extra: className,
         })}
       >
-        {props.children}
+        {children}
       </div>
       <div className="full-screen-dialog-scrim"></div>
     </>
   );
 };
 
-export const FullScreenDialogAppBar = (props: DivProps) => {
-  return (
-    <>
-      <TopAppBar {...props} className={bemClasses({ element: "app-bar", extra: props.className })}>
-        {props.children}
-      </TopAppBar>
-      <TopAppBarFixedAdjust />
-    </>
-  );
-};
+export const FullScreenDialogAppBar = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
+  <>
+    <TopAppBar {...props} className={bemClasses({ element: "app-bar", extra: className })} />
+    <TopAppBarFixedAdjust />
+  </>
+);
 
-export const FullScreenDialogContent = (props: DivProps) => {
-  return (
-    <div {...props} className={bemClasses({ element: "content", extra: props.className })}>
-      {props.children}
-    </div>
-  );
-};
+export const FullScreenDialogContent = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
+  <div {...props} className={bemClasses({ element: "content", extra: className })} />
+);

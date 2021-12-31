@@ -63,18 +63,16 @@ export const EntriesList = (props: EntriesDrawerProps) => {
       <div className="filter-chips">
         <ChipSet id="filter-chip-set" choice>
           <div className="padding-fix" />
-          {allTags.map((value) => {
-            return (
-              <Chip
-                label={value}
-                key={value}
-                selected={value === filteredTag}
-                onClick={() => {
-                  setFilter(value);
-                }}
-              />
-            );
-          })}
+          {allTags.map((value) => (
+            <Chip
+              label={value}
+              key={value}
+              selected={value === filteredTag}
+              onClick={() => {
+                setFilter(value);
+              }}
+            />
+          ))}
         </ChipSet>
       </div>
     </div>
@@ -114,25 +112,21 @@ export const EntriesList = (props: EntriesDrawerProps) => {
                     )}
                     {formattedVisibility[visibility]}
                   </ListGroupSubheader>
-                  {filteredEntries.map((entry) => {
-                    return (
-                      <ListItem
-                        key={entry.id}
-                        onClick={() => {
-                          props.openEntry(entry);
-                        }}
-                        selected={props.detailEntry.id === entry.id}
-                      >
-                        <ListItemGraphic icon={iconObject(<Article />)} />
-                        <ListItemText>
-                          <ListItemPrimaryText>{entry.title}</ListItemPrimaryText>
-                          {entry.description ? (
-                            <ListItemSecondaryText>{entry.description}</ListItemSecondaryText>
-                          ) : null}
-                        </ListItemText>
-                      </ListItem>
-                    );
-                  })}
+                  {filteredEntries.map((entry) => (
+                    <ListItem
+                      key={entry.id}
+                      onClick={() => {
+                        props.openEntry(entry);
+                      }}
+                      selected={props.detailEntry.id === entry.id}
+                    >
+                      <ListItemGraphic icon={iconObject(<Article />)} />
+                      <ListItemText>
+                        <ListItemPrimaryText>{entry.title}</ListItemPrimaryText>
+                        {entry.description ? <ListItemSecondaryText>{entry.description}</ListItemSecondaryText> : null}
+                      </ListItemText>
+                    </ListItem>
+                  ))}
                 </ListGroup>
                 <ListDivider />
               </Fragment>

@@ -153,13 +153,11 @@ export const ModalCreate = (props: ModalCreateProps) => {
                 outlined
                 enhanced
                 label="Visibility"
-                options={(["all", ...userRoles] as const).map((role) => {
-                  return {
-                    value: role,
-                    label: formattedVisibility[role],
-                    key: role,
-                  };
-                })}
+                options={(["all", ...userRoles] as const).map((role) => ({
+                  value: role,
+                  label: formattedVisibility[role],
+                  key: role,
+                }))}
                 icon={visibilityIcons[visibility]}
                 value={visibility}
                 onChange={selectVisibility}
@@ -361,13 +359,11 @@ export const ModalEdit = (props: ModalEditProps) => {
                 outlined
                 enhanced
                 label="Visibility"
-                options={(["all", ...userRoles] as const).map((role) => {
-                  return {
-                    value: role,
-                    label: formattedVisibility[role],
-                    key: role,
-                  };
-                })}
+                options={(["all", ...userRoles] as const).map((role) => ({
+                  value: role,
+                  label: formattedVisibility[role],
+                  key: role,
+                }))}
                 icon={visibilityIcons[visibility]}
                 value={visibility}
                 onChange={selectVisibility}

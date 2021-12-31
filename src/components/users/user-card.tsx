@@ -206,23 +206,20 @@ export const UserCard = (props: UserCardProps) => {
       <CardActions>
         <CardActionButtons>
           <SegmentedButton toggle>
-            {roles.map((role) => {
-              return (
-                <SegmentedButtonSegment
-                  key={role}
-                  label={role}
-                  icon={device === "desktop" && hasKey(userRoleIcons, role) ? userRoleIcons[role] : null}
-                  selected={hasKey(user, role) && !!user[role]}
-                  onClick={() => {
-                    toggleRole(role);
-                  }}
-                  disabled={
-                    (user.email === currentUser.email || user.email === "ben.j.durrant@gmail.com") &&
-                    role !== "designer"
-                  }
-                />
-              );
-            })}
+            {roles.map((role) => (
+              <SegmentedButtonSegment
+                key={role}
+                label={role}
+                icon={device === "desktop" && hasKey(userRoleIcons, role) ? userRoleIcons[role] : null}
+                selected={hasKey(user, role) && !!user[role]}
+                onClick={() => {
+                  toggleRole(role);
+                }}
+                disabled={
+                  (user.email === currentUser.email || user.email === "ben.j.durrant@gmail.com") && role !== "designer"
+                }
+              />
+            ))}
           </SegmentedButton>
         </CardActionButtons>
         <CardActionIcons>{saveButton}</CardActionIcons>

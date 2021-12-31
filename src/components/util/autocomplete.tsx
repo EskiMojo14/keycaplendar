@@ -21,9 +21,7 @@ export const Autocomplete = (props: AutocompleteProps) => {
   const splitQuery = query.split(", ");
   const { [splitQuery.length - 1]: lastItem } = splitQuery;
   const useQuery = listSplit ? lastItem : query;
-  const matchingItems = array.filter((item) => {
-    return item.toLowerCase().includes(useQuery.toLowerCase());
-  });
+  const matchingItems = array.filter((item) => item.toLowerCase().includes(useQuery.toLowerCase()));
   const firstFour = matchingItems.slice(0, 4);
   return (
     <Menu
@@ -41,32 +39,28 @@ export const Autocomplete = (props: AutocompleteProps) => {
     >
       {useQuery.length >= minChars
         ? open
-          ? matchingItems.map((item) => {
-              return (
-                <MenuItem key={item}>
-                  {useQuery.length > 0
-                    ? reactStringReplace(item, useQuery, (match, i) => (
-                        <span key={match + i} className="highlight">
-                          {match}
-                        </span>
-                      ))
-                    : item}
-                </MenuItem>
-              );
-            })
-          : firstFour.map((item) => {
-              return (
-                <MenuItem key={item}>
-                  {useQuery.length > 0
-                    ? reactStringReplace(item, useQuery, (match, i) => (
-                        <span key={match + i} className="highlight">
-                          {match}
-                        </span>
-                      ))
-                    : item}
-                </MenuItem>
-              );
-            })
+          ? matchingItems.map((item) => (
+              <MenuItem key={item}>
+                {useQuery.length > 0
+                  ? reactStringReplace(item, useQuery, (match, i) => (
+                      <span key={match + i} className="highlight">
+                        {match}
+                      </span>
+                    ))
+                  : item}
+              </MenuItem>
+            ))
+          : firstFour.map((item) => (
+              <MenuItem key={item}>
+                {useQuery.length > 0
+                  ? reactStringReplace(item, useQuery, (match, i) => (
+                      <span key={match + i} className="highlight">
+                        {match}
+                      </span>
+                    ))
+                  : item}
+              </MenuItem>
+            ))
         : null}
     </Menu>
   );
@@ -79,26 +73,22 @@ export const AutocompleteMobile = (props: AutocompleteProps) => {
   const splitQuery = query.split(", ");
   const { [splitQuery.length - 1]: lastItem } = splitQuery;
   const useQuery = listSplit ? lastItem : query;
-  const matchingItems = array.filter((item) => {
-    return item.toLowerCase().includes(useQuery.toLowerCase());
-  });
+  const matchingItems = array.filter((item) => item.toLowerCase().includes(useQuery.toLowerCase()));
   return (
     <div {...filteredProps} className={bemClasses({ modifiers: { open }, extra: className })}>
       <List>
         {useQuery.length >= minChars
-          ? matchingItems.map((item) => {
-              return (
-                <ListItem key={item} onClick={() => select(prop, item)}>
-                  {useQuery.length > 0
-                    ? reactStringReplace(item, useQuery, (match, i) => (
-                        <span key={match + i} className="highlight">
-                          {match}
-                        </span>
-                      ))
-                    : item}
-                </ListItem>
-              );
-            })
+          ? matchingItems.map((item) => (
+              <ListItem key={item} onClick={() => select(prop, item)}>
+                {useQuery.length > 0
+                  ? reactStringReplace(item, useQuery, (match, i) => (
+                      <span key={match + i} className="highlight">
+                        {match}
+                      </span>
+                    ))
+                  : item}
+              </ListItem>
+            ))
           : null}
       </List>
     </div>

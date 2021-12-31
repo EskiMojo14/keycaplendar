@@ -54,54 +54,50 @@ const customPoint = (data: any) => {
 
 const listener = { draw: (e: any) => customPoint(e) };
 
-const chartOptions = (monthLabel: string): IBarChartOptions & ILineChartOptions => {
-  return {
-    showArea: true,
-    stackBars: true,
-    low: 0,
-    axisY: {
-      onlyInteger: true,
-    },
-    chartPadding: {
-      top: 16,
-      right: 0,
-      bottom: 32,
-      left: 16,
-    },
-    plugins: [
-      chartistPluginAxisTitle({
-        axisX: {
-          axisTitle: monthLabel,
-          axisClass: "ct-axis-title",
-          offset: {
-            x: 0,
-            y: 48,
-          },
-          textAnchor: "middle",
+const chartOptions = (monthLabel: string): IBarChartOptions & ILineChartOptions => ({
+  showArea: true,
+  stackBars: true,
+  low: 0,
+  axisY: {
+    onlyInteger: true,
+  },
+  chartPadding: {
+    top: 16,
+    right: 0,
+    bottom: 32,
+    left: 16,
+  },
+  plugins: [
+    chartistPluginAxisTitle({
+      axisX: {
+        axisTitle: monthLabel,
+        axisClass: "ct-axis-title",
+        offset: {
+          x: 0,
+          y: 48,
         },
-        axisY: {
-          axisTitle: "Count",
-          axisClass: "ct-axis-title",
-          offset: {
-            x: 0,
-            y: 24,
-          },
-          flipTitle: true,
+        textAnchor: "middle",
+      },
+      axisY: {
+        axisTitle: "Count",
+        axisClass: "ct-axis-title",
+        offset: {
+          x: 0,
+          y: 24,
         },
-      }),
-      chartistTooltip({ pointClass: "ct-stroked-point" }),
-    ],
-  };
-};
+        flipTitle: true,
+      },
+    }),
+    chartistTooltip({ pointClass: "ct-stroked-point" }),
+  ],
+});
 
 const responsiveOptions: IResponsiveOptionTuple<ILineChartOptions>[] = [
   [
     "(min-width: 1240px) and (max-width: 1600px)",
     {
       axisX: {
-        labelInterpolationFnc: (value: any, index: number) => {
-          return index % 2 === 0 ? value : null;
-        },
+        labelInterpolationFnc: (value: any, index: number) => (index % 2 === 0 ? value : null),
       },
     },
   ],
@@ -109,9 +105,7 @@ const responsiveOptions: IResponsiveOptionTuple<ILineChartOptions>[] = [
     "(max-width: 1239px)",
     {
       axisX: {
-        labelInterpolationFnc: (value: any, index: number) => {
-          return index % 3 === 0 ? value : null;
-        },
+        labelInterpolationFnc: (value: any, index: number) => (index % 3 === 0 ? value : null),
       },
     },
   ],

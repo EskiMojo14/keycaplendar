@@ -279,9 +279,9 @@ export const ContentUsers = (props: ContentUsersProps) => {
                         </DataTableRow>
                       </DataTableHead>
                       <DataTableBody>
-                        {paginatedUsers.map((user) => {
-                          return <UserRow user={user} delete={openDeleteDialog} getUsers={getUsers} key={user.email} />;
-                        })}
+                        {paginatedUsers.map((user) => (
+                          <UserRow user={user} delete={openDeleteDialog} getUsers={getUsers} key={user.email} />
+                        ))}
                       </DataTableBody>
                     </DataTableContent>
                     <DataTablePagination>
@@ -350,9 +350,9 @@ export const ContentUsers = (props: ContentUsersProps) => {
                 </Card>
               ) : (
                 <div className="user-container">
-                  {sortedUsers.map((user) => {
-                    return <UserCard user={user} key={user.email} delete={openDeleteDialog} getUsers={getUsers} />;
-                  })}
+                  {sortedUsers.map((user) => (
+                    <UserCard user={user} key={user.email} delete={openDeleteDialog} getUsers={getUsers} />
+                  ))}
                 </div>
               )}
             </div>

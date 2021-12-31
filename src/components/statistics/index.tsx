@@ -65,8 +65,8 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
 
   const tooltipAlign = bottomNav ? "top" : "bottom";
 
-  const categoryButtons = (tab: keyof StatisticsType) => {
-    return device === "desktop" ? (
+  const categoryButtons = (tab: keyof StatisticsType) =>
+    device === "desktop" ? (
       <SegmentedButton toggle>
         <SegmentedButtonSegment
           selected={settings[tab] === "profile"}
@@ -102,7 +102,6 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
         { align: tooltipAlign }
       )
     );
-  };
 
   const genericButtons = (
     <>
@@ -344,54 +343,50 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       ),
       timelines: (
         <div className="stats-tab stats-grid timelines" key={key}>
-          {statisticsData.timelines[settings.timelinesCat].breakdown[settings.timelinesGroup].map((data) => {
-            return (
-              <TimelinesCard
-                key={data.name}
-                data={data}
-                focusable={!(settings.timelinesGroup === "profile")}
-                category={settings.timelinesCat}
-                singleTheme={settings.timelinesGroup === "profile" ? "primary" : undefined}
-                allProfiles={statisticsData.timelines[settings.timelinesCat].allProfiles}
-                months={statisticsData.timelines[settings.timelinesCat].months}
-              />
-            );
-          })}
+          {statisticsData.timelines[settings.timelinesCat].breakdown[settings.timelinesGroup].map((data) => (
+            <TimelinesCard
+              key={data.name}
+              data={data}
+              focusable={!(settings.timelinesGroup === "profile")}
+              category={settings.timelinesCat}
+              singleTheme={settings.timelinesGroup === "profile" ? "primary" : undefined}
+              allProfiles={statisticsData.timelines[settings.timelinesCat].allProfiles}
+              months={statisticsData.timelines[settings.timelinesCat].months}
+            />
+          ))}
         </div>
       ),
       status: (
         <div className="stats-tab stats-grid status" key={key}>
-          {statisticsData.status.breakdown[settings.status].map((data) => {
-            return <StatusCard key={data.name} data={data} />;
-          })}
+          {statisticsData.status.breakdown[settings.status].map((data) => (
+            <StatusCard key={data.name} data={data} />
+          ))}
         </div>
       ),
       shipped: (
         <div className="stats-tab stats-grid shipped" key={key}>
-          {statisticsData.shipped.breakdown[settings.shipped].map((data) => {
-            return <ShippedCard key={data.name} data={data} months={statisticsData.shipped.months} />;
-          })}
+          {statisticsData.shipped.breakdown[settings.shipped].map((data) => (
+            <ShippedCard key={data.name} data={data} months={statisticsData.shipped.months} />
+          ))}
         </div>
       ),
       duration: (
         <div className="stats-tab stats-grid duration" key={key}>
-          {statisticsData.duration[settings.durationCat].breakdown[settings.durationGroup].map((data) => {
-            return (
-              <TableCard
-                key={data.name}
-                data={data}
-                category={settings.durationCat}
-                unit={`Time ${settings.durationCat === "icDate" ? "(months)" : "(days)"}`}
-              />
-            );
-          })}
+          {statisticsData.duration[settings.durationCat].breakdown[settings.durationGroup].map((data) => (
+            <TableCard
+              key={data.name}
+              data={data}
+              category={settings.durationCat}
+              unit={`Time ${settings.durationCat === "icDate" ? "(months)" : "(days)"}`}
+            />
+          ))}
         </div>
       ),
       vendors: (
         <div className="stats-tab stats-grid vendors" key={key}>
-          {statisticsData.vendors.breakdown[settings.vendors].map((data) => {
-            return <TableCard key={data.name} data={data} unit="Vendors" />;
-          })}
+          {statisticsData.vendors.breakdown[settings.vendors].map((data) => (
+            <TableCard key={data.name} data={data} unit="Vendors" />
+          ))}
         </div>
       ),
     };

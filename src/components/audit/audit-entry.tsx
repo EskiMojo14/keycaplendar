@@ -350,39 +350,37 @@ export const AuditEntry = (props: AuditEntryProps) => {
                   );
                 } else if (property === "vendors" && docData.vendors) {
                   const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
-                  return docData.vendors.map((vendor, index) => {
-                    return (
-                      <DataTableRow key={vendor.name + index}>
-                        <DataTableCell>{property + index}</DataTableCell>
-                        <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
+                  return docData.vendors.map((vendor, index) => (
+                    <DataTableRow key={vendor.name + index}>
+                      <DataTableCell>{property + index}</DataTableCell>
+                      <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
+                        <div>
+                          <span className="highlight">ID: {vendor.id}</span>
+                        </div>
+                        <div>
+                          <span className="highlight">Name: {vendor.name}</span>
+                        </div>
+                        <div>
+                          <span className="highlight">Region: {vendor.region}</span>
+                        </div>
+                        <div>
+                          <span className="highlight">
+                            Link:{" "}
+                            {vendor.storeLink ? (
+                              <a href={vendor.storeLink} target="_blank" rel="noopener noreferrer">
+                                {vendor.storeLink.match(domain)}
+                              </a>
+                            ) : null}
+                          </span>
+                        </div>
+                        {vendor.endDate ? (
                           <div>
-                            <span className="highlight">ID: {vendor.id}</span>
+                            <span className="highlight">End date: {vendor.endDate}</span>
                           </div>
-                          <div>
-                            <span className="highlight">Name: {vendor.name}</span>
-                          </div>
-                          <div>
-                            <span className="highlight">Region: {vendor.region}</span>
-                          </div>
-                          <div>
-                            <span className="highlight">
-                              Link:{" "}
-                              {vendor.storeLink ? (
-                                <a href={vendor.storeLink} target="_blank" rel="noopener noreferrer">
-                                  {vendor.storeLink.match(domain)}
-                                </a>
-                              ) : null}
-                            </span>
-                          </div>
-                          {vendor.endDate ? (
-                            <div>
-                              <span className="highlight">End date: {vendor.endDate}</span>
-                            </div>
-                          ) : null}
-                        </DataTableCell>
-                      </DataTableRow>
-                    );
-                  });
+                        ) : null}
+                      </DataTableCell>
+                    </DataTableRow>
+                  ));
                 } else if (urlProps.includes(property) && is<string>(prop)) {
                   return (
                     <DataTableRow key={property + index}>

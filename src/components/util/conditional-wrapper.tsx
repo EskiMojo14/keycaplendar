@@ -12,9 +12,7 @@ export const ConditionalWrapper = ({
   condition: boolean;
   wrapper: (children: ReactNode) => JSX.Element;
   children: ReactNode;
-}) => {
-  return condition ? wrapper(children) : <>{children}</>;
-};
+}) => (condition ? wrapper(children) : <>{children}</>);
 
 /**
  * Takes a condition, two wrapper functions and children, and wraps children in corresponding wrapper for condition.
@@ -30,8 +28,6 @@ export const BoolWrapper = ({
   trueWrapper: (children: ReactNode) => JSX.Element;
   falseWrapper: (children: ReactNode) => JSX.Element;
   children: ReactNode;
-}) => {
-  return condition ? trueWrapper(children) : falseWrapper(children);
-};
+}) => (condition ? trueWrapper(children) : falseWrapper(children));
 
 export default ConditionalWrapper;

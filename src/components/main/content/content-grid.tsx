@@ -48,22 +48,20 @@ export const ContentGrid = ({ details, closeDetails, detailSet, edit }: ContentG
   };
   return (
     <div className="content-grid">
-      {setGroups.map((group) => {
-        return (
-          <div className="outer-container" key={group.title}>
-            <div className="subheader">
-              {loading ? (
-                <SkeletonBlock typography="caption" content={`${group.title} (${group.sets.length})`} />
-              ) : (
-                <Typography use="caption">
-                  {group.title} <b>{`(${group.sets.length})`}</b>
-                </Typography>
-              )}
-            </div>
-            {createGroup(group.sets)}
+      {setGroups.map((group) => (
+        <div className="outer-container" key={group.title}>
+          <div className="subheader">
+            {loading ? (
+              <SkeletonBlock typography="caption" content={`${group.title} (${group.sets.length})`} />
+            ) : (
+              <Typography use="caption">
+                {group.title} <b>{`(${group.sets.length})`}</b>
+              </Typography>
+            )}
           </div>
-        );
-      })}
+          {createGroup(group.sets)}
+        </div>
+      ))}
     </div>
   );
 };

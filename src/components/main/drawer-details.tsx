@@ -310,22 +310,20 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
       <div className="search-chips">
         <ChipSet id="search-chip-set" choice>
           <div className="padding-fix" />
-          {chips.map((value, index) => {
-            return (
-              <Chip
-                icon="search"
-                label={value}
-                key={value.toLowerCase() + index}
-                selected={search.toLowerCase() === value.toLowerCase()}
-                onClick={() => {
-                  setSearch(value);
-                  if (!dismissible) {
-                    props.close();
-                  }
-                }}
-              />
-            );
-          })}
+          {chips.map((value, index) => (
+            <Chip
+              icon="search"
+              label={value}
+              key={value.toLowerCase() + index}
+              selected={search.toLowerCase() === value.toLowerCase()}
+              onClick={() => {
+                setSearch(value);
+                if (!dismissible) {
+                  props.close();
+                }
+              }}
+            />
+          ))}
         </ChipSet>
       </div>
     </div>

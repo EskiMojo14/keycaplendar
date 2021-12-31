@@ -308,36 +308,34 @@ export const ContentImages = (props: ContentImagesProps) => {
                       />
                     </div>
                     <ImageList style={{ margin: -2 }} withTextProtection>
-                      {obj.array.map((image) => {
-                        return (
-                          <Ripple key={image.fullPath}>
-                            <ImageListItem className={classNames({ selected: image === detailImage })}>
-                              <div className="container">
-                                <div className="item-container" onClick={() => openDetails(image)}>
-                                  <ImageListImageAspectContainer>
-                                    <LazyLoad debounce={false} offsetVertical={480}>
-                                      <ImageListImage tag="div" style={{ backgroundImage: "url(" + image.src + ")" }} />
-                                    </LazyLoad>
-                                  </ImageListImageAspectContainer>
-                                  <ImageListSupporting>
-                                    <ImageListLabel>{image.name}</ImageListLabel>
-                                  </ImageListSupporting>
-                                </div>
-                                <div className="checkbox-container">
-                                  <div className="checkbox">
-                                    <Checkbox
-                                      checked={checkedImages.includes(image)}
-                                      onClick={() => {
-                                        toggleImageChecked(image);
-                                      }}
-                                    />
-                                  </div>
+                      {obj.array.map((image) => (
+                        <Ripple key={image.fullPath}>
+                          <ImageListItem className={classNames({ selected: image === detailImage })}>
+                            <div className="container">
+                              <div className="item-container" onClick={() => openDetails(image)}>
+                                <ImageListImageAspectContainer>
+                                  <LazyLoad debounce={false} offsetVertical={480}>
+                                    <ImageListImage tag="div" style={{ backgroundImage: "url(" + image.src + ")" }} />
+                                  </LazyLoad>
+                                </ImageListImageAspectContainer>
+                                <ImageListSupporting>
+                                  <ImageListLabel>{image.name}</ImageListLabel>
+                                </ImageListSupporting>
+                              </div>
+                              <div className="checkbox-container">
+                                <div className="checkbox">
+                                  <Checkbox
+                                    checked={checkedImages.includes(image)}
+                                    onClick={() => {
+                                      toggleImageChecked(image);
+                                    }}
+                                  />
                                 </div>
                               </div>
-                            </ImageListItem>
-                          </Ripple>
-                        );
-                      })}
+                            </div>
+                          </ImageListItem>
+                        </Ripple>
+                      ))}
                     </ImageList>
                   </div>
                 ) : null

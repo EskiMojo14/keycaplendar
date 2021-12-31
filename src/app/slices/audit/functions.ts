@@ -89,15 +89,11 @@ export const filterActions = (state = store.getState()) => {
   let filteredActions = allActions;
 
   if (filterAction !== "none") {
-    filteredActions = filteredActions.filter((action) => {
-      return action.action === filterAction;
-    });
+    filteredActions = filteredActions.filter((action) => action.action === filterAction);
   }
 
   if (filterUser !== "all") {
-    filteredActions = filteredActions.filter((action) => {
-      return action.user.nickname === filterUser;
-    });
+    filteredActions = filteredActions.filter((action) => action.user.nickname === filterUser);
   }
 
   dispatch(setFilteredActions(filteredActions));

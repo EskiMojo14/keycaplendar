@@ -78,6 +78,7 @@ module.exports = {
     "@typescript-eslint/prefer-optional-chain": "warn",
     "@typescript-eslint/prefer-reduce-type-parameter": "warn",
     "@typescript-eslint/sort-type-union-intersection-members": "warn",
+    "arrow-body-style": ["error", "as-needed"],
     "import/no-named-as-default": "off",
     "import/newline-after-import": "error",
     "import/order": [

@@ -488,17 +488,15 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
             </div>
             <div className="filter-chip-container">
               <ChipSet filter>
-                {profiles.map((profile) => {
-                  return (
-                    <Chip
-                      key={"profile-" + profile}
-                      label={profile}
-                      selected={mainWhitelist.profiles.includes(profile)}
-                      checkmark
-                      onInteraction={() => handleChange(profile, "profiles")}
-                    />
-                  );
-                })}
+                {profiles.map((profile) => (
+                  <Chip
+                    key={"profile-" + profile}
+                    label={profile}
+                    selected={mainWhitelist.profiles.includes(profile)}
+                    checkmark
+                    onInteraction={() => handleChange(profile, "profiles")}
+                  />
+                ))}
               </ChipSet>
             </div>
           </CollapsibleList>
@@ -544,17 +542,15 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
             </div>
             <div className="filter-chip-container">
               <ChipSet filter>
-                {whitelistShipped.map((prop) => {
-                  return (
-                    <Chip
-                      key={"shipped-" + prop}
-                      label={prop}
-                      selected={mainWhitelist.shipped.includes(prop)}
-                      checkmark
-                      onInteraction={() => handleChange(prop, "shipped")}
-                    />
-                  );
-                })}
+                {whitelistShipped.map((prop) => (
+                  <Chip
+                    key={"shipped-" + prop}
+                    label={prop}
+                    selected={mainWhitelist.shipped.includes(prop)}
+                    checkmark
+                    onInteraction={() => handleChange(prop, "shipped")}
+                  />
+                ))}
               </ChipSet>
             </div>
           </CollapsibleList>
@@ -600,17 +596,15 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
             </div>
             <div className="filter-chip-container">
               <ChipSet filter>
-                {regions.map((region) => {
-                  return (
-                    <Chip
-                      key={"regions-" + region}
-                      label={region}
-                      selected={mainWhitelist.regions.includes(region)}
-                      checkmark
-                      onInteraction={() => handleChange(region, "regions")}
-                    />
-                  );
-                })}
+                {regions.map((region) => (
+                  <Chip
+                    key={"regions-" + region}
+                    label={region}
+                    selected={mainWhitelist.regions.includes(region)}
+                    checkmark
+                    onInteraction={() => handleChange(region, "regions")}
+                  />
+                ))}
               </ChipSet>
             </div>
           </CollapsibleList>
@@ -673,17 +667,15 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
             </div>
             <div className="filter-chip-container">
               <ChipSet filter>
-                {vendors.map((vendor) => {
-                  return (
-                    <Chip
-                      key={"profile-" + vendor}
-                      label={vendor}
-                      selected={mainWhitelist.vendors.includes(vendor)}
-                      checkmark
-                      onInteraction={() => handleChange(vendor, "vendors")}
-                    />
-                  );
-                })}
+                {vendors.map((vendor) => (
+                  <Chip
+                    key={"profile-" + vendor}
+                    label={vendor}
+                    selected={mainWhitelist.vendors.includes(vendor)}
+                    checkmark
+                    onInteraction={() => handleChange(vendor, "vendors")}
+                  />
+                ))}
               </ChipSet>
             </div>
           </CollapsibleList>

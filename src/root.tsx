@@ -13,16 +13,14 @@ class LocalizedUtils extends LuxonUtils {
   }
 }
 
-export const Root = () => {
-  return (
-    <Provider store={store}>
-      <MuiPickersUtilsProvider utils={LocalizedUtils}>
-        <ThemeProvider>
-          <RMWCProvider tooltip={{ enterDelay: 500, align: "bottom" }}>
-            <App />
-          </RMWCProvider>
-        </ThemeProvider>
-      </MuiPickersUtilsProvider>
-    </Provider>
-  );
-};
+export const Root = () => (
+  <Provider store={store}>
+    <MuiPickersUtilsProvider utils={LocalizedUtils}>
+      <ThemeProvider>
+        <RMWCProvider tooltip={{ enterDelay: 500, align: "bottom" }}>
+          <App />
+        </RMWCProvider>
+      </ThemeProvider>
+    </MuiPickersUtilsProvider>
+  </Provider>
+);

@@ -23,13 +23,11 @@ import type { Page, ThemeMap } from "./types";
  * @returns Object with `strategy` set to `"component"` and `icon` set to the value of `jsx`.
  */
 
-const iconObject = (jsx: ReactNode, config?: Omit<IconOptions, "icon">): IconPropT => {
-  return {
-    strategy: "component",
-    icon: jsx,
-    ...config,
-  };
-};
+const iconObject = (jsx: ReactNode, config?: Omit<IconOptions, "icon">): IconPropT => ({
+  strategy: "component",
+  icon: jsx,
+  ...config,
+});
 
 /** Character replacements to be used in `replaceFunction`. */
 
