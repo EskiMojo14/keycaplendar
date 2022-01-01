@@ -12,32 +12,42 @@ import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { withTooltip } from "@c/util/hocs";
 import { NivoThemeContext } from "@c/util/theme-provider";
 import { graphColors, themeLists } from "@s/common/constants";
-import { selectChartSettings, setStatisticsCalendarChartSetting } from "@s/statistics";
+import {
+  selectChartSettings,
+  setStatisticsCalendarChartSetting,
+} from "@s/statistics";
 import type { CalendarDataObject, Categories } from "@s/statistics/types";
-import { alphabeticalSortPropCurried, iconObject, pluralise } from "@s/util/functions";
+import {
+  alphabeticalSortPropCurried,
+  iconObject,
+  pluralise,
+} from "@s/util/functions";
 import { Palette } from "@i";
 import "./calendar-card.scss";
 
 const { heatmap } = graphColors;
 
-type CalendarCardProps = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
+type CalendarCardProps = DetailedHTMLProps<
+  HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+> & {
   data: CalendarDataObject;
-  start: string;
   end: string;
+  start: string;
   unit: string;
-  theme?: keyof typeof themeLists;
-  overline?: ReactNode;
   note?: ReactNode;
+  overline?: ReactNode;
+  theme?: keyof typeof themeLists;
 };
 
 export const CalendarCard = ({
   data,
-  start,
   end,
-  unit,
-  theme = "primary",
-  overline,
   note,
+  overline,
+  start,
+  theme = "primary",
+  unit,
   ...props
 }: CalendarCardProps) => {
   const dispatch = useAppDispatch();
@@ -53,8 +63,8 @@ export const CalendarCard = ({
   const toggleColour = () => {
     dispatch(
       setStatisticsCalendarChartSetting({
-        tab: "calendar",
         key: "palette",
+        tab: "calendar",
         value: palette === "gradient" ? "heatmap" : "gradient",
       })
     );
@@ -65,45 +75,53 @@ export const CalendarCard = ({
       <div className="title-container">
         <div className="text-container">
           {overline ? (
-            <Typography use="overline" tag="h3">
+            <Typography tag="h3" use="overline">
               {overline}
             </Typography>
           ) : null}
-          <Typography use="headline5" tag="h1">
+          <Typography tag="h1" use="headline5">
             {data.name}
           </Typography>
-          <Typography use="subtitle2" tag="p">
+          <Typography tag="p" use="subtitle2">
             {pluralise`${data.total} ${[data.total, "set"]}`}
           </Typography>
         </div>
         <div className="button-container">
-          {withTooltip(<IconButton icon={iconObject(<Palette />)} onClick={toggleColour} />, "Toggle palette")}
+          {withTooltip(
+            <IconButton
+              icon={iconObject(<Palette />)}
+              onClick={toggleColour}
+            />,
+            "Toggle palette"
+          )}
         </div>
       </div>
       <div className="content-container">
         <div className="chart-container">
           <ResponsiveCalendar
-            data={data.data}
-            from={start}
-            to={end}
-            theme={nivoTheme}
             colors={palette === "heatmap" ? heatmap : themeLists[theme]}
-            emptyColor="var(--theme-divider)"
+            data={data.data}
             dayBorderWidth={0}
-            monthBorderWidth={0}
             daySpacing={2}
+            emptyColor="var(--theme-divider)"
+            from={start}
+            margin={{ bottom: 16, left: 16, right: 16, top: 16 }}
+            monthBorderWidth={0}
             monthSpacing={6}
-            margin={{ top: 16, right: 16, bottom: 16, left: 16 }}
+            theme={nivoTheme}
+            to={end}
             tooltip={({ day, value }) => (
               <BasicTooltip
-                id={DateTime.fromISO(day).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
+                id={DateTime.fromISO(day).toLocaleString(
+                  DateTime.DATE_MED_WITH_WEEKDAY
+                )}
                 value={pluralise`${value} ${[parseInt(value), unit]}`}
               />
             )}
           />
         </div>
         {note ? (
-          <Typography use="caption" tag="p" className="note">
+          <Typography className="note" tag="p" use="caption">
             {note}
           </Typography>
         ) : null}
@@ -113,20 +131,20 @@ export const CalendarCard = ({
 };
 
 interface CalendarSummaryCardProps extends CalendarCardProps {
-  category: Categories;
   breakdownData: CalendarDataObject[];
+  category: Categories;
 }
 
 export const CalendarSummaryCard = ({
-  data,
-  category,
   breakdownData,
-  start,
+  category,
+  data,
   end,
-  unit,
-  theme = "primary",
-  overline,
   note,
+  overline,
+  start,
+  theme = "primary",
+  unit,
   ...props
 }: CalendarSummaryCardProps) => {
   const dispatch = useAppDispatch();
@@ -142,8 +160,8 @@ export const CalendarSummaryCard = ({
   const toggleColour = () => {
     dispatch(
       setStatisticsCalendarChartSetting({
-        tab: "calendar",
         key: "palette",
+        tab: "calendar",
         value: palette === "gradient" ? "heatmap" : "gradient",
       })
     );
@@ -153,21 +171,25 @@ export const CalendarSummaryCard = ({
   useEffect(() => setSelectedIndex(-1), [category]);
   const chartData =
     selectedIndex >= 0 && breakdownData
-      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
+      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[
+          selectedIndex
+        ]
       : data;
   const selectChips = breakdownData ? (
     <div className="calendar-chips-container">
       <ChipSet choice>
-        {[...breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
-          <Chip
-            key={obj.name}
-            label={obj.name}
-            selected={index === selectedIndex}
-            onInteraction={() => {
-              setSelectedIndex(index === selectedIndex ? -1 : index);
-            }}
-          />
-        ))}
+        {[...breakdownData]
+          .sort(alphabeticalSortPropCurried("name"))
+          .map((obj, index) => (
+            <Chip
+              key={obj.name}
+              label={obj.name}
+              onInteraction={() => {
+                setSelectedIndex(index === selectedIndex ? -1 : index);
+              }}
+              selected={index === selectedIndex}
+            />
+          ))}
       </ChipSet>
     </div>
   ) : null;
@@ -176,38 +198,46 @@ export const CalendarSummaryCard = ({
       <div className="title-container">
         <div className="text-container">
           {overline ? (
-            <Typography use="overline" tag="h3">
+            <Typography tag="h3" use="overline">
               {overline}
             </Typography>
           ) : null}
-          <Typography use="headline5" tag="h1">
+          <Typography tag="h1" use="headline5">
             {data.name}
           </Typography>
-          <Typography use="subtitle2" tag="p">
+          <Typography tag="p" use="subtitle2">
             {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
           </Typography>
         </div>
         <div className="button-container">
-          {withTooltip(<IconButton icon={iconObject(<Palette />)} onClick={toggleColour} />, "Toggle palette")}
+          {withTooltip(
+            <IconButton
+              icon={iconObject(<Palette />)}
+              onClick={toggleColour}
+            />,
+            "Toggle palette"
+          )}
         </div>
       </div>
       <div className="content-container">
         <div className="chart-container">
           <ResponsiveCalendar
-            data={chartData.data}
-            from={start}
-            to={end}
-            theme={nivoTheme}
             colors={palette === "heatmap" ? heatmap : themeLists[theme]}
-            emptyColor="var(--theme-divider)"
+            data={chartData.data}
             dayBorderWidth={0}
-            monthBorderWidth={0}
             daySpacing={2}
+            emptyColor="var(--theme-divider)"
+            from={start}
+            margin={{ bottom: 16, left: 24, right: 24, top: 16 }}
+            monthBorderWidth={0}
             monthSpacing={6}
-            margin={{ top: 16, right: 24, bottom: 16, left: 24 }}
+            theme={nivoTheme}
+            to={end}
             tooltip={({ day, value }) => (
               <BasicTooltip
-                id={DateTime.fromISO(day).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
+                id={DateTime.fromISO(day).toLocaleString(
+                  DateTime.DATE_MED_WITH_WEEKDAY
+                )}
                 value={pluralise`${value} ${[parseInt(value), unit]}`}
               />
             )}
@@ -215,7 +245,7 @@ export const CalendarSummaryCard = ({
         </div>
         {selectChips}
         {note ? (
-          <Typography use="caption" tag="p" className="note">
+          <Typography className="note" tag="p" use="caption">
             {note}
           </Typography>
         ) : null}

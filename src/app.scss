@@ -28,10 +28,6 @@
   $styles-caption: map-get(typography-variables.$styles, caption)
 );
 
-@use "theme";
-@use "density";
-@use "util";
-
 @use "@material/button/mdc-button";
 @use "@material/card/mdc-card";
 @use "@material/checkbox/mdc-checkbox";
@@ -75,6 +71,10 @@
 @use "@material/theme/color-palette" as palette;
 @use "@material/rtl/_index" as rtl;
 @use "@material/top-app-bar/_index" as top-app-bar;
+
+@use "theme";
+@use "density";
+@use "util";
 
 @include typography.core-styles();
 
