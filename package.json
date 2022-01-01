@@ -14,9 +14,6 @@
     "format": "prettier",
     "type": "ttsc"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
   "browserslist": {
     "production": [
       ">0.2%",
