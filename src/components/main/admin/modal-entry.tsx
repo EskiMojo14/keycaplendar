@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import type { ChangeEvent, FocusEvent } from "react";
 import { Button } from "@rmwc/button";
-import { Card, CardActionButton, CardActionButtons, CardActions } from "@rmwc/card";
+import {
+  Card,
+  CardActionButton,
+  CardActionButtons,
+  CardActions,
+} from "@rmwc/card";
 import { Checkbox } from "@rmwc/checkbox";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { Icon } from "@rmwc/icon";
@@ -9,7 +14,12 @@ import { IconButton } from "@rmwc/icon-button";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
-import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
+import {
+  TopAppBarNavigationIcon,
+  TopAppBarRow,
+  TopAppBarSection,
+  TopAppBarTitle,
+} from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { DateTime } from "luxon";
@@ -22,14 +32,23 @@ import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { Autocomplete } from "@c/util/autocomplete";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
-import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/full-screen-dialog";
+import {
+  FullScreenDialog,
+  FullScreenDialogAppBar,
+  FullScreenDialogContent,
+} from "@c/util/full-screen-dialog";
 import { withTooltip } from "@c/util/hocs";
 import { DatePicker, invalidDate } from "@c/util/pickers/date-picker";
 import { selectDevice } from "@s/common";
 import firebase from "@s/firebase";
 import firestore from "@s/firebase/firestore";
 import type { KeysetId } from "@s/firebase/types";
-import { selectAllDesigners, selectAllProfiles, selectAllVendorRegions, selectAllVendors } from "@s/main";
+import {
+  selectAllDesigners,
+  selectAllProfiles,
+  selectAllVendorRegions,
+  selectAllVendors,
+} from "@s/main";
 import { getData } from "@s/main/functions";
 import type { SetType, VendorType } from "@s/main/types";
 import { selectUser } from "@s/user";
@@ -51,7 +70,12 @@ const getVendorStyle = ({ draggableProps: { style } }: DraggableProvided) => {
   if (style) {
     let { transform } = style;
     if (style.transform) {
-      const YVal = parseInt(style.transform.slice(style.transform.indexOf(",") + 2, style.transform.length - 3));
+      const YVal = parseInt(
+        style.transform.slice(
+          style.transform.indexOf(",") + 2,
+          style.transform.length - 3
+        )
+      );
       const axisLockY = "translate(0px, " + YVal + "px)";
       transform = axisLockY;
     }
@@ -73,7 +97,9 @@ export const validVendor = (obj: Record<string, any>): obj is VendorType =>
   (!obj.storeLink || new RegExp(validLink).test(obj.storeLink)) &&
   (!obj.endDate || !invalidDate(obj.endDate, false));
 
-export const validSalesInfo = (obj: Record<string, any>): obj is Exclude<SetType["sales"], undefined> =>
+export const validSalesInfo = (
+  obj: Record<string, any>
+): obj is Exclude<SetType["sales"], undefined> =>
   hasKey(obj, "salesImg") &&
   (!obj.salesImg || new RegExp(validLink).test(obj.salesImg)) &&
   hasKey(obj, "salesThirdParty");
@@ -94,50 +120,52 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
   const allVendorRegions = useAppSelector(selectAllVendorRegions);
 
   type State = {
-    profile: string;
     colorway: string;
     designer: string[];
-    icDate: string;
     details: string;
-    notes: string;
-    gbMonth: boolean;
-    gbLaunch: string;
     gbEnd: string;
-    shipped: boolean;
-    vendors: VendorType[];
-    salesImg: string;
-    salesThirdParty: boolean;
-    salesImageLoaded: boolean;
+    gbLaunch: string;
+    gbMonth: boolean;
+    icDate: string;
     image: Blob | File | null;
     imageUploadProgress: number;
     imageURL: string;
+    notes: string;
+    profile: string;
+    salesImageLoaded: boolean;
+    salesImg: string;
+    salesThirdParty: boolean;
+    shipped: boolean;
+    vendors: VendorType[];
   };
 
   const initialState: State = {
-    profile: "",
     colorway: "",
     designer: [""],
-    icDate: "",
     details: "",
-    notes: "",
-    gbMonth: true,
-    gbLaunch: "",
     gbEnd: "",
-    shipped: false,
-    vendors: [],
-    salesImg: "",
-    salesThirdParty: false,
-    salesImageLoaded: false,
+    gbLaunch: "",
+    gbMonth: true,
+    icDate: "",
     image: null,
     imageUploadProgress: 0,
     imageURL: "",
+    notes: "",
+    profile: "",
+    salesImageLoaded: false,
+    salesImg: "",
+    salesThirdParty: false,
+    shipped: false,
+    vendors: [],
   };
 
   const [state, updateState] = useImmer(initialState);
 
-  const keyedUpdate = <T extends State, K extends keyof T>(key: K, payload: T[K]) => (draft: T) => {
-    draft[key] = payload;
-  };
+  const keyedUpdate =
+    <T extends State, K extends keyof T>(key: K, payload: T[K]) =>
+    (draft: T) => {
+      draft[key] = payload;
+    };
 
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingDoc, setUploadingDoc] = useState(false);
@@ -158,9 +186,11 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
     setFocused("");
   };
 
-  const setImage = (image: Blob | File | null) => updateState(keyedUpdate("image", image));
+  const setImage = (image: Blob | File | null) =>
+    updateState(keyedUpdate("image", image));
 
-  const handleFocus = (e: FocusEvent<HTMLInputElement>) => setFocused(e.target.name);
+  const handleFocus = (e: FocusEvent<HTMLInputElement>) =>
+    setFocused(e.target.name);
 
   const handleBlur = () => setFocused("");
 
@@ -224,7 +254,9 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
     });
   };
 
-  const handleChange = ({ target: { name, value, checked } }: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = ({
+    target: { checked, name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
     if (name === "designer") {
       updateState(keyedUpdate(name, value.split(", ")));
     } else if (name === "shipped" || name === "salesThirdParty") {
@@ -234,10 +266,14 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
     }
   };
 
-  const handleNamedChange = <Key extends keyof State>(name: Key) => (value: State[Key]) =>
-    updateState(keyedUpdate(name, value));
+  const handleNamedChange =
+    <Key extends keyof State>(name: Key) =>
+    (value: State[Key]) =>
+      updateState(keyedUpdate(name, value));
 
-  const handleChangeVendor = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeVendor = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
     const property = name.replace(/\d/g, "");
     const index = parseInt(name.replace(/\D/g, ""));
     updateState((draft) => {
@@ -250,15 +286,16 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
     });
   };
 
-  const handleNamedChangeVendor = (name: keyof VendorType, index: number) => (value: string) =>
-    updateState((draft) => {
-      const {
-        vendors: { [index]: vendor },
-      } = draft;
-      if (hasKey(vendor, name)) {
-        vendor[name] = value;
-      }
-    });
+  const handleNamedChangeVendor =
+    (name: keyof VendorType, index: number) => (value: string) =>
+      updateState((draft) => {
+        const {
+          vendors: { [index]: vendor },
+        } = draft;
+        if (hasKey(vendor, name)) {
+          vendor[name] = value;
+        }
+      });
 
   const handleChangeVendorEndDate = (e: ChangeEvent<HTMLInputElement>) => {
     const index = parseInt(e.target.name.replace(/\D/g, ""));
@@ -294,8 +331,65 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
   const handleDragVendor = (result: DropResult) => {
     if (!result.destination) return;
     updateState((draft) => {
-      arrayMove(draft.vendors, result.source.index, result.destination?.index || 0);
+      arrayMove(
+        draft.vendors,
+        result.source.index,
+        result.destination?.index || 0
+      );
     });
+  };
+
+  const setSalesImageLoaded = (val: boolean) =>
+    updateState(keyedUpdate("salesImageLoaded", val));
+
+  const valid =
+    !!state.profile &&
+    !!state.colorway &&
+    !!state.designer &&
+    !invalidDate(state.icDate, false, true, true) &&
+    new RegExp(validLink).test(state.details) &&
+    !!state.image &&
+    !invalidDate(state.gbLaunch, state.gbMonth, false, true) &&
+    !invalidDate(state.gbEnd) &&
+    arrayEveryType(state.vendors, validVendor) &&
+    validSalesInfo(state);
+
+  const createEntry = (url = state.imageURL) => {
+    if (valid && !uploadingImage && !uploadingDoc) {
+      setUploadingDoc(true);
+      firestore
+        .collection("keysets")
+        .add({
+          alias: nanoid(10),
+          colorway: state.colorway,
+          designer: state.designer,
+          details: state.details,
+          gbEnd: state.gbEnd,
+          gbLaunch: state.gbLaunch,
+          gbMonth: state.gbMonth,
+          icDate: state.icDate,
+          image: url,
+          latestEditor: user.id,
+          notes: state.notes,
+          profile: state.profile,
+          sales: { img: state.salesImg, thirdParty: state.salesThirdParty },
+          shipped: state.shipped,
+          vendors: state.vendors,
+        })
+        .then((docRef) => {
+          console.log("Document written with ID: ", docRef.id);
+          queue.notify({ title: "Entry written successfully." });
+          getData();
+          closeModal();
+        })
+        .catch((error) => {
+          console.error(error);
+          queue.notify({ title: "Error adding document: " + error });
+        })
+        .finally(() => {
+          setUploadingDoc(false);
+        });
+    }
   };
 
   const uploadImage = () => {
@@ -303,9 +397,9 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
       setUploadingImage(true);
       const storageRef = firebase.storage().ref();
       const keysetsRef = storageRef.child("keysets");
-      const fileName = `${formatFileName(`${state.profile} ${state.colorway}`)}T${DateTime.utc().toFormat(
-        "yyyyMMddHHmmss"
-      )}`;
+      const fileName = `${formatFileName(
+        `${state.profile} ${state.colorway}`
+      )}T${DateTime.utc().toFormat("yyyyMMddHHmmss")}`;
       const imageRef = keysetsRef.child(fileName + ".png");
       const uploadTask = imageRef.put(state.image);
       uploadTask.on(
@@ -343,116 +437,64 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
     }
   };
 
-  const valid =
-    !!state.profile &&
-    !!state.colorway &&
-    !!state.designer &&
-    !invalidDate(state.icDate, false, true, true) &&
-    new RegExp(validLink).test(state.details) &&
-    !!state.image &&
-    !invalidDate(state.gbLaunch, state.gbMonth, false, true) &&
-    !invalidDate(state.gbEnd) &&
-    arrayEveryType(state.vendors, validVendor) &&
-    validSalesInfo(state);
-
-  const createEntry = (url = state.imageURL) => {
-    if (valid && !uploadingImage && !uploadingDoc) {
-      setUploadingDoc(true);
-      firestore
-        .collection("keysets")
-        .add({
-          alias: nanoid(10),
-          profile: state.profile,
-          colorway: state.colorway,
-          designer: state.designer,
-          icDate: state.icDate,
-          details: state.details,
-          notes: state.notes,
-          sales: { img: state.salesImg, thirdParty: state.salesThirdParty },
-          shipped: state.shipped,
-          image: url,
-          gbMonth: state.gbMonth,
-          gbLaunch: state.gbLaunch,
-          gbEnd: state.gbEnd,
-          vendors: state.vendors,
-          latestEditor: user.id,
-        })
-        .then((docRef) => {
-          console.log("Document written with ID: ", docRef.id);
-          queue.notify({ title: "Entry written successfully." });
-          getData();
-          closeModal();
-        })
-        .catch((error) => {
-          console.error(error);
-          queue.notify({ title: "Error adding document: " + error });
-        })
-        .finally(() => {
-          setUploadingDoc(false);
-        });
-    }
-  };
-
-  const setSalesImageLoaded = (val: boolean) => updateState(keyedUpdate("salesImageLoaded", val));
-
   const useDrawer = device !== "mobile";
   const dateCard = state.gbMonth ? (
-    <Card outlined className="date-container">
-      <Typography use="caption" tag="h3" className="date-title">
+    <Card className="date-container" outlined>
+      <Typography className="date-title" tag="h3" use="caption">
         Month
       </Typography>
       <div className="date-form">
         <DatePicker
+          allowQuarter
           autoComplete="off"
           icon={iconObject(<CalendarToday />)}
-          outlined
           label="GB month"
-          value={state.gbLaunch}
+          month
           name="gbLaunch"
           onChange={handleNamedChange("gbLaunch")}
-          month
+          outlined
           showNowButton
-          allowQuarter
+          value={state.gbLaunch}
         />
       </div>
       <CardActions>
         <CardActionButtons>
-          <CardActionButton type="button" label="Date" onClick={toggleDate} />
+          <CardActionButton label="Date" onClick={toggleDate} type="button" />
         </CardActionButtons>
       </CardActions>
     </Card>
   ) : (
-    <Card outlined className="date-container">
-      <Typography use="caption" tag="h3" className="date-title">
+    <Card className="date-container" outlined>
+      <Typography className="date-title" tag="h3" use="caption">
         Date
       </Typography>
       <div className="date-form">
         <DatePicker
+          allowQuarter
           autoComplete="off"
           icon={iconObject(<CalendarToday />)}
-          outlined
           label="GB launch"
-          value={state.gbLaunch}
           name="gbLaunch"
           onChange={handleNamedChange("gbLaunch")}
+          outlined
           showNowButton
-          allowQuarter
+          value={state.gbLaunch}
         />
         <DatePicker
           autoComplete="off"
-          icon={iconObject(<CalendarToday />)}
-          outlined
-          label="GB end"
-          value={state.gbEnd}
           fallbackValue={state.gbLaunch}
+          icon={iconObject(<CalendarToday />)}
+          label="GB end"
           name="gbEnd"
           onChange={handleNamedChange("gbEnd")}
+          outlined
           showNowButton
+          value={state.gbEnd}
         />
       </div>
       <CardActions>
         <CardActionButtons>
-          <CardActionButton type="button" label="Month" onClick={toggleDate} />
+          <CardActionButton label="Month" onClick={toggleDate} type="button" />
         </CardActionButtons>
       </CardActions>
     </Card>
@@ -460,28 +502,28 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
   return (
     <BoolWrapper
       condition={useDrawer}
-      trueWrapper={(children) => (
-        <Drawer modal open={open} onClose={closeModal} className="drawer-right entry-modal">
-          {children}
-        </Drawer>
-      )}
       falseWrapper={(children) => (
-        <FullScreenDialog open={open} onClose={closeModal} className="entry-modal">
+        <FullScreenDialog
+          className="entry-modal"
+          onClose={closeModal}
+          open={open}
+        >
           {children}
         </FullScreenDialog>
+      )}
+      trueWrapper={(children) => (
+        <Drawer
+          className="drawer-right entry-modal"
+          modal
+          onClose={closeModal}
+          open={open}
+        >
+          {children}
+        </Drawer>
       )}
     >
       <BoolWrapper
         condition={useDrawer}
-        trueWrapper={(children) => (
-          <DrawerHeader>
-            {children}
-            <LinearProgress
-              closed={!(uploadingImage || uploadingDoc)}
-              progress={uploadingImage ? state.imageUploadProgress : undefined}
-            />
-          </DrawerHeader>
-        )}
         falseWrapper={(children) => (
           <FullScreenDialogAppBar>
             <TopAppBarRow>{children}</TopAppBarRow>
@@ -491,46 +533,63 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
             />
           </FullScreenDialogAppBar>
         )}
+        trueWrapper={(children) => (
+          <DrawerHeader>
+            {children}
+            <LinearProgress
+              closed={!(uploadingImage || uploadingDoc)}
+              progress={uploadingImage ? state.imageUploadProgress : undefined}
+            />
+          </DrawerHeader>
+        )}
       >
         <BoolWrapper
           condition={useDrawer}
-          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
           falseWrapper={(children) => (
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="close" onClick={closeModal} />
               <TopAppBarTitle>{children}</TopAppBarTitle>
             </TopAppBarSection>
           )}
+          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
         >
           Create Entry
         </BoolWrapper>
 
         <ConditionalWrapper
           condition={!useDrawer}
-          wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
+          wrapper={(children) => (
+            <TopAppBarSection alignEnd>{children}</TopAppBarSection>
+          )}
         >
           <Button
-            type="button"
-            outlined={useDrawer}
+            disabled={!valid || uploadingImage || uploadingDoc}
             label="Save"
             onClick={() => {
               if (valid && !uploadingImage && !uploadingDoc) {
                 uploadImage();
               }
             }}
-            disabled={!valid || uploadingImage || uploadingDoc}
+            outlined={useDrawer}
+            type="button"
           />
         </ConditionalWrapper>
       </BoolWrapper>
       <BoolWrapper
         condition={useDrawer}
+        falseWrapper={(children) => (
+          <FullScreenDialogContent>{children}</FullScreenDialogContent>
+        )}
         trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
-        falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
       >
         <div className="banner">
           <div className="banner-text">Make sure to read the entry guide.</div>
           <div className="banner-button">
-            <a href="/guides?guideId=JLB4xxfx52NJmmnbvbzO" target="_blank" rel="noopener noreferrer">
+            <a
+              href="/guides?guideId=JLB4xxfx52NJmmnbvbzO"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
               <Button label="guide" />
             </a>
           </div>
@@ -541,22 +600,22 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
               <MenuSurfaceAnchor>
                 <TextField
                   autoComplete="off"
-                  outlined
-                  required
                   label="Profile"
-                  value={state.profile}
                   name="profile"
+                  onBlur={handleBlur}
                   onChange={handleChange}
                   onFocus={handleFocus}
-                  onBlur={handleBlur}
+                  outlined
+                  required
+                  value={state.profile}
                 />
                 <Autocomplete
-                  open={focused === "profile"}
                   array={allProfiles}
-                  query={state.profile}
-                  prop="profile"
-                  select={selectValue}
                   minChars={1}
+                  open={focused === "profile"}
+                  prop="profile"
+                  query={state.profile}
+                  select={selectValue}
                 />
               </MenuSurfaceAnchor>
             </div>
@@ -564,143 +623,169 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
               <TextField
                 autoComplete="off"
                 className="field"
-                outlined
-                required
                 label="Colorway"
-                value={state.colorway}
                 name="colorway"
+                onBlur={handleBlur}
                 onChange={handleChange}
                 onFocus={handleFocus}
-                onBlur={handleBlur}
+                outlined
+                required
+                value={state.colorway}
               />
             </div>
           </div>
           <MenuSurfaceAnchor>
             <TextField
               autoComplete="off"
-              outlined
-              label="Designer"
-              required
-              value={state.designer.join(", ")}
-              name="designer"
+              disabled={user.isEditor === false && user.isDesigner}
               helpText={{
-                persistent: true,
                 children: (
                   <>
-                    Separate multiple designers with <code className="multiline">, </code>.
+                    Separate multiple designers with{" "}
+                    <code className="multiline">, </code>.
                   </>
                 ),
+                persistent: true,
               }}
+              label="Designer"
+              name="designer"
+              onBlur={handleBlur}
               onChange={handleChange}
               onFocus={handleFocus}
-              onBlur={handleBlur}
-              disabled={user.isEditor === false && user.isDesigner}
+              outlined
+              required
+              value={state.designer.join(", ")}
             />
             <Autocomplete
-              open={focused === "designer"}
               array={allDesigners}
-              query={state.designer.join(", ")}
-              prop="designer"
-              select={selectValueAppend}
-              minChars={2}
               listSplit
+              minChars={2}
+              open={focused === "designer"}
+              prop="designer"
+              query={state.designer.join(", ")}
+              select={selectValueAppend}
             />
           </MenuSurfaceAnchor>
           <DatePicker
             autoComplete="off"
             icon={iconObject(<CalendarToday />)}
-            outlined
             label="IC date"
-            required
-            value={state.icDate}
             name="icDate"
             onChange={handleNamedChange("icDate")}
+            outlined
             pickerProps={{ disableFuture: true }}
-            showNowButton
-          />
-          <TextField
-            autoComplete="off"
-            icon="link"
-            outlined
-            label="Details"
             required
-            pattern={validLink}
-            value={state.details}
-            name="details"
-            helpText={{ persistent: false, validationMsg: true, children: "Must be valid link" }}
-            onChange={handleChange}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
+            showNowButton
+            value={state.icDate}
           />
           <TextField
-            textarea
-            rows={2}
             autoComplete="off"
-            outlined
-            label="Notes"
-            value={state.notes}
-            name="notes"
+            helpText={{
+              children: "Must be valid link",
+              persistent: false,
+              validationMsg: true,
+            }}
+            icon="link"
+            label="Details"
+            name="details"
+            onBlur={handleBlur}
             onChange={handleChange}
             onFocus={handleFocus}
-            onBlur={handleBlur}
+            outlined
+            pattern={validLink}
+            required
+            value={state.details}
           />
-          <ImageUpload image={state.image} setImage={setImage} desktop={device === "desktop"} />
+          <TextField
+            autoComplete="off"
+            label="Notes"
+            name="notes"
+            onBlur={handleBlur}
+            onChange={handleChange}
+            onFocus={handleFocus}
+            outlined
+            rows={2}
+            textarea
+            value={state.notes}
+          />
+          <ImageUpload
+            desktop={device === "desktop"}
+            image={state.image}
+            setImage={setImage}
+          />
           {dateCard}
           <Checkbox
-            label="Shipped"
-            id="create-shipped"
-            name="shipped"
             checked={state.shipped}
+            id="create-shipped"
+            label="Shipped"
+            name="shipped"
             onChange={handleChange}
           />
-          <Typography use="caption" tag="h3" className="subheader">
+          <Typography className="subheader" tag="h3" use="caption">
             Vendors
           </Typography>
           <DragDropContext onDragEnd={handleDragVendor}>
             <Droppable droppableId="vendors-create">
               {(provided) => (
-                <div className="vendors-container" ref={provided.innerRef} {...provided.droppableProps}>
+                <div
+                  ref={provided.innerRef}
+                  className="vendors-container"
+                  {...provided.droppableProps}
+                >
                   {state.vendors.map((vendor, index) => {
                     const endDateField =
                       typeof vendor.endDate === "string" ? (
                         <DatePicker
                           autoComplete="off"
                           icon={iconObject(<CalendarToday />)}
-                          outlined
                           label="End date"
-                          required
-                          value={vendor.endDate}
                           name={"endDate" + index}
                           onChange={handleNamedChangeVendor("endDate", index)}
+                          outlined
+                          required
                           showNowButton
+                          value={vendor.endDate}
                         />
                       ) : null;
                     return (
-                      <Draggable key={vendor.id} draggableId={vendor.id ? vendor.id : index.toString()} index={index}>
+                      <Draggable
+                        key={vendor.id}
+                        draggableId={vendor.id ? vendor.id : index.toString()}
+                        index={index}
+                      >
                         {(provided, snapshot) => (
                           <Card
-                            outlined
-                            className={classNames("vendor-container", { dragged: snapshot.isDragging })}
                             ref={provided.innerRef}
+                            className={classNames("vendor-container", {
+                              dragged: snapshot.isDragging,
+                            })}
+                            outlined
                             {...provided.draggableProps}
                             style={getVendorStyle(provided)}
                           >
                             <div className="title-container">
-                              <Typography use="caption" className="vendor-title">
+                              <Typography
+                                className="vendor-title"
+                                use="caption"
+                              >
                                 {"Vendor " + (index + 1)}
                               </Typography>
                               {withTooltip(
                                 <IconButton
-                                  type="button"
                                   icon={iconObject(<Delete />)}
                                   onClick={() => {
                                     removeVendor(index);
                                   }}
+                                  type="button"
                                 />,
                                 "Delete"
                               )}
                               {withTooltip(
-                                <Icon icon="drag_handle" className="drag-handle" {...provided.dragHandleProps} />,
+                                <Icon
+                                  className="drag-handle"
+                                  icon="drag_handle"
+                                  {...provided.dragHandleProps}
+                                />,
                                 "Drag"
                               )}
                             </div>
@@ -709,71 +794,73 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
                                 <TextField
                                   autoComplete="off"
                                   icon={iconObject(<Store />)}
-                                  required
-                                  outlined
                                   label="Name"
-                                  value={vendor.name}
                                   name={"name" + index}
+                                  onBlur={handleBlur}
                                   onChange={handleChangeVendor}
                                   onFocus={handleFocus}
-                                  onBlur={handleBlur}
+                                  outlined
+                                  required
+                                  value={vendor.name}
                                 />
                                 <Autocomplete
-                                  open={focused === "name" + index}
                                   array={allVendors}
-                                  query={vendor.name}
-                                  prop={"name" + index}
-                                  select={selectVendor}
                                   minChars={1}
+                                  open={focused === "name" + index}
+                                  prop={"name" + index}
+                                  query={vendor.name}
+                                  select={selectVendor}
                                 />
                               </MenuSurfaceAnchor>
                               <MenuSurfaceAnchor>
                                 <TextField
                                   autoComplete="off"
                                   icon={iconObject(<Public />)}
-                                  required
-                                  outlined
                                   label="Region"
-                                  value={vendor.region}
                                   name={"region" + index}
+                                  onBlur={handleBlur}
                                   onChange={handleChangeVendor}
                                   onFocus={handleFocus}
-                                  onBlur={handleBlur}
+                                  outlined
+                                  required
+                                  value={vendor.region}
                                 />
                                 <Autocomplete
-                                  open={focused === "region" + index}
                                   array={allVendorRegions}
-                                  query={vendor.region}
-                                  prop={"region" + index}
-                                  select={selectVendorAppend}
-                                  minChars={1}
                                   listSplit
+                                  minChars={1}
+                                  open={focused === "region" + index}
+                                  prop={"region" + index}
+                                  query={vendor.region}
+                                  select={selectVendorAppend}
                                 />
                               </MenuSurfaceAnchor>
                               <TextField
                                 autoComplete="off"
-                                icon="link"
-                                outlined
-                                label="Store link"
-                                pattern={validLink}
-                                value={vendor.storeLink}
-                                name={"storeLink" + index}
-                                onChange={handleChangeVendor}
-                                onFocus={handleFocus}
-                                onBlur={handleBlur}
                                 helpText={{
+                                  children: "Must be valid link",
                                   persistent: false,
                                   validationMsg: true,
-                                  children: "Must be valid link",
                                 }}
+                                icon="link"
+                                label="Store link"
+                                name={"storeLink" + index}
+                                onBlur={handleBlur}
+                                onChange={handleChangeVendor}
+                                onFocus={handleFocus}
+                                outlined
+                                pattern={validLink}
+                                value={vendor.storeLink}
                               />
                               <Checkbox
+                                checked={
+                                  !!vendor.endDate || vendor.endDate === ""
+                                }
                                 className="end-date-field"
+                                id={"editEndDate" + index}
                                 label="Different end date"
                                 name={"endDate" + index}
-                                id={"editEndDate" + index}
                                 onChange={handleChangeVendorEndDate}
-                                checked={!!vendor.endDate || vendor.endDate === ""}
                               />
                               {endDateField}
                             </div>
@@ -788,48 +875,61 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
             </Droppable>
           </DragDropContext>
           <div className="add-button">
-            <Button type="button" outlined label="Add vendor" onClick={addVendor} />
+            <Button
+              label="Add vendor"
+              onClick={addVendor}
+              outlined
+              type="button"
+            />
           </div>
-          <Card outlined className="sales-container">
-            <Typography use="caption" tag="h3" className="sales-title">
+          <Card className="sales-container" outlined>
+            <Typography className="sales-title" tag="h3" use="caption">
               Sales
             </Typography>
-            <div className={classNames("sales-image", { loaded: state.salesImageLoaded })}>
+            <div
+              className={classNames("sales-image", {
+                loaded: state.salesImageLoaded,
+              })}
+            >
               <div className="sales-image-icon">
                 <Icon icon={iconObject(<AddPhotoAlternate />)} />
               </div>
               <img
-                src={state.salesImg}
                 alt=""
-                onLoad={() => {
-                  setSalesImageLoaded(true);
-                }}
                 onError={() => {
                   setSalesImageLoaded(false);
                 }}
+                onLoad={() => {
+                  setSalesImageLoaded(true);
+                }}
+                src={state.salesImg}
               />
             </div>
             <div className="sales-field">
               <TextField
                 autoComplete="off"
+                helpText={{
+                  children: "Must be direct link to image",
+                  persistent: true,
+                  validationMsg: true,
+                }}
                 icon="link"
-                outlined
                 label="URL"
-                pattern={validLink}
-                value={state.salesImg}
                 name="salesImg"
-                helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
+                onBlur={handleBlur}
                 onChange={handleChange}
                 onFocus={handleFocus}
-                onBlur={handleBlur}
+                outlined
+                pattern={validLink}
+                value={state.salesImg}
               />
               <Checkbox
+                checked={state.salesThirdParty}
                 className="sales-checkbox"
+                id={"CreateSalesThirdParty"}
                 label="Third party graph"
                 name="salesThirdParty"
-                id={"CreateSalesThirdParty"}
                 onChange={handleChange}
-                checked={state.salesThirdParty}
               />
             </div>
           </Card>
@@ -857,66 +957,60 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
 
   type State = {
     alias: string;
-    profile: string;
     colorway: string;
     designer: string[];
-    icDate: string;
     details: string;
-    notes: string;
-    gbMonth: boolean;
-    gbLaunch: string;
     gbEnd: string;
-    shipped: boolean;
-    vendors: VendorType[];
-    salesImg: string;
-    salesThirdParty: boolean;
-    salesImageLoaded: boolean;
+    gbLaunch: string;
+    gbMonth: boolean;
+    icDate: string;
     image: Blob | File | string | null;
     imageUploadProgress: number;
     imageURL: string;
     newImage: boolean;
+    notes: string;
+    profile: string;
+    salesImageLoaded: boolean;
+    salesImg: string;
+    salesThirdParty: boolean;
+    shipped: boolean;
+    vendors: VendorType[];
   };
 
   const initialState: State = {
     alias: "",
-    profile: "",
     colorway: "",
     designer: [""],
-    icDate: "",
     details: "",
-    notes: "",
-    gbMonth: true,
-    gbLaunch: "",
     gbEnd: "",
-    shipped: false,
-    vendors: [],
-    salesImg: "",
-    salesThirdParty: false,
-    salesImageLoaded: false,
+    gbLaunch: "",
+    gbMonth: true,
+    icDate: "",
     image: null,
     imageUploadProgress: 0,
     imageURL: "",
     newImage: false,
+    notes: "",
+    profile: "",
+    salesImageLoaded: false,
+    salesImg: "",
+    salesThirdParty: false,
+    shipped: false,
+    vendors: [],
   };
 
   const [state, updateState] = useImmer(initialState);
 
-  const keyedUpdate = <T extends State, K extends keyof T>(key: K, payload: T[K]) => (draft: T) => {
-    draft[key] = payload;
-  };
+  const keyedUpdate =
+    <T extends State, K extends keyof T>(key: K, payload: T[K]) =>
+    (draft: T) => {
+      draft[key] = payload;
+    };
 
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingDoc, setUploadingDoc] = useState(false);
 
   const [focused, setFocused] = useState("");
-
-  useEffect(() => {
-    if (open) {
-      setValues();
-    } else {
-      setTimeout(closeModal, 300);
-    }
-  }, [open]);
 
   const setValues = () => {
     let gbLaunch = "";
@@ -940,17 +1034,19 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
     updateState((draft) => ({
       ...draft,
       alias: set.alias || nanoid(10),
-      profile: set.profile,
       colorway: set.colorway,
       designer: set.designer,
-      icDate: set.icDate,
       details: set.details,
-      notes: set.notes ?? "",
-      gbMonth: !!set.gbMonth ?? false,
-      gbLaunch,
       gbEnd: set.gbEnd,
-      shipped: set.shipped ?? false,
+      gbLaunch,
+      gbMonth: !!set.gbMonth ?? false,
+      icDate: set.icDate,
       imageURL: set.image,
+      notes: set.notes ?? "",
+      profile: set.profile,
+      salesImg: set.sales?.img ?? "",
+      salesThirdParty: set.sales?.thirdParty ?? false,
+      shipped: set.shipped ?? false,
       vendors:
         set.vendors?.map((vendor) => {
           if (!vendor.id) {
@@ -958,8 +1054,6 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
           }
           return vendor;
         }) ?? [],
-      salesImg: set.sales?.img ?? "",
-      salesThirdParty: set.sales?.thirdParty ?? false,
     }));
   };
 
@@ -971,13 +1065,22 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
     setFocused("");
   };
 
+  useEffect(() => {
+    if (open) {
+      setValues();
+    } else {
+      setTimeout(closeModal, 300);
+    }
+  }, [open]);
+
   const setImage = (image: Blob | File | null) =>
     updateState((draft) => {
       draft.image = image;
       draft.newImage = true;
     });
 
-  const handleFocus = (e: FocusEvent<HTMLInputElement>) => setFocused(e.target.name);
+  const handleFocus = (e: FocusEvent<HTMLInputElement>) =>
+    setFocused(e.target.name);
 
   const handleBlur = () => setFocused("");
 
@@ -1041,7 +1144,9 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
     });
   };
 
-  const handleChange = ({ target: { name, value, checked } }: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = ({
+    target: { checked, name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
     if (name === "designer") {
       updateState(keyedUpdate(name, value.split(", ")));
     } else if (name === "shipped" || name === "salesThirdParty") {
@@ -1051,10 +1156,14 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
     }
   };
 
-  const handleNamedChange = <Key extends keyof State>(name: Key) => (value: State[Key]) =>
-    updateState(keyedUpdate(name, value));
+  const handleNamedChange =
+    <Key extends keyof State>(name: Key) =>
+    (value: State[Key]) =>
+      updateState(keyedUpdate(name, value));
 
-  const handleChangeVendor = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeVendor = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
     const property = name.replace(/\d/g, "");
     const index = parseInt(name.replace(/\D/g, ""));
     updateState((draft) => {
@@ -1067,15 +1176,16 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
     });
   };
 
-  const handleNamedChangeVendor = (name: keyof VendorType, index: number) => (value: string) =>
-    updateState((draft) => {
-      const {
-        vendors: { [index]: vendor },
-      } = draft;
-      if (hasKey(vendor, name)) {
-        vendor[name] = value;
-      }
-    });
+  const handleNamedChangeVendor =
+    (name: keyof VendorType, index: number) => (value: string) =>
+      updateState((draft) => {
+        const {
+          vendors: { [index]: vendor },
+        } = draft;
+        if (hasKey(vendor, name)) {
+          vendor[name] = value;
+        }
+      });
 
   const handleChangeVendorEndDate = (e: ChangeEvent<HTMLInputElement>) => {
     const index = parseInt(e.target.name.replace(/\D/g, ""));
@@ -1111,8 +1221,66 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
   const handleDragVendor = (result: DropResult) => {
     if (!result.destination) return;
     updateState((draft) => {
-      arrayMove(draft.vendors, result.source.index, result.destination?.index || 0);
+      arrayMove(
+        draft.vendors,
+        result.source.index,
+        result.destination?.index || 0
+      );
     });
+  };
+
+  const setSalesImageLoaded = (val: boolean) =>
+    updateState(keyedUpdate("salesImageLoaded", val));
+
+  const valid =
+    !!state.profile &&
+    !!state.colorway &&
+    !!state.designer &&
+    !invalidDate(state.icDate, false, true, true) &&
+    new RegExp(validLink).test(state.details) &&
+    ((state.newImage && state.image instanceof Blob && !!state.image) ||
+      !!state.imageURL) &&
+    !invalidDate(state.gbLaunch, state.gbMonth, false, true) &&
+    !invalidDate(state.gbEnd) &&
+    arrayEveryType(state.vendors, validVendor) &&
+    validSalesInfo(state);
+
+  const editEntry = (imageUrl = state.imageURL) => {
+    if (valid && !uploadingImage && !uploadingDoc) {
+      setUploadingDoc(true);
+      firestore
+        .collection("keysets")
+        .doc(id as KeysetId)
+        .update({
+          alias: state.alias,
+          colorway: state.colorway,
+          designer: state.designer,
+          details: state.details,
+          gbEnd: state.gbEnd,
+          gbLaunch: state.gbLaunch,
+          gbMonth: state.gbMonth,
+          icDate: state.icDate,
+          image: imageUrl,
+          latestEditor: user.id,
+          notes: state.notes,
+          profile: state.profile,
+          sales: { img: state.salesImg, thirdParty: state.salesThirdParty },
+          shipped: state.shipped,
+          vendors: state.vendors,
+        })
+        .then(() => {
+          queue.notify({ title: "Entry edited successfully." });
+          closeModal();
+          getData();
+        })
+        .catch((error) => {
+          queue.notify({ title: "Error editing document: " + error });
+          console.error(error);
+        })
+        .finally(() => {
+          setUploadingDoc(false);
+        });
+    }
   };
 
   const uploadImage = () => {
@@ -1120,9 +1288,9 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
       setUploadingImage(true);
       const storageRef = firebase.storage().ref();
       const keysetsRef = storageRef.child("keysets");
-      const fileName = `${formatFileName(`${state.profile} ${state.colorway}`)}T${DateTime.utc().toFormat(
-        "yyyyMMddHHmmss"
-      )}`;
+      const fileName = `${formatFileName(
+        `${state.profile} ${state.colorway}`
+      )}T${DateTime.utc().toFormat("yyyyMMddHHmmss")}`;
       const imageRef = keysetsRef.child(fileName + ".png");
       const uploadTask = imageRef.put(state.image);
       uploadTask.on(
@@ -1153,13 +1321,19 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
               if (regexMatch) {
                 const [, imageName] = regexMatch;
                 const folders = await getStorageFolders();
-                const allImages = folders.map((folder) => `${folder}/${imageName}`);
+                const allImages = folders.map(
+                  (folder) => `${folder}/${imageName}`
+                );
                 batchStorageDelete(allImages)
                   .then(() => {
-                    queue.notify({ title: "Successfully deleted previous thumbnails." });
+                    queue.notify({
+                      title: "Successfully deleted previous thumbnails.",
+                    });
                   })
                   .catch((error) => {
-                    queue.notify({ title: "Failed to delete previous thumbnails: " + error });
+                    queue.notify({
+                      title: "Failed to delete previous thumbnails: " + error,
+                    });
                     console.error(error);
                   });
               }
@@ -1176,117 +1350,64 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
     }
   };
 
-  const valid =
-    !!state.profile &&
-    !!state.colorway &&
-    !!state.designer &&
-    !invalidDate(state.icDate, false, true, true) &&
-    new RegExp(validLink).test(state.details) &&
-    ((state.newImage && state.image instanceof Blob && !!state.image) || !!state.imageURL) &&
-    !invalidDate(state.gbLaunch, state.gbMonth, false, true) &&
-    !invalidDate(state.gbEnd) &&
-    arrayEveryType(state.vendors, validVendor) &&
-    validSalesInfo(state);
-
-  const editEntry = (imageUrl = state.imageURL) => {
-    if (valid && !uploadingImage && !uploadingDoc) {
-      setUploadingDoc(true);
-      firestore
-        .collection("keysets")
-        .doc(id as KeysetId)
-        .update({
-          alias: state.alias,
-          profile: state.profile,
-          colorway: state.colorway,
-          designer: state.designer,
-          icDate: state.icDate,
-          details: state.details,
-          notes: state.notes,
-          sales: { img: state.salesImg, thirdParty: state.salesThirdParty },
-          shipped: state.shipped,
-          image: imageUrl,
-          gbMonth: state.gbMonth,
-          gbLaunch: state.gbLaunch,
-          gbEnd: state.gbEnd,
-          vendors: state.vendors,
-          latestEditor: user.id,
-        })
-        .then(() => {
-          queue.notify({ title: "Entry edited successfully." });
-          closeModal();
-          getData();
-        })
-        .catch((error) => {
-          queue.notify({ title: "Error editing document: " + error });
-          console.error(error);
-        })
-        .finally(() => {
-          setUploadingDoc(false);
-        });
-    }
-  };
-
-  const setSalesImageLoaded = (val: boolean) => {
-    updateState(keyedUpdate("salesImageLoaded", val));
-  };
   const useDrawer = device !== "mobile";
   const dateCard = state.gbMonth ? (
-    <Card outlined className="date-container">
-      <Typography use="caption" tag="h3" className="date-title">
+    <Card className="date-container" outlined>
+      <Typography className="date-title" tag="h3" use="caption">
         Month
       </Typography>
       <div className="date-form">
         <DatePicker
+          allowQuarter
           autoComplete="off"
           icon={iconObject(<CalendarToday />)}
-          outlined
           label="GB month"
-          value={state.gbLaunch}
+          month
           name="gbLaunch"
           onChange={handleNamedChange("gbLaunch")}
-          month
-          allowQuarter
+          outlined
           showNowButton
+          value={state.gbLaunch}
         />
       </div>
       <CardActions>
         <CardActionButtons>
-          <CardActionButton type="button" label="Date" onClick={toggleDate} />
+          <CardActionButton label="Date" onClick={toggleDate} type="button" />
         </CardActionButtons>
       </CardActions>
     </Card>
   ) : (
-    <Card outlined className="date-container">
-      <Typography use="caption" tag="h3" className="date-title">
+    <Card className="date-container" outlined>
+      <Typography className="date-title" tag="h3" use="caption">
         Date
       </Typography>
       <div className="date-form">
         <DatePicker
+          allowQuarter
           autoComplete="off"
           icon={iconObject(<CalendarToday />)}
-          outlined
           label="GB launch"
-          value={state.gbLaunch}
           name="gbLaunch"
           onChange={handleNamedChange("gbLaunch")}
+          outlined
           showNowButton
-          allowQuarter
+          value={state.gbLaunch}
         />
         <DatePicker
           autoComplete="off"
-          icon={iconObject(<CalendarToday />)}
-          outlined
-          label="GB end"
-          value={state.gbEnd}
           fallbackValue={state.gbLaunch}
+          icon={iconObject(<CalendarToday />)}
+          label="GB end"
           name="gbEnd"
           onChange={handleNamedChange("gbEnd")}
+          outlined
           showNowButton
+          value={state.gbEnd}
         />
       </div>
       <CardActions>
         <CardActionButtons>
-          <CardActionButton type="button" label="Month" onClick={toggleDate} />
+          <CardActionButton label="Month" onClick={toggleDate} type="button" />
         </CardActionButtons>
       </CardActions>
     </Card>
@@ -1294,28 +1415,28 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
   return (
     <BoolWrapper
       condition={useDrawer}
-      trueWrapper={(children) => (
-        <Drawer modal open={open} onClose={closeModal} className="drawer-right entry-modal">
-          {children}
-        </Drawer>
-      )}
       falseWrapper={(children) => (
-        <FullScreenDialog open={open} onClose={closeModal} className="entry-modal">
+        <FullScreenDialog
+          className="entry-modal"
+          onClose={closeModal}
+          open={open}
+        >
           {children}
         </FullScreenDialog>
+      )}
+      trueWrapper={(children) => (
+        <Drawer
+          className="drawer-right entry-modal"
+          modal
+          onClose={closeModal}
+          open={open}
+        >
+          {children}
+        </Drawer>
       )}
     >
       <BoolWrapper
         condition={useDrawer}
-        trueWrapper={(children) => (
-          <DrawerHeader>
-            {children}
-            <LinearProgress
-              closed={!(uploadingImage || uploadingDoc)}
-              progress={uploadingImage ? state.imageUploadProgress : undefined}
-            />
-          </DrawerHeader>
-        )}
         falseWrapper={(children) => (
           <FullScreenDialogAppBar>
             <TopAppBarRow>{children}</TopAppBarRow>
@@ -1325,27 +1446,37 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
             />
           </FullScreenDialogAppBar>
         )}
+        trueWrapper={(children) => (
+          <DrawerHeader>
+            {children}
+            <LinearProgress
+              closed={!(uploadingImage || uploadingDoc)}
+              progress={uploadingImage ? state.imageUploadProgress : undefined}
+            />
+          </DrawerHeader>
+        )}
       >
         <BoolWrapper
           condition={useDrawer}
-          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
           falseWrapper={(children) => (
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="close" onClick={closeModal} />
               <TopAppBarTitle>{children}</TopAppBarTitle>
             </TopAppBarSection>
           )}
+          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
         >
           Edit Entry
         </BoolWrapper>
 
         <ConditionalWrapper
           condition={!useDrawer}
-          wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
+          wrapper={(children) => (
+            <TopAppBarSection alignEnd>{children}</TopAppBarSection>
+          )}
         >
           <Button
-            type="button"
-            outlined={useDrawer}
+            disabled={!valid || uploadingImage || uploadingDoc}
             label="Save"
             onClick={() => {
               if (valid && !uploadingImage && !uploadingDoc) {
@@ -1356,19 +1487,26 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                 }
               }
             }}
-            disabled={!valid || uploadingImage || uploadingDoc}
+            outlined={useDrawer}
+            type="button"
           />
         </ConditionalWrapper>
       </BoolWrapper>
       <BoolWrapper
         condition={useDrawer}
+        falseWrapper={(children) => (
+          <FullScreenDialogContent>{children}</FullScreenDialogContent>
+        )}
         trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
-        falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
       >
         <div className="banner">
           <div className="banner-text">Make sure to read the entry guide.</div>
           <div className="banner-button">
-            <a href="/guides?guideId=JLB4xxfx52NJmmnbvbzO" target="_blank" rel="noopener noreferrer">
+            <a
+              href="/guides?guideId=JLB4xxfx52NJmmnbvbzO"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
               <Button label="guide" />
             </a>
           </div>
@@ -1379,22 +1517,22 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
               <MenuSurfaceAnchor>
                 <TextField
                   autoComplete="off"
-                  outlined
-                  required
                   label="Profile"
-                  value={state.profile}
                   name="profile"
+                  onBlur={handleBlur}
                   onChange={handleChange}
                   onFocus={handleFocus}
-                  onBlur={handleBlur}
+                  outlined
+                  required
+                  value={state.profile}
                 />
                 <Autocomplete
-                  open={focused === "profile"}
                   array={allProfiles}
-                  query={state.profile}
-                  prop="profile"
-                  select={selectValue}
                   minChars={1}
+                  open={focused === "profile"}
+                  prop="profile"
+                  query={state.profile}
+                  select={selectValue}
                 />
               </MenuSurfaceAnchor>
             </div>
@@ -1402,141 +1540,176 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
               <TextField
                 autoComplete="off"
                 className="field"
+                helpText={{
+                  children: "Enter a name",
+                  persistent: false,
+                  validationMsg: true,
+                }}
+                label="Colorway"
+                name="colorway"
+                onChange={handleChange}
                 outlined
                 required
-                label="Colorway"
                 value={state.colorway}
-                name="colorway"
-                helpText={{ persistent: false, validationMsg: true, children: "Enter a name" }}
-                onChange={handleChange}
               />
             </div>
           </div>
           <MenuSurfaceAnchor>
             <TextField
               autoComplete="off"
-              outlined
-              label="Designer"
-              required
-              value={state.designer.join(", ")}
-              name="designer"
+              disabled={user.isEditor === false && user.isDesigner}
               helpText={{
-                persistent: true,
                 children: (
                   <>
-                    Separate multiple designers with <code className="multiline">, </code>.
+                    Separate multiple designers with{" "}
+                    <code className="multiline">, </code>.
                   </>
                 ),
+                persistent: true,
               }}
+              label="Designer"
+              name="designer"
+              onBlur={handleBlur}
               onChange={handleChange}
               onFocus={handleFocus}
-              onBlur={handleBlur}
-              disabled={user.isEditor === false && user.isDesigner}
+              outlined
+              required
+              value={state.designer.join(", ")}
             />
             <Autocomplete
-              open={focused === "designer"}
               array={allDesigners}
-              query={state.designer.join(", ")}
-              prop="designer"
-              select={selectValueAppend}
-              minChars={2}
               listSplit
+              minChars={2}
+              open={focused === "designer"}
+              prop="designer"
+              query={state.designer.join(", ")}
+              select={selectValueAppend}
             />
           </MenuSurfaceAnchor>
           <DatePicker
             autoComplete="off"
             icon={iconObject(<CalendarToday />)}
-            outlined
             label="IC date"
-            required
-            value={state.icDate}
             name="icDate"
             onChange={handleNamedChange("icDate")}
+            outlined
+            required
             showNowButton
+            value={state.icDate}
           />
           <TextField
             autoComplete="off"
-            icon="link"
-            outlined
-            label="Details"
-            required
-            pattern={validLink}
-            value={state.details}
-            name="details"
             helpText={{
+              children:
+                state.details.length > 0
+                  ? "Must be valid link"
+                  : "Enter a link",
               persistent: false,
               validationMsg: true,
-              children: state.details.length > 0 ? "Must be valid link" : "Enter a link",
             }}
+            icon="link"
+            label="Details"
+            name="details"
             onChange={handleChange}
+            outlined
+            pattern={validLink}
+            required
+            value={state.details}
           />
           <TextField
-            textarea
-            rows={2}
             autoComplete="off"
-            outlined
             label="Notes"
-            value={state.notes}
             name="notes"
+            onBlur={handleBlur}
             onChange={handleChange}
             onFocus={handleFocus}
-            onBlur={handleBlur}
+            outlined
+            rows={2}
+            textarea
+            value={state.notes}
           />
           <ImageUpload
-            image={state.newImage ? state.image : state.imageURL.replace("keysets", "thumbs")}
-            setImage={setImage}
             desktop={device === "desktop"}
+            image={
+              state.newImage
+                ? state.image
+                : state.imageURL.replace("keysets", "thumbs")
+            }
+            setImage={setImage}
           />
           {dateCard}
-          <Checkbox label="Shipped" id="edit-shipped" name="shipped" checked={state.shipped} onChange={handleChange} />
-          <Typography use="caption" tag="h3" className="subheader">
+          <Checkbox
+            checked={state.shipped}
+            id="edit-shipped"
+            label="Shipped"
+            name="shipped"
+            onChange={handleChange}
+          />
+          <Typography className="subheader" tag="h3" use="caption">
             Vendors
           </Typography>
           <DragDropContext onDragEnd={handleDragVendor}>
             <Droppable droppableId="vendors-edit">
               {(provided) => (
-                <div className="vendors-container" ref={provided.innerRef} {...provided.droppableProps}>
+                <div
+                  ref={provided.innerRef}
+                  className="vendors-container"
+                  {...provided.droppableProps}
+                >
                   {state.vendors.map((vendor, index) => {
                     const endDateField =
                       typeof vendor.endDate === "string" ? (
                         <DatePicker
                           autoComplete="off"
                           icon={iconObject(<CalendarToday />)}
-                          outlined
                           label="End date"
-                          required
-                          value={vendor.endDate || ""}
                           name={"endDate" + index}
                           onChange={handleNamedChangeVendor("endDate", index)}
+                          outlined
+                          required
                           showNowButton
+                          value={vendor.endDate || ""}
                         />
                       ) : null;
                     return (
-                      <Draggable key={vendor.id} draggableId={vendor.id ? vendor.id : index.toString()} index={index}>
+                      <Draggable
+                        key={vendor.id}
+                        draggableId={vendor.id ? vendor.id : index.toString()}
+                        index={index}
+                      >
                         {(provided, snapshot) => (
                           <Card
-                            outlined
-                            className={classNames("vendor-container", { dragged: snapshot.isDragging })}
                             ref={provided.innerRef}
+                            className={classNames("vendor-container", {
+                              dragged: snapshot.isDragging,
+                            })}
+                            outlined
                             {...provided.draggableProps}
                             style={getVendorStyle(provided)}
                           >
                             <div className="title-container">
-                              <Typography use="caption" className="vendor-title">
+                              <Typography
+                                className="vendor-title"
+                                use="caption"
+                              >
                                 {"Vendor " + (index + 1)}
                               </Typography>
                               {withTooltip(
                                 <IconButton
-                                  type="button"
                                   icon={iconObject(<Delete />)}
                                   onClick={() => {
                                     removeVendor(index);
                                   }}
+                                  type="button"
                                 />,
                                 "Delete"
                               )}
                               {withTooltip(
-                                <Icon icon="drag_handle" className="drag-handle" {...provided.dragHandleProps} />,
+                                <Icon
+                                  className="drag-handle"
+                                  icon="drag_handle"
+                                  {...provided.dragHandleProps}
+                                />,
                                 "Drag"
                               )}
                             </div>
@@ -1545,66 +1718,72 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                                 <TextField
                                   autoComplete="off"
                                   icon={iconObject(<Store />)}
-                                  required
-                                  outlined
                                   label="Name"
-                                  value={vendor.name}
                                   name={"name" + index}
+                                  onBlur={handleBlur}
                                   onChange={handleChangeVendor}
                                   onFocus={handleFocus}
-                                  onBlur={handleBlur}
+                                  outlined
+                                  required
+                                  value={vendor.name}
                                 />
                                 <Autocomplete
-                                  open={focused === "name" + index}
                                   array={allVendors}
-                                  query={vendor.name}
-                                  prop={"name" + index}
-                                  select={selectVendor}
                                   minChars={1}
+                                  open={focused === "name" + index}
+                                  prop={"name" + index}
+                                  query={vendor.name}
+                                  select={selectVendor}
                                 />
                               </MenuSurfaceAnchor>
                               <MenuSurfaceAnchor>
                                 <TextField
                                   autoComplete="off"
                                   icon={iconObject(<Public />)}
-                                  required
-                                  outlined
                                   label="Region"
-                                  value={vendor.region}
                                   name={"region" + index}
+                                  onBlur={handleBlur}
                                   onChange={handleChangeVendor}
                                   onFocus={handleFocus}
-                                  onBlur={handleBlur}
+                                  outlined
+                                  required
+                                  value={vendor.region}
                                 />
                                 <Autocomplete
-                                  open={focused === "region" + index}
                                   array={allVendorRegions}
-                                  query={vendor.region}
-                                  prop={"region" + index}
-                                  select={selectVendorAppend}
                                   minChars={1}
+                                  open={focused === "region" + index}
+                                  prop={"region" + index}
+                                  query={vendor.region}
+                                  select={selectVendorAppend}
                                 />
                               </MenuSurfaceAnchor>
                               <TextField
                                 autoComplete="off"
+                                helpText={{
+                                  children: "Must be valid link",
+                                  persistent: false,
+                                  validationMsg: true,
+                                }}
                                 icon="link"
-                                outlined
                                 label="Store link"
-                                pattern={validLink}
-                                value={vendor.storeLink}
                                 name={"storeLink" + index}
+                                onBlur={handleBlur}
                                 onChange={handleChangeVendor}
                                 onFocus={handleFocus}
-                                onBlur={handleBlur}
-                                helpText={{ persistent: false, validationMsg: true, children: "Must be valid link" }}
+                                outlined
+                                pattern={validLink}
+                                value={vendor.storeLink}
                               />
                               <Checkbox
+                                checked={
+                                  !!vendor.endDate || vendor.endDate === ""
+                                }
                                 className="end-date-field"
+                                id={"editEndDate" + index}
                                 label="Different end date"
                                 name={"endDate" + index}
-                                id={"editEndDate" + index}
                                 onChange={handleChangeVendorEndDate}
-                                checked={!!vendor.endDate || vendor.endDate === ""}
                               />
                               {endDateField}
                             </div>
@@ -1619,48 +1798,61 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
             </Droppable>
           </DragDropContext>
           <div className="add-button">
-            <Button type="button" outlined label="Add vendor" onClick={addVendor} />
+            <Button
+              label="Add vendor"
+              onClick={addVendor}
+              outlined
+              type="button"
+            />
           </div>
-          <Card outlined className="sales-container">
-            <Typography use="caption" tag="h3" className="sales-title">
+          <Card className="sales-container" outlined>
+            <Typography className="sales-title" tag="h3" use="caption">
               Sales
             </Typography>
-            <div className={classNames("sales-image", { loaded: state.salesImageLoaded })}>
+            <div
+              className={classNames("sales-image", {
+                loaded: state.salesImageLoaded,
+              })}
+            >
               <div className="sales-image-icon">
                 <Icon icon={iconObject(<AddPhotoAlternate />)} />
               </div>
               <img
-                src={state.salesImg}
                 alt=""
-                onLoad={() => {
-                  setSalesImageLoaded(true);
-                }}
                 onError={() => {
                   setSalesImageLoaded(false);
                 }}
+                onLoad={() => {
+                  setSalesImageLoaded(true);
+                }}
+                src={state.salesImg}
               />
             </div>
             <div className="sales-field">
               <TextField
                 autoComplete="off"
+                helpText={{
+                  children: "Must be direct link to image",
+                  persistent: true,
+                  validationMsg: true,
+                }}
                 icon="link"
-                outlined
                 label="URL"
-                pattern={validLink}
-                value={state.salesImg}
                 name="salesImg"
-                helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
+                onBlur={handleBlur}
                 onChange={handleChange}
                 onFocus={handleFocus}
-                onBlur={handleBlur}
+                outlined
+                pattern={validLink}
+                value={state.salesImg}
               />
               <Checkbox
+                checked={state.salesThirdParty}
                 className="sales-checkbox"
+                id="editSalesThirdParty"
                 label="Third party graph"
                 name="salesThirdParty"
-                id="editSalesThirdParty"
                 onChange={handleChange}
-                checked={state.salesThirdParty}
               />
             </div>
           </Card>

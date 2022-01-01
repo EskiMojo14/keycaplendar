@@ -52,3 +52,4 @@ firestore-debug.log
 ui-debug.log
 .runtimeconfig.json
 desktop.ini
+tsconfig.tsbuildinfo

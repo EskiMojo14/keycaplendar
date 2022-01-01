@@ -12,9 +12,13 @@ type MenuViewProps = {
 export const MenuView = ({ onClose, open }: MenuViewProps) => {
   const view = useAppSelector(selectView);
   return (
-    <Menu anchorCorner="bottomLeft" open={open} onClose={onClose}>
+    <Menu anchorCorner="bottomLeft" onClose={onClose} open={open}>
       {allViews.map((key) => (
-        <MenuItem key={key} selected={view === key} onClick={() => setView(key)}>
+        <MenuItem
+          key={key}
+          onClick={() => setView(key)}
+          selected={view === key}
+        >
           {viewNames[key]}
         </MenuItem>
       ))}

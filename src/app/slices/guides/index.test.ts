@@ -20,12 +20,12 @@ beforeEach(() => {
 });
 
 const blankEntry: GuideEntryType = {
+  body: "",
+  description: "",
   id: "",
   name: "",
-  title: "",
-  description: "",
   tags: [],
-  body: "",
+  title: "",
   visibility: "all",
 };
 

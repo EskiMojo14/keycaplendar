@@ -56,13 +56,28 @@ export const ElementCompact = ({
   };
 
   const liveIndicator = live
-    ? withTooltip(<ListItemGraphic className="live-indicator" icon={iconObject(<NewReleases />)} />, "Live")
+    ? withTooltip(
+        <ListItemGraphic
+          className="live-indicator"
+          icon={iconObject(<NewReleases />)}
+        />,
+        "Live"
+      )
     : null;
   const shipIndicator = set.shipped
-    ? withTooltip(<ListItemGraphic className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
+    ? withTooltip(
+        <ListItemGraphic
+          className="ship-indicator"
+          icon={iconObject(<CheckCircle />)}
+        />,
+        "Shipped"
+      )
     : null;
   return (
-    <ListItem selected={selected} onClick={() => (!selected ? details(set) : closeDetails())}>
+    <ListItem
+      onClick={() => (!selected ? details(set) : closeDetails())}
+      selected={selected}
+    >
       {liveIndicator}
       {shipIndicator}
       <ListItemText>
@@ -75,21 +90,21 @@ export const ElementCompact = ({
         ? withTooltip(
             <IconButton
               className="mdc-list-item__meta"
-              icon="open_in_new"
-              tag="a"
               href={link}
-              target="_blank"
-              rel="noopener noreferrer"
+              icon="open_in_new"
               label={"Link to " + title}
+              rel="noopener noreferrer"
+              tag="a"
+              target="_blank"
             />,
             "Link"
           )
         : withTooltip(
             <ListItemMeta
-              tag={IconButton}
               icon={iconObject(<Share />)}
               label={"Copy link to " + title}
               onClick={copyShareLink}
+              tag={IconButton}
             />,
             "Share"
           )}

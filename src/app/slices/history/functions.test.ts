@@ -1,8 +1,21 @@
 import produce from "immer";
 import store from "~/app/store";
-import { setLoading, setProcessedActions, setRecentSets, setTab } from "@s/history";
-import { generateSets, processActions, setHistoryTab } from "@s/history/functions";
-import type { ProcessedPublicActionType, PublicActionType, RecentSet } from "@s/history/types";
+import {
+  setLoading,
+  setProcessedActions,
+  setRecentSets,
+  setTab,
+} from "@s/history";
+import {
+  generateSets,
+  processActions,
+  setHistoryTab,
+} from "@s/history/functions";
+import type {
+  ProcessedPublicActionType,
+  PublicActionType,
+  RecentSet,
+} from "@s/history/types";
 import { Keyset } from "@s/main/constructors";
 
 jest.mock("~/app/store");
@@ -21,44 +34,49 @@ const tab = "changelog";
 
 const action: PublicActionType = {
   action: "updated",
-  before: {
-    profile: "GMK",
-    colorway: "Test",
-    icDate: "2021-04-02",
-    details: "test",
-  },
   after: {
-    profile: "GMK",
     colorway: "Test",
-    icDate: "2021-04-02",
     details: "test2",
+    icDate: "2021-04-02",
+    profile: "GMK",
   },
-  timestamp: "test",
+  before: {
+    colorway: "Test",
+    details: "test",
+    icDate: "2021-04-02",
+    profile: "GMK",
+  },
   documentId: "test",
+  timestamp: "test",
 };
 
 const processedAction: ProcessedPublicActionType = {
   action: "updated",
-  before: {
-    details: "test",
-  },
   after: {
     details: "test2",
   },
-  timestamp: "test",
+  before: {
+    details: "test",
+  },
   documentId: "test",
+  timestamp: "test",
   title: "GMK Test",
 };
 
-const keyset = { ...new Keyset(), id: "test", profile: "GMK", colorway: "test" };
+const keyset = {
+  ...new Keyset(),
+  colorway: "test",
+  id: "test",
+  profile: "GMK",
+};
 
 const recentSet: RecentSet = {
-  id: "test",
-  title: "GMK Test",
-  latestTimestamp: "test",
-  deleted: false,
   currentSet: keyset,
+  deleted: false,
   designer: [],
+  id: "test",
+  latestTimestamp: "test",
+  title: "GMK Test",
 };
 
 describe("setHistoryTab", () => {
@@ -78,7 +96,10 @@ describe("setHistoryTab", () => {
 describe("processActions", () => {
   it("processes actions and dispatches to state", () => {
     processActions([action]);
-    expect(dispatchSpy).toHaveBeenNthCalledWith(1, setProcessedActions([processedAction]));
+    expect(dispatchSpy).toHaveBeenNthCalledWith(
+      1,
+      setProcessedActions([processedAction])
+    );
     expect(dispatchSpy).toHaveBeenNthCalledWith(2, setLoading(false));
   });
 });

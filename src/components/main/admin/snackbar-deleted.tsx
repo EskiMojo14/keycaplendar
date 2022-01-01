@@ -15,7 +15,24 @@ type SnackbarDeletedProps = {
   set: SetType;
 };
 
-export const SnackbarDeleted = ({ set: { id, ...set }, open, close }: SnackbarDeletedProps) => {
+export const SnackbarDeleted = ({
+  close,
+  open,
+  set: { id, ...set },
+}: SnackbarDeletedProps) => {
+  const user = useAppSelector(selectUser);
+  const deleteImages = async (name: string) => {
+    const folders = await getStorageFolders();
+    const allImages = folders.map((folder) => `${folder}/${name}`);
+    batchStorageDelete(allImages)
+      .then(() => {
+        queue.notify({ title: "Successfully deleted thumbnails." });
+      })
+      .catch((error) => {
+        queue.notify({ title: "Failed to delete thumbnails: " + error });
+        console.log(error);
+      });
+  };
   const closeBar = (recreated = false) => {
     if (!recreated) {
       const fileNameRegex = /keysets%2F(.*)\?/;
@@ -27,7 +44,6 @@ export const SnackbarDeleted = ({ set: { id, ...set }, open, close }: SnackbarDe
     }
     close();
   };
-  const user = useAppSelector(selectUser);
   const recreateEntry = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     firestore
@@ -52,25 +68,13 @@ export const SnackbarDeleted = ({ set: { id, ...set }, open, close }: SnackbarDe
       });
     closeBar(true);
   };
-  const deleteImages = async (name: string) => {
-    const folders = await getStorageFolders();
-    const allImages = folders.map((folder) => `${folder}/${name}`);
-    batchStorageDelete(allImages)
-      .then(() => {
-        queue.notify({ title: "Successfully deleted thumbnails." });
-      })
-      .catch((error) => {
-        queue.notify({ title: "Failed to delete thumbnails: " + error });
-        console.log(error);
-      });
-  };
   return (
     <Snackbar
-      open={open}
-      message={`${set.profile} ${set.colorway} has been deleted.`}
-      onClose={() => closeBar()}
       action={<SnackbarAction label="Undo" onClick={recreateEntry} />}
       dismissesOnAction={false}
+      message={`${set.profile} ${set.colorway} has been deleted.`}
+      onClose={() => closeBar()}
+      open={open}
     />
   );
 };

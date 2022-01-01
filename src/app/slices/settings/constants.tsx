@@ -11,16 +11,16 @@ export const allViews = ["card", "list", "imageList", "compact"] as const;
 
 export const viewNames: Record<ViewType, string> = {
   card: "Card",
-  list: "List",
-  imageList: "Image List",
   compact: "Compact",
+  imageList: "Image List",
+  list: "List",
 };
 
 /** Corresponding icon for specified view, to be used in the app bar. */
 
 export const viewIcons: Record<ViewType, IconPropT> = {
   card: iconObject(<ViewArray />),
-  list: iconObject(<ViewList />),
-  imageList: iconObject(<GridView />),
   compact: iconObject(<ViewColumn />),
+  imageList: iconObject(<GridView />),
+  list: iconObject(<ViewList />),
 };

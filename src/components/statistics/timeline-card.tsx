@@ -14,16 +14,27 @@ import {
 import { IconButton } from "@rmwc/icon-button";
 import { Typography } from "@rmwc/typography";
 import Chartist from "chartist";
-import type { IBarChartOptions, IChartistData, ILineChartOptions, IResponsiveOptionTuple } from "chartist";
+import type {
+  IBarChartOptions,
+  IChartistData,
+  ILineChartOptions,
+  IResponsiveOptionTuple,
+} from "chartist";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
 import classNames from "classnames";
 import ChartistGraph from "react-chartist";
 import { useAppSelector } from "~/app/hooks";
 import { withTooltip } from "@c/util/hocs";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import {
+  SegmentedButton,
+  SegmentedButtonSegment,
+} from "@c/util/segmented-button";
 import { selectDevice } from "@s/common";
-import type { ShippedDataObject, TimelineDataObject } from "@s/statistics/types";
+import type {
+  ShippedDataObject,
+  TimelineDataObject,
+} from "@s/statistics/types";
 import {
   addOrRemove,
   alphabeticalSortPropCurried,
@@ -40,11 +51,11 @@ const customPoint = (data: any) => {
     const circle = new Chartist.Svg(
       "circle",
       {
+        "ct:meta": data.meta,
+        "ct:value": data.value.y,
         cx: [data.x],
         cy: [data.y],
         r: [6],
-        "ct:value": data.value.y,
-        "ct:meta": data.meta,
       },
       "ct-stroked-point"
     );
@@ -54,24 +65,24 @@ const customPoint = (data: any) => {
 
 const listener = { draw: (e: any) => customPoint(e) };
 
-const chartOptions = (monthLabel: string): IBarChartOptions & ILineChartOptions => ({
-  showArea: true,
-  stackBars: true,
-  low: 0,
+const chartOptions = (
+  monthLabel: string
+): IBarChartOptions & ILineChartOptions => ({
   axisY: {
     onlyInteger: true,
   },
   chartPadding: {
-    top: 16,
-    right: 0,
     bottom: 32,
     left: 16,
+    right: 0,
+    top: 16,
   },
+  low: 0,
   plugins: [
     chartistPluginAxisTitle({
       axisX: {
-        axisTitle: monthLabel,
         axisClass: "ct-axis-title",
+        axisTitle: monthLabel,
         offset: {
           x: 0,
           y: 48,
@@ -79,17 +90,19 @@ const chartOptions = (monthLabel: string): IBarChartOptions & ILineChartOptions 
         textAnchor: "middle",
       },
       axisY: {
-        axisTitle: "Count",
         axisClass: "ct-axis-title",
+        axisTitle: "Count",
+        flipTitle: true,
         offset: {
           x: 0,
           y: 24,
         },
-        flipTitle: true,
       },
     }),
     chartistTooltip({ pointClass: "ct-stroked-point" }),
   ],
+  showArea: true,
+  stackBars: true,
 });
 
 const responsiveOptions: IResponsiveOptionTuple<ILineChartOptions>[] = [
@@ -97,7 +110,8 @@ const responsiveOptions: IResponsiveOptionTuple<ILineChartOptions>[] = [
     "(min-width: 1240px) and (max-width: 1600px)",
     {
       axisX: {
-        labelInterpolationFnc: (value: any, index: number) => (index % 2 === 0 ? value : null),
+        labelInterpolationFnc: (value: any, index: number) =>
+          index % 2 === 0 ? value : null,
       },
     },
   ],
@@ -105,7 +119,8 @@ const responsiveOptions: IResponsiveOptionTuple<ILineChartOptions>[] = [
     "(max-width: 1239px)",
     {
       axisX: {
-        labelInterpolationFnc: (value: any, index: number) => (index % 3 === 0 ? value : null),
+        labelInterpolationFnc: (value: any, index: number) =>
+          index % 3 === 0 ? value : null,
       },
     },
   ],
@@ -113,71 +128,89 @@ const responsiveOptions: IResponsiveOptionTuple<ILineChartOptions>[] = [
 
 type ShippedCardProps = {
   data: ShippedDataObject;
-  breakdownData?: ShippedDataObject[];
   months: string[];
-  summary?: boolean;
+  breakdownData?: ShippedDataObject[];
   defaultType?: "bar" | "line";
-  overline?: ReactNode;
   note?: ReactNode;
+  overline?: ReactNode;
+  summary?: boolean;
 };
 
 export const ShippedCard = ({
-  data,
   breakdownData,
-  months,
-  summary,
+  data,
   defaultType = "bar",
-  overline,
+  months,
   note,
+  overline,
+  summary,
 }: ShippedCardProps) => {
   const device = useAppSelector(selectDevice);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [graphType, setGraphType] = useState<"bar" | "line">(defaultType);
   const chartData =
     selectedIndex >= 0 && summary && breakdownData
-      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
+      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[
+          selectedIndex
+        ]
       : data;
   const barChart =
     graphType === "bar" ? (
       <ChartistGraph
-        className={device === "desktop" || summary ? "ct-double-octave" : "ct-major-twelfth"}
+        className={
+          device === "desktop" || summary
+            ? "ct-double-octave"
+            : "ct-major-twelfth"
+        }
         data={{
-          series: [chartData.timeline.shipped, chartData.timeline.unshipped] as IChartistData["series"],
           labels: months.map((label) => label.split(" ").join("\n")),
+          series: [
+            chartData.timeline.shipped,
+            chartData.timeline.unshipped,
+          ] as IChartistData["series"],
         }}
-        type={"Bar"}
         options={chartOptions("Month (GB end)")}
         responsiveOptions={responsiveOptions}
+        type={"Bar"}
       />
     ) : null;
   const lineChart =
     graphType === "line" ? (
       <ChartistGraph
-        className={device === "desktop" || summary ? "ct-double-octave" : "ct-major-twelfth"}
+        className={
+          device === "desktop" || summary
+            ? "ct-double-octave"
+            : "ct-major-twelfth"
+        }
         data={{
-          series: [chartData.timeline.shipped, chartData.timeline.unshipped] as IChartistData["series"],
           labels: months.map((label) => label.split(" ").join("\n")),
+          series: [
+            chartData.timeline.shipped,
+            chartData.timeline.unshipped,
+          ] as IChartistData["series"],
         }}
-        type={"Line"}
         listener={listener}
         options={chartOptions("Month (GB end)")}
         responsiveOptions={responsiveOptions}
+        type={"Line"}
       />
     ) : null;
   const selectChips =
     summary && breakdownData ? (
       <div className="timeline-chips-container">
         <ChipSet choice>
-          {[...breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
-            <Chip
-              key={obj.name}
-              label={obj.name}
-              selected={index === selectedIndex}
-              onInteraction={() => {
-                setSelectedIndex(index === selectedIndex ? -1 : index);
-              }}
-            />
-          ))}
+          {[...breakdownData]
+            .sort(alphabeticalSortPropCurried("name"))
+            .map((obj, index) => (
+              <Chip
+                key={obj.name}
+                label={obj.name}
+                onInteraction={() => {
+                  setSelectedIndex(index === selectedIndex ? -1 : index);
+                }}
+                selected={index === selectedIndex}
+              />
+            ))}
         </ChipSet>
       </div>
     ) : null;
@@ -186,14 +219,14 @@ export const ShippedCard = ({
       <div className="title-container">
         <div className="text-container">
           {overline ? (
-            <Typography use="overline" tag="h3">
+            <Typography tag="h3" use="overline">
               {overline}
             </Typography>
           ) : null}
-          <Typography use="headline5" tag="h1">
+          <Typography tag="h1" use="headline5">
             {data.name}
           </Typography>
-          <Typography use="subtitle2" tag="p">
+          <Typography tag="p" use="subtitle2">
             {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
           </Typography>
         </div>
@@ -202,20 +235,20 @@ export const ShippedCard = ({
             {withTooltip(
               <SegmentedButtonSegment
                 icon="stacked_bar_chart"
-                selected={graphType === "bar"}
                 onClick={() => {
                   setGraphType("bar");
                 }}
+                selected={graphType === "bar"}
               />,
               "Stacked bar chart"
             )}
             {withTooltip(
               <SegmentedButtonSegment
                 icon="multiline_chart"
-                selected={graphType === "line"}
                 onClick={() => {
                   setGraphType("line");
                 }}
+                selected={graphType === "line"}
               />,
               "Multiline chart"
             )}
@@ -255,7 +288,7 @@ export const ShippedCard = ({
         </div>
         {selectChips}
         {note ? (
-          <Typography use="caption" tag="p" className="note">
+          <Typography className="note" tag="p" use="caption">
             {note}
           </Typography>
         ) : null}
@@ -267,36 +300,38 @@ export const ShippedCard = ({
 type TimelinesCardProps = {
   data: TimelineDataObject;
   months: string[];
-  singleTheme?: "primary" | "secondary";
-  defaultType?: "bar" | "line";
-  summary?: boolean;
-  category?: string;
-  focusable?: boolean;
   allProfiles?: string[];
   breakdownData?: TimelineDataObject[];
-  overline?: ReactNode;
+  category?: string;
+  defaultType?: "bar" | "line";
+  focusable?: boolean;
   note?: ReactNode;
+  overline?: ReactNode;
+  singleTheme?: "primary" | "secondary";
+  summary?: boolean;
 };
 
 export const TimelinesCard = ({
-  data,
-  months,
-  singleTheme,
-  defaultType = "bar",
-  summary,
-  category,
-  focusable,
   allProfiles,
   breakdownData,
-  overline,
+  category,
+  data,
+  defaultType = "bar",
+  focusable,
+  months,
   note,
+  overline,
+  singleTheme,
+  summary,
 }: TimelinesCardProps) => {
   const [onlyFocused, setOnlyFocused] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   useEffect(() => setSelectedIndex(-1), [category]);
   const chartData =
     selectedIndex >= 0 && summary && breakdownData
-      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
+      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[
+          selectedIndex
+        ]
       : data;
   const [focused, setFocused] = useState<number[]>([]);
   const [graphType, setGraphType] = useState<"bar" | "line">(defaultType);
@@ -309,7 +344,8 @@ export const TimelinesCard = ({
     if (
       arrayEveryType(
         chartData.timeline.series,
-        (series): series is { index: number } => typeof series === "object" && hasKey(series, "index")
+        (series): series is { index: number } =>
+          typeof series === "object" && hasKey(series, "index")
       ) &&
       chartData.timeline.series.length !== allProfiles?.length
     ) {
@@ -331,11 +367,14 @@ export const TimelinesCard = ({
     allProfiles &&
     arrayEveryType(
       chartData.timeline.series,
-      (series): series is { data: any; index: number } => hasKey(series, "data") && hasKey(series, "index")
+      (series): series is { data: any; index: number } =>
+        hasKey(series, "data") && hasKey(series, "index")
     ) &&
     focused.length > 0 &&
     focused.length !== chartData.timeline.series.length
-      ? chartData.timeline.series.filter((series) => focused.includes(series.index))
+      ? chartData.timeline.series.filter((series) =>
+          focused.includes(series.index)
+        )
       : chartData.timeline.series;
   const barChart =
     graphType === "bar" ? (
@@ -345,9 +384,9 @@ export const TimelinesCard = ({
           labels: months.map((label) => label.split(" ").join("\n")),
           series: chartSeries,
         }}
-        type={"Bar"}
         options={chartOptions("Month")}
         responsiveOptions={responsiveOptions}
+        type={"Bar"}
       />
     ) : null;
   const lineChart =
@@ -358,26 +397,28 @@ export const TimelinesCard = ({
           labels: months.map((label) => label.split(" ").join("\n")),
           series: chartSeries,
         }}
-        type={"Line"}
         listener={listener}
         options={chartOptions("Month")}
         responsiveOptions={responsiveOptions}
+        type={"Line"}
       />
     ) : null;
   const selectChips =
     summary && breakdownData ? (
       <div className="timeline-chips-container">
         <ChipSet choice>
-          {[...breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
-            <Chip
-              key={obj.name}
-              label={obj.name}
-              selected={index === selectedIndex}
-              onInteraction={() => {
-                setSelectedIndex(index === selectedIndex ? -1 : index);
-              }}
-            />
-          ))}
+          {[...breakdownData]
+            .sort(alphabeticalSortPropCurried("name"))
+            .map((obj, index) => (
+              <Chip
+                key={obj.name}
+                label={obj.name}
+                onInteraction={() => {
+                  setSelectedIndex(index === selectedIndex ? -1 : index);
+                }}
+                selected={index === selectedIndex}
+              />
+            ))}
         </ChipSet>
       </div>
     ) : null;
@@ -386,23 +427,27 @@ export const TimelinesCard = ({
       <>
         {withTooltip(
           <IconButton
-            icon={iconObject(<EyeCheck />)}
             disabled={focused.length === chartData.timeline.series.length}
+            icon={iconObject(<EyeCheck />)}
             onClick={focusAll}
           />,
           "Focus all series"
         )}
         {withTooltip(
-          <IconButton icon={iconObject(<EyeRemove />)} disabled={focused.length === 0} onClick={clearFocus} />,
+          <IconButton
+            disabled={focused.length === 0}
+            icon={iconObject(<EyeRemove />)}
+            onClick={clearFocus}
+          />,
           "Clear focus"
         )}
         {withTooltip(
           <IconButton
+            checked={onlyFocused}
             className="primary-on"
             icon={iconObject(<FilterAltOff />)}
-            onIcon={iconObject(<FilterAlt />)}
-            checked={onlyFocused}
             onClick={() => setOnlyFocused((prev) => !prev)}
+            onIcon={iconObject(<FilterAlt />)}
           />,
           "Filter to focused items"
         )}
@@ -413,17 +458,24 @@ export const TimelinesCard = ({
       <div className="timeline-chips-container focus-chips">
         <ChipSet choice>
           {allProfiles.map((profile, index) => {
-            if (chartData.timeline.profiles.includes(profile) || chartData.timeline.profiles.length === 0) {
+            if (
+              chartData.timeline.profiles.includes(profile) ||
+              chartData.timeline.profiles.length === 0
+            ) {
               return (
                 <Chip
                   key={profile}
-                  icon={focused.length && !focused.includes(index) ? iconObject(<Circle />) : "circle"}
+                  className={`focus-chip focus-chip-index-${index}`}
+                  icon={
+                    focused.length && !focused.includes(index)
+                      ? iconObject(<Circle />)
+                      : "circle"
+                  }
                   label={profile}
-                  selected={focused.includes(index)}
                   onInteraction={() => {
                     setFocus(index);
                   }}
-                  className={`focus-chip focus-chip-index-${index}`}
+                  selected={focused.includes(index)}
                 />
               );
             }
@@ -437,14 +489,14 @@ export const TimelinesCard = ({
       <div className="title-container">
         <div className="text-container">
           {overline ? (
-            <Typography use="overline" tag="h3">
+            <Typography tag="h3" use="overline">
               {overline}
             </Typography>
           ) : null}
-          <Typography use="headline5" tag="h1">
+          <Typography tag="h1" use="headline5">
             {data.name}
           </Typography>
-          <Typography use="subtitle2" tag="p">
+          <Typography tag="p" use="subtitle2">
             {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
           </Typography>
         </div>
@@ -454,20 +506,20 @@ export const TimelinesCard = ({
             {withTooltip(
               <SegmentedButtonSegment
                 icon={singleTheme ? "bar_chart" : "stacked_bar_chart"}
-                selected={graphType === "bar"}
                 onClick={() => {
                   setGraphType("bar");
                 }}
+                selected={graphType === "bar"}
               />,
               singleTheme ? "Bar chart" : "Stacked bar chart"
             )}
             {withTooltip(
               <SegmentedButtonSegment
                 icon={singleTheme ? "show_chart" : "multiline_chart"}
-                selected={graphType === "line"}
                 onClick={() => {
                   setGraphType("line");
                 }}
+                selected={graphType === "line"}
               />,
               singleTheme ? "Line chart" : "Multiline chart"
             )}
@@ -479,8 +531,8 @@ export const TimelinesCard = ({
           className={classNames(
             "timeline-chart-container timelines",
             {
-              single: singleTheme,
               focused: focused.length > 0,
+              single: singleTheme,
             },
             typeof singleTheme === "string" ? singleTheme : "",
             focused.map((index) => `series-index-${index}`)
@@ -492,7 +544,7 @@ export const TimelinesCard = ({
         {selectChips}
         {focusChips}
         {note ? (
-          <Typography use="caption" tag="p" className="note">
+          <Typography className="note" tag="p" use="caption">
             {note}
           </Typography>
         ) : null}

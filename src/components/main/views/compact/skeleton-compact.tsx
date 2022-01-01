@@ -9,14 +9,23 @@ import {
 import { SkeletonBlock, SkeletonIcon } from "@c/util/skeleton-block";
 
 export type SkeletonCompactProps = {
-  title: string;
   subtitle: string;
+  title: string;
   icon?: boolean;
 };
 
-export const SkeletonCompact = ({ title, subtitle, icon }: SkeletonCompactProps) => (
-  <ListItem ripple={false} className="skeleton">
-    {icon && <ListItemGraphic className="live-indicator ship-indicator" tag={SkeletonIcon} />}
+export const SkeletonCompact = ({
+  icon,
+  subtitle,
+  title,
+}: SkeletonCompactProps) => (
+  <ListItem className="skeleton" ripple={false}>
+    {icon && (
+      <ListItemGraphic
+        className="live-indicator ship-indicator"
+        tag={SkeletonIcon}
+      />
+    )}
     <ListItemText>
       <ListItemPrimaryText>
         <SkeletonBlock content={title} tag="span" />

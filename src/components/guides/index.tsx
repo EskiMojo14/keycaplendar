@@ -21,7 +21,12 @@ import { AppBarIndent } from "@c/util/app-bar-indent";
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
-import { selectEntries, selectLoading, selectURLEntry, setURLEntry } from "@s/guides";
+import {
+  selectEntries,
+  selectLoading,
+  selectURLEntry,
+  setURLEntry,
+} from "@s/guides";
 import { Guide } from "@s/guides/constructors";
 import { getEntries } from "@s/guides/functions";
 import type { GuideEntryType } from "@s/guides/types";
@@ -57,15 +62,6 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
     }
   }, []);
 
-  useEffect(() => {
-    const id = urlEntry ? urlEntry : "Di1F9XkWTG2M9qbP2ZcN";
-    const index = entries.findIndex((entry) => entry.id === id);
-    if (index >= 0 && device === "desktop") {
-      const { [index]: entry } = entries;
-      setDetailEntry(entry);
-    }
-  }, [entries]);
-
   const blankEntry: GuideEntryType = new Guide();
 
   const [detailEntry, setDetailEntry] = useState(blankEntry);
@@ -93,6 +89,15 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
     }, 300);
     closeModal();
   };
+
+  useEffect(() => {
+    const id = urlEntry ? urlEntry : "Di1F9XkWTG2M9qbP2ZcN";
+    const index = entries.findIndex((entry) => entry.id === id);
+    if (index >= 0 && device === "desktop") {
+      const { [index]: entry } = entries;
+      setDetailEntry(entry);
+    }
+  }, [entries]);
 
   const [createOpen, setCreateOpen] = useState(false);
   const openCreate = () => {
@@ -179,30 +184,54 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
         label={device === "desktop" ? "Create" : null}
         onClick={openCreate}
       />
-      <ModalCreate open={createOpen} onClose={closeCreate} getEntries={getEntries} />
-      <ModalEdit open={editOpen} onClose={closeEdit} entry={editEntry} getEntries={getEntries} />
-      <DialogDelete open={deleteOpen} onClose={closeDelete} entry={deleteEntry} getEntries={getEntries} />
+      <ModalCreate
+        getEntries={getEntries}
+        onClose={closeCreate}
+        open={createOpen}
+      />
+      <ModalEdit
+        entry={editEntry}
+        getEntries={getEntries}
+        onClose={closeEdit}
+        open={editOpen}
+      />
+      <DialogDelete
+        entry={deleteEntry}
+        getEntries={getEntries}
+        onClose={closeDelete}
+        open={deleteOpen}
+      />
     </>
   ) : null;
 
-  const leftButtons = !indent ? <TopAppBarTitle>{pageTitle.guides}</TopAppBarTitle> : buttons;
-  const rightButtons = !indent ? <TopAppBarSection alignEnd>{buttons}</TopAppBarSection> : null;
+  const leftButtons = !indent ? (
+    <TopAppBarTitle>{pageTitle.guides}</TopAppBarTitle>
+  ) : (
+    buttons
+  );
+  const rightButtons = !indent ? (
+    <TopAppBarSection alignEnd>{buttons}</TopAppBarSection>
+  ) : null;
 
   const content =
     device === "desktop" ? (
       <div className="guides-container">
-        <EntriesList openEntry={openDetail} detailEntry={detailEntry} />
+        <EntriesList detailEntry={detailEntry} openEntry={openDetail} />
         <div className="main drawer-margin">
           <div className="guide-container">
             {detailEntry.id ? (
-              <GuideEntry entry={detailEntry} edit={openEdit} delete={openDelete} />
+              <GuideEntry
+                delete={openDelete}
+                edit={openEdit}
+                entry={detailEntry}
+              />
             ) : (
               <div className="empty-container">
-                <img className="image" src={emptyImg} alt="Empty" />
-                <Typography className="title" use="headline6" tag="h3">
+                <img alt="Empty" className="image" src={emptyImg} />
+                <Typography className="title" tag="h3" use="headline6">
                   Nothing to see here
                 </Typography>
-                <Typography className="subtitle" use="body1" tag="p">
+                <Typography className="subtitle" tag="p" use="body1">
                   No guide selected.
                 </Typography>
               </div>
@@ -214,13 +243,13 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
     ) : (
       <div className="guides-container">
         <div className="main">
-          <EntriesList openEntry={openDetail} detailEntry={detailEntry} />
+          <EntriesList detailEntry={detailEntry} openEntry={openDetail} />
           <ModalDetail
-            open={detailOpen}
-            onClose={closeDetail}
-            entry={detailEntry}
-            edit={openEdit}
             delete={openDelete}
+            edit={openEdit}
+            entry={detailEntry}
+            onClose={closeDetail}
+            open={detailOpen}
           />
           <Footer />
         </div>
@@ -230,8 +259,11 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   return (
     <>
       <TopAppBar
+        className={classNames({
+          "bottom-app-bar": bottomNav,
+          "bottom-app-bar--indent": bottomNav && user.isAdmin,
+        })}
         fixed
-        className={classNames({ "bottom-app-bar": bottomNav, "bottom-app-bar--indent": bottomNav && user.isAdmin })}
       >
         <TopAppBarRow>
           <TopAppBarSection alignStart>

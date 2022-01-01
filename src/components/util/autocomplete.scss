@@ -26,7 +26,8 @@
   position: absolute;
   z-index: 0;
   top: top-app-bar.$row-height;
-  transition: animation.standard(min-height, 250ms), animation.standard(max-height, 250ms);
+  transition: animation.standard(min-height, 250ms),
+    animation.standard(max-height, 250ms);
   &--open {
     min-height: calc(100vh - #{top-app-bar.$row-height});
     max-height: calc(100vh - #{top-app-bar.$row-height});

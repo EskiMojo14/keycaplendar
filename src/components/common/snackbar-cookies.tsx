@@ -1,17 +1,17 @@
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 
 type SnackbarCookiesProps = {
-  open: boolean;
   accept: () => void;
   clear: () => void;
+  open: boolean;
 };
 
-export const SnackbarCookies = ({ open, accept }: SnackbarCookiesProps) => (
+export const SnackbarCookies = ({ accept, open }: SnackbarCookiesProps) => (
   <Snackbar
-    open={open}
-    onClose={accept}
-    message="By using this site, you consent to use of cookies to store preferences."
     action={[<SnackbarAction key="accept" label="Accept" onClick={accept} />]}
+    message="By using this site, you consent to use of cookies to store preferences."
+    onClose={accept}
+    open={open}
     timeout={200000}
   />
 );

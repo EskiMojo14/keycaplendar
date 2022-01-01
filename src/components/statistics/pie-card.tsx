@@ -25,39 +25,49 @@ import "./pie-card.scss";
 type StatusCardProps = {
   data: StatusDataObject;
   breakdownData?: StatusDataObject[];
-  summary?: boolean;
-  overline?: ReactNode;
   note?: ReactNode;
+  overline?: ReactNode;
+  summary?: boolean;
 };
 
-export const StatusCard = ({ data, breakdownData, summary, overline, note }: StatusCardProps) => {
+export const StatusCard = ({
+  breakdownData,
+  data,
+  note,
+  overline,
+  summary,
+}: StatusCardProps) => {
   const device = useAppSelector(selectDevice);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const chartData =
     selectedIndex >= 0 && summary && breakdownData
-      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
+      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[
+          selectedIndex
+        ]
       : data;
   const chartOptions: IPieChartOptions = {
     donut: true,
     donutWidth: "50%",
-    showLabel: false,
     plugins: [chartistTooltip()],
+    showLabel: false,
   };
   const sideways = summary && device === "desktop";
   const selectChips =
     summary && breakdownData ? (
       <div className="pie-chips-container">
         <ChipSet choice>
-          {[...breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
-            <Chip
-              key={obj.name}
-              label={obj.name}
-              selected={index === selectedIndex}
-              onInteraction={() => {
-                setSelectedIndex(index === selectedIndex ? -1 : index);
-              }}
-            />
-          ))}
+          {[...breakdownData]
+            .sort(alphabeticalSortPropCurried("name"))
+            .map((obj, index) => (
+              <Chip
+                key={obj.name}
+                label={obj.name}
+                onInteraction={() => {
+                  setSelectedIndex(index === selectedIndex ? -1 : index);
+                }}
+                selected={index === selectedIndex}
+              />
+            ))}
         </ChipSet>
       </div>
     ) : null;
@@ -70,32 +80,41 @@ export const StatusCard = ({ data, breakdownData, summary, overline, note }: Sta
     >
       <div className="title-container">
         {overline ? (
-          <Typography use="overline" tag="h3">
+          <Typography tag="h3" use="overline">
             {overline}
           </Typography>
         ) : null}
-        <Typography use="headline5" tag="h1">
+        <Typography tag="h1" use="headline5">
           {data.name}
         </Typography>
-        <Typography use="subtitle2" tag="p">
+        <Typography tag="p" use="subtitle2">
           {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
         </Typography>
       </div>
-      <div className={classNames("pie-container", { "ct-double-octave": sideways })}>
+      <div
+        className={classNames("pie-container", {
+          "ct-double-octave": sideways,
+        })}
+      >
         <div className="pie-chart-container status">
           <ChartistGraph
             className={sideways ? "ct-square" : "ct-octave"}
             data={{
+              labels: [
+                chartData.ic,
+                chartData.preGb,
+                chartData.liveGb,
+                chartData.postGb,
+              ],
               series: [
                 { meta: "IC", value: chartData.ic },
                 { meta: "Pre GB", value: chartData.preGb },
                 { meta: "Live GB", value: chartData.liveGb },
                 { meta: "Post GB", value: chartData.postGb },
               ],
-              labels: [chartData.ic, chartData.preGb, chartData.liveGb, chartData.postGb],
             }}
-            type="Pie"
             options={chartOptions}
+            type="Pie"
           />
         </div>
         <div className="table-container">
@@ -139,7 +158,7 @@ export const StatusCard = ({ data, breakdownData, summary, overline, note }: Sta
       </div>
       {selectChips}
       {note ? (
-        <Typography use="caption" tag="p" className="note">
+        <Typography className="note" tag="p" use="caption">
           {note}
         </Typography>
       ) : null}

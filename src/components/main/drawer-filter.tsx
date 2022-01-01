@@ -14,7 +14,10 @@ import { is } from "typescript-is";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import {
+  SegmentedButton,
+  SegmentedButtonSegment,
+} from "@c/util/segmented-button";
 import { selectDevice, selectPage } from "@s/common";
 import {
   selectAllProfiles,
@@ -24,13 +27,22 @@ import {
   selectCurrentPreset,
   selectWhitelist,
 } from "@s/main";
-import { showAllPages, whitelistParams, whitelistShipped } from "@s/main/constants";
+import {
+  showAllPages,
+  whitelistParams,
+  whitelistShipped,
+} from "@s/main/constants";
 import { Preset, Whitelist } from "@s/main/constructors";
 import { selectPreset, setWhitelist } from "@s/main/functions";
 import type { PresetType } from "@s/main/types";
 import { selectView } from "@s/settings";
 import { selectUser, selectUserPresets } from "@s/user";
-import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "@s/util/functions";
+import {
+  addOrRemove,
+  alphabeticalSort,
+  hasKey,
+  iconObject,
+} from "@s/util/functions";
 import {
   Favorite,
   FilterEdit,
@@ -50,7 +62,12 @@ type DrawerFilterProps = {
   openPreset: (preset: PresetType) => void;
 };
 
-export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }: DrawerFilterProps) => {
+export const DrawerFilter = ({
+  close,
+  deletePreset: deleteFn,
+  open,
+  openPreset,
+}: DrawerFilterProps) => {
   const device = useAppSelector(selectDevice);
   const page = useAppSelector(selectPage);
 
@@ -62,7 +79,7 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
   const profiles = useAppSelector(selectAllProfiles);
   const vendors = useAppSelector(selectAllVendors);
   const regions = useAppSelector(selectAllRegions);
-  const lists = { profiles, vendors, regions };
+  const lists = { profiles, regions, vendors };
 
   const preset = useAppSelector(selectCurrentPreset);
   const appPresets = useAppSelector(selectAppPresets);
@@ -86,25 +103,52 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
   };
 
   const newPreset = (global = false) => {
-    const { favorites, bought, hidden, profiles, shipped, regions, vendorMode, vendors } = mainWhitelist;
+    const {
+      bought,
+      favorites,
+      hidden,
+      profiles,
+      regions,
+      shipped,
+      vendorMode,
+      vendors,
+    } = mainWhitelist;
     const newWhitelist = {
-      ...new Whitelist(favorites, bought, hidden, profiles, shipped, regions, vendorMode, vendors),
-    };
-    const newPreset = { ...new Preset("", global, newWhitelist) };
-    openPreset(newPreset);
-  };
-
-  const savePreset = () => {
-    const { favorites, bought, hidden, profiles, shipped, regions, vendorMode, vendors } = mainWhitelist;
-    const modifiedPreset = {
-      ...preset,
-      whitelist: {
+      ...new Whitelist(
         favorites,
         bought,
         hidden,
         profiles,
         shipped,
         regions,
+        vendorMode,
+        vendors
+      ),
+    };
+    const newPreset = { ...new Preset("", global, newWhitelist) };
+    openPreset(newPreset);
+  };
+
+  const savePreset = () => {
+    const {
+      bought,
+      favorites,
+      hidden,
+      profiles,
+      regions,
+      shipped,
+      vendorMode,
+      vendors,
+    } = mainWhitelist;
+    const modifiedPreset = {
+      ...preset,
+      whitelist: {
+        bought,
+        favorites,
+        hidden,
+        profiles,
+        regions,
+        shipped,
         vendorMode,
         vendors,
       },
@@ -155,10 +199,14 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
   const invertAll = (prop: string) => {
     if (hasKey(lists, prop)) {
       const { [prop]: all } = lists;
-      const inverted = all.filter((value) => !mainWhitelist[prop].includes(value));
+      const inverted = all.filter(
+        (value) => !mainWhitelist[prop].includes(value)
+      );
       setWhitelist(prop, inverted);
     } else if (prop === "shipped") {
-      const inverted = whitelistShipped.filter((value) => !mainWhitelist[prop].includes(value));
+      const inverted = whitelistShipped.filter(
+        (value) => !mainWhitelist[prop].includes(value)
+      );
       setWhitelist(prop, inverted);
     }
   };
@@ -171,7 +219,10 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
         const whitelist = mainWhitelist;
         const { [plural]: array } = whitelist;
         if (is<string[]>(array) && array.length === 1) {
-          params.set(param, array.map((item: string) => item.replace(" ", "-")).join(" "));
+          params.set(
+            param,
+            array.map((item: string) => item.replace(" ", "-")).join(" ")
+          );
         } else {
           params.delete(param);
         }
@@ -181,22 +232,44 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
         } else {
           params.delete(param);
         }
-      } else if (param === "profiles" || param === "shipped" || param === "regions" || param === "vendors") {
+      } else if (
+        param === "profiles" ||
+        param === "shipped" ||
+        param === "regions" ||
+        param === "vendors"
+      ) {
         const lengths = {
           profiles: profiles.length,
+          regions: regions.length,
           shipped: 2,
           vendors: 0,
-          regions: regions.length,
         };
-        if (param === "profiles" || param === "regions" || param === "vendors") {
-          if (mainWhitelist[param].length > 1 && mainWhitelist[param].length !== lengths[param]) {
-            params.set(param, mainWhitelist[param].map((profile) => profile.replace(" ", "-")).join(" "));
+        if (
+          param === "profiles" ||
+          param === "regions" ||
+          param === "vendors"
+        ) {
+          if (
+            mainWhitelist[param].length > 1 &&
+            mainWhitelist[param].length !== lengths[param]
+          ) {
+            params.set(
+              param,
+              mainWhitelist[param]
+                .map((profile) => profile.replace(" ", "-"))
+                .join(" ")
+            );
           } else {
             params.delete(param);
           }
         } else {
           if (mainWhitelist[param].length !== lengths[param]) {
-            params.set(param, mainWhitelist[param].map((item) => item.replace(" ", "-")).join(" "));
+            params.set(
+              param,
+              mainWhitelist[param]
+                .map((item) => item.replace(" ", "-"))
+                .join(" ")
+            );
           } else {
             params.delete(param);
           }
@@ -217,37 +290,40 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
   const dismissible = device === "desktop" && view !== "compact";
 
   const closeIcon = dismissible
-    ? withTooltip(<IconButton className="close-icon" icon="close" onClick={close} />, "Close")
+    ? withTooltip(
+        <IconButton className="close-icon" icon="close" onClick={close} />,
+        "Close"
+      )
     : null;
 
   const newPresetButton = user.isAdmin ? (
     <div className="preset-buttons">
       <Button
-        label="New"
         icon={iconObject(<FilterVariantPlus />)}
-        outlined
+        label="New"
         onClick={() => {
           newPreset();
         }}
+        outlined
       />
       <Button
-        label="New"
         icon={iconObject(<PublicAdd />)}
-        outlined
+        label="New"
         onClick={() => {
           newPreset(true);
         }}
+        outlined
       />
     </div>
   ) : (
     <div className="preset-button">
       <Button
-        label="New"
         icon={iconObject(<FilterVariantPlus />)}
-        outlined
+        label="New"
         onClick={() => {
           newPreset();
         }}
+        outlined
       />
     </div>
   );
@@ -257,25 +333,27 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
       {newPresetButton}
       <div className="preset-buttons">
         <Button
-          label="Save"
-          icon={iconObject(<FilterEdit />)}
-          outlined
           disabled={
             (user.isAdmin && preset.id === "default") ||
-            (!user.isAdmin && appPresets.map((preset) => preset.id).includes(preset.id))
+            (!user.isAdmin &&
+              appPresets.map((preset) => preset.id).includes(preset.id))
           }
+          icon={iconObject(<FilterEdit />)}
+          label="Save"
           onClick={savePreset}
+          outlined
         />
         <Button
-          label="Delete"
-          icon={iconObject(<FilterVariantRemove />)}
-          outlined
+          className="delete"
           disabled={
             (user.isAdmin && preset.id === "default") ||
-            (!user.isAdmin && appPresets.map((preset) => preset.id).includes(preset.id))
+            (!user.isAdmin &&
+              appPresets.map((preset) => preset.id).includes(preset.id))
           }
-          className="delete"
+          icon={iconObject(<FilterVariantRemove />)}
+          label="Delete"
           onClick={deletePreset}
+          outlined
         />
       </div>
     </>
@@ -286,54 +364,65 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
   const userFilterOptions = user.email ? (
     <div className="group">
       <CollapsibleList
+        className="group-collapsible"
         defaultOpen
         handle={
           <ListItem>
-            <Typography use="caption" className="subheader">
+            <Typography className="subheader" use="caption">
               User
             </Typography>
             <ListItemMeta icon="expand_more" />
           </ListItem>
         }
-        className="group-collapsible"
       >
         <div className="filter-segmented-button-container">
           <SegmentedButton toggle>
             <SegmentedButtonSegment
+              disabled={disableHiddenButtons}
               label="Unhidden"
-              selected={mainWhitelist.hidden === "unhidden" && !showAllPages.includes(page) && !(page === "hidden")}
               onClick={() => handleChange("unhidden", "hidden")}
-              disabled={disableHiddenButtons}
+              selected={
+                mainWhitelist.hidden === "unhidden" &&
+                !showAllPages.includes(page) &&
+                !(page === "hidden")
+              }
             />
             <SegmentedButtonSegment
+              disabled={disableHiddenButtons}
               label="Hidden"
-              selected={(mainWhitelist.hidden === "hidden" && !showAllPages.includes(page)) || page == "hidden"}
               onClick={() => handleChange("hidden", "hidden")}
-              disabled={disableHiddenButtons}
+              selected={
+                (mainWhitelist.hidden === "hidden" &&
+                  !showAllPages.includes(page)) ||
+                page == "hidden"
+              }
             />
             <SegmentedButtonSegment
-              label="All"
-              selected={mainWhitelist.hidden === "all" || (showAllPages.includes(page) && !(page === "hidden"))}
-              onClick={() => handleChange("all", "hidden")}
               disabled={disableHiddenButtons}
+              label="All"
+              onClick={() => handleChange("all", "hidden")}
+              selected={
+                mainWhitelist.hidden === "all" ||
+                (showAllPages.includes(page) && !(page === "hidden"))
+              }
             />
           </SegmentedButton>
         </div>
         <div className="filter-chip-container">
           <ChipSet choice>
             <Chip
-              label="Favorites"
-              icon={iconObject(<Favorite />)}
-              selected={mainWhitelist.favorites || page === "favorites"}
-              onInteraction={() => handleChange("favorites", "favorites")}
               disabled={page === "favorites"}
+              icon={iconObject(<Favorite />)}
+              label="Favorites"
+              onInteraction={() => handleChange("favorites", "favorites")}
+              selected={mainWhitelist.favorites || page === "favorites"}
             />
             <Chip
-              label="Bought"
-              icon={iconObject(<ShoppingBasket />)}
-              selected={mainWhitelist.bought || page === "bought"}
-              onInteraction={() => handleChange("bought", "bought")}
               disabled={page === "bought"}
+              icon={iconObject(<ShoppingBasket />)}
+              label="Bought"
+              onInteraction={() => handleChange("bought", "bought")}
+              selected={mainWhitelist.bought || page === "bought"}
             />
           </ChipSet>
         </div>
@@ -343,40 +432,43 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
 
   return (
     <Drawer
+      className="filter-drawer drawer-right"
       dismissible={dismissible}
       modal={!dismissible}
-      open={open}
       onClose={close}
-      className="filter-drawer drawer-right"
+      open={open}
     >
       <DrawerHeader>
         <DrawerTitle>Filters</DrawerTitle>
         {closeIcon}
       </DrawerHeader>
       <CollapsibleList
+        className="group-collapsible preset-collapsible"
         defaultOpen
         handle={
           <ListItem>
-            <Typography use="caption" className="subheader">
+            <Typography className="subheader" use="caption">
               Preset
             </Typography>
             <ListItemMeta icon="expand_more" />
           </ListItem>
         }
-        className="group-collapsible preset-collapsible"
       >
         <div className="preset-group">
           <Select
-            outlined
+            className={classNames({ modified })}
+            disabled={[...appPresets, ...userPresets].length === 1}
+            enhanced={{ fixed: true }}
             icon={
               userPresets.length > 0
-                ? userPresets.findIndex((userPreset) => userPreset.id === preset.id) >= 0
+                ? userPresets.findIndex(
+                    (userPreset) => userPreset.id === preset.id
+                  ) >= 0
                   ? iconObject(<Person />)
                   : iconObject(<Public />)
                 : null
             }
-            enhanced={{ fixed: true }}
-            value={preset.id}
+            onChange={selectPresetFn}
             options={
               userPresets.length > 0
                 ? [
@@ -392,10 +484,10 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
                         </>
                       ),
                       options: [
-                        { label: "Default", key: "default", value: "default" },
+                        { key: "default", label: "Default", value: "default" },
                         ...appPresets.map((preset) => ({
-                          label: preset.name,
                           key: preset.id,
+                          label: preset.name,
                           value: preset.id,
                         })),
                       ],
@@ -412,74 +504,79 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
                         </>
                       ),
                       options: userPresets.map((preset) => ({
-                        label: preset.name,
                         key: preset.id,
+                        label: preset.name,
                         value: preset.id,
                       })),
                     },
                   ]
                 : [
-                    { label: "Default", key: "default", value: "default" },
+                    { key: "default", label: "Default", value: "default" },
                     ...appPresets.map((preset) => ({
-                      label: preset.name,
                       key: preset.id,
+                      label: preset.name,
                       value: preset.id,
                     })),
                   ]
             }
-            onChange={selectPresetFn}
-            className={classNames({ modified })}
-            disabled={[...appPresets, ...userPresets].length === 1}
+            outlined
+            value={preset.id}
           />
           {userPresetOptions}
         </div>
       </CollapsibleList>
       <div className="top-buttons">
         <Button
-          outlined
-          label="Reset"
+          disabled={!modified}
           icon="restore"
+          label="Reset"
           onClick={() => {
             selectPreset(preset.id);
           }}
-          disabled={!modified}
+          outlined
         />
-        <Button outlined icon="link" label="Copy" onClick={copyLink} disabled={preset.id === "default" && !modified} />
+        <Button
+          disabled={preset.id === "default" && !modified}
+          icon="link"
+          label="Copy"
+          onClick={copyLink}
+          outlined
+        />
       </div>
       <DrawerContent>
         {userFilterOptions}
         <div className="group">
           <CollapsibleList
+            className="group-collapsible"
             defaultOpen
             handle={
               <ListItem>
-                <Typography use="caption" className="subheader">
+                <Typography className="subheader" use="caption">
                   Profile
                 </Typography>
                 <ListItemMeta icon="expand_more" />
               </ListItem>
             }
-            className="group-collapsible"
           >
             <div className="filter-segmented-button-container">
               <SegmentedButton>
                 <SegmentedButtonSegment
-                  label="All"
                   icon="done_all"
+                  label="All"
                   onClick={() => {
                     checkAll("profiles");
                   }}
                 />
                 <SegmentedButtonSegment
-                  label="None"
                   icon="remove_done"
+                  label="None"
                   onClick={() => {
                     uncheckAll("profiles");
                   }}
                 />
                 <SegmentedButtonSegment
-                  label="Invert"
                   icon="published_with_changes"
+                  label="Invert"
                   onClick={() => {
                     invertAll("profiles");
                   }}
@@ -491,10 +588,10 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
                 {profiles.map((profile) => (
                   <Chip
                     key={"profile-" + profile}
-                    label={profile}
-                    selected={mainWhitelist.profiles.includes(profile)}
                     checkmark
+                    label={profile}
                     onInteraction={() => handleChange(profile, "profiles")}
+                    selected={mainWhitelist.profiles.includes(profile)}
                   />
                 ))}
               </ChipSet>
@@ -504,36 +601,36 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
 
         <div className="group">
           <CollapsibleList
+            className="group-collapsible"
             defaultOpen
             handle={
               <ListItem>
-                <Typography use="caption" className="subheader">
+                <Typography className="subheader" use="caption">
                   Shipped
                 </Typography>
                 <ListItemMeta icon="expand_more" />
               </ListItem>
             }
-            className="group-collapsible"
           >
             <div className="filter-segmented-button-container">
               <SegmentedButton>
                 <SegmentedButtonSegment
-                  label="All"
                   icon="done_all"
+                  label="All"
                   onClick={() => {
                     checkAll("shipped");
                   }}
                 />
                 <SegmentedButtonSegment
-                  label="None"
                   icon="remove_done"
+                  label="None"
                   onClick={() => {
                     uncheckAll("shipped");
                   }}
                 />
                 <SegmentedButtonSegment
-                  label="Invert"
                   icon="published_with_changes"
+                  label="Invert"
                   onClick={() => {
                     invertAll("shipped");
                   }}
@@ -545,10 +642,10 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
                 {whitelistShipped.map((prop) => (
                   <Chip
                     key={"shipped-" + prop}
-                    label={prop}
-                    selected={mainWhitelist.shipped.includes(prop)}
                     checkmark
+                    label={prop}
                     onInteraction={() => handleChange(prop, "shipped")}
+                    selected={mainWhitelist.shipped.includes(prop)}
                   />
                 ))}
               </ChipSet>
@@ -558,36 +655,36 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
 
         <div className="group">
           <CollapsibleList
+            className="group-collapsible"
             defaultOpen
             handle={
               <ListItem>
-                <Typography use="caption" className="subheader">
+                <Typography className="subheader" use="caption">
                   Regional vendors
                 </Typography>
                 <ListItemMeta icon="expand_more" />
               </ListItem>
             }
-            className="group-collapsible"
           >
             <div className="filter-segmented-button-container">
               <SegmentedButton>
                 <SegmentedButtonSegment
-                  label="All"
                   icon="done_all"
+                  label="All"
                   onClick={() => {
                     checkAll("regions");
                   }}
                 />
                 <SegmentedButtonSegment
-                  label="None"
                   icon="remove_done"
+                  label="None"
                   onClick={() => {
                     uncheckAll("regions");
                   }}
                 />
                 <SegmentedButtonSegment
-                  label="Invert"
                   icon="published_with_changes"
+                  label="Invert"
                   onClick={() => {
                     invertAll("regions");
                   }}
@@ -599,10 +696,10 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
                 {regions.map((region) => (
                   <Chip
                     key={"regions-" + region}
-                    label={region}
-                    selected={mainWhitelist.regions.includes(region)}
                     checkmark
+                    label={region}
                     onInteraction={() => handleChange(region, "regions")}
+                    selected={mainWhitelist.regions.includes(region)}
                   />
                 ))}
               </ChipSet>
@@ -611,16 +708,16 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
         </div>
         <div className="group">
           <CollapsibleList
+            className="group-collapsible"
             defaultOpen
             handle={
               <ListItem>
-                <Typography use="caption" className="subheader">
+                <Typography className="subheader" use="caption">
                   Vendor
                 </Typography>
                 <ListItemMeta icon="expand_more" />
               </ListItem>
             }
-            className="group-collapsible"
           >
             <div className="filter-segmented-button-container">
               <SegmentedButton toggle>
@@ -643,22 +740,22 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
             <div className="filter-segmented-button-container">
               <SegmentedButton>
                 <SegmentedButtonSegment
-                  label="All"
                   icon="done_all"
+                  label="All"
                   onClick={() => {
                     checkAll("vendors");
                   }}
                 />
                 <SegmentedButtonSegment
-                  label="None"
                   icon="remove_done"
+                  label="None"
                   onClick={() => {
                     uncheckAll("vendors");
                   }}
                 />
                 <SegmentedButtonSegment
-                  label="Invert"
                   icon="published_with_changes"
+                  label="Invert"
                   onClick={() => {
                     invertAll("vendors");
                   }}
@@ -670,10 +767,10 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
                 {vendors.map((vendor) => (
                   <Chip
                     key={"profile-" + vendor}
-                    label={vendor}
-                    selected={mainWhitelist.vendors.includes(vendor)}
                     checkmark
+                    label={vendor}
                     onInteraction={() => handleChange(vendor, "vendors")}
+                    selected={mainWhitelist.vendors.includes(vendor)}
                   />
                 ))}
               </ChipSet>

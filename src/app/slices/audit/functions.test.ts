@@ -16,18 +16,21 @@ afterAll(() => {
   dispatchSpy.mockRestore();
 });
 
-const createExampleAction = (action: ActionType["action"], nickname: ActionType["user"]["nickname"]): ActionType => ({
+const createExampleAction = (
+  action: ActionType["action"],
+  nickname: ActionType["user"]["nickname"]
+): ActionType => ({
   action,
+  after: {},
+  before: {},
   changelogId: "",
   documentId: "",
   timestamp: "",
   user: {
-    nickname,
     displayName: "",
     email: "",
+    nickname,
   },
-  before: {},
-  after: {},
 });
 
 describe("filterActions", () => {
@@ -42,7 +45,10 @@ describe("filterActions", () => {
       draftState.audit.filterUser = "eskimojo";
     });
     filterActions(editedState);
-    expect(dispatchSpy).toHaveBeenNthCalledWith(1, setFilteredActions([createExampleAction("deleted", "eskimojo")]));
+    expect(dispatchSpy).toHaveBeenNthCalledWith(
+      1,
+      setFilteredActions([createExampleAction("deleted", "eskimojo")])
+    );
     expect(dispatchSpy).toHaveBeenNthCalledWith(2, setLoading(false));
   });
 });

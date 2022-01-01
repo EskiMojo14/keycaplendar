@@ -5,15 +5,15 @@ import { Edit, Palette, Shield, ViewArray, ViewList } from "@i";
 export const userRoles = ["designer", "editor", "admin"] as const;
 
 export const formattedUserRoles: Record<typeof userRoles[number], string> = {
+  admin: "Admin",
   designer: "Designer",
   editor: "Editor",
-  admin: "Admin",
 };
 
 export const userRoleIcons: Record<typeof userRoles[number], IconPropT> = {
+  admin: iconObject(<Shield />),
   designer: iconObject(<Palette />),
   editor: iconObject(<Edit />),
-  admin: iconObject(<Shield />),
 };
 
 export const views = ["card", "table"] as const;
@@ -41,13 +41,13 @@ export const sortProps = [
 ] as const;
 
 export const sortLabels: Record<typeof sortProps[number], string> = {
-  displayName: "Name",
-  email: "Email",
-  dateCreated: "Date created",
-  lastSignIn: "Last sign in",
-  lastActive: "Last active",
-  nickname: "Nickname",
-  designer: "Designer",
-  editor: "Editor",
   admin: "Admin",
+  dateCreated: "Date created",
+  designer: "Designer",
+  displayName: "Name",
+  editor: "Editor",
+  email: "Email",
+  lastActive: "Last active",
+  lastSignIn: "Last sign in",
+  nickname: "Nickname",
 };

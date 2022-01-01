@@ -3,7 +3,10 @@ import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import firestore from "@s/firebase/firestore";
-import { selectURLEntry as selectURLGuide, setURLEntry as setURLGuide } from "@s/guides";
+import {
+  selectURLEntry as selectURLGuide,
+  setURLEntry as setURLGuide,
+} from "@s/guides";
 import { setHistoryTab } from "@s/history/functions";
 import type { HistoryTab } from "@s/history/types";
 import {
@@ -21,24 +24,53 @@ import {
   setURLSet,
   setURLWhitelist,
 } from "@s/main";
-import { allSorts, pageSort, pageSortOrder, sortBlacklist, whitelistParams } from "@s/main/constants";
+import {
+  allSorts,
+  pageSort,
+  pageSortOrder,
+  sortBlacklist,
+  whitelistParams,
+} from "@s/main/constants";
 import type { whitelistShipped } from "@s/main/constants";
-import { filterData, getData, setWhitelistMerge, updatePreset } from "@s/main/functions";
+import {
+  filterData,
+  getData,
+  setWhitelistMerge,
+  updatePreset,
+} from "@s/main/functions";
 import type { WhitelistType } from "@s/main/types";
 import { setStatisticsTab } from "@s/statistics/functions";
 import type { StatsTab } from "@s/statistics/types";
-import { selectURLEntry as selectURLUpdate, setURLEntry as setURLUpdate } from "@s/updates";
+import {
+  selectURLEntry as selectURLUpdate,
+  setURLEntry as setURLUpdate,
+} from "@s/updates";
 import { getLinkedFavorites } from "@s/user/functions";
 import { arrayIncludes, camelise, hasKey } from "@s/util/functions";
 import themesMap from "~/_themes.module.scss";
-import { selectPage, setAppPage, setDevice, setOrientation, setThemeMaps } from ".";
+import {
+  selectPage,
+  setAppPage,
+  setDevice,
+  setOrientation,
+  setThemeMaps,
+} from ".";
 import { blankTheme, mainPages, pageTitle, urlPages } from "./constants";
 import type { Page, ThemeMap } from "./types";
 
 const { dispatch } = store;
 
+export const triggerTransition = (delay = 300) => {
+  dispatch(setTransition(true));
+  setTimeout(() => {
+    dispatch(setTransition(false));
+  }, delay);
+};
+
 export const saveTheme = () => {
-  const interpolatedThemeMap = Object.entries(themesMap).reduce<Record<string, ThemeMap>>((prev, [key, val]) => {
+  const interpolatedThemeMap = Object.entries(themesMap).reduce<
+    Record<string, ThemeMap>
+  >((prev, [key, val]) => {
     const [theme, prop] = key.split("|");
 
     const copy = { ...prev };
@@ -59,11 +91,17 @@ export const saveTheme = () => {
 
 export const checkDevice = () => {
   let i = 0;
-  let lastWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+  let lastWidth = Math.max(
+    document.documentElement.clientWidth,
+    window.innerWidth || 0
+  );
   let lastDevice = "tablet";
   let lastOrientation = "landscape";
   const calculate = () => {
-    const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    const vw = Math.max(
+      document.documentElement.clientWidth,
+      window.innerWidth || 0
+    );
     if (vw !== lastWidth || i === 0) {
       if (vw >= 1240) {
         if (lastDevice !== "desktop") {
@@ -84,7 +122,9 @@ export const checkDevice = () => {
       lastWidth = vw;
       i++;
     }
-    const orientation = window.matchMedia("(orientation: portrait)").matches ? "portrait" : "landscape";
+    const orientation = window.matchMedia("(orientation: portrait)").matches
+      ? "portrait"
+      : "landscape";
     if (lastOrientation !== orientation) {
       dispatch(setOrientation(orientation));
       lastOrientation = orientation;
@@ -115,14 +155,17 @@ export const getURLQuery = (state = store.getState()) => {
           dispatch(setAppPage(pageQuery));
           dispatch(
             setMainSort(
-              arrayIncludes(allSorts, sortQuery) && !arrayIncludes(sortBlacklist[sortQuery], pageQuery)
+              arrayIncludes(allSorts, sortQuery) &&
+                !arrayIncludes(sortBlacklist[sortQuery], pageQuery)
                 ? sortQuery
                 : pageSort[pageQuery]
             )
           );
           dispatch(
             setMainSortOrder(
-              sortOrderQuery && (sortOrderQuery === "ascending" || sortOrderQuery === "descending")
+              sortOrderQuery &&
+                (sortOrderQuery === "ascending" ||
+                  sortOrderQuery === "descending")
                 ? sortOrderQuery
                 : pageSortOrder[pageQuery]
             )
@@ -152,7 +195,12 @@ export const getURLQuery = (state = store.getState()) => {
           if (arrayIncludes(plurals, plural)) {
             whitelistObj[plural] = [val.replace("-", " ")];
           }
-        } else if (param === "profiles" || param === "shipped" || param === "vendors" || param === "regions") {
+        } else if (
+          param === "profiles" ||
+          param === "shipped" ||
+          param === "vendors" ||
+          param === "regions"
+        ) {
           const array = val.split(" ").map((item) => item.replace("-", " "));
           if (param === "shipped") {
             if (is<typeof whitelistShipped[number][]>(array)) {
@@ -161,7 +209,10 @@ export const getURLQuery = (state = store.getState()) => {
           } else {
             whitelistObj[param] = array;
           }
-        } else if (param === "vendorMode" && (val === "include" || val === "exclude")) {
+        } else if (
+          param === "vendorMode" &&
+          (val === "include" || val === "exclude")
+        ) {
           whitelistObj[param] = val;
         }
       }
@@ -232,7 +283,9 @@ export const getGlobals = () => {
       if (data) {
         const { filterPresets } = data;
         if (filterPresets) {
-          const updatedPresets = filterPresets.map((preset) => updatePreset(preset));
+          const updatedPresets = filterPresets.map((preset) =>
+            updatePreset(preset)
+          );
           dispatch(setAppPresets(updatedPresets));
         }
       }
@@ -265,7 +318,14 @@ export const setPage = (page: Page, state = store.getState()) => {
     document.title = "KeycapLendar: " + pageTitle[page];
     const params = new URLSearchParams(window.location.search);
     params.delete("page");
-    const pageParams = ["keysetId", "keysetAlias", "keysetName", "guideId", "updateId", "favoritesId"];
+    const pageParams = [
+      "keysetId",
+      "keysetAlias",
+      "keysetName",
+      "guideId",
+      "updateId",
+      "favoritesId",
+    ];
     pageParams.forEach((param) => {
       if (params.has(param)) {
         params.delete(param);
@@ -292,11 +352,4 @@ export const setPage = (page: Page, state = store.getState()) => {
       "/" + page + urlParams
     );
   }
-};
-
-export const triggerTransition = (delay = 300) => {
-  dispatch(setTransition(true));
-  setTimeout(() => {
-    dispatch(setTransition(false));
-  }, delay);
 };

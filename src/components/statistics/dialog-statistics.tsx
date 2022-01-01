@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
+import {
+  Dialog,
+  DialogActions,
+  DialogButton,
+  DialogContent,
+  DialogTitle,
+} from "@rmwc/dialog";
 import { List, ListItem, ListItemMeta } from "@rmwc/list";
 import { Radio } from "@rmwc/radio";
 import { useAppSelector } from "~/app/hooks";
@@ -13,11 +19,13 @@ type DialogStatisticsProps = {
   open: boolean;
 };
 
-export const DialogStatistics = ({ open, onClose }: DialogStatisticsProps) => {
+export const DialogStatistics = ({ onClose, open }: DialogStatisticsProps) => {
   const statisticsTab = useAppSelector(selectTab);
   const settings = useAppSelector(selectSettings);
 
-  const [statistics, setStatistics] = useState<Categories | Properties>("profile");
+  const [statistics, setStatistics] = useState<Categories | Properties>(
+    "profile"
+  );
 
   useEffect(() => {
     if (open) {
@@ -39,7 +47,11 @@ export const DialogStatistics = ({ open, onClose }: DialogStatisticsProps) => {
 
   const applyStatistics = () => {
     const key =
-      statisticsTab === "duration" ? "durationGroup" : statisticsTab === "timelines" ? "timelinesGroup" : statisticsTab;
+      statisticsTab === "duration"
+        ? "durationGroup"
+        : statisticsTab === "timelines"
+        ? "timelinesGroup"
+        : statisticsTab;
     if (hasKey(settings, key) && settings[key] !== statistics) {
       setStatisticsSetting(key, statistics);
     }
@@ -48,10 +60,10 @@ export const DialogStatistics = ({ open, onClose }: DialogStatisticsProps) => {
   return (
     <Dialog
       className="statistics-dialog"
-      open={open}
       onClose={() => {
         onClose();
       }}
+      open={open}
     >
       <DialogTitle>Change category</DialogTitle>
       <DialogContent>
@@ -63,7 +75,11 @@ export const DialogStatistics = ({ open, onClose }: DialogStatisticsProps) => {
           >
             Profile
             <ListItemMeta>
-              <Radio tabIndex={-1} checked={statistics === "profile"} readOnly />
+              <Radio
+                checked={statistics === "profile"}
+                readOnly
+                tabIndex={-1}
+              />
             </ListItemMeta>
           </ListItem>
           <ListItem
@@ -73,7 +89,11 @@ export const DialogStatistics = ({ open, onClose }: DialogStatisticsProps) => {
           >
             Designer
             <ListItemMeta>
-              <Radio tabIndex={-1} checked={statistics === "designer"} readOnly />
+              <Radio
+                checked={statistics === "designer"}
+                readOnly
+                tabIndex={-1}
+              />
             </ListItemMeta>
           </ListItem>
           <ListItem
@@ -83,14 +103,14 @@ export const DialogStatistics = ({ open, onClose }: DialogStatisticsProps) => {
           >
             Vendor
             <ListItemMeta>
-              <Radio tabIndex={-1} checked={statistics === "vendor"} readOnly />
+              <Radio checked={statistics === "vendor"} readOnly tabIndex={-1} />
             </ListItemMeta>
           </ListItem>
         </List>
       </DialogContent>
       <DialogActions>
         <DialogButton action="close">Cancel</DialogButton>
-        <DialogButton action="accept" onClick={applyStatistics} isDefaultAction>
+        <DialogButton action="accept" isDefaultAction onClick={applyStatistics}>
           Confirm
         </DialogButton>
       </DialogActions>

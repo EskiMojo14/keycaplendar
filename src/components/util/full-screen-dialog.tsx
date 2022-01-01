@@ -7,8 +7,8 @@ import "./full-screen-dialog.scss";
 const bemClasses = new BEMHelper("full-screen-dialog");
 
 type FullScreenDialogProps = HTMLAttributes<HTMLDivElement> & {
-  open: boolean;
   onClose: () => void;
+  open: boolean;
 };
 
 export const FullScreenDialog = ({
@@ -22,13 +22,6 @@ export const FullScreenDialog = ({
   const [opening, setOpening] = useState(false);
   const [animate, setAnimate] = useState(false);
   const [closing, setClosing] = useState(false);
-  useEffect(() => {
-    if (propsOpen) {
-      openDialog();
-    } else {
-      closeDialog();
-    }
-  }, [propsOpen]);
   const openDialog = () => {
     setOpen(true);
     setAnimate(true);
@@ -48,18 +41,25 @@ export const FullScreenDialog = ({
       setClosing(false);
     }, 400);
   };
+  useEffect(() => {
+    if (propsOpen) {
+      openDialog();
+    } else {
+      closeDialog();
+    }
+  }, [propsOpen]);
   return (
     <>
       <div
         {...filteredProps}
         className={bemClasses({
+          extra: className,
           modifiers: {
+            animate,
+            closing,
             open,
             opening,
-            closing,
-            animate,
           },
-          extra: className,
         })}
       >
         {children}
@@ -69,13 +69,25 @@ export const FullScreenDialog = ({
   );
 };
 
-export const FullScreenDialogAppBar = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
+export const FullScreenDialogAppBar = ({
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) => (
   <>
-    <TopAppBar {...props} className={bemClasses({ element: "app-bar", extra: className })} />
+    <TopAppBar
+      {...props}
+      className={bemClasses({ element: "app-bar", extra: className })}
+    />
     <TopAppBarFixedAdjust />
   </>
 );
 
-export const FullScreenDialogContent = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
-  <div {...props} className={bemClasses({ element: "content", extra: className })} />
+export const FullScreenDialogContent = ({
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) => (
+  <div
+    {...props}
+    className={bemClasses({ element: "content", extra: className })}
+  />
 );

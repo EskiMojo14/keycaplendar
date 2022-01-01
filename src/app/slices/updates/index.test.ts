@@ -1,5 +1,12 @@
 import { createStore } from "~/app/store";
-import { selectEntries, selectLoading, selectURLEntry, setEntries, setLoading, setURLEntry } from "@s/updates";
+import {
+  selectEntries,
+  selectLoading,
+  selectURLEntry,
+  setEntries,
+  setLoading,
+  setURLEntry,
+} from "@s/updates";
 import type { UpdateEntryType } from "@s/updates/types";
 
 let store = createStore();
@@ -9,12 +16,12 @@ beforeEach(() => {
 });
 
 const blankEntry: UpdateEntryType = {
-  id: "",
-  name: "",
-  title: "",
   body: "",
   date: "",
+  id: "",
+  name: "",
   pinned: false,
+  title: "",
 };
 
 const string = "test";

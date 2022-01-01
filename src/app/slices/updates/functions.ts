@@ -8,6 +8,22 @@ import type { UpdateEntryType } from "./types";
 
 const { dispatch } = store;
 
+export const sortEntries = (entries: UpdateEntryType[]) => {
+  const sortedEntries = entries.sort((a, b) => {
+    if ((a.pinned || b.pinned) && !(a.pinned && b.pinned)) {
+      return a.pinned ? -1 : 1;
+    }
+    return (
+      alphabeticalSortPropCurried<UpdateEntryType, "date">("date", true)(
+        a,
+        b
+      ) || alphabeticalSortPropCurried<UpdateEntryType, "title">("title")(a, b)
+    );
+  });
+  dispatch(setEntries(sortedEntries));
+  dispatch(setLoading(false));
+};
+
 export const getEntries = () => {
   dispatch(setLoading(true));
   firestore
@@ -32,20 +48,6 @@ export const getEntries = () => {
     });
 };
 
-export const sortEntries = (entries: UpdateEntryType[]) => {
-  const sortedEntries = entries.sort((a, b) => {
-    if ((a.pinned || b.pinned) && !(a.pinned && b.pinned)) {
-      return a.pinned ? -1 : 1;
-    }
-    return (
-      alphabeticalSortPropCurried<UpdateEntryType, "date">("date", true)(a, b) ||
-      alphabeticalSortPropCurried<UpdateEntryType, "title">("title")(a, b)
-    );
-  });
-  dispatch(setEntries(sortedEntries));
-  dispatch(setLoading(false));
-};
-
 export const pinEntry = (entry: UpdateEntryType) => {
   firestore
     .collection("updates")
@@ -56,7 +58,11 @@ export const pinEntry = (entry: UpdateEntryType) => {
       getEntries();
     })
     .catch((error) => {
-      console.log(`Failed to ${entry.pinned ? "unpin" : "pin"} entry: ${error}`);
-      queue.notify({ title: `Failed to ${entry.pinned ? "unpin" : "pin"} entry: ${error}` });
+      console.log(
+        `Failed to ${entry.pinned ? "unpin" : "pin"} entry: ${error}`
+      );
+      queue.notify({
+        title: `Failed to ${entry.pinned ? "unpin" : "pin"} entry: ${error}`,
+      });
     });
 };

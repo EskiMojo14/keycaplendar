@@ -22,7 +22,11 @@
     @include rtl.reflexive-box(margin, right, 4px);
   }
   &-total {
-    @include rtl.reflexive-property(margin, $left-value: 14px, $right-value: 36px);
+    @include rtl.reflexive-property(
+      margin,
+      $left-value: 14px,
+      $right-value: 36px
+    );
     white-space: nowrap;
   }
   &-rows-per-page {

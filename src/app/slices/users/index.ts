@@ -5,96 +5,95 @@ import type { sortProps } from "@s/users/constants";
 import type { UserType } from "./types";
 
 type UserState = {
-  view: "card" | "table";
-  loading: boolean;
-  sort: typeof sortProps[number];
-  reverseSort: boolean;
-
   allUsers: UserType[];
-  sortedUsers: UserType[];
-  paginatedUsers: UserType[];
-
-  nextPageToken: string;
-  rowsPerPage: number;
-  page: number;
   indices: {
     first: number;
     last: number;
   };
+  loading: boolean;
+  nextPageToken: string;
+  page: number;
+  paginatedUsers: UserType[];
+  reverseSort: boolean;
+  rowsPerPage: number;
+  sort: typeof sortProps[number];
+  sortedUsers: UserType[];
+  view: "card" | "table";
 };
 
 export const initialState: UserState = {
-  view: "table",
-  loading: false,
-  sort: "editor",
-  reverseSort: false,
-  // users
   allUsers: [],
-  sortedUsers: [],
-  paginatedUsers: [],
-  // pagination
-  nextPageToken: "",
-  rowsPerPage: 25,
-  page: 1,
   indices: {
     first: 0,
     last: 0,
   },
+  loading: false,
+  nextPageToken: "",
+  page: 1,
+  paginatedUsers: [],
+  reverseSort: false,
+  rowsPerPage: 25,
+  sort: "editor",
+  sortedUsers: [],
+  view: "table",
 };
 
 export const usersSlice = createSlice({
-  name: "users",
   initialState,
+  name: "users",
   reducers: {
-    setView: (state, { payload }: PayloadAction<"card" | "table">) => {
-      state.view = payload;
+    setAllUsers: (state, { payload }: PayloadAction<UserType[]>) => {
+      state.allUsers = payload;
+    },
+    setIndices: (
+      state,
+      { payload }: PayloadAction<{ first: number; last: number }>
+    ) => {
+      state.indices = payload;
     },
     setLoading: (state, { payload }: PayloadAction<boolean>) => {
       state.loading = payload;
     },
-    setSort: (state, { payload }: PayloadAction<typeof sortProps[number]>) => {
-      state.sort = payload;
-    },
-    setReverseSort: (state, { payload }: PayloadAction<boolean>) => {
-      state.reverseSort = payload;
-    },
-    setAllUsers: (state, { payload }: PayloadAction<UserType[]>) => {
-      state.allUsers = payload;
-    },
-    setSortedUsers: (state, { payload }: PayloadAction<UserType[]>) => {
-      state.sortedUsers = payload;
-    },
-    setPaginatedUsers: (state, { payload }: PayloadAction<UserType[]>) => {
-      state.paginatedUsers = payload;
-    },
     setNextPageToken: (state, { payload }: PayloadAction<string>) => {
       state.nextPageToken = payload;
-    },
-    setRowsPerPage: (state, { payload }: PayloadAction<number>) => {
-      state.rowsPerPage = payload;
     },
     setPage: (state, { payload }: PayloadAction<number>) => {
       state.page = payload;
     },
-    setIndices: (state, { payload }: PayloadAction<{ first: number; last: number }>) => {
-      state.indices = payload;
+    setPaginatedUsers: (state, { payload }: PayloadAction<UserType[]>) => {
+      state.paginatedUsers = payload;
+    },
+    setReverseSort: (state, { payload }: PayloadAction<boolean>) => {
+      state.reverseSort = payload;
+    },
+    setRowsPerPage: (state, { payload }: PayloadAction<number>) => {
+      state.rowsPerPage = payload;
+    },
+    setSort: (state, { payload }: PayloadAction<typeof sortProps[number]>) => {
+      state.sort = payload;
+    },
+    setSortedUsers: (state, { payload }: PayloadAction<UserType[]>) => {
+      state.sortedUsers = payload;
+    },
+    setView: (state, { payload }: PayloadAction<"card" | "table">) => {
+      state.view = payload;
     },
   },
 });
 
 export const {
   actions: {
-    setView,
-    setLoading,
-    setSort,
-    setReverseSort,
     setAllUsers,
-    setSortedUsers,
-    setPaginatedUsers,
-    setNextPageToken,
-    setRowsPerPage,
-    setPage,
     setIndices,
+    setLoading,
+    setNextPageToken,
+    setPage,
+    setPaginatedUsers,
+    setReverseSort,
+    setRowsPerPage,
+    setSort,
+    setSortedUsers,
+    setView,
   },
 } = usersSlice;
 
@@ -110,9 +109,11 @@ export const selectAllUsers = (state: RootState) => state.users.allUsers;
 
 export const selectSortedUsers = (state: RootState) => state.users.sortedUsers;
 
-export const selectPaginatedUsers = (state: RootState) => state.users.paginatedUsers;
+export const selectPaginatedUsers = (state: RootState) =>
+  state.users.paginatedUsers;
 
-export const selectNextPageToken = (state: RootState) => state.users.nextPageToken;
+export const selectNextPageToken = (state: RootState) =>
+  state.users.nextPageToken;
 
 export const selectRowsPerPage = (state: RootState) => state.users.rowsPerPage;
 

@@ -3,13 +3,19 @@ import { SkeletonBlock, SkeletonIcon } from "@c/util/skeleton-block";
 
 export type SkeletonCardProps = {
   designer?: string;
-  title?: string;
-  subtitle?: string;
-  loggedIn?: boolean;
   icon?: boolean;
+  loggedIn?: boolean;
+  subtitle?: string;
+  title?: string;
 };
 
-export const SkeletonCard = ({ designer, title, subtitle, icon, loggedIn }: SkeletonCardProps) => (
+export const SkeletonCard = ({
+  designer,
+  icon,
+  loggedIn,
+  subtitle,
+  title,
+}: SkeletonCardProps) => (
   <div className="card-container">
     <Card className="skeleton">
       <div className="content">
@@ -20,7 +26,12 @@ export const SkeletonCard = ({ designer, title, subtitle, icon, loggedIn }: Skel
           <div className="text-container">
             <div className="overline">
               <div className="overline-container">
-                <SkeletonBlock typography="overline" content={designer} constrain tag="span" />
+                <SkeletonBlock
+                  constrain
+                  content={designer}
+                  tag="span"
+                  typography="overline"
+                />
               </div>
               {icon && (
                 <div className="skeleton-icon-container">
@@ -29,10 +40,14 @@ export const SkeletonCard = ({ designer, title, subtitle, icon, loggedIn }: Skel
               )}
             </div>
             <div className="title">
-              <SkeletonBlock typography="headline5" content={title} />
+              <SkeletonBlock content={title} typography="headline5" />
             </div>
             <div className="subtitle">
-              <SkeletonBlock typography="subtitle2" content={subtitle} tag="span" />
+              <SkeletonBlock
+                content={subtitle}
+                tag="span"
+                typography="subtitle2"
+              />
             </div>
           </div>
         </div>
@@ -40,7 +55,12 @@ export const SkeletonCard = ({ designer, title, subtitle, icon, loggedIn }: Skel
       {loggedIn && (
         <CardActions>
           <div className="skeleton-button">
-            <SkeletonBlock typography="button" content="Share" colour="var(--theme-primary)" constrain />
+            <SkeletonBlock
+              colour="var(--theme-primary)"
+              constrain
+              content="Share"
+              typography="button"
+            />
           </div>
           <SkeletonIcon />
           <SkeletonIcon />

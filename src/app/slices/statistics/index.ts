@@ -1,128 +1,30 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import type { StatisticsData, StatisticsSortType, StatisticsType, StatsTab } from "./types";
+import type {
+  StatisticsData,
+  StatisticsSortType,
+  StatisticsType,
+  StatsTab,
+} from "./types";
 
 type StatisticsState = {
-  tab: StatsTab;
-  loading: boolean;
   data: StatisticsData;
+  loading: boolean;
   settings: StatisticsType;
   sort: StatisticsSortType;
+  tab: StatsTab;
 };
 
 export const initialState: StatisticsState = {
-  tab: "summary",
-  loading: false,
   data: {
-    timelines: {
-      icDate: {
-        summary: {
-          count: {
-            name: "ICs per month",
-            total: 0,
-            timeline: {
-              profiles: [],
-              series: [],
-            },
-          },
-          breakdown: {
-            name: "ICs per month by profile",
-            total: 0,
-            timeline: {
-              profiles: [],
-              series: [],
-            },
-          },
-        },
-        months: [],
-        allProfiles: [],
-        breakdown: {
-          profile: [],
-          designer: [],
-          vendor: [],
-        },
-      },
-      gbLaunch: {
-        summary: {
-          count: {
-            name: "GBs per month",
-            total: 0,
-            timeline: {
-              profiles: [],
-              series: [],
-            },
-          },
-          breakdown: {
-            name: "GBs per month by profile",
-            total: 0,
-            timeline: {
-              profiles: [],
-              series: [],
-            },
-          },
-        },
-        months: [],
-        allProfiles: [],
-        breakdown: {
-          profile: [],
-          designer: [],
-          vendor: [],
-        },
-      },
-    },
-    status: {
-      summary: {
-        name: "Current keyset status",
-        total: 0,
-        ic: 0,
-        preGb: 0,
-        liveGb: 0,
-        postGb: 0,
-      },
-      breakdown: {
-        profile: [],
-        designer: [],
-        vendor: [],
-      },
-    },
-    shipped: {
-      summary: {
-        name: "Shipped sets by GB month",
-        total: 0,
-        shipped: 0,
-        unshipped: 0,
-        timeline: {
-          shipped: [],
-          unshipped: [],
-        },
-      },
-      months: [],
-      breakdown: {
-        profile: [],
-        designer: [],
-        vendor: [],
-      },
-    },
     duration: {
-      icDate: {
-        summary: {
-          chartData: { labels: [], series: [] },
-          mean: 0,
-          median: 0,
-          mode: [],
-          name: "IC duration (months)",
-          range: "",
-          standardDev: 0,
-          total: 0,
-        },
+      gbLaunch: {
         breakdown: {
-          profile: [],
           designer: [],
+          profile: [],
           vendor: [],
         },
-      },
-      gbLaunch: {
         summary: {
           chartData: { labels: [], series: [] },
           mean: 0,
@@ -133,14 +35,120 @@ export const initialState: StatisticsState = {
           standardDev: 0,
           total: 0,
         },
+      },
+      icDate: {
         breakdown: {
-          profile: [],
           designer: [],
+          profile: [],
           vendor: [],
+        },
+        summary: {
+          chartData: { labels: [], series: [] },
+          mean: 0,
+          median: 0,
+          mode: [],
+          name: "IC duration (months)",
+          range: "",
+          standardDev: 0,
+          total: 0,
+        },
+      },
+    },
+    shipped: {
+      breakdown: {
+        designer: [],
+        profile: [],
+        vendor: [],
+      },
+      months: [],
+      summary: {
+        name: "Shipped sets by GB month",
+        shipped: 0,
+        timeline: {
+          shipped: [],
+          unshipped: [],
+        },
+        total: 0,
+        unshipped: 0,
+      },
+    },
+    status: {
+      breakdown: {
+        designer: [],
+        profile: [],
+        vendor: [],
+      },
+      summary: {
+        ic: 0,
+        liveGb: 0,
+        name: "Current keyset status",
+        postGb: 0,
+        preGb: 0,
+        total: 0,
+      },
+    },
+    timelines: {
+      gbLaunch: {
+        allProfiles: [],
+        breakdown: {
+          designer: [],
+          profile: [],
+          vendor: [],
+        },
+        months: [],
+        summary: {
+          breakdown: {
+            name: "GBs per month by profile",
+            timeline: {
+              profiles: [],
+              series: [],
+            },
+            total: 0,
+          },
+          count: {
+            name: "GBs per month",
+            timeline: {
+              profiles: [],
+              series: [],
+            },
+            total: 0,
+          },
+        },
+      },
+      icDate: {
+        allProfiles: [],
+        breakdown: {
+          designer: [],
+          profile: [],
+          vendor: [],
+        },
+        months: [],
+        summary: {
+          breakdown: {
+            name: "ICs per month by profile",
+            timeline: {
+              profiles: [],
+              series: [],
+            },
+            total: 0,
+          },
+          count: {
+            name: "ICs per month",
+            timeline: {
+              profiles: [],
+              series: [],
+            },
+            total: 0,
+          },
         },
       },
     },
     vendors: {
+      breakdown: {
+        designer: [],
+        profile: [],
+        vendor: [],
+      },
       summary: {
         chartData: { labels: [], series: [] },
         mean: 0,
@@ -151,39 +159,33 @@ export const initialState: StatisticsState = {
         standardDev: 0,
         total: 0,
       },
-      breakdown: {
-        profile: [],
-        designer: [],
-        vendor: [],
-      },
     },
   },
+  loading: false,
   settings: {
+    durationCat: "gbLaunch",
+    durationGroup: "profile",
+    shipped: "profile",
+    status: "profile",
     summary: "gbLaunch",
     timelinesCat: "gbLaunch",
     timelinesGroup: "profile",
-    status: "profile",
-    shipped: "profile",
-    durationCat: "gbLaunch",
-    durationGroup: "profile",
     vendors: "profile",
   },
   sort: {
-    timelines: "total",
-    status: "total",
-    shipped: "total",
     duration: "total",
+    shipped: "total",
+    status: "total",
+    timelines: "total",
     vendors: "total",
   },
+  tab: "summary",
 };
 
 export const statisticsSlice = createSlice({
-  name: "statistics",
   initialState,
+  name: "statistics",
   reducers: {
-    setStatsTab: (state, { payload }: PayloadAction<StatsTab>) => {
-      state.tab = payload;
-    },
     setLoading: (state, { payload }: PayloadAction<boolean>) => {
       state.loading = payload;
     },
@@ -204,18 +206,31 @@ export const statisticsSlice = createSlice({
       const { key, value } = payload;
       state.sort[key] = value;
     },
+    setStatsTab: (state, { payload }: PayloadAction<StatsTab>) => {
+      state.tab = payload;
+    },
   },
 });
 
 export const {
-  actions: { setStatsTab, setLoading, setStatisticsData, setStatisticsSettingState, setStatisticsSortState },
+  actions: {
+    setLoading,
+    setStatisticsData,
+    setStatisticsSettingState,
+    setStatisticsSortState,
+    setStatsTab,
+  },
 } = statisticsSlice;
 
-export const setStatisticsSetting = <T extends keyof StatisticsType>(key: T, value: StatisticsType[T]) =>
-  setStatisticsSettingState({ key, value });
+export const setStatisticsSetting = <T extends keyof StatisticsType>(
+  key: T,
+  value: StatisticsType[T]
+) => setStatisticsSettingState({ key, value });
 
-export const setStatisticsSort = <T extends keyof StatisticsSortType>(key: T, value: StatisticsSortType[T]) =>
-  setStatisticsSortState({ key, value });
+export const setStatisticsSort = <T extends keyof StatisticsSortType>(
+  key: T,
+  value: StatisticsSortType[T]
+) => setStatisticsSortState({ key, value });
 
 export const selectTab = (state: RootState) => state.statistics.tab;
 

@@ -12,8 +12,18 @@ type SegmentedButtonProps = DivProps & {
   toggle?: boolean;
 };
 
-export const SegmentedButton = ({ toggle, className, ...filteredProps }: SegmentedButtonProps) => (
-  <div {...filteredProps} className={bemClasses({ modifiers: { toggle: !!toggle }, extra: className })} />
+export const SegmentedButton = ({
+  className,
+  toggle,
+  ...filteredProps
+}: SegmentedButtonProps) => (
+  <div
+    {...filteredProps}
+    className={bemClasses({
+      extra: className,
+      modifiers: { toggle: !!toggle },
+    })}
+  />
 );
 
 type SegmentedButtonSegmentProps = ButtonHTMLProps &
@@ -22,16 +32,20 @@ type SegmentedButtonSegmentProps = ButtonHTMLProps &
   };
 
 export const SegmentedButtonSegment = ({
-  selected = false,
+  className,
   icon,
   label,
-  className,
+  selected = false,
   ...props
 }: SegmentedButtonSegmentProps) => (
   <Button
     {...props}
     {...{ icon, label }}
+    className={bemClasses(
+      "segment",
+      { "only-icon": !!icon && !label, selected },
+      className
+    )}
     outlined
-    className={bemClasses("segment", { "only-icon": !!icon && !label, selected }, className)}
   />
 );

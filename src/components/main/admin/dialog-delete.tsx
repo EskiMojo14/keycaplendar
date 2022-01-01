@@ -1,5 +1,11 @@
 import type { MouseEvent } from "react";
-import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
+import {
+  Dialog,
+  DialogActions,
+  DialogButton,
+  DialogContent,
+  DialogTitle,
+} from "@rmwc/dialog";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import firestore from "@s/firebase/firestore";
@@ -15,7 +21,12 @@ type DialogDeleteProps = {
   set: SetType;
 };
 
-export const DialogDelete = ({ close, open, openSnackbar, set }: DialogDeleteProps) => {
+export const DialogDelete = ({
+  close,
+  open,
+  openSnackbar,
+  set,
+}: DialogDeleteProps) => {
   const user = useAppSelector(selectUser);
   const deleteEntry = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -38,12 +49,18 @@ export const DialogDelete = ({ close, open, openSnackbar, set }: DialogDeletePro
   return (
     <Dialog open={open}>
       <DialogTitle>{`Delete ${set.profile} ${set.colorway}`}</DialogTitle>
-      <DialogContent>{`Are you sure you want to delete the entry for ${set.profile} ${set.colorway}`}?</DialogContent>
+      <DialogContent>
+        {`Are you sure you want to delete the entry for ${set.profile} ${set.colorway}`}
+        ?
+      </DialogContent>
       <DialogActions>
-        <DialogButton action="close" onClick={close} isDefaultAction>
+        <DialogButton action="close" isDefaultAction onClick={close}>
           Cancel
         </DialogButton>
-        <DialogButton /*action="accept"*/ className="delete" onClick={deleteEntry}>
+        <DialogButton
+          /*action="accept"*/ className="delete"
+          onClick={deleteEntry}
+        >
           Delete
         </DialogButton>
       </DialogActions>

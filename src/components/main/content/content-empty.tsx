@@ -12,11 +12,11 @@ export const ContentEmpty = () => {
   const hidden = useAppSelector(selectHidden);
   return (
     <div className="empty-container">
-      <img className="image" src={emptyImg} alt="Empty" />
-      <Typography className="title" use="headline6" tag="h3">
+      <img alt="Empty" className="image" src={emptyImg} />
+      <Typography className="title" tag="h3" use="headline6">
         Nothing to see here
       </Typography>
-      <Typography className="subtitle" use="body1" tag="p">
+      <Typography className="subtitle" tag="p" use="body1">
         {page === "favorites" && favorites.length === 0
           ? "No sets currently favorited."
           : page === "hidden" && hidden.length === 0

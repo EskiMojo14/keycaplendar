@@ -1,17 +1,28 @@
-import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
+import {
+  Dialog,
+  DialogActions,
+  DialogButton,
+  DialogContent,
+  DialogTitle,
+} from "@rmwc/dialog";
 import { queue } from "~/app/snackbar-queue";
 import firestore from "@s/firebase/firestore";
 import type { UpdateId } from "@s/firebase/types";
 import type { UpdateEntryType } from "@s/updates/types";
 
 type DialogDeleteProps = {
-  open: boolean;
-  onClose: () => void;
-  getEntries: () => void;
   entry: UpdateEntryType;
+  getEntries: () => void;
+  onClose: () => void;
+  open: boolean;
 };
 
-export const DialogDelete = ({ open, onClose, getEntries, entry }: DialogDeleteProps) => {
+export const DialogDelete = ({
+  entry,
+  getEntries,
+  onClose,
+  open,
+}: DialogDeleteProps) => {
   const deleteEntry = () => {
     firestore
       .collection("updates")
@@ -28,14 +39,19 @@ export const DialogDelete = ({ open, onClose, getEntries, entry }: DialogDeleteP
       });
   };
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog onClose={onClose} open={open}>
       <DialogTitle>Delete &ldquo;{entry.title}&rdquo;</DialogTitle>
       <DialogContent>
-        Are you sure you want to delete the update entry &ldquo;{entry.title}&rdquo;? This cannot be undone.
+        Are you sure you want to delete the update entry &ldquo;{entry.title}
+        &rdquo;? This cannot be undone.
       </DialogContent>
       <DialogActions>
         <DialogButton label="Cancel" onClick={onClose} />
-        <DialogButton label="Confirm" onClick={deleteEntry} className="delete" />
+        <DialogButton
+          className="delete"
+          label="Confirm"
+          onClick={deleteEntry}
+        />
       </DialogActions>
     </Dialog>
   );

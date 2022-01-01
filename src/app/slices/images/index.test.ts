@@ -31,9 +31,9 @@ beforeEach(() => {
 const folder = "test";
 
 const image: ImageType = {
+  fullPath: "",
   name: "",
   parent: "",
-  fullPath: "",
   src: "",
 };
 

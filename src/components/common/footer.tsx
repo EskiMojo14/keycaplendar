@@ -10,14 +10,14 @@ export const Footer = () => {
   const cannonkeysLogo = (
     <svg
       className="cannonkeys"
-      version="1.1"
       id="Layer_1"
+      version="1.1"
+      viewBox="0 0 1029.5 348.18"
+      x="0px"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      x="0px"
-      y="0px"
-      viewBox="0 0 1029.5 348.18"
       xmlSpace="preserve"
+      y="0px"
     >
       <g>
         <g>
@@ -114,11 +114,11 @@ export const Footer = () => {
   const prototypistLogo = (
     <svg
       className="prototypist"
-      version="1.1"
       id="Layer_1"
+      version="1.1"
+      viewBox="0 0 247.0917358 71.4936523"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      viewBox="0 0 247.0917358 71.4936523"
       xmlSpace="preserve"
     >
       <g>
@@ -216,14 +216,24 @@ export const Footer = () => {
   );
   const latamkeysLogo = (
     <div className="latamkeys">
-      <img src={latamkeysLogoImg} className="latamkeys-img" />
-      <svg className="latamkeys-text" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 405.3 59.5">
-        <path d="M38.65,103.2H5.15V45.3h3.2v55h30.4v2.9Z" transform="translate(-5.15 -44.5)" />
+      <img className="latamkeys-img" src={latamkeysLogoImg} />
+      <svg
+        className="latamkeys-text"
+        viewBox="0 0 405.3 59.5"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M38.65,103.2H5.15V45.3h3.2v55h30.4v2.9Z"
+          transform="translate(-5.15 -44.5)"
+        />
         <path
           d="M78.65,83.9h-26l-7.2,19.3H42l22.1-57.9h3.2l22,57.9h-3.4Zm-25-2.9h24L65.75,49.4h-.2Z"
           transform="translate(-5.15 -44.5)"
         />
-        <path d="M103.05,103.2v-55H82.65V45.3h44v2.9h-20.4v55Z" transform="translate(-5.15 -44.5)" />
+        <path
+          d="M103.05,103.2v-55H82.65V45.3h44v2.9h-20.4v55Z"
+          transform="translate(-5.15 -44.5)"
+        />
         <path
           d="M156.65,83.9h-26l-7.2,19.3H120l22.1-57.9h3.2l22,57.9h-3.4Zm-25-2.9h24l-11.9-31.6h-.2Z"
           transform="translate(-5.15 -44.5)"
@@ -253,95 +263,127 @@ export const Footer = () => {
   );
   return (
     <div className="footer">
-      <Typography use="body2" tag="div">
+      <Typography tag="div" use="body2">
         Site created by{" "}
         {withTooltip(<span className="bold">Ben Durrant</span>, "eskimojo", {
           align: "top",
-          showArrow: true,
           enterDelay: 0,
+          showArrow: true,
         })}
         , inspired by the spreadsheet created by{" "}
-        {withTooltip(<span className="bold">Jeff Langeland</span>, "Langelandia", {
-          align: "top",
-          showArrow: true,
-          enterDelay: 0,
-        })}
+        {withTooltip(
+          <span className="bold">Jeff Langeland</span>,
+          "Langelandia",
+          {
+            align: "top",
+            enterDelay: 0,
+            showArrow: true,
+          }
+        )}
         .
       </Typography>
-      <Typography use="body2" tag="div">
+      <Typography tag="div" use="body2">
         Something to add/adjust? Join my{" "}
         <Button
-          label="Discord"
-          icon={iconObject(<Discord />)}
-          tag="a"
           href="https://discord.gg/zrcN3qF"
-          target="_blank"
+          icon={iconObject(<Discord />)}
+          label="Discord"
           rel="noopener noreferrer"
+          tag="a"
+          target="_blank"
         />{" "}
         and let us know, or contact me via{" "}
         {withTooltip(
           <Button
-            label="Email"
-            icon={iconObject(<Email />)}
-            tag="a"
             href="mailto:keycaplendar@gmail.com?subject=KeycapLendar%20Change"
-            target="_blank"
+            icon={iconObject(<Email />)}
+            label="Email"
             rel="noopener noreferrer"
+            tag="a"
+            target="_blank"
           />,
           "keycaplendar@gmail.com",
-          { align: "top", showArrow: true, enterDelay: 0 }
+          { align: "top", enterDelay: 0, showArrow: true }
         )}
-        . Please note that for your IC to be added to the site, it needs a render of the keyset on a board (not rendered
-        by keycaprenders.com).
+        . Please note that for your IC to be added to the site, it needs a
+        render of the keyset on a board (not rendered by keycaprenders.com).
       </Typography>
-      <Typography use="body2" tag="div">
+      <Typography tag="div" use="body2">
         Please direct bug reports or feature requests to this project&apos;s{" "}
         <Button
-          label="Github"
-          icon={iconObject(<Github />)}
-          tag="a"
           href="https://github.com/EskiMojo14/keycaplendar/issues"
-          target="_blank"
+          icon={iconObject(<Github />)}
+          label="Github"
           rel="noopener noreferrer"
+          tag="a"
+          target="_blank"
         />{" "}
         page.
       </Typography>
-      <Typography use="body2" tag="div">
+      <Typography tag="div" use="body2">
         Appreciate what I do and want to support me? Check out my{" "}
         <Button
-          label="Ko-Fi"
-          icon={iconObject(<Kofi />)}
-          tag="a"
           href="https://ko-fi.com/eskimojo"
-          target="_blank"
+          icon={iconObject(<Kofi />)}
+          label="Ko-Fi"
           rel="noopener noreferrer"
+          tag="a"
+          target="_blank"
         />
         !
       </Typography>
       <div className="sponsors-container">
-        <Typography use="body2" tag="p">
+        <Typography tag="p" use="body2">
           <span className="bold">Kindly sponsored by:</span>
         </Typography>
         <div className="sponsors">
-          <a href="https://cannonkeys.com/" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://cannonkeys.com/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
             {cannonkeysLogo}
           </a>
-          <a href="https://prototypist.net/" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://prototypist.net/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
             {prototypistLogo}
           </a>
-          <a href="https://www.deskhero.ca/" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://www.deskhero.ca/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
             <div className="deskhero">
               Desk<span className="accent">[H]</span>ero
             </div>
           </a>
-          <a href="https://latamkeys.com/" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://latamkeys.com/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
             {latamkeysLogo}
           </a>
         </div>
       </div>
       <div className="button-container">
-        <Button label="Privacy Policy" tag="a" href="./privacy" target="_blank" rel="noopener noreferrer" />
-        <Button label="Terms of Service" tag="a" href="./terms" target="_blank" rel="noopener noreferrer" />
+        <Button
+          href="./privacy"
+          label="Privacy Policy"
+          rel="noopener noreferrer"
+          tag="a"
+          target="_blank"
+        />
+        <Button
+          href="./terms"
+          label="Terms of Service"
+          rel="noopener noreferrer"
+          tag="a"
+          target="_blank"
+        />
       </div>
     </div>
   );

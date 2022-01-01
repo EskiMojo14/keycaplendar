@@ -20,7 +20,13 @@ import { queue } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
-import { selectAllActions, selectFilteredActions, selectLoading, setFilterAction, setFilterUser } from "@s/audit";
+import {
+  selectAllActions,
+  selectFilteredActions,
+  selectLoading,
+  setFilterAction,
+  setFilterUser,
+} from "@s/audit";
 import { filterActions, getActions } from "@s/audit/functions";
 import type { ActionType } from "@s/audit/types";
 import { selectDevice } from "@s/common";
@@ -50,9 +56,9 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
   const filteredActions = useAppSelector(selectFilteredActions);
 
   const blankAction: ActionType = {
-    before: new Keyset(),
-    after: new Keyset(),
     action: "created",
+    after: new Keyset(),
+    before: new Keyset(),
     changelogId: "",
     documentId: "",
     timestamp: "",
@@ -91,13 +97,19 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
     }, 100);
   };
 
-  const handleFilterChange = (e: ChangeEvent<HTMLInputElement>, prop: string) => {
+  const handleFilterChange = (
+    e: ChangeEvent<HTMLInputElement>,
+    prop: string
+  ) => {
     if (prop === "filterUser") {
       dispatch(setFilterUser(e.target.value));
       filterActions();
     } else if (
       prop === "filterAction" &&
-      arrayIncludes(["none", "created", "updated", "deleted"] as const, e.target.value)
+      arrayIncludes(
+        ["none", "created", "updated", "deleted"] as const,
+        e.target.value
+      )
     ) {
       dispatch(setFilterAction(e.target.value));
       filterActions();
@@ -143,14 +155,17 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
 
   return (
     <>
-      <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav })}>
+      <TopAppBar className={classNames({ "bottom-app-bar": bottomNav })} fixed>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
             <TopAppBarTitle>{pageTitle.audit}</TopAppBarTitle>
           </TopAppBarSection>
           <TopAppBarSection alignEnd>
-            {withTooltip(<TopAppBarActionItem icon="filter_list" onClick={toggleFilter} />, "Filter")}
+            {withTooltip(
+              <TopAppBarActionItem icon="filter_list" onClick={toggleFilter} />,
+              "Filter"
+            )}
             {refreshButton}
           </TopAppBarSection>
         </TopAppBarRow>
@@ -162,23 +177,33 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
         })}
       >
         <div className="main extended-app-bar">
-          <DrawerAuditFilter open={filterOpen} close={closeFilter} handleFilterChange={handleFilterChange} />
+          <DrawerAuditFilter
+            close={closeFilter}
+            handleFilterChange={handleFilterChange}
+            open={filterOpen}
+          />
           <ConditionalWrapper
             condition={device === "desktop"}
-            wrapper={(children) => <DrawerAppContent>{children}</DrawerAppContent>}
+            wrapper={(children) => (
+              <DrawerAppContent>{children}</DrawerAppContent>
+            )}
           >
             <div className="admin-main">
               <div className="log-container">
-                <Card className={classNames("log", { placeholder: filteredActions.length === 0 })}>
-                  <List twoLine className="three-line">
+                <Card
+                  className={classNames("log", {
+                    placeholder: filteredActions.length === 0,
+                  })}
+                >
+                  <List className="three-line" twoLine>
                     {filteredActions.map((action) => {
                       const timestamp = DateTime.fromISO(action.timestamp);
                       return (
                         <AuditEntry
                           key={action.timestamp}
                           action={action}
-                          timestamp={timestamp}
                           openDeleteDialog={openDelete}
+                          timestamp={timestamp}
                         />
                       );
                     })}
@@ -188,10 +213,10 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
             </div>
           </ConditionalWrapper>
           <DialogAuditDelete
-            open={deleteOpen}
             close={closeDelete}
             deleteAction={deleteAction}
             deleteActionFn={deleteActionFn}
+            open={deleteOpen}
           />
         </div>
       </div>

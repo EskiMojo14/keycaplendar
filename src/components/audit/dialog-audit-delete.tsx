@@ -1,4 +1,10 @@
-import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
+import {
+  Dialog,
+  DialogActions,
+  DialogButton,
+  DialogContent,
+  DialogTitle,
+} from "@rmwc/dialog";
 import type { ActionType } from "@s/audit/types";
 
 type DialogAuditDeleteProps = {
@@ -8,14 +14,20 @@ type DialogAuditDeleteProps = {
   open: boolean;
 };
 
-export const DialogAuditDelete = ({ close, deleteAction, deleteActionFn, open }: DialogAuditDeleteProps) => (
+export const DialogAuditDelete = ({
+  close,
+  deleteAction,
+  deleteActionFn,
+  open,
+}: DialogAuditDeleteProps) => (
   <Dialog open={open}>
     <DialogTitle>Delete Action</DialogTitle>
     <DialogContent>
-      Are you sure you want to delete the changelog entry with the ID {deleteAction.changelogId}?
+      Are you sure you want to delete the changelog entry with the ID{" "}
+      {deleteAction.changelogId}?
     </DialogContent>
     <DialogActions>
-      <DialogButton action="close" onClick={close} isDefaultAction>
+      <DialogButton action="close" isDefaultAction onClick={close}>
         Cancel
       </DialogButton>
       <DialogButton

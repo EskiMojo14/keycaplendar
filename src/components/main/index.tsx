@@ -13,7 +13,13 @@ import { ContentEmpty } from "@c/main/content/content-empty";
 import { ContentGrid } from "@c/main/content/content-grid";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { selectDevice, selectPage } from "@s/common";
-import { selectAllSets, selectLinkedFavorites, selectSetGroups, selectURLSet, setURLSet } from "@s/main";
+import {
+  selectAllSets,
+  selectLinkedFavorites,
+  selectSetGroups,
+  selectURLSet,
+  setURLSet,
+} from "@s/main";
 import { Keyset, Preset } from "@s/main/constructors";
 import type { PresetType, SetType } from "@s/main/types";
 import { selectBottomNav, selectView } from "@s/settings";
@@ -46,26 +52,21 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   const urlSet = useAppSelector(selectURLSet);
   const linkedFavorites = useAppSelector(selectLinkedFavorites);
 
-  useEffect(() => {
-    if (urlSet.value) {
-      const index = allSets.findIndex((set) => {
-        if (urlSet.prop === "name") {
-          return urlSet.value === `${set.profile} ${set.colorway}`;
-        } else {
-          return set[urlSet.prop] === urlSet.value;
-        }
-      });
-      if (index >= 0) {
-        const { [index]: keyset } = allSets;
-        openDetails(keyset, false);
-      }
-    }
-  }, [allSets]);
-
   const blankSet: SetType = new Keyset();
   const blankPreset: PresetType = new Preset();
 
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [detailSet, setDetailSet] = useState(blankSet);
   const [filterOpen, setFilterOpen] = useState(false);
+  const closeFilter = () => {
+    closeModal();
+    setFilterOpen(false);
+  };
+  const closeDetails = () => {
+    closeModal();
+    setDetailsOpen(false);
+    setTimeout(() => setDetailSet(blankSet), 300);
+  };
   const openFilter = () => {
     const open = () => {
       if (filterOpen && device === "desktop") {
@@ -84,13 +85,6 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
       open();
     }
   };
-  const closeFilter = () => {
-    closeModal();
-    setFilterOpen(false);
-  };
-
-  const [detailsOpen, setDetailsOpen] = useState(false);
-  const [detailSet, setDetailSet] = useState(blankSet);
   const openDetails = (set: SetType, clearUrl = true) => {
     const open = () => {
       if (device !== "desktop" || view === "compact") {
@@ -104,11 +98,17 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
           dispatch(setURLSet("id", ""));
         }
         const params = new URLSearchParams(window.location.search);
-        if (params.has("keysetId") || params.has("keysetAlias") || params.has("keysetName")) {
+        if (
+          params.has("keysetId") ||
+          params.has("keysetAlias") ||
+          params.has("keysetName")
+        ) {
           params.delete("keysetId");
           params.delete("keysetAlias");
           params.delete("keysetName");
-          const questionParam = params.has("page") ? "?" + params.toString() : "/";
+          const questionParam = params.has("page")
+            ? "?" + params.toString()
+            : "/";
           window.history.pushState({}, "KeycapLendar", questionParam);
         }
       }
@@ -120,11 +120,21 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
       open();
     }
   };
-  const closeDetails = () => {
-    closeModal();
-    setDetailsOpen(false);
-    setTimeout(() => setDetailSet(blankSet), 300);
-  };
+
+  useEffect(() => {
+    if (urlSet.value) {
+      const keyset = allSets.find((set) => {
+        if (urlSet.prop === "name") {
+          return urlSet.value === `${set.profile} ${set.colorway}`;
+        } else {
+          return set[urlSet.prop] === urlSet.value;
+        }
+      });
+      if (keyset) {
+        openDetails(keyset, false);
+      }
+    }
+  }, [allSets, urlSet]);
 
   const [salesOpen, setSalesOpen] = useState(false);
   const [salesSet, setSalesSet] = useState(blankSet);
@@ -235,15 +245,19 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
 
   const shareDialog =
     page === "favorites" && user.email && linkedFavorites.array.length === 0 ? (
-      <DialogShareFavorites open={shareOpen} close={closeShare} />
+      <DialogShareFavorites close={closeShare} open={shareOpen} />
     ) : null;
 
   const filterPresetElements = user.email ? (
     <>
-      <ModalFilterPreset open={filterPresetOpen} close={closeFilterPreset} preset={filterPreset} />
+      <ModalFilterPreset
+        close={closeFilterPreset}
+        open={filterPresetOpen}
+        preset={filterPreset}
+      />
       <DialogDeleteFilterPreset
-        open={deleteFilterPresetOpen}
         close={closeDeleteFilterPreset}
+        open={deleteFilterPresetOpen}
         preset={deleteFilterPreset}
       />
     </>
@@ -252,12 +266,16 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   const deleteElements = user.isEditor ? (
     <>
       <DialogDelete
-        open={deleteDialogOpen}
         close={closeDeleteDialog}
-        set={deleteSet}
+        open={deleteDialogOpen}
         openSnackbar={openDeleteSnackbar}
+        set={deleteSet}
       />
-      <SnackbarDeleted open={deleteSnackbarOpen} close={closeDeleteSnackbar} set={deleteSet} />
+      <SnackbarDeleted
+        close={closeDeleteSnackbar}
+        open={deleteSnackbarOpen}
+        set={deleteSet}
+      />
     </>
   ) : null;
 
@@ -265,7 +283,9 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
     user.isEditor || user.isDesigner ? (
       <ConditionalWrapper
         condition={device === "desktop"}
-        wrapper={(children) => <div className="editor-elements">{children}</div>}
+        wrapper={(children) => (
+          <div className="editor-elements">{children}</div>
+        )}
       >
         <Fab
           className={classNames("create-fab", { middle: bottomNav })}
@@ -273,56 +293,67 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
           label={device === "desktop" ? "Create" : null}
           onClick={openCreate}
         />
-        <ModalCreate open={createOpen} close={closeCreate} />
-        <ModalEdit open={editOpen} close={closeEdit} set={editSet} />
+        <ModalCreate close={closeCreate} open={createOpen} />
+        <ModalEdit close={closeEdit} open={editOpen} set={editSet} />
         {deleteElements}
       </ConditionalWrapper>
     ) : null;
 
   const content = contentBool ? (
-    <ContentGrid details={openDetails} closeDetails={closeDetails} detailSet={detailSet} edit={openEdit} />
+    <ContentGrid
+      closeDetails={closeDetails}
+      details={openDetails}
+      detailSet={detailSet}
+      edit={openEdit}
+    />
   ) : (
     <ContentEmpty />
   );
 
   const drawerOpen = (detailsOpen || filterOpen) && device === "desktop";
   const wrapperClasses = classNames("main", view, {
-    "extended-app-bar": view === "card" && !bottomNav && contentBool,
     "drawer-open": drawerOpen,
+    "extended-app-bar": view === "card" && !bottomNav && contentBool,
   });
   return (
     <>
       <AppBar
-        openNav={openNav}
         indent={user.isDesigner || user.isEditor}
         openFilter={openFilter}
+        openNav={openNav}
         openShare={openShare}
       />
       {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
         <DrawerFilter
-          open={filterOpen}
           close={closeFilter}
-          openPreset={openFilterPreset}
           deletePreset={openDeleteFilterPreset}
+          open={filterOpen}
+          openPreset={openFilterPreset}
         />
         <DrawerDetails
-          set={detailSet}
-          open={detailsOpen}
           close={closeDetails}
-          edit={openEdit}
           delete={openDeleteDialog}
+          edit={openEdit}
+          open={detailsOpen}
           openSales={openSales}
+          set={detailSet}
         />
         <BoolWrapper
           condition={device === "desktop"}
-          trueWrapper={(children) => <DrawerAppContent className={wrapperClasses}>{children}</DrawerAppContent>}
-          falseWrapper={(children) => <div className={wrapperClasses}>{children}</div>}
+          falseWrapper={(children) => (
+            <div className={wrapperClasses}>{children}</div>
+          )}
+          trueWrapper={(children) => (
+            <DrawerAppContent className={wrapperClasses}>
+              {children}
+            </DrawerAppContent>
+          )}
         >
           {content}
           <Footer />
         </BoolWrapper>
-        <DialogSales open={salesOpen} close={closeSales} set={salesSet} />
+        <DialogSales close={closeSales} open={salesOpen} set={salesSet} />
         {shareDialog}
         {filterPresetElements}
         {editorElements}

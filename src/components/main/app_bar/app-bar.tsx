@@ -24,7 +24,11 @@ import { iconObject, useBoolStates } from "@s/util/functions";
 import { Share } from "@i";
 import { MenuSort } from "./menu-sort";
 import { MenuView } from "./menu-view";
-import { SearchAppBar, SearchBarModal, SearchBarPersistent } from "./search-bar";
+import {
+  SearchAppBar,
+  SearchBarModal,
+  SearchBarPersistent,
+} from "./search-bar";
 import "./app-bar.scss";
 
 type AppBarProps = {
@@ -34,7 +38,12 @@ type AppBarProps = {
   openShare: () => void;
 };
 
-export const AppBar = ({ indent, openFilter, openNav, openShare }: AppBarProps) => {
+export const AppBar = ({
+  indent,
+  openFilter,
+  openNav,
+  openShare,
+}: AppBarProps) => {
   const device = useAppSelector(selectDevice);
   const view = useAppSelector(selectView);
   const bottomNav = useAppSelector(selectBottomNav);
@@ -71,7 +80,11 @@ export const AppBar = ({ indent, openFilter, openNav, openShare }: AppBarProps) 
   const shareButton =
     page === "favorites" && user.email && linkedFavorites.array.length === 0
       ? withTooltip(
-          <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon={iconObject(<Share />)} onClick={openShare} />,
+          <TopAppBarActionItem
+            icon={iconObject(<Share />)}
+            onClick={openShare}
+            style={{ "--animation-delay": 4 }}
+          />,
           "Share",
           { align: tooltipAlign }
         )
@@ -80,30 +93,55 @@ export const AppBar = ({ indent, openFilter, openNav, openShare }: AppBarProps) 
   const indentEl = indent && bottomNav ? <AppBarIndent /> : null;
 
   const searchBar = indentEl ? (
-    <SearchAppBar open={searchOpen} openBar={openSearch} close={closeSearch} search={search} setSearch={setSearch} />
+    <SearchAppBar
+      close={closeSearch}
+      open={searchOpen}
+      openBar={openSearch}
+      search={search}
+      setSearch={setSearch}
+    />
   ) : null;
   const buttons = (
     <>
-      {device === "desktop" ? <SearchBarPersistent search={search} setSearch={setSearch} /> : null}
-      <MenuSurfaceAnchor className={classNames({ hidden: page === "calendar" })}>
-        <MenuSort open={sortOpen} onClose={closeSort} />
+      {device === "desktop" ? (
+        <SearchBarPersistent search={search} setSearch={setSearch} />
+      ) : null}
+      <MenuSurfaceAnchor
+        className={classNames({ hidden: page === "calendar" })}
+      >
+        <MenuSort onClose={closeSort} open={sortOpen} />
         {withTooltip(
-          <TopAppBarActionItem style={{ "--animation-delay": 1 }} icon="sort" onClick={openSort} />,
+          <TopAppBarActionItem
+            icon="sort"
+            onClick={openSort}
+            style={{ "--animation-delay": 1 }}
+          />,
           "Sort",
-          { align: tooltipAlign, className: classNames({ hidden: page === "calendar" }) }
+          {
+            align: tooltipAlign,
+            className: classNames({ hidden: page === "calendar" }),
+          }
         )}
       </MenuSurfaceAnchor>
       {withTooltip(
-        <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={openFilter} />,
+        <TopAppBarActionItem
+          icon="filter_list"
+          onClick={openFilter}
+          style={{ "--animation-delay": 2 }}
+        />,
         "Filter",
         {
           align: tooltipAlign,
         }
       )}
       <MenuSurfaceAnchor>
-        <MenuView open={viewOpen} onClose={closeView} />
+        <MenuView onClose={closeView} open={viewOpen} />
         {withTooltip(
-          <TopAppBarActionItem onClick={openView} style={{ "--animation-delay": 3 }} icon={viewIcons[view]} />,
+          <TopAppBarActionItem
+            icon={viewIcons[view]}
+            onClick={openView}
+            style={{ "--animation-delay": 3 }}
+          />,
           "View",
           {
             align: tooltipAlign,
@@ -113,35 +151,64 @@ export const AppBar = ({ indent, openFilter, openNav, openShare }: AppBarProps) 
       {device === "desktop" ? shareButton : null}
       {device !== "desktop" && !indentEl ? (
         <div>
-          <SearchBarModal open={searchOpen} close={closeSearch} search={search} setSearch={setSearch} />
-          {page === "favorites" && user.email && linkedFavorites.array.length === 0 ? (
+          <SearchBarModal
+            close={closeSearch}
+            open={searchOpen}
+            search={search}
+            setSearch={setSearch}
+          />
+          {page === "favorites" &&
+          user.email &&
+          linkedFavorites.array.length === 0 ? (
             <MenuSurfaceAnchor>
-              <Menu anchorCorner="bottomLeft" open={moreOpen} onClose={closeMore}>
+              <Menu
+                anchorCorner="bottomLeft"
+                onClose={closeMore}
+                open={moreOpen}
+              >
                 <MenuItem onClick={openSearch}>Search</MenuItem>
                 <MenuItem onClick={openShare}>Share</MenuItem>
               </Menu>
-              <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="more_vert" onClick={openMore} />
+              <TopAppBarActionItem
+                icon="more_vert"
+                onClick={openMore}
+                style={{ "--animation-delay": 4 }}
+              />
             </MenuSurfaceAnchor>
           ) : (
             withTooltip(
-              <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="search" onClick={openSearch} />,
+              <TopAppBarActionItem
+                icon="search"
+                onClick={openSearch}
+                style={{ "--animation-delay": 4 }}
+              />,
               "Search"
             )
           )}
         </div>
       ) : null}
       {indentEl ? (
-        page === "favorites" && user.email && linkedFavorites.array.length === 0 ? (
+        page === "favorites" &&
+        user.email &&
+        linkedFavorites.array.length === 0 ? (
           <MenuSurfaceAnchor>
-            <Menu anchorCorner="bottomLeft" open={moreOpen} onClose={closeMore}>
+            <Menu anchorCorner="bottomLeft" onClose={closeMore} open={moreOpen}>
               <MenuItem onClick={openSearch}>Search</MenuItem>
               <MenuItem onClick={openShare}>Share</MenuItem>
             </Menu>
-            <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="more_vert" onClick={openMore} />
+            <TopAppBarActionItem
+              icon="more_vert"
+              onClick={openMore}
+              style={{ "--animation-delay": 4 }}
+            />
           </MenuSurfaceAnchor>
         ) : (
           withTooltip(
-            <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="search" onClick={openSearch} />,
+            <TopAppBarActionItem
+              icon="search"
+              onClick={openSearch}
+              style={{ "--animation-delay": 4 }}
+            />,
             "Search"
           )
         )
@@ -151,22 +218,26 @@ export const AppBar = ({ indent, openFilter, openNav, openShare }: AppBarProps) 
   const leftButtons = !indentEl ? (
     <TopAppBarTitle>
       {pageTitle[page] +
-        (page === "favorites" && linkedFavorites.displayName ? `: ${linkedFavorites.displayName}` : "")}
+        (page === "favorites" && linkedFavorites.displayName
+          ? `: ${linkedFavorites.displayName}`
+          : "")}
     </TopAppBarTitle>
   ) : (
     buttons
   );
-  const rightButtons = !indentEl ? <TopAppBarSection alignEnd>{buttons}</TopAppBarSection> : null;
+  const rightButtons = !indentEl ? (
+    <TopAppBarSection alignEnd>{buttons}</TopAppBarSection>
+  ) : null;
   return (
     <>
       {searchBar}
       <TopAppBar
-        fixed
         className={classNames({
           "bottom-app-bar": bottomNav,
           "bottom-app-bar--indent": indentEl,
           "search-open": searchOpen && device !== "desktop" && !bottomNav,
         })}
+        fixed
       >
         <TopAppBarRow>
           <TopAppBarSection alignStart>

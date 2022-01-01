@@ -20,8 +20,15 @@ import classNames from "classnames";
 import ChartistGraph from "react-chartist";
 import { is } from "typescript-is";
 import { withTooltip } from "@c/util/hocs";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
-import type { Categories, DurationDataObject, VendorDataObject } from "@s/statistics/types";
+import {
+  SegmentedButton,
+  SegmentedButtonSegment,
+} from "@c/util/segmented-button";
+import type {
+  Categories,
+  DurationDataObject,
+  VendorDataObject,
+} from "@s/statistics/types";
 import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
 import "./table-card.scss";
 
@@ -30,11 +37,11 @@ const customPoint = (data: any) => {
     const circle = new Chartist.Svg(
       "circle",
       {
+        "ct:meta": data.meta,
+        "ct:value": data.value.y,
         cx: [data.x],
         cy: [data.y],
         r: [6],
-        "ct:value": data.value.y,
-        "ct:meta": data.meta,
       },
       "ct-stroked-point"
     );
@@ -47,43 +54,45 @@ const listener = { draw: (e: any) => customPoint(e) };
 type TableCardProps = {
   data: DurationDataObject | VendorDataObject;
   unit: string;
+  breakdownData?: DurationDataObject[] | VendorDataObject[];
   category?: Categories;
   defaultType?: "bar" | "line";
-  breakdownData?: DurationDataObject[] | VendorDataObject[];
-  overline?: ReactNode;
   note?: ReactNode;
+  overline?: ReactNode;
   summary?: boolean;
 };
 
 export const TableCard = ({
-  data,
-  unit,
-  category,
-  defaultType,
   breakdownData,
-  overline,
+  category,
+  data,
+  defaultType,
   note,
+  overline,
   summary,
+  unit,
 }: TableCardProps) => {
   const [selectedIndex, setSelectedIndex] = useState(-1);
   useEffect(() => setSelectedIndex(-1), [category]);
   const chartData =
     selectedIndex >= 0 && summary && breakdownData
-      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
+      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[
+          selectedIndex
+        ]
       : data;
-  const [graphType, setGraphType] = useState<"bar" | "line">(defaultType || "line");
+  const [graphType, setGraphType] = useState<"bar" | "line">(
+    defaultType || "line"
+  );
   const chartOptions: ILineChartOptions = {
-    showArea: true,
-    chartPadding: {
-      top: 16,
-      right: 0,
-      bottom: 16,
-      left: 16,
-    },
     axisX: {
       labelInterpolationFnc: (value: number, index: number) =>
-        is<any[]>(chartData.chartData.series[0]) && chartData.chartData.series[0].length >= 16
-          ? index % (chartData.chartData.series[0].length >= 24 && !summary ? 3 : 2) === 0
+        is<any[]>(chartData.chartData.series[0]) &&
+        chartData.chartData.series[0].length >= 16
+          ? index %
+              (chartData.chartData.series[0].length >= 24 && !summary
+                ? 3
+                : 2) ===
+            0
             ? value
             : null
           : value,
@@ -91,11 +100,17 @@ export const TableCard = ({
     axisY: {
       onlyInteger: true,
     },
+    chartPadding: {
+      bottom: 16,
+      left: 16,
+      right: 0,
+      top: 16,
+    },
     plugins: [
       chartistPluginAxisTitle({
         axisX: {
-          axisTitle: unit.split(" ")[0],
           axisClass: "ct-axis-title",
+          axisTitle: unit.split(" ")[0],
           offset: {
             x: 0,
             y: 40,
@@ -103,52 +118,55 @@ export const TableCard = ({
           textAnchor: "middle",
         },
         axisY: {
-          axisTitle: "Count",
           axisClass: "ct-axis-title",
+          axisTitle: "Count",
+          flipTitle: true,
           offset: {
             x: 0,
             y: 24,
           },
-          flipTitle: true,
         },
       }),
       chartistTooltip({ pointClass: "ct-stroked-point" }),
     ],
+    showArea: true,
   };
   const barChart =
     graphType === "bar" ? (
       <ChartistGraph
-        type="Bar"
         className="ct-double-octave"
         data={{ ...chartData.chartData }}
-        options={chartOptions}
         listener={listener}
+        options={chartOptions}
+        type="Bar"
       />
     ) : null;
   const lineChart =
     graphType === "line" ? (
       <ChartistGraph
-        type="Line"
         className="ct-double-octave"
         data={{ ...chartData.chartData }}
-        options={chartOptions}
         listener={listener}
+        options={chartOptions}
+        type="Line"
       />
     ) : null;
   const selectChips =
     summary && breakdownData ? (
       <div className="table-chips-container">
         <ChipSet choice>
-          {[...breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
-            <Chip
-              key={obj.name}
-              label={obj.name}
-              selected={index === selectedIndex}
-              onInteraction={() => {
-                setSelectedIndex(index === selectedIndex ? -1 : index);
-              }}
-            />
-          ))}
+          {[...breakdownData]
+            .sort(alphabeticalSortPropCurried("name"))
+            .map((obj, index) => (
+              <Chip
+                key={obj.name}
+                label={obj.name}
+                onInteraction={() => {
+                  setSelectedIndex(index === selectedIndex ? -1 : index);
+                }}
+                selected={index === selectedIndex}
+              />
+            ))}
         </ChipSet>
       </div>
     ) : null;
@@ -157,14 +175,14 @@ export const TableCard = ({
       <div className="title-container">
         <div className="text-container">
           {overline ? (
-            <Typography use="overline" tag="h3">
+            <Typography tag="h3" use="overline">
               {overline}
             </Typography>
           ) : null}
-          <Typography use="headline5" tag="h1">
+          <Typography tag="h1" use="headline5">
             {data.name}
           </Typography>
-          <Typography use="subtitle2" tag="p">
+          <Typography tag="p" use="subtitle2">
             {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
           </Typography>
         </div>
@@ -173,20 +191,20 @@ export const TableCard = ({
             {withTooltip(
               <SegmentedButtonSegment
                 icon="bar_chart"
-                selected={graphType === "bar"}
                 onClick={() => {
                   setGraphType("bar");
                 }}
+                selected={graphType === "bar"}
               />,
               "Bar chart"
             )}
             {withTooltip(
               <SegmentedButtonSegment
                 icon="show_chart"
-                selected={graphType === "line"}
                 onClick={() => {
                   setGraphType("line");
                 }}
+                selected={graphType === "line"}
               />,
               "Line chart"
             )}
@@ -219,7 +237,9 @@ export const TableCard = ({
                 <DataTableRow>
                   <DataTableCell>Mode</DataTableCell>
                   <DataTableCell alignEnd>
-                    {chartData.mode.length === chartData.total ? "None" : chartData.mode.join(", ")}
+                    {chartData.mode.length === chartData.total
+                      ? "None"
+                      : chartData.mode.join(", ")}
                   </DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
@@ -228,7 +248,9 @@ export const TableCard = ({
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>Standard deviation</DataTableCell>
-                  <DataTableCell alignEnd>{chartData.standardDev}</DataTableCell>
+                  <DataTableCell alignEnd>
+                    {chartData.standardDev}
+                  </DataTableCell>
                 </DataTableRow>
               </DataTableBody>
             </DataTableContent>
@@ -236,7 +258,7 @@ export const TableCard = ({
         </div>
         {selectChips}
         {note ? (
-          <Typography use="caption" tag="p" className="note">
+          <Typography className="note" tag="p" use="caption">
             {note}
           </Typography>
         ) : null}

@@ -14,12 +14,17 @@ import "./content-grid.scss";
 
 type ContentGridProps = {
   closeDetails: () => void;
-  detailSet: SetType;
   details: (set: SetType) => void;
+  detailSet: SetType;
   edit: (set: SetType) => void;
 };
 
-export const ContentGrid = ({ details, closeDetails, detailSet, edit }: ContentGridProps) => {
+export const ContentGrid = ({
+  closeDetails,
+  details,
+  detailSet,
+  edit,
+}: ContentGridProps) => {
   const view = useAppSelector(selectView);
 
   const setGroups = useAppSelector(selectSetGroups);
@@ -31,16 +36,41 @@ export const ContentGrid = ({ details, closeDetails, detailSet, edit }: ContentG
   const createGroup = (sets: SetType[]) => {
     switch (view) {
       case "card": {
-        return <ViewCard {...{ sets, details, detailSet, closeDetails, edit, loading, user, page }} />;
+        return (
+          <ViewCard
+            {...{
+              closeDetails,
+              details,
+              detailSet,
+              edit,
+              loading,
+              page,
+              sets,
+              user,
+            }}
+          />
+        );
       }
       case "list": {
-        return <ViewList {...{ sets, details, detailSet, closeDetails, edit, loading, page }} />;
+        return (
+          <ViewList
+            {...{ closeDetails, details, detailSet, edit, loading, page, sets }}
+          />
+        );
       }
       case "imageList": {
-        return <ViewImageList {...{ sets, details, detailSet, closeDetails, edit, loading, page }} />;
+        return (
+          <ViewImageList
+            {...{ closeDetails, details, detailSet, edit, loading, page, sets }}
+          />
+        );
       }
       case "compact": {
-        return <ViewCompact {...{ sets, details, detailSet, closeDetails, edit, loading, page }} />;
+        return (
+          <ViewCompact
+            {...{ closeDetails, details, detailSet, edit, loading, page, sets }}
+          />
+        );
       }
       default:
         return null;
@@ -49,10 +79,13 @@ export const ContentGrid = ({ details, closeDetails, detailSet, edit }: ContentG
   return (
     <div className="content-grid">
       {setGroups.map((group) => (
-        <div className="outer-container" key={group.title}>
+        <div key={group.title} className="outer-container">
           <div className="subheader">
             {loading ? (
-              <SkeletonBlock typography="caption" content={`${group.title} (${group.sets.length})`} />
+              <SkeletonBlock
+                content={`${group.title} (${group.sets.length})`}
+                typography="caption"
+              />
             ) : (
               <Typography use="caption">
                 {group.title} <b>{`(${group.sets.length})`}</b>

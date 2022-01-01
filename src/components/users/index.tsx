@@ -9,7 +9,13 @@ import {
   DataTableHeadCell,
   DataTableRow,
 } from "@rmwc/data-table";
-import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
+import {
+  Dialog,
+  DialogActions,
+  DialogButton,
+  DialogContent,
+  DialogTitle,
+} from "@rmwc/dialog";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { Menu, MenuItem, MenuSurfaceAnchor } from "@rmwc/menu";
 import {
@@ -53,9 +59,22 @@ import {
   selectView,
   setLoading,
 } from "@s/users";
-import { sortLabels, sortProps, viewIcons, viewLabels, views } from "@s/users/constants";
+import {
+  sortLabels,
+  sortProps,
+  viewIcons,
+  viewLabels,
+  views,
+} from "@s/users/constants";
 import { User } from "@s/users/constructors";
-import { getUsers, setPage, setRowsPerPage, setSort, setSortIndex, setViewIndex } from "@s/users/functions";
+import {
+  getUsers,
+  setPage,
+  setRowsPerPage,
+  setSort,
+  setSortIndex,
+  setViewIndex,
+} from "@s/users/functions";
 import type { UserType } from "@s/users/types";
 import { useBoolStates } from "@s/util/functions";
 import { UserCard } from "./user-card";
@@ -125,7 +144,9 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
           queue.notify({ title: result.data.error });
           dispatch(setLoading(false));
         } else {
-          queue.notify({ title: "User " + user.displayName + " successfully deleted." });
+          queue.notify({
+            title: "User " + user.displayName + " successfully deleted.",
+          });
           getUsers();
         }
       })
@@ -139,10 +160,10 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
     view === "card" || device !== "desktop" ? (
       <MenuSurfaceAnchor>
         <Menu
-          open={sortMenuOpen}
           anchorCorner="bottomLeft"
           onClose={closeSortMenu}
           onSelect={(e) => setSortIndex(e.detail.index)}
+          open={sortMenuOpen}
         >
           {sortProps.map((prop) => (
             <MenuItem key={prop} selected={userSort === prop}>
@@ -150,17 +171,20 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
             </MenuItem>
           ))}
         </Menu>
-        {withTooltip(<TopAppBarActionItem icon="sort" onClick={openSortMenu} />, "Sort")}
+        {withTooltip(
+          <TopAppBarActionItem icon="sort" onClick={openSortMenu} />,
+          "Sort"
+        )}
       </MenuSurfaceAnchor>
     ) : null;
   const viewMenu =
     device === "desktop" ? (
       <MenuSurfaceAnchor>
         <Menu
-          open={viewMenuOpen}
           anchorCorner="bottomLeft"
           onClose={closeViewMenu}
           onSelect={(e) => setViewIndex(e.detail.index)}
+          open={viewMenuOpen}
         >
           {views.map((viewType) => (
             <MenuItem key={viewType} selected={view === viewType}>
@@ -168,12 +192,15 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
             </MenuItem>
           ))}
         </Menu>
-        {withTooltip(<TopAppBarActionItem onClick={openViewMenu} icon={viewIcons[view]} />, "View")}
+        {withTooltip(
+          <TopAppBarActionItem icon={viewIcons[view]} onClick={openViewMenu} />,
+          "View"
+        )}
       </MenuSurfaceAnchor>
     ) : null;
   return (
     <>
-      <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav })}>
+      <TopAppBar className={classNames({ "bottom-app-bar": bottomNav })} fixed>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
@@ -198,81 +225,137 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                         <DataTableRow>
                           <DataTableHeadCell></DataTableHeadCell>
                           <DataTableHeadCell
-                            sort={userSort === "displayName" ? (reverseUserSort ? -1 : 1) : null}
                             onClick={() => {
                               setSort("displayName");
                             }}
+                            sort={
+                              userSort === "displayName"
+                                ? reverseUserSort
+                                  ? -1
+                                  : 1
+                                : null
+                            }
                           >
                             User
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            sort={userSort === "email" ? (reverseUserSort ? -1 : 1) : null}
                             onClick={() => {
                               setSort("email");
                             }}
+                            sort={
+                              userSort === "email"
+                                ? reverseUserSort
+                                  ? -1
+                                  : 1
+                                : null
+                            }
                           >
                             Email
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            sort={userSort === "dateCreated" ? (reverseUserSort ? -1 : 1) : null}
                             onClick={() => {
                               setSort("dateCreated");
                             }}
+                            sort={
+                              userSort === "dateCreated"
+                                ? reverseUserSort
+                                  ? -1
+                                  : 1
+                                : null
+                            }
                           >
                             Date created
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            sort={userSort === "lastSignIn" ? (reverseUserSort ? -1 : 1) : null}
                             onClick={() => {
                               setSort("lastSignIn");
                             }}
+                            sort={
+                              userSort === "lastSignIn"
+                                ? reverseUserSort
+                                  ? -1
+                                  : 1
+                                : null
+                            }
                           >
                             Last sign in
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            sort={userSort === "lastActive" ? (reverseUserSort ? -1 : 1) : null}
                             onClick={() => {
                               setSort("lastActive");
                             }}
+                            sort={
+                              userSort === "lastActive"
+                                ? reverseUserSort
+                                  ? -1
+                                  : 1
+                                : null
+                            }
                           >
                             Last active
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            sort={userSort === "nickname" ? (reverseUserSort ? -1 : 1) : null}
                             onClick={() => {
                               setSort("nickname");
                             }}
+                            sort={
+                              userSort === "nickname"
+                                ? reverseUserSort
+                                  ? -1
+                                  : 1
+                                : null
+                            }
                           >
                             Nickname
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            sort={userSort === "designer" ? (reverseUserSort ? -1 : 1) : null}
                             onClick={() => {
                               setSort("designer");
                             }}
+                            sort={
+                              userSort === "designer"
+                                ? reverseUserSort
+                                  ? -1
+                                  : 1
+                                : null
+                            }
                           >
                             Designer
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            sort={userSort === "editor" ? (reverseUserSort ? -1 : 1) : null}
                             onClick={() => {
                               setSort("editor");
                             }}
+                            sort={
+                              userSort === "editor"
+                                ? reverseUserSort
+                                  ? -1
+                                  : 1
+                                : null
+                            }
                           >
                             Editor
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            sort={userSort === "admin" ? (reverseUserSort ? -1 : 1) : null}
                             onClick={() => {
                               setSort("admin");
                             }}
+                            sort={
+                              userSort === "admin"
+                                ? reverseUserSort
+                                  ? -1
+                                  : 1
+                                : null
+                            }
                           >
                             Admin
                           </DataTableHeadCell>
                           <DataTableHeadCell>Save</DataTableHeadCell>
                           <DataTableHeadCell>Delete</DataTableHeadCell>
                         </DataTableRow>
-                        <DataTableRow className={classNames("progress-row", { loading })}>
+                        <DataTableRow
+                          className={classNames("progress-row", { loading })}
+                        >
                           <DataTableHeadCell colSpan={12}>
                             <LinearProgress />
                           </DataTableHeadCell>
@@ -280,67 +363,82 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                       </DataTableHead>
                       <DataTableBody>
                         {paginatedUsers.map((user) => (
-                          <UserRow user={user} delete={openDeleteDialog} getUsers={getUsers} key={user.email} />
+                          <UserRow
+                            key={user.email}
+                            delete={openDeleteDialog}
+                            getUsers={getUsers}
+                            user={user}
+                          />
                         ))}
                       </DataTableBody>
                     </DataTableContent>
                     <DataTablePagination>
                       <div className="button-container">
                         <Button
-                          label={"Next " + length}
-                          outlined
                           disabled={!nextPageToken}
+                          label={"Next " + length}
                           onClick={() => {
                             getUsers(true);
                           }}
+                          outlined
                         />
                       </div>
                       <DataTablePaginationTrailing>
                         <DataTablePaginationRowsPerPage>
-                          <DataTablePaginationRowsPerPageLabel>Rows per page</DataTablePaginationRowsPerPageLabel>
+                          <DataTablePaginationRowsPerPageLabel>
+                            Rows per page
+                          </DataTablePaginationRowsPerPageLabel>
                           <DataTablePaginationRowsPerPageSelect
-                            value={rowsPerPage.toString()}
+                            enhanced
+                            onChange={(e) =>
+                              setRowsPerPage(parseInt(e.currentTarget.value))
+                            }
                             options={Array(3)
                               .fill(rows)
-                              .map((number, index) => (number * (index + 1)).toString())}
-                            onChange={(e) => setRowsPerPage(parseInt(e.currentTarget.value))}
-                            enhanced
+                              .map((number, index) =>
+                                (number * (index + 1)).toString()
+                              )}
+                            value={rowsPerPage.toString()}
                           />
                         </DataTablePaginationRowsPerPage>
                         <DataTablePaginationNavigation>
                           <DataTablePaginationTotal>
-                            {`${firstIndex + 1}-${lastIndex + 1} of ${sortedUsers.length}`}
+                            {`${firstIndex + 1}-${lastIndex + 1} of ${
+                              sortedUsers.length
+                            }`}
                           </DataTablePaginationTotal>
                           <DataTablePaginationButton
                             className="rtl-flip"
-                            icon="first_page"
                             disabled={firstIndex === 0}
+                            icon="first_page"
                             onClick={() => {
                               setPage(1);
                             }}
                           />
                           <DataTablePaginationButton
                             className="rtl-flip"
-                            icon="chevron_left"
                             disabled={firstIndex === 0}
+                            icon="chevron_left"
                             onClick={() => {
                               setPage(page - 1);
                             }}
                           />
                           <DataTablePaginationButton
                             className="rtl-flip"
-                            icon="chevron_right"
                             disabled={lastIndex === sortedUsers.length - 1}
+                            icon="chevron_right"
                             onClick={() => {
                               setPage(page + 1);
                             }}
                           />
                           <DataTablePaginationButton
                             className="rtl-flip"
-                            icon="last_page"
                             disabled={lastIndex === sortedUsers.length - 1}
+                            icon="last_page"
                             onClick={() => {
-                              setPage(Math.ceil(sortedUsers.length / rowsPerPage));
+                              setPage(
+                                Math.ceil(sortedUsers.length / rowsPerPage)
+                              );
                             }}
                           />
                         </DataTablePaginationNavigation>
@@ -351,7 +449,12 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
               ) : (
                 <div className="user-container">
                   {sortedUsers.map((user) => (
-                    <UserCard user={user} key={user.email} delete={openDeleteDialog} getUsers={getUsers} />
+                    <UserCard
+                      key={user.email}
+                      delete={openDeleteDialog}
+                      getUsers={getUsers}
+                      user={user}
+                    />
                   ))}
                 </div>
               )}
@@ -359,12 +462,23 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
           </div>
           <Dialog open={deleteOpen}>
             <DialogTitle>Delete User</DialogTitle>
-            <DialogContent>Are you sure you want to delete the user {deletedUser.displayName}?</DialogContent>
+            <DialogContent>
+              Are you sure you want to delete the user {deletedUser.displayName}
+              ?
+            </DialogContent>
             <DialogActions>
-              <DialogButton action="close" onClick={closeDeleteDialog} isDefaultAction>
+              <DialogButton
+                action="close"
+                isDefaultAction
+                onClick={closeDeleteDialog}
+              >
                 Cancel
               </DialogButton>
-              <DialogButton action="accept" className="delete" onClick={() => deleteUser(deletedUser)}>
+              <DialogButton
+                action="accept"
+                className="delete"
+                onClick={() => deleteUser(deletedUser)}
+              >
                 Delete
               </DialogButton>
             </DialogActions>

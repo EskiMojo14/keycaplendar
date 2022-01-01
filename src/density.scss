@@ -30,7 +30,8 @@
     @include data-table.density($density);
     &.rounded {
       border-radius: shape.resolve-percentage-radius(56px + $diff, small)
-        shape.resolve-percentage-radius(56px + $diff, small) shape.resolve-percentage-radius(52px + $diff, small)
+        shape.resolve-percentage-radius(56px + $diff, small)
+        shape.resolve-percentage-radius(52px + $diff, small)
         shape.resolve-percentage-radius(52px + $diff, small);
     }
   }

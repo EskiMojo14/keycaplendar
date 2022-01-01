@@ -1,6 +1,12 @@
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
-import { List, ListItem, ListItemPrimaryText, ListItemSecondaryText, ListItemText } from "@rmwc/list";
+import {
+  List,
+  ListItem,
+  ListItemPrimaryText,
+  ListItemSecondaryText,
+  ListItemText,
+} from "@rmwc/list";
 import { Typography } from "@rmwc/typography";
 import { DateTime } from "luxon";
 import { useAppSelector } from "~/app/hooks";
@@ -17,29 +23,37 @@ type DrawerDetailsProps = {
   open: boolean;
 };
 
-export const DrawerDetails = ({ close, image, metadata, open }: DrawerDetailsProps) => {
+export const DrawerDetails = ({
+  close,
+  image,
+  metadata,
+  open,
+}: DrawerDetailsProps) => {
   const device = useAppSelector(selectDevice);
   const dismissible = device === "desktop";
   const closeIcon = dismissible
-    ? withTooltip(<IconButton className="close-icon" icon="close" onClick={close} />, "Close")
+    ? withTooltip(
+        <IconButton className="close-icon" icon="close" onClick={close} />,
+        "Close"
+      )
     : null;
   const imageProps = {
-    name: "File name",
     fullPath: "Path",
+    name: "File name",
   };
   const metadataLabels = {
-    size: "File size",
     contentType: "Type",
+    size: "File size",
     timeCreated: "Created",
     updated: "Updated",
   };
   return (
     <Drawer
+      className="drawer-right details-drawer image-details"
       dismissible={dismissible}
       modal={!dismissible}
-      className="drawer-right details-drawer image-details"
-      open={open}
       onClose={close}
+      open={open}
     >
       <DrawerHeader>
         <DrawerTitle>Details</DrawerTitle>
@@ -47,9 +61,9 @@ export const DrawerDetails = ({ close, image, metadata, open }: DrawerDetailsPro
       </DrawerHeader>
       <DrawerContent>
         <div className="image-container">
-          <img className="image" src={image.src} alt={image.name} />
+          <img alt={image.name} className="image" src={image.src} />
         </div>
-        <List twoLine className="details-list">
+        <List className="details-list" twoLine>
           <div className="subheader">
             <Typography use="caption">Image</Typography>
           </div>
@@ -71,7 +85,9 @@ export const DrawerDetails = ({ close, image, metadata, open }: DrawerDetailsPro
                 <ListItemSecondaryText>
                   {key === "updated" || key === "timeCreated"
                     ? DateTime.fromISO(metadata[key], { zone: "utc" }).toFormat(
-                        `d'${ordinal(DateTime.fromISO(metadata[key], { zone: "utc" }).day)}' MMMM yyyy, HH:mm:ss`
+                        `d'${ordinal(
+                          DateTime.fromISO(metadata[key], { zone: "utc" }).day
+                        )}' MMMM yyyy, HH:mm:ss`
                       )
                     : key === "size"
                     ? formatBytes(metadata[key])

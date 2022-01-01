@@ -14,8 +14,8 @@
     @include rtl.reflexive-position(right, 0);
     transition: elevation.transition-value(), animation.standard(width, 150ms);
     &.is-contextual {
-      transition: elevation.transition-value(), animation.standard(width, 150ms), background-color 100ms linear,
-        color 100ms linear;
+      transition: elevation.transition-value(), animation.standard(width, 150ms),
+        background-color 100ms linear, color 100ms linear;
       .mdc-top-app-bar__navigation-icon,
       .mdc-top-app-bar__action-item,
       .mdc-top-app-bar__title {
@@ -38,7 +38,9 @@
   }
 }
 
-.nav.mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content .mdc-top-app-bar {
+.nav.mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing)
+  + .mdc-drawer-app-content
+  .mdc-top-app-bar {
   width: calc(100% - 256px);
   .mdc-top-app-bar__navigation-icon {
     width: 0;
@@ -46,7 +48,9 @@
   }
 }
 
-.rail.mdc-drawer.mdc-drawer--open.mdc-drawer--closing + .mdc-drawer-app-content .mdc-top-app-bar {
+.rail.mdc-drawer.mdc-drawer--open.mdc-drawer--closing
+  + .mdc-drawer-app-content
+  .mdc-top-app-bar {
   width: calc(100% - 56px);
 }
 
@@ -118,15 +122,19 @@
   bottom: 24px;
   @include rtl.reflexive-position(right, 24px);
   z-index: 4;
-  animation: fab-enter-opacity 15ms linear 30ms, fab-enter-transform 270ms 0ms cubic-bezier(0, 0, 0.2, 1);
+  animation: fab-enter-opacity 15ms linear 30ms,
+    fab-enter-transform 270ms 0ms cubic-bezier(0, 0, 0.2, 1);
   &.mdc-fab--extended {
     transition-property: box-shadow, right;
     @include rtl.rtl {
       transition-property: box-shadow, left;
     }
-    transition-timing-function: linear, animation.$standard-curve-timing-function;
+    transition-timing-function: linear,
+      animation.$standard-curve-timing-function;
     transition-duration: 280ms, drawer.$animation-enter;
-    .mdc-drawer--dismissible.mdc-drawer--animate:not(.mdc-drawer--closing) ~ .editor-elements & {
+    .mdc-drawer--dismissible.mdc-drawer--animate:not(.mdc-drawer--closing)
+      ~ .editor-elements
+      & {
       transition-duration: 280ms, drawer.$animation-enter;
     }
     .mdc-drawer--dismissible.mdc-drawer--closing ~ .editor-elements & {
@@ -136,7 +144,9 @@
     .mdc-drawer--dismissible.mdc-drawer--opening ~ .editor-elements & {
       @include rtl.reflexive-position(right, 24px + 320px);
     }
-    .mdc-drawer--dismissible.mdc-drawer--open.mdc-drawer--closing ~ .editor-elements & {
+    .mdc-drawer--dismissible.mdc-drawer--open.mdc-drawer--closing
+      ~ .editor-elements
+      & {
       @include rtl.reflexive-position(right, 24px);
     }
   }
@@ -183,7 +193,8 @@
 }
 
 .view-transition .content-grid {
-  animation: animation.exit-permanent(fade-out, 90ms), animation.enter(fade-in-scale, 210ms, 90ms);
+  animation: animation.exit-permanent(fade-out, 90ms),
+    animation.enter(fade-in-scale, 210ms, 90ms);
   will-change: transform, opacity;
 }
 
