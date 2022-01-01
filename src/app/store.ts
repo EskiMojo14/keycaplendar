@@ -29,13 +29,15 @@ const reducer = {
 
 export const createStore = (preloadedState?: any) =>
   configureStore({
-    preloadedState,
-    reducer,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
-        serializableCheck: { ignoredPaths: ["statistics.data", "images.images"] },
         immutableCheck: false,
+        serializableCheck: {
+          ignoredPaths: ["statistics.data", "images.images"],
+        },
       }),
+    preloadedState,
+    reducer,
   });
 
 export const store = createStore(loadState());
@@ -46,7 +48,12 @@ store.subscribe(
   debounce(() => {
     const previousValue = currentValue;
     const { common, main, settings, user } = store.getState();
-    currentValue = JSON.stringify({ common, main, settings, user });
+    currentValue = JSON.stringify({
+      common,
+      main,
+      settings,
+      user,
+    });
     if (previousValue !== currentValue) {
       saveState(store.getState());
     }

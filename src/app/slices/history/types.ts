@@ -17,10 +17,10 @@ export type ProcessedPublicActionType = PublicActionType & {
 };
 
 export type RecentSet = {
-  id: string;
-  title: string;
-  designer: string[] | null;
-  deleted: boolean;
   currentSet: SetType | null;
+  deleted: boolean;
+  designer: string[] | null;
+  id: string;
   latestTimestamp: string;
+  title: string;
 };

@@ -21,7 +21,13 @@ import { Footer } from "@c/common/footer";
 import { DialogSales } from "@c/main/dialog-sales";
 import { DrawerDetails } from "@c/main/drawer-details";
 import { pageTitle } from "@s/common/constants";
-import { selectLoading, selectProcessedActions, selectRecentSets, selectTab, setTab } from "@s/history";
+import {
+  selectLoading,
+  selectProcessedActions,
+  selectRecentSets,
+  selectTab,
+  setTab,
+} from "@s/history";
 import { historyTabs } from "@s/history/constants";
 import { generateSets, getData } from "@s/history/functions";
 import type { RecentSet } from "@s/history/types";
@@ -29,7 +35,14 @@ import { selectAllSets } from "@s/main";
 import { Keyset } from "@s/main/constructors";
 import type { SetType } from "@s/main/types";
 import { selectBottomNav } from "@s/settings";
-import { capitalise, closeModal, hasKey, iconObject, openModal, truncate } from "@s/util/functions";
+import {
+  capitalise,
+  closeModal,
+  hasKey,
+  iconObject,
+  openModal,
+  truncate,
+} from "@s/util/functions";
 import { FilterVariantRemove } from "@i";
 import { ChangelogEntry } from "./changelog-entry";
 import { RecentSetCard } from "./recent-set-card";
@@ -41,7 +54,7 @@ type ContentHistoryProps = {
   openNav: () => void;
 };
 
-export const ContentHistory = (props: ContentHistoryProps) => {
+export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
   const dispatch = useAppDispatch();
 
   const bottomNav = useAppSelector(selectBottomNav);
@@ -129,9 +142,9 @@ export const ContentHistory = (props: ContentHistoryProps) => {
       <div className="clear-filter">
         <Chip
           label={truncate(filterSet.title, 20)}
+          onTrailingIconInteraction={clearFilter}
           trailingIcon={iconObject(<FilterVariantRemove />)}
           trailingIconRemovesChip={false}
-          onTrailingIconInteraction={clearFilter}
         />
       </div>
     </TopAppBarSection>
@@ -141,32 +154,36 @@ export const ContentHistory = (props: ContentHistoryProps) => {
     dispatch(setTab(historyTabs[index]));
   };
 
-  const slideRenderer: SlideRendererCallback = ({ key, index }) => {
+  const slideRenderer: SlideRendererCallback = ({ index, key }) => {
     const { [index]: tab } = historyTabs;
     const tabs = {
-      recent: (
-        <div className="history-tab recent recent-grid" key={key}>
-          {recentSets.map((recentSet) => (
-            <RecentSetCard
-              recentSet={recentSet}
-              filterChangelog={filterChangelog}
-              filtered={recentSet.id === filterSet.id}
-              selected={recentSet.id === detailSet.id}
-              openDetails={openDetails}
-              key={recentSet.id}
-            />
-          ))}
-        </div>
-      ),
       changelog: (
-        <div className="history-tab changelog changelog-container" key={key}>
-          <Card className={classNames("changelog", { hidden: processedActions.length === 0 })}>
-            <List twoLine className="three-line">
+        <div key={key} className="history-tab changelog changelog-container">
+          <Card
+            className={classNames("changelog", {
+              hidden: processedActions.length === 0,
+            })}
+          >
+            <List className="three-line" twoLine>
               {filteredActions.map((action) => (
-                <ChangelogEntry action={action} key={action.timestamp} />
+                <ChangelogEntry key={action.timestamp} action={action} />
               ))}
             </List>
           </Card>
+        </div>
+      ),
+      recent: (
+        <div key={key} className="history-tab recent recent-grid">
+          {recentSets.map((recentSet) => (
+            <RecentSetCard
+              key={recentSet.id}
+              filterChangelog={filterChangelog}
+              filtered={recentSet.id === filterSet.id}
+              openDetails={openDetails}
+              recentSet={recentSet}
+              selected={recentSet.id === detailSet.id}
+            />
+          ))}
         </div>
       ),
     };
@@ -175,11 +192,11 @@ export const ContentHistory = (props: ContentHistoryProps) => {
 
   return (
     <>
-      <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav })}>
+      <TopAppBar className={classNames({ "bottom-app-bar": bottomNav })} fixed>
         {bottomNav ? tabRow : null}
         <TopAppBarRow>
           <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
+            <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
             <TopAppBarTitle>{pageTitle.history}</TopAppBarTitle>
           </TopAppBarSection>
           {clearFilterButton}
@@ -189,22 +206,32 @@ export const ContentHistory = (props: ContentHistoryProps) => {
       </TopAppBar>
       {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
-        <div className={classNames("main", { "extended-app-bar": filteredActions.length > 2 || tab !== "changelog" })}>
-          <DrawerDetails open={detailsOpen} close={closeDetails} set={detailSet} openSales={openSales} />
-          <DialogSales open={salesOpen} close={closeSales} set={salesSet} />
+        <div
+          className={classNames("main", {
+            "extended-app-bar":
+              filteredActions.length > 2 || tab !== "changelog",
+          })}
+        >
+          <DrawerDetails
+            close={closeDetails}
+            open={detailsOpen}
+            openSales={openSales}
+            set={detailSet}
+          />
+          <DialogSales close={closeSales} open={salesOpen} set={salesSet} />
           <VirtualizeSwipeableViews
             className={classNames(tab, { swiping })}
-            springConfig={{
-              duration: "0.35s",
-              easeFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-              delay: "0s",
-            }}
-            slideCount={historyTabs.length}
             index={historyTabs.indexOf(tab)}
             onChangeIndex={handleChangeIndex}
-            slideRenderer={slideRenderer}
             onSwitching={() => setSwiping(true)}
             onTransitionEnd={() => setSwiping(false)}
+            slideCount={historyTabs.length}
+            slideRenderer={slideRenderer}
+            springConfig={{
+              delay: "0s",
+              duration: "0.35s",
+              easeFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+            }}
           />
         </div>
       </div>

@@ -4,28 +4,26 @@ import type { RootState } from "~/app/store";
 import type { UpdateEntryType } from "./types";
 
 type UpdatesState = {
-  loading: boolean;
-
   entries: UpdateEntryType[];
+  loading: boolean;
   urlEntry: string;
 };
 
 export const initialState: UpdatesState = {
-  loading: false,
-
   entries: [],
+  loading: false,
   urlEntry: "",
 };
 
 export const updatesSlice = createSlice({
-  name: "updates",
   initialState,
+  name: "updates",
   reducers: {
-    setLoading: (state, { payload }: PayloadAction<boolean>) => {
-      state.loading = payload;
-    },
     setEntries: (state, { payload }: PayloadAction<UpdateEntryType[]>) => {
       state.entries = payload;
+    },
+    setLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.loading = payload;
     },
     setURLEntry: (state, { payload }: PayloadAction<string>) => {
       state.urlEntry = payload;
@@ -34,7 +32,7 @@ export const updatesSlice = createSlice({
 });
 
 export const {
-  actions: { setLoading, setEntries, setURLEntry },
+  actions: { setEntries, setLoading, setURLEntry },
 } = updatesSlice;
 
 export const selectLoading = (state: RootState) => state.updates.loading;

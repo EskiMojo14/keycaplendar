@@ -34,23 +34,33 @@ type AuditEntryProps = {
   timestamp: DateTime;
 };
 
-export const AuditEntry = (props: AuditEntryProps) => {
+export const AuditEntry = ({
+  action,
+  openDeleteDialog,
+  timestamp,
+}: AuditEntryProps) => {
   const documentRow = (
     <DataTableRow>
       <DataTableCell>documentId</DataTableCell>
-      <DataTableCell colSpan={props.action.action === "created" ? 1 : 2}>{props.action.documentId}</DataTableCell>
+      <DataTableCell colSpan={action.action === "created" ? 1 : 2}>
+        {action.documentId}
+      </DataTableCell>
     </DataTableRow>
   );
   const changelogRow = (
     <DataTableRow>
       <DataTableCell>changelogId</DataTableCell>
-      <DataTableCell colSpan={props.action.action === "created" ? 1 : 2}>{props.action.changelogId}</DataTableCell>
+      <DataTableCell colSpan={action.action === "created" ? 1 : 2}>
+        {action.changelogId}
+      </DataTableCell>
     </DataTableRow>
   );
-  const emailRow = props.action.user.email ? (
+  const emailRow = action.user.email ? (
     <DataTableRow>
       <DataTableCell>userEmail</DataTableCell>
-      <DataTableCell colSpan={props.action.action === "created" ? 1 : 2}>{props.action.user.email}</DataTableCell>
+      <DataTableCell colSpan={action.action === "created" ? 1 : 2}>
+        {action.user.email}
+      </DataTableCell>
     </DataTableRow>
   ) : null;
   const arrayProps: string[] = ["designer"];
@@ -58,24 +68,24 @@ export const AuditEntry = (props: AuditEntryProps) => {
   const boolProps: string[] = ["gbMonth", "shipped"];
   const icons: Record<string, string> = {
     created: "add_circle_outline",
-    updated: "update",
     deleted: "remove_circle_outline",
+    updated: "update",
   };
   return (
     <CollapsibleList
       handle={
         <ListItem>
-          <ListItemGraphic icon={icons[props.action.action]} />
+          <ListItemGraphic icon={icons[action.action]} />
           <ListItemText>
-            <div className="overline">{props.action.action}</div>
+            <div className="overline">{action.action}</div>
             <ListItemPrimaryText>
-              {props.action.action !== "deleted"
-                ? `${props.action.after.profile} ${props.action.after.colorway}`
-                : `${props.action.before.profile} ${props.action.before.colorway}`}
+              {action.action !== "deleted"
+                ? `${action.after.profile} ${action.after.colorway}`
+                : `${action.before.profile} ${action.before.colorway}`}
             </ListItemPrimaryText>
             <ListItemSecondaryText>
-              {`${props.action.user.nickname}, ${props.timestamp.toFormat(
-                `d'${ordinal(props.timestamp.day)}' MMM yyyy HH:mm`
+              {`${action.user.nickname}, ${timestamp.toFormat(
+                `d'${ordinal(timestamp.day)}' MMM yyyy HH:mm`
               )}`}
             </ListItemSecondaryText>
           </ListItemText>
@@ -88,26 +98,33 @@ export const AuditEntry = (props: AuditEntryProps) => {
           <DataTableHead>
             <DataTableRow>
               <DataTableHeadCell>Property</DataTableHeadCell>
-              <DataTableHeadCell>{props.action.action === "updated" ? "Before" : "Data"}</DataTableHeadCell>
-              {props.action.action === "updated" ? <DataTableHeadCell>After</DataTableHeadCell> : null}
+              <DataTableHeadCell>
+                {action.action === "updated" ? "Before" : "Data"}
+              </DataTableHeadCell>
+              {action.action === "updated" ? (
+                <DataTableHeadCell>After</DataTableHeadCell>
+              ) : null}
             </DataTableRow>
           </DataTableHead>
           <DataTableBody>
             {auditProperties.map((property, index) => {
-              const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
+              const domain =
+                /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
               if (
-                props.action.action === "updated" &&
-                hasKey(props.action.before, property) &&
-                hasKey(props.action.after, property) &&
+                action.action === "updated" &&
+                hasKey(action.before, property) &&
+                hasKey(action.after, property) &&
                 ((property !== "profile" && property !== "colorway") ||
                   ((property === "profile" || property === "colorway") &&
-                    !isEqual(props.action.before[property], props.action.after[property])))
+                    !isEqual(action.before[property], action.after[property])))
               ) {
-                const beforeProp: Partial<KeysetDoc>[keyof KeysetDoc] = props.action.before[property]
-                  ? props.action.before[property]
+                const beforeProp: Partial<KeysetDoc>[keyof KeysetDoc] = action
+                  .before[property]
+                  ? action.before[property]
                   : "";
-                const afterProp: Partial<KeysetDoc>[keyof KeysetDoc] = props.action.after[property]
-                  ? props.action.after[property]
+                const afterProp: Partial<KeysetDoc>[keyof KeysetDoc] = action
+                  .after[property]
+                  ? action.after[property]
                   : "";
                 if (
                   !arrayProps.includes(property) &&
@@ -127,24 +144,45 @@ export const AuditEntry = (props: AuditEntryProps) => {
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (arrayProps.includes(property) && is<any[]>(beforeProp) && is<any[]>(afterProp)) {
+                } else if (
+                  arrayProps.includes(property) &&
+                  is<any[]>(beforeProp) &&
+                  is<any[]>(afterProp)
+                ) {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell className="before">
-                        <span className="highlight">{beforeProp.join(", ")}</span>
+                        <span className="highlight">
+                          {beforeProp.join(", ")}
+                        </span>
                       </DataTableCell>
                       <DataTableCell className="after">
-                        <span className="highlight">{afterProp.join(", ")}</span>
+                        <span className="highlight">
+                          {afterProp.join(", ")}
+                        </span>
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (property === "vendors" && props.action.before.vendors && props.action.after.vendors) {
-                  const beforeVendors = alphabeticalSortProp([...props.action.before.vendors], "region");
+                } else if (
+                  property === "vendors" &&
+                  action.before.vendors &&
+                  action.after.vendors
+                ) {
+                  const beforeVendors = alphabeticalSortProp(
+                    [...action.before.vendors],
+                    "region"
+                  );
 
-                  const afterVendors = alphabeticalSortProp([...props.action.after.vendors], "region");
+                  const afterVendors = alphabeticalSortProp(
+                    [...action.after.vendors],
+                    "region"
+                  );
 
-                  const moreVendors = afterVendors.length >= beforeVendors.length ? afterVendors : beforeVendors;
+                  const moreVendors =
+                    afterVendors.length >= beforeVendors.length
+                      ? afterVendors
+                      : beforeVendors;
                   return moreVendors.map((_vendor, index) => {
                     const beforeVendor = beforeVendors[index]
                       ? beforeVendors[index]
@@ -158,36 +196,62 @@ export const AuditEntry = (props: AuditEntryProps) => {
                           <DataTableCell>{property + index}</DataTableCell>
                           <DataTableCell className="before">
                             <div>
-                              <span className={classNames({ highlight: afterVendor.id !== beforeVendor.id })}>
+                              <span
+                                className={classNames({
+                                  highlight: afterVendor.id !== beforeVendor.id,
+                                })}
+                              >
                                 ID: {beforeVendor.id}
                               </span>
                             </div>
                             <div>
-                              <span className={classNames({ highlight: afterVendor.name !== beforeVendor.name })}>
+                              <span
+                                className={classNames({
+                                  highlight:
+                                    afterVendor.name !== beforeVendor.name,
+                                })}
+                              >
                                 Name: {beforeVendor.name}
                               </span>
                             </div>
                             <div>
-                              <span className={classNames({ highlight: afterVendor.region !== beforeVendor.region })}>
+                              <span
+                                className={classNames({
+                                  highlight:
+                                    afterVendor.region !== beforeVendor.region,
+                                })}
+                              >
                                 Region: {beforeVendor.region}
                               </span>
                             </div>
                             <div>
                               <span
                                 className={classNames({
-                                  highlight: afterVendor.storeLink !== beforeVendor.storeLink,
+                                  highlight:
+                                    afterVendor.storeLink !==
+                                    beforeVendor.storeLink,
                                 })}
                               >
                                 Link:{" "}
-                                <a href={beforeVendor.storeLink} target="_blank" rel="noopener noreferrer">
-                                  {beforeVendor.storeLink ? beforeVendor.storeLink.match(domain) : null}
+                                <a
+                                  href={beforeVendor.storeLink}
+                                  rel="noopener noreferrer"
+                                  target="_blank"
+                                >
+                                  {beforeVendor.storeLink
+                                    ? beforeVendor.storeLink.match(domain)
+                                    : null}
                                 </a>
                               </span>
                             </div>
                             {beforeVendor.endDate ? (
                               <div>
                                 <span
-                                  className={classNames({ highlight: afterVendor.endDate !== beforeVendor.endDate })}
+                                  className={classNames({
+                                    highlight:
+                                      afterVendor.endDate !==
+                                      beforeVendor.endDate,
+                                  })}
                                 >
                                   End date: {beforeVendor.endDate}
                                 </span>
@@ -196,36 +260,62 @@ export const AuditEntry = (props: AuditEntryProps) => {
                           </DataTableCell>
                           <DataTableCell className="after">
                             <div>
-                              <span className={classNames({ highlight: afterVendor.id !== beforeVendor.id })}>
+                              <span
+                                className={classNames({
+                                  highlight: afterVendor.id !== beforeVendor.id,
+                                })}
+                              >
                                 ID: {afterVendor.id}
                               </span>
                             </div>
                             <div>
-                              <span className={classNames({ highlight: afterVendor.name !== beforeVendor.name })}>
+                              <span
+                                className={classNames({
+                                  highlight:
+                                    afterVendor.name !== beforeVendor.name,
+                                })}
+                              >
                                 Name: {afterVendor.name}
                               </span>
                             </div>
                             <div>
-                              <span className={classNames({ highlight: afterVendor.region !== beforeVendor.region })}>
+                              <span
+                                className={classNames({
+                                  highlight:
+                                    afterVendor.region !== beforeVendor.region,
+                                })}
+                              >
                                 Region: {afterVendor.region}
                               </span>
                             </div>
                             <div>
                               <span
                                 className={classNames({
-                                  highlight: afterVendor.storeLink !== beforeVendor.storeLink,
+                                  highlight:
+                                    afterVendor.storeLink !==
+                                    beforeVendor.storeLink,
                                 })}
                               >
                                 Link:{" "}
-                                <a href={afterVendor.storeLink} target="_blank" rel="noopener noreferrer">
-                                  {afterVendor.storeLink ? afterVendor.storeLink.match(domain) : null}
+                                <a
+                                  href={afterVendor.storeLink}
+                                  rel="noopener noreferrer"
+                                  target="_blank"
+                                >
+                                  {afterVendor.storeLink
+                                    ? afterVendor.storeLink.match(domain)
+                                    : null}
                                 </a>
                               </span>
                             </div>
                             {afterVendor.endDate ? (
                               <div>
                                 <span
-                                  className={classNames({ highlight: afterVendor.endDate !== beforeVendor.endDate })}
+                                  className={classNames({
+                                    highlight:
+                                      afterVendor.endDate !==
+                                      beforeVendor.endDate,
+                                  })}
                                 >
                                   End date: {afterVendor.endDate}
                                 </span>
@@ -237,20 +327,32 @@ export const AuditEntry = (props: AuditEntryProps) => {
                     }
                     return null;
                   });
-                } else if (urlProps.includes(property) && is<string>(beforeProp) && is<string>(afterProp)) {
+                } else if (
+                  urlProps.includes(property) &&
+                  is<string>(beforeProp) &&
+                  is<string>(afterProp)
+                ) {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell className="before">
                         <span className="highlight">
-                          <a href={beforeProp} target="_blank" rel="noopener noreferrer">
+                          <a
+                            href={beforeProp}
+                            rel="noopener noreferrer"
+                            target="_blank"
+                          >
                             {beforeProp.match(domain)}
                           </a>
                         </span>
                       </DataTableCell>
                       <DataTableCell className="after">
                         <span className="highlight">
-                          <a href={afterProp} target="_blank" rel="noopener noreferrer">
+                          <a
+                            href={afterProp}
+                            rel="noopener noreferrer"
+                            target="_blank"
+                          >
                             {afterProp.match(domain)}
                           </a>
                         </span>
@@ -261,10 +363,10 @@ export const AuditEntry = (props: AuditEntryProps) => {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
-                      <DataTableCell hasFormControl className="before">
+                      <DataTableCell className="before" hasFormControl>
                         <Checkbox checked={!!beforeProp} disabled />
                       </DataTableCell>
-                      <DataTableCell hasFormControl className="after">
+                      <DataTableCell className="after" hasFormControl>
                         <Checkbox checked={!!afterProp} disabled />
                       </DataTableCell>
                     </DataTableRow>
@@ -274,8 +376,12 @@ export const AuditEntry = (props: AuditEntryProps) => {
                   is<KeysetDoc["sales"]>(beforeProp) &&
                   is<KeysetDoc["sales"]>(afterProp)
                 ) {
-                  const beforeSales = !is<string>(beforeProp) ? beforeProp.img : beforeProp;
-                  const afterSales = !is<string>(afterProp) ? afterProp.img : afterProp;
+                  const beforeSales = !is<string>(beforeProp)
+                    ? beforeProp.img
+                    : beforeProp;
+                  const afterSales = !is<string>(afterProp)
+                    ? afterProp.img
+                    : afterProp;
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
@@ -287,14 +393,22 @@ export const AuditEntry = (props: AuditEntryProps) => {
                             })}
                           >
                             Image:{" "}
-                            <a href={beforeSales} target="_blank" rel="noopener noreferrer">
+                            <a
+                              href={beforeSales}
+                              rel="noopener noreferrer"
+                              target="_blank"
+                            >
                               {beforeSales.match(domain)}
                             </a>
                           </span>
                         </div>
                         {!is<string>(beforeProp) ? (
                           <div className="list-checkbox">
-                            Third party: <Checkbox checked={beforeProp.thirdParty} disabled />
+                            Third party:{" "}
+                            <Checkbox
+                              checked={beforeProp.thirdParty}
+                              disabled
+                            />
                           </div>
                         ) : null}
                       </DataTableCell>
@@ -306,14 +420,19 @@ export const AuditEntry = (props: AuditEntryProps) => {
                             })}
                           >
                             Image:{" "}
-                            <a href={afterSales} target="_blank" rel="noopener noreferrer">
+                            <a
+                              href={afterSales}
+                              rel="noopener noreferrer"
+                              target="_blank"
+                            >
                               {afterSales.match(domain)}
                             </a>
                           </span>
                         </div>
                         {!is<string>(afterProp) ? (
                           <div className="list-checkbox">
-                            Third party: <Checkbox checked={afterProp.thirdParty} disabled />
+                            Third party:{" "}
+                            <Checkbox checked={afterProp.thirdParty} disabled />
                           </div>
                         ) : null}
                       </DataTableCell>
@@ -321,9 +440,16 @@ export const AuditEntry = (props: AuditEntryProps) => {
                   );
                 }
                 return null;
-              } else if (props.action.action === "created" || props.action.action === "deleted") {
-                const docData = props.action.action === "created" ? props.action.after : props.action.before;
-                const prop = hasKey(docData, property) && docData[property] ? docData[property] : "";
+              } else if (
+                action.action === "created" ||
+                action.action === "deleted"
+              ) {
+                const docData =
+                  action.action === "created" ? action.after : action.before;
+                const prop =
+                  hasKey(docData, property) && docData[property]
+                    ? docData[property]
+                    : "";
                 if (
                   !arrayProps.includes(property) &&
                   property !== "vendors" &&
@@ -334,7 +460,11 @@ export const AuditEntry = (props: AuditEntryProps) => {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
-                      <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
+                      <DataTableCell
+                        className={
+                          action.action === "created" ? "after" : "before"
+                        }
+                      >
                         <span className="highlight">{prop}</span>
                       </DataTableCell>
                     </DataTableRow>
@@ -343,17 +473,26 @@ export const AuditEntry = (props: AuditEntryProps) => {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
-                      <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
+                      <DataTableCell
+                        className={
+                          action.action === "created" ? "after" : "before"
+                        }
+                      >
                         <span className="highlight">{prop.join(", ")}</span>
                       </DataTableCell>
                     </DataTableRow>
                   );
                 } else if (property === "vendors" && docData.vendors) {
-                  const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
+                  const domain =
+                    /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
                   return docData.vendors.map((vendor, index) => (
                     <DataTableRow key={vendor.name + index}>
                       <DataTableCell>{property + index}</DataTableCell>
-                      <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
+                      <DataTableCell
+                        className={
+                          action.action === "created" ? "after" : "before"
+                        }
+                      >
                         <div>
                           <span className="highlight">ID: {vendor.id}</span>
                         </div>
@@ -361,13 +500,19 @@ export const AuditEntry = (props: AuditEntryProps) => {
                           <span className="highlight">Name: {vendor.name}</span>
                         </div>
                         <div>
-                          <span className="highlight">Region: {vendor.region}</span>
+                          <span className="highlight">
+                            Region: {vendor.region}
+                          </span>
                         </div>
                         <div>
                           <span className="highlight">
                             Link:{" "}
                             {vendor.storeLink ? (
-                              <a href={vendor.storeLink} target="_blank" rel="noopener noreferrer">
+                              <a
+                                href={vendor.storeLink}
+                                rel="noopener noreferrer"
+                                target="_blank"
+                              >
                                 {vendor.storeLink.match(domain)}
                               </a>
                             ) : null}
@@ -375,7 +520,9 @@ export const AuditEntry = (props: AuditEntryProps) => {
                         </div>
                         {vendor.endDate ? (
                           <div>
-                            <span className="highlight">End date: {vendor.endDate}</span>
+                            <span className="highlight">
+                              End date: {vendor.endDate}
+                            </span>
                           </div>
                         ) : null}
                       </DataTableCell>
@@ -385,9 +532,17 @@ export const AuditEntry = (props: AuditEntryProps) => {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
-                      <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
+                      <DataTableCell
+                        className={
+                          action.action === "created" ? "after" : "before"
+                        }
+                      >
                         <span className="highlight">
-                          <a href={prop} target="_blank" rel="noopener noreferrer">
+                          <a
+                            href={prop}
+                            rel="noopener noreferrer"
+                            target="_blank"
+                          >
                             {prop.match(domain)}
                           </a>
                         </span>
@@ -398,28 +553,44 @@ export const AuditEntry = (props: AuditEntryProps) => {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
-                      <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
+                      <DataTableCell
+                        className={
+                          action.action === "created" ? "after" : "before"
+                        }
+                      >
                         <Checkbox checked={prop} disabled />
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (property === "sales" && is<KeysetDoc["sales"]>(prop)) {
+                } else if (
+                  property === "sales" &&
+                  is<KeysetDoc["sales"]>(prop)
+                ) {
                   const sales = !is<string>(prop) ? prop.img : `${prop}`;
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
-                      <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
+                      <DataTableCell
+                        className={
+                          action.action === "created" ? "after" : "before"
+                        }
+                      >
                         <div>
                           <span className="highlight">
                             Image:{" "}
-                            <a href={sales} target="_blank" rel="noopener noreferrer">
+                            <a
+                              href={sales}
+                              rel="noopener noreferrer"
+                              target="_blank"
+                            >
                               {sales.match(domain)}
                             </a>
                           </span>
                         </div>
                         {!is<string>(prop) ? (
                           <div className="list-checkbox">
-                            Third party: <Checkbox checked={prop.thirdParty} disabled />
+                            Third party:{" "}
+                            <Checkbox checked={prop.thirdParty} disabled />
                           </div>
                         ) : null}
                       </DataTableCell>
@@ -437,10 +608,10 @@ export const AuditEntry = (props: AuditEntryProps) => {
       </DataTable>
       <div className="button-list">
         <Button
-          label="delete"
           className="delete"
+          label="delete"
           onClick={() => {
-            props.openDeleteDialog(props.action);
+            openDeleteDialog(action);
           }}
         />
       </div>

@@ -15,9 +15,14 @@ import { Autocomplete } from "@c/util/autocomplete";
 import firebase from "@s/firebase";
 import { selectAllDesigners } from "@s/main";
 import { selectUser } from "@s/user";
-import { User } from "@s/users/constructors";
 import type { UserType } from "@s/users/types";
-import { arrayIncludes, hasKey, iconObject, ordinal, truncate } from "@s/util/functions";
+import {
+  arrayIncludes,
+  hasKey,
+  iconObject,
+  ordinal,
+  truncate,
+} from "@s/util/functions";
 import { Delete, Save } from "@i";
 
 type UserRowProps = {
@@ -28,46 +33,59 @@ type UserRowProps = {
 
 const roles = ["designer", "editor", "admin"] as const;
 
-export const UserRow = (props: UserRowProps) => {
+export const UserRow = ({
+  delete: deleteFn,
+  getUsers,
+  user: propsUser,
+}: UserRowProps) => {
   const currentUser = useAppSelector(selectUser);
 
   const allDesigners = useAppSelector(selectAllDesigners);
 
-  const blankUser = new User();
-  const [user, updateUser] = useImmer<UserType>(blankUser);
+  const [user, updateUser] = useImmer<UserType>(propsUser);
   const [edited, setEdited] = useState(false);
   const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState("");
 
-  const keyedUpdate = <T extends UserType, K extends keyof T>(key: K, payload: T[K]) => (draft: T) => {
-    draft[key] = payload;
-  };
+  const keyedUpdate =
+    <T extends UserType, K extends keyof T>(key: K, payload: T[K]) =>
+    (draft: T) => {
+      draft[key] = payload;
+    };
 
   useEffect(() => {
-    if (props.user !== user) {
-      updateUser(props.user);
+    if (propsUser !== user) {
+      updateUser(user);
       setEdited(false);
     }
-  }, [props.user]);
+  }, [propsUser]);
 
-  const handleFocus = (e: FocusEvent<HTMLInputElement>) => setFocused(e.target.name);
+  const handleFocus = (e: FocusEvent<HTMLInputElement>) =>
+    setFocused(e.target.name);
   const handleBlur = () => setFocused("");
 
-  const handleCheckboxChange = ({ target: { name, checked } }: ChangeEvent<HTMLInputElement>) => {
+  const handleCheckboxChange = ({
+    target: { checked, name },
+  }: ChangeEvent<HTMLInputElement>) => {
     if (arrayIncludes(roles, name)) {
       updateUser(keyedUpdate(name, checked));
       setEdited(true);
     }
   };
 
-  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
     if (hasKey(user, name)) {
       updateUser(keyedUpdate(name, value));
       setEdited(true);
     }
   };
 
-  const selectValue = <Key extends keyof UserType>(prop: Key, value: UserType[Key]) => {
+  const selectValue = <Key extends keyof UserType>(
+    prop: Key,
+    value: UserType[Key]
+  ) => {
     updateUser(keyedUpdate(prop, value));
     setEdited(true);
   };
@@ -76,11 +94,11 @@ export const UserRow = (props: UserRowProps) => {
     setLoading(true);
     const setRolesFn = firebase.functions().httpsCallable("setRoles");
     setRolesFn({
-      email: user.email,
-      nickname: user.nickname,
+      admin: user.admin,
       designer: user.designer,
       editor: user.editor,
-      admin: user.admin,
+      email: user.email,
+      nickname: user.nickname,
     }).then((result) => {
       setLoading(false);
       if (
@@ -89,9 +107,11 @@ export const UserRow = (props: UserRowProps) => {
         result.data.admin === user.admin
       ) {
         queue.notify({ title: "Successfully edited user permissions." });
-        props.getUsers();
+        getUsers();
       } else if (result.data.error) {
-        queue.notify({ title: "Failed to edit user permissions: " + result.data.error });
+        queue.notify({
+          title: "Failed to edit user permissions: " + result.data.error,
+        });
       } else {
         queue.notify({ title: "Failed to edit user permissions." });
       }
@@ -101,28 +121,27 @@ export const UserRow = (props: UserRowProps) => {
     <CircularProgress />
   ) : (
     <IconButton
+      disabled={!edited}
+      icon={iconObject(<Save />)}
       onClick={() => {
         if (edited) {
           setRoles();
         }
       }}
-      icon={iconObject(<Save />)}
-      disabled={!edited}
     />
   );
   const deleteButton =
-    user.email === currentUser.email || user.email === "ben.j.durrant@gmail.com" ? null : (
+    user.email === currentUser.email ||
+    user.email === "ben.j.durrant@gmail.com" ? null : (
       <IconButton
-        onClick={() => {
-          props.delete(user);
-        }}
         icon={iconObject(<Delete />)}
+        onClick={() => deleteFn(user)}
       />
     );
   return (
     <DataTableRow>
       <DataTableCell>
-        <Avatar src={user.photoURL} name={user.displayName} size="large" />
+        <Avatar name={user.displayName} size="large" src={user.photoURL} />
       </DataTableCell>
       <DataTableCell>{user.displayName}</DataTableCell>
       <DataTableCell>{truncate(user.email, 20)}</DataTableCell>
@@ -144,41 +163,53 @@ export const UserRow = (props: UserRowProps) => {
       <DataTableCell>
         <MenuSurfaceAnchor>
           <TextField
-            outlined
             className="nickname"
             name="nickname"
+            onBlur={handleBlur}
             onChange={handleChange}
             onFocus={handleFocus}
-            onBlur={handleBlur}
+            outlined
             value={user.nickname}
           />
           <Autocomplete
-            open={focused === "nickname"}
             array={allDesigners}
-            query={user.nickname}
-            prop="nickname"
-            select={(prop, item) => hasKey(user, prop) && selectValue(prop, item)}
             minChars={2}
+            open={focused === "nickname"}
+            prop="nickname"
+            query={user.nickname}
+            select={(prop, item) =>
+              hasKey(user, prop) && selectValue(prop, item)
+            }
           />
         </MenuSurfaceAnchor>
       </DataTableCell>
       <DataTableCell hasFormControl>
-        <Checkbox name="designer" checked={user.designer} onChange={handleCheckboxChange} />
-      </DataTableCell>
-      <DataTableCell hasFormControl>
         <Checkbox
-          name="editor"
-          checked={user.editor}
+          checked={user.designer}
+          name="designer"
           onChange={handleCheckboxChange}
-          disabled={user.email === currentUser.email || user.email === "ben.j.durrant@gmail.com"}
         />
       </DataTableCell>
       <DataTableCell hasFormControl>
         <Checkbox
-          name="admin"
-          checked={user.admin}
+          checked={user.editor}
+          disabled={
+            user.email === currentUser.email ||
+            user.email === "ben.j.durrant@gmail.com"
+          }
+          name="editor"
           onChange={handleCheckboxChange}
-          disabled={user.email === currentUser.email || user.email === "ben.j.durrant@gmail.com"}
+        />
+      </DataTableCell>
+      <DataTableCell hasFormControl>
+        <Checkbox
+          checked={user.admin}
+          disabled={
+            user.email === currentUser.email ||
+            user.email === "ben.j.durrant@gmail.com"
+          }
+          name="admin"
+          onChange={handleCheckboxChange}
         />
       </DataTableCell>
       <DataTableCell hasFormControl>{saveButton}</DataTableCell>

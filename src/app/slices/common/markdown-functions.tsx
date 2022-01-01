@@ -4,24 +4,34 @@ import type { TypographyT } from "@rmwc/typography";
 
 export const componentBuilder = (name: string, Component: FunctionComponent) =>
   Object.assign(
-    (props: Record<string, any>) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { node, ordered, level, inline, isHeader, ...allProps } = props;
-      return <Component {...allProps} />;
-    },
+    ({
+      /* eslint-disable @typescript-eslint/no-unused-vars */
+      inline,
+      isHeader,
+      level,
+      node,
+      ordered,
+      /* eslint-enable @typescript-eslint/no-unused-vars */
+      ...allProps
+    }: Record<string, any>) => <Component {...allProps} />,
     { displayName: "Custom " + name }
   );
 
 export const typographyBuilder = (tag: string, typography: TypographyT) =>
   Object.assign(
-    (props: Record<string, any>) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { node, ordered, level, inline, children, ...allProps } = props;
-      return (
-        <Typography use={typography} tag={tag} {...allProps}>
-          {children}
-        </Typography>
-      );
-    },
+    ({
+      children,
+      /* eslint-disable @typescript-eslint/no-unused-vars */
+      inline,
+      level,
+      node,
+      ordered,
+      /* eslint-enable @typescript-eslint/no-unused-vars */
+      ...allProps
+    }: Record<string, any>) => (
+      <Typography tag={tag} use={typography} {...allProps}>
+        {children}
+      </Typography>
+    ),
     { displayName: "Custom " + tag }
   );

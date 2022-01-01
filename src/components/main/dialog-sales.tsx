@@ -1,4 +1,10 @@
-import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
+import {
+  Dialog,
+  DialogActions,
+  DialogButton,
+  DialogContent,
+  DialogTitle,
+} from "@rmwc/dialog";
 import type { SetType } from "@s/main/types";
 import "./dialog-sales.scss";
 
@@ -8,24 +14,24 @@ type DialogSalesProps = {
   set: SetType;
 };
 
-export const DialogSales = (props: DialogSalesProps) => (
-  <Dialog className="sales-dialog" open={props.open} onClose={props.close}>
-    <DialogTitle>{`Sales - ${props.set.profile} ${props.set.colorway}`}</DialogTitle>
+export const DialogSales = ({ close, open, set }: DialogSalesProps) => (
+  <Dialog className="sales-dialog" onClose={close} open={open}>
+    <DialogTitle>{`Sales - ${set.profile} ${set.colorway}`}</DialogTitle>
     <DialogContent>
       <div className="sales-image">
-        <img alt="Sales graph" src={props.set.sales ? props.set.sales.img : ""} />
+        <img alt="Sales graph" src={set.sales?.img ?? ""} />
       </div>
-      {props.set.sales && !props.set.sales.thirdParty ? "Created by dvorcol." : null}
+      {set.sales && !set.sales.thirdParty ? "Created by dvorcol." : null}
     </DialogContent>
     <DialogActions>
       <DialogButton
+        href={set.sales?.img ?? ""}
         label="Open original"
-        tag="a"
-        href={props.set.sales ? props.set.sales.img : ""}
-        target="_blank"
         rel="noopener noreferrer"
+        tag="a"
+        target="_blank"
       />
-      <DialogButton label="Close" onClick={props.close} />
+      <DialogButton label="Close" onClick={close} />
     </DialogActions>
   </Dialog>
 );

@@ -9,7 +9,11 @@ import { IconButton } from "@rmwc/icon-button";
 import { MenuSurface, MenuSurfaceAnchor } from "@rmwc/menu";
 import type { MenuHTMLProps, MenuSurfaceProps } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
-import type { TextFieldHelperTextProps, TextFieldHTMLProps, TextFieldProps } from "@rmwc/textfield";
+import type {
+  TextFieldHelperTextProps,
+  TextFieldHTMLProps,
+  TextFieldProps,
+} from "@rmwc/textfield";
 import { DateTime } from "luxon";
 import { useRifm } from "rifm";
 import { useAppSelector } from "~/app/hooks";
@@ -35,7 +39,10 @@ const formatTime = (string: string) => {
 
 /** Returns an error message if invalid, otherwise returns false. */
 
-export const invalidTime = (date: string, required?: boolean): string | false => {
+export const invalidTime = (
+  date: string,
+  required?: boolean
+): string | false => {
   if (required && !date) {
     return "Field is required";
   } else if (date && date.length !== 5) {
@@ -57,17 +64,23 @@ export const invalidTime = (date: string, required?: boolean): string | false =>
 export type TimePickerProps = Overwrite<
   Omit<TextFieldHTMLProps & TextFieldProps, "helpText" | "onBlur" | "onFocus">,
   {
+    onChange: (val: string) => void;
     value: string;
     fallbackValue?: string;
-    onChange: (val: string) => void;
-    helpTextProps?: TextFieldHelperTextProps;
+    helpTextProps?: Partial<TextFieldHelperTextProps>;
     modalProps?: Omit<
-      Common<MenuHTMLProps & MenuSurfaceProps, DialogProps & HTMLProps<HTMLElement>>,
+      Common<
+        MenuHTMLProps & MenuSurfaceProps,
+        DialogProps & HTMLProps<HTMLElement>
+      >,
       "anchorCorner" | "open" | "renderToPortal"
     >;
-    pickerProps?: Omit<KeyboardTimePickerProps, "onChange" | "orientation" | "value" | "variant">;
-    showNowButton?: boolean;
+    pickerProps?: Omit<
+      KeyboardTimePickerProps,
+      "onChange" | "orientation" | "value" | "variant"
+    >;
     saveOnClose?: boolean;
+    showNowButton?: boolean;
   }
 >;
 
@@ -81,6 +94,8 @@ export const TimePicker = ({
   onChange,
   showNowButton,
   saveOnClose,
+  required,
+  helpTextProps = {},
   ...props
 }: TimePickerProps) => {
   const device = useAppSelector(selectDevice);
@@ -89,15 +104,15 @@ export const TimePicker = ({
   const landscape = orientation === "landscape";
 
   const [touched, setTouched] = useState(false);
-  const invalid = touched ? invalidTime(value, props.required) : false;
+  const invalid = touched ? invalidTime(value, required) : false;
 
   const validFallback = invalidTime(fallbackValue || "") ? "" : fallbackValue;
 
   const rifm = useRifm({
-    value,
-    onChange,
     accept: /\d:/g,
     format: formatTime,
+    onChange,
+    value,
   });
 
   const [open, setOpen] = useState(false);
@@ -105,14 +120,22 @@ export const TimePicker = ({
   const [dialogVal, setDialogVal] = useState(value);
   useEffect(() => {
     if (dialogVal !== value) {
-      setDialogVal(value || validFallback || DateTime.now().toLocaleString(DateTime.TIME_24_SIMPLE));
+      setDialogVal(
+        value ||
+          validFallback ||
+          DateTime.now().toLocaleString(DateTime.TIME_24_SIMPLE)
+      );
     }
   }, [value, fallbackValue]);
 
   const confirmVal = useInline && !saveOnClose ? onChange : setDialogVal;
 
-  const handleTimePickerChange: KeyboardTimePickerProps["onChange"] = (date, value) => {
-    const finalValue = date?.toLocaleString(DateTime.TIME_24_SIMPLE) || value || "";
+  const handleTimePickerChange: KeyboardTimePickerProps["onChange"] = (
+    date,
+    value
+  ) => {
+    const finalValue =
+      date?.toLocaleString(DateTime.TIME_24_SIMPLE) || value || "";
     confirmVal(finalValue);
   };
   const setNow = () => {
@@ -124,59 +147,78 @@ export const TimePicker = ({
   };
 
   const confirmDialog = () => {
-    onChange(dialogVal || validFallback || DateTime.now().toLocaleString(DateTime.TIME_24_SIMPLE));
+    onChange(
+      dialogVal ||
+        validFallback ||
+        DateTime.now().toLocaleString(DateTime.TIME_24_SIMPLE)
+    );
     closeDialog();
   };
 
   const modal = useInline ? (
     <MenuSurface
       {...modalProps}
-      open={open}
-      onClose={saveOnClose ? confirmDialog : undefined}
-      className={bemClasses("modal", { open }, [modalProps?.className || ""])}
       anchorCorner="bottomLeft"
+      className={bemClasses("modal", { open }, [modalProps?.className || ""])}
+      onClose={saveOnClose ? confirmDialog : undefined}
+      open={open}
     >
       <KeyboardTimePicker
-        value={`2020-12-20T${saveOnClose ? dialogVal : value || validFallback || DateTime.now().toISODate()}`}
-        onChange={handleTimePickerChange}
-        variant="static"
-        orientation="portrait"
         ampm={false}
+        onChange={handleTimePickerChange}
         openTo="hours"
+        orientation="portrait"
+        value={`2020-12-20T${
+          saveOnClose
+            ? dialogVal
+            : value || validFallback || DateTime.now().toISODate()
+        }`}
+        variant="static"
         {...pickerProps}
       />
       {showNowButton ? (
         <div className={bemClasses("buttons")}>
-          <Button label="Now" type="button" onClick={setNow} />
+          <Button label="Now" onClick={setNow} type="button" />
         </div>
       ) : null}
     </MenuSurface>
   ) : (
     <Dialog
       {...modalProps}
-      open={open}
-      onClose={closeDialog}
       className={bemClasses("modal", { open }, [modalProps?.className || ""])}
+      onClose={closeDialog}
+      open={open}
       renderToPortal
     >
       <KeyboardTimePicker
-        value={`2020-12-20T${dialogVal || validFallback || DateTime.now().toLocaleString(DateTime.TIME_24_SIMPLE)}`}
-        onChange={handleTimePickerChange}
-        variant="static"
-        orientation={orientation}
         ampm={false}
+        onChange={handleTimePickerChange}
         openTo="hours"
+        orientation={orientation}
+        value={`2020-12-20T${
+          dialogVal ||
+          validFallback ||
+          DateTime.now().toLocaleString(DateTime.TIME_24_SIMPLE)
+        }`}
+        variant="static"
         {...pickerProps}
       />
       <ConditionalWrapper
         condition={landscape}
-        wrapper={(children) => <div className={bemClasses("bottom-bar")}>{children}</div>}
+        wrapper={(children) => (
+          <div className={bemClasses("bottom-bar")}>{children}</div>
+        )}
       >
         <DialogActions>
           {showNowButton ? (
-            <Button className={bemClasses("show-now-button")} label="Now" type="button" onClick={setNow} />
+            <Button
+              className={bemClasses("show-now-button")}
+              label="Now"
+              onClick={setNow}
+              type="button"
+            />
           ) : null}
-          <DialogButton label="Cancel" isDefaultAction onClick={closeDialog} />
+          <DialogButton isDefaultAction label="Cancel" onClick={closeDialog} />
           <DialogButton label="Confirm" onClick={confirmDialog} />
         </DialogActions>
       </ConditionalWrapper>
@@ -186,23 +228,23 @@ export const TimePicker = ({
   return (
     <ConditionalWrapper
       condition={useInline}
-      wrapper={(children) => <MenuSurfaceAnchor className={bemClasses("anchor")}>{children}</MenuSurfaceAnchor>}
+      wrapper={(children) => (
+        <MenuSurfaceAnchor className={bemClasses("anchor")}>
+          {children}
+        </MenuSurfaceAnchor>
+      )}
     >
       <TextField
         {...props}
-        value={rifm.value}
-        onChange={rifm.onChange}
         className={bemClasses("field", { inline: useInline })}
-        inputMode="numeric"
-        pattern="^\d{2}:\d{2}"
-        onFocus={() => {
-          if (touched) {
-            setTouched(false);
-          }
-          if (useInline) {
-            setOpen(true);
-          }
+        helpText={{
+          children: invalid ? capitalise(invalid) : "Format: HH:YY (24hr)",
+          persistent: true,
+          validationMsg: true,
+          ...helpTextProps,
         }}
+        inputMode="numeric"
+        invalid={!!invalid}
         onBlur={() => {
           if (!touched) {
             setTouched(true);
@@ -211,18 +253,29 @@ export const TimePicker = ({
             setOpen(false);
           }
         }}
-        invalid={!!invalid}
-        helpText={{
-          persistent: true,
-          validationMsg: true,
-          children: invalid ? capitalise(invalid) : "Format: HH:YY (24hr)",
-          ...(props.helpTextProps || {}),
+        onChange={rifm.onChange}
+        onFocus={() => {
+          if (touched) {
+            setTouched(false);
+          }
+          if (useInline) {
+            setOpen(true);
+          }
         }}
+        pattern="^\d{2}:\d{2}"
+        required={required}
         trailingIcon={
           useInline
             ? undefined
-            : withTooltip(<IconButton icon={iconObject(<Event />)} onClick={() => setOpen(true)} />, "Time picker")
+            : withTooltip(
+                <IconButton
+                  icon={iconObject(<Event />)}
+                  onClick={() => setOpen(true)}
+                />,
+                "Time picker"
+              )
         }
+        value={rifm.value}
       />
       {modal}
     </ConditionalWrapper>

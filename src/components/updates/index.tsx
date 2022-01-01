@@ -31,7 +31,7 @@ type ContentUpdatesProps = {
   openNav: () => void;
 };
 
-export const ContentUpdates = (props: ContentUpdatesProps) => {
+export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
   const device = useAppSelector(selectDevice);
 
   const bottomNav = useAppSelector(selectBottomNav);
@@ -114,23 +114,37 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
         label={device === "desktop" ? "Create" : null}
         onClick={openCreate}
       />
-      <ModalCreate open={createOpen} onClose={closeCreate} getEntries={getEntries} />
-      <ModalEdit open={editOpen} onClose={closeEdit} getEntries={getEntries} entry={editEntry} />
-      <DialogDelete open={deleteOpen} onClose={closeDelete} entry={deleteEntry} getEntries={getEntries} />
+      <ModalCreate
+        getEntries={getEntries}
+        onClose={closeCreate}
+        open={createOpen}
+      />
+      <ModalEdit
+        entry={editEntry}
+        getEntries={getEntries}
+        onClose={closeEdit}
+        open={editOpen}
+      />
+      <DialogDelete
+        entry={deleteEntry}
+        getEntries={getEntries}
+        onClose={closeDelete}
+        open={deleteOpen}
+      />
     </>
   ) : null;
   return (
     <>
       <TopAppBar
-        fixed
         className={classNames({
           "bottom-app-bar": bottomNav,
           "bottom-app-bar--indent": bottomNav && user.isAdmin,
         })}
+        fixed
       >
         <TopAppBarRow>
           <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
+            <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
             <TopAppBarTitle>{pageTitle.updates}</TopAppBarTitle>
           </TopAppBarSection>
           {indent}
@@ -142,7 +156,13 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
         <div className="main extended-app-bar">
           <div className="update-container">
             {entries.map((entry) => (
-              <UpdateEntry key={entry.id} entry={entry} edit={openEdit} delete={openDelete} pin={pinEntry} />
+              <UpdateEntry
+                key={entry.id}
+                delete={openDelete}
+                edit={openEdit}
+                entry={entry}
+                pin={pinEntry}
+              />
             ))}
           </div>
         </div>

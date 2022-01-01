@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
+import {
+  Dialog,
+  DialogActions,
+  DialogButton,
+  DialogContent,
+  DialogTitle,
+} from "@rmwc/dialog";
 import { List, ListItem, ListItemMeta } from "@rmwc/list";
 import { Radio } from "@rmwc/radio";
 import { useAppSelector } from "~/app/hooks";
@@ -13,14 +19,16 @@ type DialogStatisticsProps = {
   open: boolean;
 };
 
-export const DialogStatistics = (props: DialogStatisticsProps) => {
+export const DialogStatistics = ({ onClose, open }: DialogStatisticsProps) => {
   const statisticsTab = useAppSelector(selectTab);
   const settings = useAppSelector(selectSettings);
 
-  const [statistics, setStatistics] = useState<Categories | Properties>("profile");
+  const [statistics, setStatistics] = useState<Categories | Properties>(
+    "profile"
+  );
 
   useEffect(() => {
-    if (props.open) {
+    if (open) {
       const key =
         statisticsTab === "duration"
           ? "durationGroup"
@@ -31,7 +39,7 @@ export const DialogStatistics = (props: DialogStatisticsProps) => {
         setStatistics(settings[key]);
       }
     }
-  }, [props.open]);
+  }, [open]);
 
   const handleChange = (stats: Categories | Properties) => {
     setStatistics(stats);
@@ -39,7 +47,11 @@ export const DialogStatistics = (props: DialogStatisticsProps) => {
 
   const applyStatistics = () => {
     const key =
-      statisticsTab === "duration" ? "durationGroup" : statisticsTab === "timelines" ? "timelinesGroup" : statisticsTab;
+      statisticsTab === "duration"
+        ? "durationGroup"
+        : statisticsTab === "timelines"
+        ? "timelinesGroup"
+        : statisticsTab;
     if (hasKey(settings, key) && settings[key] !== statistics) {
       setStatisticsSetting(key, statistics);
     }
@@ -48,10 +60,10 @@ export const DialogStatistics = (props: DialogStatisticsProps) => {
   return (
     <Dialog
       className="statistics-dialog"
-      open={props.open}
       onClose={() => {
-        props.onClose();
+        onClose();
       }}
+      open={open}
     >
       <DialogTitle>Change category</DialogTitle>
       <DialogContent>
@@ -63,7 +75,11 @@ export const DialogStatistics = (props: DialogStatisticsProps) => {
           >
             Profile
             <ListItemMeta>
-              <Radio tabIndex={-1} checked={statistics === "profile"} readOnly />
+              <Radio
+                checked={statistics === "profile"}
+                readOnly
+                tabIndex={-1}
+              />
             </ListItemMeta>
           </ListItem>
           <ListItem
@@ -73,7 +89,11 @@ export const DialogStatistics = (props: DialogStatisticsProps) => {
           >
             Designer
             <ListItemMeta>
-              <Radio tabIndex={-1} checked={statistics === "designer"} readOnly />
+              <Radio
+                checked={statistics === "designer"}
+                readOnly
+                tabIndex={-1}
+              />
             </ListItemMeta>
           </ListItem>
           <ListItem
@@ -83,14 +103,14 @@ export const DialogStatistics = (props: DialogStatisticsProps) => {
           >
             Vendor
             <ListItemMeta>
-              <Radio tabIndex={-1} checked={statistics === "vendor"} readOnly />
+              <Radio checked={statistics === "vendor"} readOnly tabIndex={-1} />
             </ListItemMeta>
           </ListItem>
         </List>
       </DialogContent>
       <DialogActions>
         <DialogButton action="close">Cancel</DialogButton>
-        <DialogButton action="accept" onClick={applyStatistics} isDefaultAction>
+        <DialogButton action="accept" isDefaultAction onClick={applyStatistics}>
           Confirm
         </DialogButton>
       </DialogActions>

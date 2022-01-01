@@ -18,12 +18,12 @@ afterAll(() => {
 const exampleString = "test";
 
 const blankEntry: GuideEntryType = {
+  body: exampleString,
+  description: exampleString,
   id: exampleString,
   name: exampleString,
-  title: exampleString,
-  description: exampleString,
   tags: [exampleString],
-  body: exampleString,
+  title: exampleString,
   visibility: "all",
 };
 

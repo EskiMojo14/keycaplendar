@@ -34,7 +34,14 @@ import {
   setWhitelist,
 } from "@s/main";
 import { Keyset, Preset, Whitelist } from "@s/main/constructors";
-import type { PresetType, SetGroup, SetType, SortOrderType, SortType, WhitelistType } from "@s/main/types";
+import type {
+  PresetType,
+  SetGroup,
+  SetType,
+  SortOrderType,
+  SortType,
+  WhitelistType,
+} from "@s/main/types";
 
 let store = createStore();
 
@@ -83,7 +90,7 @@ it("sets specified set list", () => {
 });
 
 it("sets set groups", () => {
-  const groups: SetGroup[] = [{ title: "test", sets: [new Keyset("test")] }];
+  const groups: SetGroup[] = [{ sets: [new Keyset("test")], title: "test" }];
   store.dispatch(setSetGroups(groups));
   const response = selectSetGroups(store.getState());
   expect(response).toEqual(groups);
@@ -115,7 +122,11 @@ const whitelist: Partial<WhitelistType> = { profiles: ["test"] };
 it("sets partial whitelist", () => {
   store.dispatch(mergeWhitelist(whitelist));
   const response = selectWhitelist(store.getState());
-  const expected = { ...initialState.whitelist, ...whitelist, edited: Object.keys(whitelist) };
+  const expected = {
+    ...initialState.whitelist,
+    ...whitelist,
+    edited: Object.keys(whitelist),
+  };
   expect(response).toEqual(expected);
 });
 

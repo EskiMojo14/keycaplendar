@@ -9,7 +9,11 @@ import { IconButton } from "@rmwc/icon-button";
 import { MenuSurface, MenuSurfaceAnchor } from "@rmwc/menu";
 import type { MenuHTMLProps, MenuSurfaceProps } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
-import type { TextFieldHelperTextProps, TextFieldHTMLProps, TextFieldProps } from "@rmwc/textfield";
+import type {
+  TextFieldHelperTextProps,
+  TextFieldHTMLProps,
+  TextFieldProps,
+} from "@rmwc/textfield";
 import { DateTime } from "luxon";
 import { useRifm } from "rifm";
 import { useAppSelector } from "~/app/hooks";
@@ -24,27 +28,44 @@ import "./pickers.scss";
 
 const parseDigits = (string: string) => (string.match(/\d+/g) || []).join("");
 
-const formatDate = (string: string, month?: boolean, allowQuarter?: boolean) => {
+const formatDate = (
+  string: string,
+  month?: boolean,
+  allowQuarter?: boolean
+) => {
   const digits = parseDigits(string);
   const chars = digits.split("");
   if (allowQuarter && string.charAt(0) === "Q") {
-    return "Q" + chars.reduce((r, v, index) => (index === 0 ? `${r}${v} ` : r + v), "").substr(0, 6);
+    return (
+      "Q" +
+      chars
+        .reduce((r, v, index) => (index === 0 ? `${r}${v} ` : r + v), "")
+        .substr(0, 6)
+    );
   } else {
     return chars
-      .reduce((r, v, index) => (index === 4 || (index === 6 && !month) ? `${r}-${v}` : r + v), "")
+      .reduce(
+        (r, v, index) =>
+          index === 4 || (index === 6 && !month) ? `${r}-${v}` : r + v,
+        ""
+      )
       .substr(0, month ? 7 : 10);
   }
 };
 
-const formatDateWithAppend = (month?: boolean, allowQuarter?: boolean) => (string: string) => {
-  const res = formatDate(string, month, allowQuarter);
-  if ((res.length === 4 || (res.length === 7 && !month)) && (!allowQuarter || string.charAt(0) !== "Q")) {
-    return res + "-";
-  } else if (allowQuarter && string.charAt(0) !== "Q" && res.length === 1) {
-    return res + " ";
-  }
-  return res;
-};
+const formatDateWithAppend =
+  (month?: boolean, allowQuarter?: boolean) => (string: string) => {
+    const res = formatDate(string, month, allowQuarter);
+    if (
+      (res.length === 4 || (res.length === 7 && !month)) &&
+      (!allowQuarter || string.charAt(0) !== "Q")
+    ) {
+      return res + "-";
+    } else if (allowQuarter && string.charAt(0) !== "Q" && res.length === 1) {
+      return res + " ";
+    }
+    return res;
+  };
 
 /** Returns an error message if invalid, otherwise returns false. */
 
@@ -64,10 +85,14 @@ export const invalidDate = (
   } else if (disableFuture && date && date > DateTime.now().toISODate()) {
     return "Date is in the future";
   } else if (luxonExplanation && date) {
-    return `${luxonExplanation}${allowQuarter ? " (and date isn't Q1-4 YYYY)" : ""}`;
+    return `${luxonExplanation}${
+      allowQuarter ? " (and date isn't Q1-4 YYYY)" : ""
+    }`;
   } else if (required && !(date.length === (month ? 7 : 10))) {
     // valid ISO but not the format we want
-    return `Format: ${month ? "YYYY-MM" : "YYYY-MM-DD"}${allowQuarter ? " or Q1-4 YYYY" : ""}`;
+    return `Format: ${month ? "YYYY-MM" : "YYYY-MM-DD"}${
+      allowQuarter ? " or Q1-4 YYYY" : ""
+    }`;
   }
   return false;
 };
@@ -75,19 +100,25 @@ export const invalidDate = (
 export type DatePickerProps = Overwrite<
   Omit<TextFieldHTMLProps & TextFieldProps, "helpText" | "onBlur" | "onFocus">,
   {
-    value: string;
-    fallbackValue?: string;
     onChange: (val: string) => void;
-    helpTextProps?: TextFieldHelperTextProps;
+    value: string;
+    allowQuarter?: boolean;
+    fallbackValue?: string;
+    helpTextProps?: Partial<TextFieldHelperTextProps>;
     modalProps?: Omit<
-      Common<MenuHTMLProps & MenuSurfaceProps, DialogProps & HTMLProps<HTMLElement>>,
+      Common<
+        MenuHTMLProps & MenuSurfaceProps,
+        DialogProps & HTMLProps<HTMLElement>
+      >,
       "anchorCorner" | "open" | "renderToPortal"
     >;
-    pickerProps?: Omit<KeyboardDatePickerProps, "onChange" | "orientation" | "value" | "variant" | "views">;
     month?: boolean;
-    allowQuarter?: boolean;
-    showNowButton?: boolean;
+    pickerProps?: Omit<
+      KeyboardDatePickerProps,
+      "onChange" | "orientation" | "value" | "variant" | "views"
+    >;
     saveOnClose?: boolean;
+    showNowButton?: boolean;
   }
 >;
 
@@ -103,6 +134,8 @@ export const DatePicker = ({
   allowQuarter,
   showNowButton,
   saveOnClose,
+  required,
+  helpTextProps = {},
   ...props
 }: DatePickerProps) => {
   const device = useAppSelector(selectDevice);
@@ -111,11 +144,21 @@ export const DatePicker = ({
   const landscape = orientation === "landscape";
 
   const [touched, setTouched] = useState(false);
-  const invalid = touched ? invalidDate(value, month, props.required, allowQuarter, pickerProps?.disableFuture) : false;
+  const invalid = touched
+    ? invalidDate(
+        value,
+        month,
+        required,
+        allowQuarter,
+        pickerProps?.disableFuture
+      )
+    : false;
 
   const validFallback = invalidDate(fallbackValue || "") ? "" : fallbackValue;
 
-  const views: KeyboardDatePickerProps["views"] = month ? ["year", "month"] : undefined;
+  const views: KeyboardDatePickerProps["views"] = month
+    ? ["year", "month"]
+    : undefined;
   const openTo: KeyboardDatePickerProps["openTo"] = month ? "month" : "date";
 
   const minDate = pickerProps?.minDate || "2000-01-01";
@@ -128,10 +171,10 @@ export const DatePicker = ({
         .toFormat(month ? "yyyy-MM" : "yyyy-MM-dd");
 
   const rifm = useRifm({
-    value,
-    onChange,
     accept: allowQuarter ? /\d|\s|Q/g : /\d/g,
     format: formatDateWithAppend(month, allowQuarter),
+    onChange,
+    value,
   });
 
   const [open, setOpen] = useState(false);
@@ -145,8 +188,12 @@ export const DatePicker = ({
 
   const confirmVal = useInline && !saveOnClose ? onChange : setDialogVal;
 
-  const handleDatePickerChange: KeyboardDatePickerProps["onChange"] = (date, value) => {
-    const finalValue = (month ? date?.toFormat("yyyy-MM") : date?.toISODate()) || value || "";
+  const handleDatePickerChange: KeyboardDatePickerProps["onChange"] = (
+    date,
+    value
+  ) => {
+    const finalValue =
+      (month ? date?.toFormat("yyyy-MM") : date?.toISODate()) || value || "";
     confirmVal(finalValue);
   };
   const setNow = () => {
@@ -158,68 +205,82 @@ export const DatePicker = ({
   };
 
   const confirmDialog = () => {
-    onChange(dialogVal || validFallback || DateTime.now().toFormat(month ? "yyyy-MM" : "yyyy-MM-dd"));
+    onChange(
+      dialogVal ||
+        validFallback ||
+        DateTime.now().toFormat(month ? "yyyy-MM" : "yyyy-MM-dd")
+    );
     closeDialog();
   };
 
   const modal = useInline ? (
     <MenuSurface
       {...modalProps}
-      open={open && (!allowQuarter || value.charAt(0) !== "Q")}
-      onClose={saveOnClose ? confirmDialog : undefined}
-      className={bemClasses("modal", { open }, [modalProps?.className || ""])}
       anchorCorner="bottomLeft"
+      className={bemClasses("modal", { open }, [modalProps?.className || ""])}
+      onClose={saveOnClose ? confirmDialog : undefined}
+      open={open && (!allowQuarter || value.charAt(0) !== "Q")}
     >
       <KeyboardDatePicker
-        value={saveOnClose ? dialogVal : value || validFallback || DateTime.now().toISODate()}
-        onChange={handleDatePickerChange}
-        variant="static"
-        orientation="portrait"
-        views={views}
-        openTo={openTo}
-        minDate={minDate}
         maxDate={maxDate}
+        minDate={minDate}
+        onChange={handleDatePickerChange}
+        openTo={openTo}
+        orientation="portrait"
+        value={
+          saveOnClose
+            ? dialogVal
+            : value || validFallback || DateTime.now().toISODate()
+        }
+        variant="static"
+        views={views}
         {...pickerProps}
       />
       {showNowButton ? (
         <div className={bemClasses("buttons")}>
-          <Button label={month ? "This month" : "Today"} type="button" onClick={setNow} />
+          <Button
+            label={month ? "This month" : "Today"}
+            onClick={setNow}
+            type="button"
+          />
         </div>
       ) : null}
     </MenuSurface>
   ) : (
     <Dialog
       {...modalProps}
-      open={open}
-      onClose={closeDialog}
       className={bemClasses("modal", { open }, [modalProps?.className || ""])}
+      onClose={closeDialog}
+      open={open}
       renderToPortal
     >
       <KeyboardDatePicker
-        value={dialogVal || validFallback || DateTime.now().toISODate()}
-        onChange={handleDatePickerChange}
-        variant="static"
-        orientation={orientation}
-        views={views}
-        openTo={openTo}
-        minDate={minDate}
         maxDate={maxDate}
+        minDate={minDate}
+        onChange={handleDatePickerChange}
+        openTo={openTo}
+        orientation={orientation}
+        value={dialogVal || validFallback || DateTime.now().toISODate()}
+        variant="static"
+        views={views}
         {...pickerProps}
       />
       <ConditionalWrapper
         condition={landscape}
-        wrapper={(children) => <div className={bemClasses("bottom-bar")}>{children}</div>}
+        wrapper={(children) => (
+          <div className={bemClasses("bottom-bar")}>{children}</div>
+        )}
       >
         <DialogActions>
           {showNowButton ? (
             <Button
               className={bemClasses("show-now-button")}
               label={month ? "This month" : "Today"}
-              type="button"
               onClick={setNow}
+              type="button"
             />
           ) : null}
-          <DialogButton label="Cancel" isDefaultAction onClick={closeDialog} />
+          <DialogButton isDefaultAction label="Cancel" onClick={closeDialog} />
           <DialogButton label="Confirm" onClick={confirmDialog} />
         </DialogActions>
       </ConditionalWrapper>
@@ -229,23 +290,27 @@ export const DatePicker = ({
   return (
     <ConditionalWrapper
       condition={useInline}
-      wrapper={(children) => <MenuSurfaceAnchor className={bemClasses("anchor")}>{children}</MenuSurfaceAnchor>}
+      wrapper={(children) => (
+        <MenuSurfaceAnchor className={bemClasses("anchor")}>
+          {children}
+        </MenuSurfaceAnchor>
+      )}
     >
       <TextField
         {...props}
-        value={rifm.value}
-        onChange={rifm.onChange}
         className={bemClasses("field")}
-        inputMode="numeric"
-        pattern={`^\\d{4}-\\d{1,2}${!month ? "-\\d{1,2}" : ""}$${allowQuarter ? "|^Q[1-4]{1} \\d{4}$" : ""}`}
-        onFocus={() => {
-          if (touched) {
-            setTouched(false);
-          }
-          if (useInline) {
-            setOpen(true);
-          }
+        helpText={{
+          children: invalid
+            ? capitalise(invalid)
+            : `Format: ${month ? "YYYY-MM" : "YYYY-MM-DD"}${
+                allowQuarter ? " or Q1-4 YYYY" : ""
+              }`,
+          persistent: true,
+          validationMsg: true,
+          ...helpTextProps,
         }}
+        inputMode="numeric"
+        invalid={!!invalid}
         onBlur={() => {
           if (!touched) {
             setTouched(true);
@@ -254,20 +319,31 @@ export const DatePicker = ({
             setOpen(false);
           }
         }}
-        invalid={!!invalid}
-        helpText={{
-          persistent: true,
-          validationMsg: true,
-          children: invalid
-            ? capitalise(invalid)
-            : `Format: ${month ? "YYYY-MM" : "YYYY-MM-DD"}${allowQuarter ? " or Q1-4 YYYY" : ""}`,
-          ...(props.helpTextProps || {}),
+        onChange={rifm.onChange}
+        onFocus={() => {
+          if (touched) {
+            setTouched(false);
+          }
+          if (useInline) {
+            setOpen(true);
+          }
         }}
+        pattern={`^\\d{4}-\\d{1,2}${!month ? "-\\d{1,2}" : ""}$${
+          allowQuarter ? "|^Q[1-4]{1} \\d{4}$" : ""
+        }`}
+        required={required}
         trailingIcon={
           useInline
             ? undefined
-            : withTooltip(<IconButton icon={iconObject(<Event />)} onClick={() => setOpen(true)} />, "Date picker")
+            : withTooltip(
+                <IconButton
+                  icon={iconObject(<Event />)}
+                  onClick={() => setOpen(true)}
+                />,
+                "Date picker"
+              )
         }
+        value={rifm.value}
       />
       {modal}
     </ConditionalWrapper>

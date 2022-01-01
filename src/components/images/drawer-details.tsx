@@ -1,6 +1,12 @@
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
-import { List, ListItem, ListItemPrimaryText, ListItemSecondaryText, ListItemText } from "@rmwc/list";
+import {
+  List,
+  ListItem,
+  ListItemPrimaryText,
+  ListItemSecondaryText,
+  ListItemText,
+} from "@rmwc/list";
 import { Typography } from "@rmwc/typography";
 import { DateTime } from "luxon";
 import { useAppSelector } from "~/app/hooks";
@@ -17,29 +23,37 @@ type DrawerDetailsProps = {
   open: boolean;
 };
 
-export const DrawerDetails = (props: DrawerDetailsProps) => {
+export const DrawerDetails = ({
+  close,
+  image,
+  metadata,
+  open,
+}: DrawerDetailsProps) => {
   const device = useAppSelector(selectDevice);
   const dismissible = device === "desktop";
   const closeIcon = dismissible
-    ? withTooltip(<IconButton className="close-icon" icon="close" onClick={props.close} />, "Close")
+    ? withTooltip(
+        <IconButton className="close-icon" icon="close" onClick={close} />,
+        "Close"
+      )
     : null;
   const imageProps = {
-    name: "File name",
     fullPath: "Path",
+    name: "File name",
   };
-  const metadata = {
-    size: "File size",
+  const metadataLabels = {
     contentType: "Type",
+    size: "File size",
     timeCreated: "Created",
     updated: "Updated",
   };
   return (
     <Drawer
+      className="drawer-right details-drawer image-details"
       dismissible={dismissible}
       modal={!dismissible}
-      className="drawer-right details-drawer image-details"
-      open={props.open}
-      onClose={props.close}
+      onClose={close}
+      open={open}
     >
       <DrawerHeader>
         <DrawerTitle>Details</DrawerTitle>
@@ -47,9 +61,9 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
       </DrawerHeader>
       <DrawerContent>
         <div className="image-container">
-          <img className="image" src={props.image.src} alt={props.image.name} />
+          <img alt={image.name} className="image" src={image.src} />
         </div>
-        <List twoLine className="details-list">
+        <List className="details-list" twoLine>
           <div className="subheader">
             <Typography use="caption">Image</Typography>
           </div>
@@ -57,25 +71,27 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
             <ListItem key={key} disabled>
               <ListItemText>
                 <ListItemPrimaryText>{imageProps[key]}</ListItemPrimaryText>
-                <ListItemSecondaryText>{props.image[key]}</ListItemSecondaryText>
+                <ListItemSecondaryText>{image[key]}</ListItemSecondaryText>
               </ListItemText>
             </ListItem>
           ))}
           <div className="subheader">
             <Typography use="caption">Metadata</Typography>
           </div>
-          {objectKeys(metadata).map((key) => (
+          {objectKeys(metadataLabels).map((key) => (
             <ListItem key={key} disabled>
               <ListItemText>
-                <ListItemPrimaryText>{metadata[key]}</ListItemPrimaryText>
+                <ListItemPrimaryText>{metadataLabels[key]}</ListItemPrimaryText>
                 <ListItemSecondaryText>
                   {key === "updated" || key === "timeCreated"
-                    ? DateTime.fromISO(props.metadata[key], { zone: "utc" }).toFormat(
-                        `d'${ordinal(DateTime.fromISO(props.metadata[key], { zone: "utc" }).day)}' MMMM yyyy, HH:mm:ss`
+                    ? DateTime.fromISO(metadata[key], { zone: "utc" }).toFormat(
+                        `d'${ordinal(
+                          DateTime.fromISO(metadata[key], { zone: "utc" }).day
+                        )}' MMMM yyyy, HH:mm:ss`
                       )
                     : key === "size"
-                    ? formatBytes(props.metadata[key])
-                    : props.metadata[key]}
+                    ? formatBytes(metadata[key])
+                    : metadata[key]}
                 </ListItemSecondaryText>
               </ListItemText>
             </ListItem>

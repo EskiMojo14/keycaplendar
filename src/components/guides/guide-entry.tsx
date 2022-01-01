@@ -1,4 +1,11 @@
-import { Card, CardActionButton, CardActionButtons, CardActionIcon, CardActionIcons, CardActions } from "@rmwc/card";
+import {
+  Card,
+  CardActionButton,
+  CardActionButtons,
+  CardActionIcon,
+  CardActionIcons,
+  CardActions,
+} from "@rmwc/card";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Typography } from "@rmwc/typography";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
@@ -14,13 +21,16 @@ import { Delete, Edit, Share } from "@i";
 import "./guide-entry.scss";
 
 type GuideEntryProps = {
-  entry: GuideEntryType;
-  edit: (entry: GuideEntryType) => void;
   delete: (entry: GuideEntryType) => void;
+  edit: (entry: GuideEntryType) => void;
+  entry: GuideEntryType;
 };
 
-export const GuideEntry = (props: GuideEntryProps) => {
-  const { entry } = props;
+export const GuideEntry = ({
+  delete: deleteFn,
+  edit,
+  entry,
+}: GuideEntryProps) => {
   const dispatch = useAppDispatch();
 
   const user = useAppSelector(selectUser);
@@ -51,14 +61,18 @@ export const GuideEntry = (props: GuideEntryProps) => {
   const buttons = user.isAdmin ? (
     <CardActions>
       <CardActionButtons>
-        <CardActionButton label="Share" icon={iconObject(<Share />)} onClick={copyLink} />
+        <CardActionButton
+          icon={iconObject(<Share />)}
+          label="Share"
+          onClick={copyLink}
+        />
       </CardActionButtons>
       <CardActionIcons>
         {withTooltip(
           <CardActionIcon
             icon={iconObject(<Edit />)}
             onClick={() => {
-              props.edit(entry);
+              edit(entry);
             }}
           />,
           "Edit"
@@ -67,7 +81,7 @@ export const GuideEntry = (props: GuideEntryProps) => {
           <CardActionIcon
             icon={iconObject(<Delete />)}
             onClick={() => {
-              props.delete(entry);
+              deleteFn(entry);
             }}
           />,
           "Delete"
@@ -77,33 +91,39 @@ export const GuideEntry = (props: GuideEntryProps) => {
   ) : (
     <CardActions>
       <CardActionIcons>
-        {withTooltip(<CardActionIcon icon={iconObject(<Share />)} onClick={copyLink} />, "Share")}
+        {withTooltip(
+          <CardActionIcon icon={iconObject(<Share />)} onClick={copyLink} />,
+          "Share"
+        )}
       </CardActionIcons>
     </CardActions>
   );
   return (
     <Card className="guide-entry">
       <div className="title">
-        <Typography use="overline" tag="h3">
+        <Typography tag="h3" use="overline">
           {entry.name}
         </Typography>
-        <Typography use="headline5" tag="h1">
+        <Typography tag="h1" use="headline5">
           {entry.title}
         </Typography>
-        <Typography use="caption" tag="p">
+        <Typography tag="p" use="caption">
           {entry.description}
         </Typography>
         <div className="tags-container">
           <ChipSet>
-            <Chip icon={visibilityIcons[entry.visibility]} label={formattedVisibility[entry.visibility]} />
+            <Chip
+              icon={visibilityIcons[entry.visibility]}
+              label={formattedVisibility[entry.visibility]}
+            />
             {entry.tags.map((tag) => (
               <Chip
                 key={tag}
                 label={tag}
-                selected={tag === filteredTag}
                 onClick={() => {
                   setFilter(tag);
                 }}
+                selected={tag === filteredTag}
               />
             ))}
           </ChipSet>

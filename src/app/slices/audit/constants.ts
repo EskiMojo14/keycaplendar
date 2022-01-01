@@ -19,19 +19,22 @@ export const auditProperties = [
 
 /** Formatted names. */
 
-export const auditPropertiesFormatted: Record<typeof auditProperties[number], string> = {
+export const auditPropertiesFormatted: Record<
+  typeof auditProperties[number],
+  string
+> = {
   alias: "Alias",
-  profile: "Profile",
   colorway: "Colorway",
   designer: "Designer(s)",
-  icDate: "IC date",
   details: "Link",
-  notes: "Notes",
-  gbMonth: "GB month",
-  gbLaunch: "GB launch",
   gbEnd: "GB end",
+  gbLaunch: "GB launch",
+  gbMonth: "GB month",
+  icDate: "IC date",
   image: "Image",
+  notes: "Notes",
+  profile: "Profile",
+  sales: "Sales",
   shipped: "Shipped",
   vendors: "Vendors",
-  sales: "Sales",
 };

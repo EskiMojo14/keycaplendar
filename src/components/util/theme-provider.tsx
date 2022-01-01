@@ -1,6 +1,10 @@
 import { createContext } from "react";
 import type { ReactNode } from "react";
-import { alpha, createTheme, ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
+import {
+  alpha,
+  createTheme,
+  ThemeProvider as MuiThemeProvider,
+} from "@material-ui/core/styles";
 import type { Theme } from "@nivo/core";
 import { useAppSelector } from "~/app/hooks";
 import { selectTheme } from "@s/common";
@@ -18,34 +22,46 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const theme = currentThemeMap.primary
     ? createTheme({
         palette: {
-          type: currentThemeMap.dark ? "dark" : "light",
-          primary: {
-            light: currentThemeMap.primaryLight,
-            main: currentThemeMap.primary,
-            dark: currentThemeMap.primaryDark,
-            contrastText: currentThemeMap.onPrimary,
-          },
-          secondary: {
-            light: currentThemeMap.secondaryLight,
-            main: currentThemeMap.secondary,
-            dark: currentThemeMap.secondaryDark,
-            contrastText: currentThemeMap.onSecondary,
-          },
-          error: { main: currentThemeMap.error, contrastText: currentThemeMap.onError },
-          text: {
-            primary: alpha(currentThemeMap.onSurface, getTextOpacity("high")),
-            secondary: alpha(currentThemeMap.onSurface, getTextOpacity("medium")),
-            disabled: alpha(currentThemeMap.onSurface, getTextOpacity("disabled")),
-          },
           action: {
             active: currentThemeMap.onSurface,
-            hover: alpha(currentThemeMap.onSurface, 0.08),
-            selected: alpha(currentThemeMap.onSurface, 0.16),
             disabled: alpha(currentThemeMap.onSurface, 0.3),
             disabledBackground: alpha(currentThemeMap.onSurface, 0.12),
+            hover: alpha(currentThemeMap.onSurface, 0.08),
+            selected: alpha(currentThemeMap.onSurface, 0.16),
           },
-          background: { paper: currentThemeMap.surface, default: currentThemeMap.background },
+          background: {
+            default: currentThemeMap.background,
+            paper: currentThemeMap.surface,
+          },
           divider: alpha(currentThemeMap.onSurface, 0.12),
+          error: {
+            contrastText: currentThemeMap.onError,
+            main: currentThemeMap.error,
+          },
+          primary: {
+            contrastText: currentThemeMap.onPrimary,
+            dark: currentThemeMap.primaryDark,
+            light: currentThemeMap.primaryLight,
+            main: currentThemeMap.primary,
+          },
+          secondary: {
+            contrastText: currentThemeMap.onSecondary,
+            dark: currentThemeMap.secondaryDark,
+            light: currentThemeMap.secondaryLight,
+            main: currentThemeMap.secondary,
+          },
+          text: {
+            disabled: alpha(
+              currentThemeMap.onSurface,
+              getTextOpacity("disabled")
+            ),
+            primary: alpha(currentThemeMap.onSurface, getTextOpacity("high")),
+            secondary: alpha(
+              currentThemeMap.onSurface,
+              getTextOpacity("medium")
+            ),
+          },
+          type: currentThemeMap.dark ? "dark" : "light",
         },
       })
     : createTheme();
@@ -55,18 +71,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 export const NivoThemeContext = createContext<Theme>({});
 
 const theme = {
-  background: "transparent",
-  textColor: "var(--theme-text-high)",
-  fontFamily: "inherit",
   axis: {
-    ticks: {
-      line: {
-        stroke: "var(--theme-divider)",
-      },
-      text: {
-        fill: "var(--theme-text-medium)",
-      },
-    },
     domain: {
       line: {
         stroke: "var(--theme-divider)",
@@ -78,33 +83,46 @@ const theme = {
         textRendering: "optimizeLegibility",
       },
     },
-  },
-  grid: {
-    line: {
-      stroke: "var(--theme-divider)",
+    ticks: {
+      line: {
+        stroke: "var(--theme-divider)",
+      },
+      text: {
+        fill: "var(--theme-text-medium)",
+      },
     },
   },
+  background: "transparent",
   crosshair: {
     line: {
       stroke: "var(--theme-text-medium)",
       strokeOpacity: 1,
     },
   },
-  tooltip: {
-    container: {
-      fontFamily: "inherit",
-      textTransform: "capitalize",
-      backgroundColor: "var(--theme-text-high)",
-      color: "var(--theme-surface)",
-      boxShadow: "none",
-      borderRadius: 4,
+  fontFamily: "inherit",
+  grid: {
+    line: {
+      stroke: "var(--theme-divider)",
     },
+  },
+  textColor: "var(--theme-text-high)",
+  tooltip: {
     chip: {
       borderRadius: "50%",
+    },
+    container: {
+      backgroundColor: "var(--theme-text-high)",
+      borderRadius: 4,
+      boxShadow: "none",
+      color: "var(--theme-surface)",
+      fontFamily: "inherit",
+      textTransform: "capitalize",
     },
   },
 };
 
 export const NivoThemeProvider = ({ children }: { children: ReactNode }) => (
-  <NivoThemeContext.Provider value={theme}>{children}</NivoThemeContext.Provider>
+  <NivoThemeContext.Provider value={theme}>
+    {children}
+  </NivoThemeContext.Provider>
 );

@@ -29,14 +29,16 @@ import {
   insertTableCommand,
 } from "@s/common/markdown-commands";
 import { markdownIcons } from "@s/common/markdown-constants";
-import { componentBuilder, typographyBuilder } from "@s/common/markdown-functions";
+import {
+  componentBuilder,
+  typographyBuilder,
+} from "@s/common/markdown-functions";
 import { SegmentedButton, SegmentedButtonSegment } from "./segmented-button";
 import "./react-markdown.scss";
 
 const input = Object.assign(
-  (props: Record<string, any>) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { type, node, ...allProps } = props;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ({ node, type, ...allProps }: Record<string, any>) => {
     if (type === "checkbox") {
       return <Checkbox {...allProps} />;
     } else {
@@ -47,62 +49,70 @@ const input = Object.assign(
 );
 
 const dataTableContainer = Object.assign(
-  (props: Record<string, any>) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { node, children, ...allProps } = props;
-    return (
-      <DataTable {...allProps}>
-        <DataTableContent>{children}</DataTableContent>
-      </DataTable>
-    );
-  },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ({ children, node, ...allProps }: Record<string, any>) => (
+    <DataTable {...allProps}>
+      <DataTableContent>{children}</DataTableContent>
+    </DataTable>
+  ),
   { displayName: "Custom table" }
 );
 
 const customComponents = {
+  code: typographyBuilder("code", "body2"),
   h1: typographyBuilder("h1", "headline5"),
   h2: typographyBuilder("h2", "headline6"),
   h3: typographyBuilder("h3", "overline"),
   h4: typographyBuilder("h4", "subtitle1"),
   h5: typographyBuilder("h4", "subtitle2"),
   h6: typographyBuilder("h5", "caption"),
-  p: typographyBuilder("p", "body2"),
-  li: typographyBuilder("li", "body2"),
-  code: typographyBuilder("code", "body2"),
   input,
+  li: typographyBuilder("li", "body2"),
+  p: typographyBuilder("p", "body2"),
   table: dataTableContainer,
-  thead: componentBuilder("thead", DataTableHead),
   tbody: componentBuilder("tbody", DataTableBody),
-  tr: componentBuilder("tr", DataTableRow),
-  th: componentBuilder("th", DataTableHeadCell),
   td: componentBuilder("td", DataTableCell),
+  th: componentBuilder("th", DataTableHeadCell),
+  thead: componentBuilder("thead", DataTableHead),
+  tr: componentBuilder("tr", DataTableRow),
 };
 
 type CustomReactMarkdownProps = ReactMarkdownOptions;
 
-export const CustomReactMarkdown = (props: CustomReactMarkdownProps) => {
-  const { components, className, children, ...filteredProps } = props;
-  return (
-    <ReactMarkdown
-      remarkPlugins={[gfm]}
-      components={{ ...customComponents, ...components }}
-      className={classNames("markdown", className)}
-      {...filteredProps}
-    >
-      {children}
-    </ReactMarkdown>
-  );
-};
+export const CustomReactMarkdown = ({
+  className,
+  components,
+  ...filteredProps
+}: CustomReactMarkdownProps) => (
+  <ReactMarkdown
+    className={classNames("markdown", className)}
+    components={{ ...customComponents, ...components }}
+    remarkPlugins={[gfm]}
+    {...filteredProps}
+  />
+);
+
 const bemClasses = new BEMHelper("markdown-editor");
 
-type CustomReactMdeProps = Omit<ReactMdeProps, "generateMarkdownPreview" | "onTabChange" | "selectedTab"> & {
+type CustomReactMdeProps = Omit<
+  ReactMdeProps,
+  "generateMarkdownPreview" | "onTabChange" | "selectedTab"
+> & {
   required?: boolean;
 };
 
-export const CustomReactMde = (props: CustomReactMdeProps) => {
+export const CustomReactMde = ({
+  childProps,
+  classes,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { toolbarCommands, l18n, classes, childProps, required, value, ...filteredProps } = props;
+  l18n,
+  required,
+  toolbarCommands,
+  value,
+  ...filteredProps
+}: CustomReactMdeProps) => {
   const customCommands: CommandMap = {
+    "column-after": insertTableColumnAfter,
     h1: headerOneCommand,
     h2: headerTwoCommand,
     h3: headerThreeCommand,
@@ -110,7 +120,6 @@ export const CustomReactMde = (props: CustomReactMdeProps) => {
     h5: headerFiveCommand,
     h6: headerSixCommand,
     "insert-table": insertTableCommand,
-    "column-after": insertTableColumnAfter,
   };
   const customToolbarCommands = toolbarCommands
     ? toolbarCommands
@@ -123,25 +132,26 @@ export const CustomReactMde = (props: CustomReactMdeProps) => {
       ];
   const [selectedTab, setSelectedTab] = useState<"preview" | "write">("write");
   const customTabButtons: L18n = {
+    pasteDropSelect:
+      "Attach files by dragging & dropping, selecting or pasting them.",
+    preview: null,
+    uploadingImage: "Uploading image...",
     write: (
       <SegmentedButton toggle>
         <SegmentedButtonSegment
           label="Write"
-          tag="div"
-          selected={selectedTab === "write"}
           onClick={() => setSelectedTab("write")}
+          selected={selectedTab === "write"}
+          tag="div"
         />
         <SegmentedButtonSegment
           label="Preview"
-          tag="div"
-          selected={selectedTab === "preview"}
           onClick={() => setSelectedTab("preview")}
+          selected={selectedTab === "preview"}
+          tag="div"
         />
       </SegmentedButton>
     ),
-    preview: null,
-    uploadingImage: "Uploading image...",
-    pasteDropSelect: "Attach files by dragging & dropping, selecting or pasting them.",
   };
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -152,42 +162,52 @@ export const CustomReactMde = (props: CustomReactMdeProps) => {
   const [invalid, setInvalid] = useState(false);
 
   const customClasses: Classes = {
-    reactMde: [bemClasses(), classes ? classes.reactMde : ""],
-    toolbar: [bemClasses("toolbar"), classes ? classes.toolbar : ""],
     preview: [bemClasses("preview"), classes ? classes.preview : ""],
-    textArea: [bemClasses("textarea", { hovered, focused, invalid }), classes ? classes.textArea : ""],
-    suggestionsDropdown: [bemClasses("dropdown"), classes ? classes.suggestionsDropdown : ""],
+    reactMde: [bemClasses(), classes ? classes.reactMde : ""],
+    suggestionsDropdown: [
+      bemClasses("dropdown"),
+      classes ? classes.suggestionsDropdown : "",
+    ],
+    textArea: [
+      bemClasses("textarea", { focused, hovered, invalid }),
+      classes ? classes.textArea : "",
+    ],
+    toolbar: [bemClasses("toolbar"), classes ? classes.toolbar : ""],
   };
 
   const customChildProps: ChildProps = {
     ...childProps,
     textArea: {
       ...childProps?.textArea,
-      onMouseEnter: () => setHovered(true),
-      onMouseLeave: () => setHovered(false),
-      onFocus: () => setFocused(true),
       onBlur: () => {
         setFocused(false);
         if (required) {
           setInvalid(value.length === 0);
         }
       },
+      onFocus: () => setFocused(true),
       onInvalid: () => setInvalid(true),
+      onMouseEnter: () => setHovered(true),
+      onMouseLeave: () => setHovered(false),
       required,
     },
   };
   return (
     <ReactMde
-      selectedTab={selectedTab}
-      onTabChange={onTabChange}
-      value={value}
-      commands={customCommands}
-      toolbarCommands={customToolbarCommands}
-      l18n={customTabButtons}
-      classes={customClasses}
-      getIcon={(command) => <IconButton tag="div" icon={markdownIcons[command]} />}
-      generateMarkdownPreview={(markdown) => Promise.resolve(<CustomReactMarkdown>{markdown}</CustomReactMarkdown>)}
       childProps={customChildProps}
+      classes={customClasses}
+      commands={customCommands}
+      generateMarkdownPreview={(markdown) =>
+        Promise.resolve(<CustomReactMarkdown>{markdown}</CustomReactMarkdown>)
+      }
+      getIcon={(command) => (
+        <IconButton icon={markdownIcons[command]} tag="div" />
+      )}
+      l18n={customTabButtons}
+      onTabChange={onTabChange}
+      selectedTab={selectedTab}
+      toolbarCommands={customToolbarCommands}
+      value={value}
       {...filteredProps}
     />
   );

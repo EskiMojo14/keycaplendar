@@ -26,7 +26,7 @@
 @use "@material/textfield/icon/_index" as text-field-icon;
 @use "@material/theme/color-palette" as palette;
 @use "@material/top-app-bar/_index" as top-app-bar;
-@use '@material/feature-targeting/_index' as feature-targeting;
+@use "@material/feature-targeting/_index" as feature-targeting;
 @use "@material/elevation/_index" as elevation;
 
 @use "@material/notched-outline/_index" as notched-outline;
@@ -97,7 +97,11 @@
   }
 
   .full-screen-dialog {
-    background-color: if($dark, themes.overlay-elevation(map-get($theme, surface), 16), map-get($theme, surface));
+    background-color: if(
+      $dark,
+      themes.overlay-elevation(map-get($theme, surface), 16),
+      map-get($theme, surface)
+    );
     &__app-bar.mdc-top-app-bar {
       background-color: if(
         $dark,
@@ -109,22 +113,38 @@
       background-color: rgba(map-get($theme, on-surface), 0.32);
     }
     .mdc-menu-surface {
-      background-color: if($dark, themes.overlay-elevation(map-get($theme, surface), 24), map-get($theme, surface));
+      background-color: if(
+        $dark,
+        themes.overlay-elevation(map-get($theme, surface), 24),
+        map-get($theme, surface)
+      );
     }
     .mdc-card {
-      background-color: if($dark, themes.overlay-elevation(map-get($theme, surface), 16), map-get($theme, surface));
+      background-color: if(
+        $dark,
+        themes.overlay-elevation(map-get($theme, surface), 16),
+        map-get($theme, surface)
+      );
       @if ($dark) {
         transition-property: box-shadow, background-color;
       }
       &.dragged {
-        background-color: if($dark, themes.overlay-elevation(map-get($theme, surface), 24), map-get($theme, surface));
+        background-color: if(
+          $dark,
+          themes.overlay-elevation(map-get($theme, surface), 24),
+          map-get($theme, surface)
+        );
       }
     }
     .mdc-chip {
       @include chips.fill-color-accessible(
         mix(
           map-get($theme, on-surface),
-          if($dark, themes.overlay-elevation(map-get($theme, surface), 24), map-get($theme, surface)),
+          if(
+            $dark,
+            themes.overlay-elevation(map-get($theme, surface), 24),
+            map-get($theme, surface)
+          ),
           12%
         )
       );
@@ -167,7 +187,11 @@
   }
 
   .list .content-grid {
-    background-color: if($dark, themes.overlay-elevation(map-get($theme, surface), 1), map-get($theme, surface));
+    background-color: if(
+      $dark,
+      themes.overlay-elevation(map-get($theme, surface), 1),
+      map-get($theme, surface)
+    );
   }
 
   .subheader,
@@ -176,7 +200,11 @@
   }
 
   .main.extended-app-bar .outer-container:first-child .subheader {
-    color: if($dark, map-get($theme, text-medium), rgba(map-get($theme, on-primary), 0.6));
+    color: if(
+      $dark,
+      map-get($theme, text-medium),
+      rgba(map-get($theme, on-primary), 0.6)
+    );
   }
 
   .drawer-open .main.extended-app-bar,
@@ -187,7 +215,11 @@
   }
 
   .main::before {
-    background-color: if($dark, themes.overlay-elevation(map-get($theme, surface), 4), map-get($theme, primary));
+    background-color: if(
+      $dark,
+      themes.overlay-elevation(map-get($theme, surface), 4),
+      map-get($theme, primary)
+    );
   }
 
   .legal,
@@ -206,7 +238,11 @@
       }
     }
     &-container::before {
-      background-color: if($dark, themes.overlay-elevation(map-get($theme, surface), 4), map-get($theme, primary));
+      background-color: if(
+        $dark,
+        themes.overlay-elevation(map-get($theme, surface), 4),
+        map-get($theme, primary)
+      );
     }
   }
 
@@ -239,7 +275,11 @@
 
   .set-changelog {
     .mdc-card__media-content {
-      color: if($dark, themes.overlay-elevation(map-get($theme, surface), 1), map-get($theme, surface));
+      color: if(
+        $dark,
+        themes.overlay-elevation(map-get($theme, surface), 1),
+        map-get($theme, surface)
+      );
     }
   }
 
@@ -266,18 +306,28 @@
     &-drawer.mdc-drawer {
       @include drawer.surface-fill-color(transparent);
       .mdc-chip {
-        @include chips.fill-color-accessible(mix(map-get($theme, on-surface), map-get($theme, background), 12%));
+        @include chips.fill-color-accessible(
+          mix(map-get($theme, on-surface), map-get($theme, background), 12%)
+        );
         @include chips.selected-ink-color(map-get($theme, primary));
       }
     }
     &-list {
       &-container {
-        background-color: if($dark, themes.overlay-elevation(map-get($theme, surface), 1), map-get($theme, surface));
+        background-color: if(
+          $dark,
+          themes.overlay-elevation(map-get($theme, surface), 1),
+          map-get($theme, surface)
+        );
         .mdc-chip {
           @include chips.fill-color-accessible(
             mix(
               map-get($theme, on-surface),
-              if($dark, themes.overlay-elevation(map-get($theme, surface), 1), map-get($theme, surface)),
+              if(
+                $dark,
+                themes.overlay-elevation(map-get($theme, surface), 1),
+                map-get($theme, surface)
+              ),
               12%
             )
           );
@@ -312,8 +362,18 @@
   .segmented-button {
     &.segmented-button--toggle .segmented-button__segment {
       @include button.ink-color(map-get($theme, text-medium));
-      @include ripple.states(map-get($theme, on-surface), false, feature-targeting.all(), ".mdc-button__ripple");
-      @include ripple.states-selected(map-get($theme, primary), false, feature-targeting.all(), ".mdc-button__ripple");
+      @include ripple.states(
+        map-get($theme, on-surface),
+        false,
+        feature-targeting.all(),
+        ".mdc-button__ripple"
+      );
+      @include ripple.states-selected(
+        map-get($theme, primary),
+        false,
+        feature-targeting.all(),
+        ".mdc-button__ripple"
+      );
       @include ripple.states-selected(
         map-get($theme, text-disabled),
         false,
@@ -349,7 +409,11 @@
 
   @media (max-width: 599px) {
     .settings-container {
-      background-color: if($dark, themes.overlay-elevation(map-get($theme, surface), 1), map-get($theme, surface));
+      background-color: if(
+        $dark,
+        themes.overlay-elevation(map-get($theme, surface), 1),
+        map-get($theme, surface)
+      );
     }
   }
 
@@ -368,7 +432,12 @@
           background-color: $color;
         }
         .mdc-checkbox {
-          @include checkbox.container-colors(map-get($theme, text-medium), transparent, $color, rgba($color, 0.3));
+          @include checkbox.container-colors(
+            map-get($theme, text-medium),
+            transparent,
+            $color,
+            rgba($color, 0.3)
+          );
           @include checkbox.disabled-container-colors(
             rgba(map-get($theme, on-surface), 0.26),
             transparent,
@@ -377,9 +446,19 @@
           );
           @include checkbox.ink-color(map-get($theme, on-surface));
           @include checkbox.disabled-ink-color(map-get($theme, on-surface));
-          @include ripple.states(map-get($theme, on-surface), false, feature-targeting.all(), ".mdc-checkbox__ripple");
+          @include ripple.states(
+            map-get($theme, on-surface),
+            false,
+            feature-targeting.all(),
+            ".mdc-checkbox__ripple"
+          );
           &.mdc-checkbox--selected {
-            @include ripple.states($color, false, feature-targeting.all(), ".mdc-checkbox__ripple");
+            @include ripple.states(
+              $color,
+              false,
+              feature-targeting.all(),
+              ".mdc-checkbox__ripple"
+            );
           }
         }
       }
@@ -410,7 +489,11 @@
     }
   }
 
-  $rainbow-graph-colors: util.map-deep-get(graph-colors.$graph-colors, if($dark, "dark", "light"), "rainbow");
+  $rainbow-graph-colors: util.map-deep-get(
+    graph-colors.$graph-colors,
+    if($dark, "dark", "light"),
+    "rainbow"
+  );
 
   @for $index from 1 to length($rainbow-graph-colors) {
     $color: nth($rainbow-graph-colors, $index);
@@ -493,7 +576,12 @@
 
   .mdc-button {
     @include button.ink-color(map-get($theme, primary));
-    @include ripple.states(map-get($theme, primary), false, feature-targeting.all(), ".mdc-button__ripple");
+    @include ripple.states(
+      map-get($theme, primary),
+      false,
+      feature-targeting.all(),
+      ".mdc-button__ripple"
+    );
     &:disabled {
       color: map-get($theme, text-disabled);
     }
@@ -501,26 +589,50 @@
     &.mdc-button--unelevated {
       @include button.container-fill-color(map-get($theme, primary));
       @include button.ink-color(map-get($theme, on-primary));
-      @include ripple.states(map-get($theme, on-primary), false, feature-targeting.all(), ".mdc-button__ripple");
+      @include ripple.states(
+        map-get($theme, on-primary),
+        false,
+        feature-targeting.all(),
+        ".mdc-button__ripple"
+      );
     }
     &.secondary {
       @include button.ink-color(map-get($theme, secondary));
-      @include ripple.states(map-get($theme, secondary), false, feature-targeting.all(), ".mdc-button__ripple");
+      @include ripple.states(
+        map-get($theme, secondary),
+        false,
+        feature-targeting.all(),
+        ".mdc-button__ripple"
+      );
       &.mdc-button--raised,
       &.mdc-button--unelevated {
         @include button.container-fill-color(map-get($theme, secondary));
         @include button.ink-color(map-get($theme, on-secondary));
-        @include ripple.states(map-get($theme, on-secondary), false, feature-targeting.all(), ".mdc-button__ripple");
+        @include ripple.states(
+          map-get($theme, on-secondary),
+          false,
+          feature-targeting.all(),
+          ".mdc-button__ripple"
+        );
       }
     }
     &.delete {
       @include button.ink-color(map-get($theme, error));
-      @include ripple.states(map-get($theme, error), false, feature-targeting.all(), ".mdc-button__ripple");
+      @include ripple.states(
+        map-get($theme, error),
+        false,
+        feature-targeting.all(),
+        ".mdc-button__ripple"
+      );
     }
   }
 
   .mdc-card {
-    background-color: if($dark, themes.overlay-elevation(map-get($theme, surface), 1), map-get($theme, surface));
+    background-color: if(
+      $dark,
+      themes.overlay-elevation(map-get($theme, surface), 1),
+      map-get($theme, surface)
+    );
     &.mdc-card--selected {
       .mdc-typography--headline5 {
         color: map-get($theme, primary);
@@ -595,14 +707,26 @@
     );
     @include checkbox.ink-color(map-get($theme, on-surface));
     @include checkbox.disabled-ink-color(map-get($theme, on-surface));
-    @include ripple.states(map-get($theme, on-surface), false, feature-targeting.all(), ".mdc-checkbox__ripple");
+    @include ripple.states(
+      map-get($theme, on-surface),
+      false,
+      feature-targeting.all(),
+      ".mdc-checkbox__ripple"
+    );
     &.mdc-checkbox--selected {
-      @include ripple.states(map-get($theme, secondary), false, feature-targeting.all(), ".mdc-checkbox__ripple");
+      @include ripple.states(
+        map-get($theme, secondary),
+        false,
+        feature-targeting.all(),
+        ".mdc-checkbox__ripple"
+      );
     }
   }
 
   .mdc-chip {
-    @include chips.fill-color-accessible(mix(map-get($theme, on-surface), map-get($theme, surface), 12%));
+    @include chips.fill-color-accessible(
+      mix(map-get($theme, on-surface), map-get($theme, surface), 12%)
+    );
     @include chips.selected-ink-color(map-get($theme, primary));
     &[disabled] {
       @include chips.ink-color(map-get($theme, text-disabled));
@@ -630,7 +754,11 @@
 
   .mdc-dialog {
     @include dialog.container-fill-color(
-      if($dark, themes.overlay-elevation(map-get($theme, surface), 24), map-get($theme, surface))
+      if(
+        $dark,
+        themes.overlay-elevation(map-get($theme, surface), 24),
+        map-get($theme, surface)
+      )
     );
     @include dialog.scrim-color(map-get($theme, on-surface), 0.32);
     @include dialog.title-ink-color(map-get($theme, text-high));
@@ -640,7 +768,11 @@
       @include chips.fill-color-accessible(
         mix(
           map-get($theme, on-surface),
-          if($dark, themes.overlay-elevation(map-get($theme, surface), 24), map-get($theme, surface)),
+          if(
+            $dark,
+            themes.overlay-elevation(map-get($theme, surface), 24),
+            map-get($theme, surface)
+          ),
           12%
         )
       );
@@ -649,7 +781,11 @@
 
   .mdc-drawer {
     @include drawer.fill-color-accessible(
-      if($dark, themes.overlay-elevation(map-get($theme, surface), 16), map-get($theme, surface))
+      if(
+        $dark,
+        themes.overlay-elevation(map-get($theme, surface), 16),
+        map-get($theme, surface)
+      )
     );
     @include drawer.item-activated-icon-ink-color(map-get($theme, primary));
     @include drawer.item-activated-text-ink-color(map-get($theme, primary));
@@ -661,7 +797,11 @@
       )};
     &.mdc-drawer--dismissible {
       @include drawer.surface-fill-color(
-        if($dark, themes.overlay-elevation(map-get($theme, surface), 1), map-get($theme, surface))
+        if(
+          $dark,
+          themes.overlay-elevation(map-get($theme, surface), 1),
+          map-get($theme, surface)
+        )
       );
       --mdc-slider-bg-color-behind-component: #{if(
           $dark,
@@ -672,7 +812,11 @@
         @include chips.fill-color-accessible(
           mix(
             map-get($theme, on-surface),
-            if($dark, themes.overlay-elevation(map-get($theme, surface), 1), map-get($theme, surface)),
+            if(
+              $dark,
+              themes.overlay-elevation(map-get($theme, surface), 1),
+              map-get($theme, surface)
+            ),
             12%
           )
         );
@@ -707,22 +851,46 @@
       }
 
       .mdc-card {
-        background-color: if($dark, themes.overlay-elevation(map-get($theme, surface), 2), map-get($theme, surface));
+        background-color: if(
+          $dark,
+          themes.overlay-elevation(map-get($theme, surface), 2),
+          map-get($theme, surface)
+        );
         &--outlined {
-          background-color: if($dark, themes.overlay-elevation(map-get($theme, surface), 1), map-get($theme, surface));
+          background-color: if(
+            $dark,
+            themes.overlay-elevation(map-get($theme, surface), 1),
+            map-get($theme, surface)
+          );
         }
         &.dragged {
-          background-color: if($dark, themes.overlay-elevation(map-get($theme, surface), 8), map-get($theme, surface));
+          background-color: if(
+            $dark,
+            themes.overlay-elevation(map-get($theme, surface), 8),
+            map-get($theme, surface)
+          );
         }
       }
     }
     .mdc-card {
-      background-color: if($dark, themes.overlay-elevation(map-get($theme, surface), 24), map-get($theme, surface));
+      background-color: if(
+        $dark,
+        themes.overlay-elevation(map-get($theme, surface), 24),
+        map-get($theme, surface)
+      );
       &--outlined {
-        background-color: if($dark, themes.overlay-elevation(map-get($theme, surface), 16), map-get($theme, surface));
+        background-color: if(
+          $dark,
+          themes.overlay-elevation(map-get($theme, surface), 16),
+          map-get($theme, surface)
+        );
       }
       &.dragged {
-        background-color: if($dark, themes.overlay-elevation(map-get($theme, surface), 24), map-get($theme, surface));
+        background-color: if(
+          $dark,
+          themes.overlay-elevation(map-get($theme, surface), 24),
+          map-get($theme, surface)
+        );
       }
       @if ($dark) {
         transition-property: box-shadow, background-color;
@@ -737,7 +905,11 @@
       @include chips.fill-color-accessible(
         mix(
           map-get($theme, on-surface),
-          if($dark, themes.overlay-elevation(map-get($theme, surface), 16), map-get($theme, surface)),
+          if(
+            $dark,
+            themes.overlay-elevation(map-get($theme, surface), 16),
+            map-get($theme, surface)
+          ),
           12%
         )
       );
@@ -752,7 +924,11 @@
     }
 
     .mdc-menu-surface {
-      background-color: if($dark, themes.overlay-elevation(map-get($theme, surface), 24), map-get($theme, surface));
+      background-color: if(
+        $dark,
+        themes.overlay-elevation(map-get($theme, surface), 24),
+        map-get($theme, surface)
+      );
     }
 
     &__content {
@@ -777,7 +953,11 @@
       @include linear-progress.buffer-color(
         mix(
           map-get($theme, on-surface),
-          if($dark, themes.overlay-elevation(map-get($theme, surface), 16), map-get($theme, surface)),
+          if(
+            $dark,
+            themes.overlay-elevation(map-get($theme, surface), 16),
+            map-get($theme, surface)
+          ),
           10%
         )
       );
@@ -836,7 +1016,12 @@
           rgba(map-get($theme, secondary), 0.3)
         );
         &.mdc-checkbox--selected {
-          @include ripple.states(map-get($theme, secondary), false, feature-targeting.all(), ".mdc-checkbox__ripple");
+          @include ripple.states(
+            map-get($theme, secondary),
+            false,
+            feature-targeting.all(),
+            ".mdc-checkbox__ripple"
+          );
         }
       }
     }
@@ -882,7 +1067,11 @@
       @include ripple.states(map-get($theme, on-surface));
     }
     .time-indicator {
-      background-color: mix(map-get($theme, on-surface), map-get($theme, surface), 80%);
+      background-color: mix(
+        map-get($theme, on-surface),
+        map-get($theme, surface),
+        80%
+      );
       color: map-get($theme, surface);
     }
     .overline,
@@ -892,13 +1081,21 @@
   }
 
   .mdc-menu-surface {
-    background-color: if($dark, themes.overlay-elevation(map-get($theme, surface), 8), map-get($theme, surface));
+    background-color: if(
+      $dark,
+      themes.overlay-elevation(map-get($theme, surface), 8),
+      map-get($theme, surface)
+    );
     color: map-get($theme, on-surface);
   }
 
   @media (max-width: 1240px) {
     .mdc-menu.mdc-select__menu.mdc-menu-surface.mdc-menu-surface--fixed {
-      background-color: if($dark, themes.overlay-elevation(map-get($theme, surface), 24), map-get($theme, surface));
+      background-color: if(
+        $dark,
+        themes.overlay-elevation(map-get($theme, surface), 24),
+        map-get($theme, surface)
+      );
     }
   }
 
@@ -906,7 +1103,12 @@
     @include radio.unchecked-stroke-color(map-get($theme, text-medium));
     @include radio.checked-stroke-color(map-get($theme, secondary));
     @include radio.ink-color(map-get($theme, secondary));
-    @include ripple.states(map-get($theme, secondary), false, feature-targeting.all(), ".mdc-radio__ripple");
+    @include ripple.states(
+      map-get($theme, secondary),
+      false,
+      feature-targeting.all(),
+      ".mdc-radio__ripple"
+    );
   }
 
   .mdc-select {
@@ -932,7 +1134,10 @@
       }
       .mdc-select__dropdown-icon {
         // requires commenting out line 196 of /node_modules/@material/select/_mixins.scss
-        @include select.dd-arrow-svg-bg_("#" + str_slice(ie_hex_str(map-get($theme, on-surface)), 4), 0.38);
+        @include select.dd-arrow-svg-bg_(
+          "#" + str_slice(ie_hex_str(map-get($theme, on-surface)), 4),
+          0.38
+        );
       }
       &.mdc-select--outlined {
         @include notched-outline.color(rgba(map-get($theme, on-surface), 0.16));
@@ -940,7 +1145,10 @@
     }
     .mdc-select__dropdown-icon {
       // requires commenting out line 196 of /node_modules/@material/select/_mixins.scss
-      @include select.dd-arrow-svg-bg_("#" + str_slice(ie_hex_str(map-get($theme, on-surface)), 4), 0.6);
+      @include select.dd-arrow-svg-bg_(
+        "#" + str_slice(ie_hex_str(map-get($theme, on-surface)), 4),
+        0.6
+      );
     }
     &.mdc-select--focused .mdc-select__dropdown-icon {
       @include select.dd-arrow-svg-bg_(map-get($theme, primary), 1);
@@ -977,11 +1185,23 @@
   }
 
   .mdc-snackbar {
-    @include snackbar.fill-color(mix(map-get($theme, on-surface), map-get($theme, surface), 80%));
+    @include snackbar.fill-color(
+      mix(map-get($theme, on-surface), map-get($theme, surface), 80%)
+    );
     @include snackbar.label-ink-color(map-get($theme, surface));
     &__action:not(:disabled) {
-      color: if($dark, darken(map-get($theme, primary), 25%), map-get($theme, primary));
-      @include ripple.states(if($dark, darken(map-get($theme, primary), 25%), map-get($theme, primary)));
+      color: if(
+        $dark,
+        darken(map-get($theme, primary), 25%),
+        map-get($theme, primary)
+      );
+      @include ripple.states(
+        if(
+          $dark,
+          darken(map-get($theme, primary), 25%),
+          map-get($theme, primary)
+        )
+      );
     }
   }
 
@@ -994,35 +1214,55 @@
   .mdc-text-field {
     &:not(.mdc-text-field--focused) {
       @include text-field-icon.leading-icon-color(map-get($theme, text-medium));
-      @include text-field-icon.trailing-icon-color(map-get($theme, text-medium));
+      @include text-field-icon.trailing-icon-color(
+        map-get($theme, text-medium)
+      );
       @include text-field.ink-color(map-get($theme, text-high));
       @include text-field.label-color(map-get($theme, text-medium));
       @include text-field.caret-color(map-get($theme, text-high));
       @include text-field.outline-color(map-get($theme, text-disabled));
       @include text-field.hover-outline-color(map-get($theme, text-medium));
-      @include text-field-helper-text.helper-text-color(map-get($theme, text-medium));
+      @include text-field-helper-text.helper-text-color(
+        map-get($theme, text-medium)
+      );
       &.mdc-text-field--invalid {
-        @include text-field-icon.leading-icon-color(map-get($theme, text-medium));
-        @include text-field-icon.trailing-icon-color(map-get($theme, text-medium));
+        @include text-field-icon.leading-icon-color(
+          map-get($theme, text-medium)
+        );
+        @include text-field-icon.trailing-icon-color(
+          map-get($theme, text-medium)
+        );
         @include text-field.ink-color(map-get($theme, text-high));
         @include text-field.label-color(map-get($theme, error));
         @include text-field.caret-color(map-get($theme, error));
         @include text-field.outline-color(map-get($theme, error));
         @include text-field.hover-outline-color(
-          if($dark, lighten(map-get($theme, error), 12%), darken(map-get($theme, error), 25%))
+          if(
+            $dark,
+            lighten(map-get($theme, error), 12%),
+            darken(map-get($theme, error), 25%)
+          )
         );
-        @include text-field-helper-text.helper-text-color(map-get($theme, error));
+        @include text-field-helper-text.helper-text-color(
+          map-get($theme, error)
+        );
       }
     }
     &.mdc-text-field--focused {
       @include text-field-icon.leading-icon-color(map-get($theme, text-medium));
-      @include text-field-icon.trailing-icon-color(map-get($theme, text-medium));
+      @include text-field-icon.trailing-icon-color(
+        map-get($theme, text-medium)
+      );
       @include text-field.ink-color(map-get($theme, text-high));
       @include text-field.label-color(map-get($theme, primary));
       @include text-field.caret-color(map-get($theme, primary));
       @include text-field.outline-color(map-get($theme, primary));
-      @include text-field-helper-text.helper-text-color(map-get($theme, text-medium));
-      .mdc-text-field__input:required ~ .mdc-notched-outline .mdc-floating-label::after {
+      @include text-field-helper-text.helper-text-color(
+        map-get($theme, text-medium)
+      );
+      .mdc-text-field__input:required
+        ~ .mdc-notched-outline
+        .mdc-floating-label::after {
         color: map-get($theme, primary);
       }
     }
@@ -1043,7 +1283,11 @@
     @include linear-progress.buffer-color(
       mix(
         map-get($theme, on-surface),
-        if($dark, themes.overlay-elevation(map-get($theme, surface), 1), map-get($theme, surface)),
+        if(
+          $dark,
+          themes.overlay-elevation(map-get($theme, surface), 1),
+          map-get($theme, surface)
+        ),
         10%
       )
     );
@@ -1063,14 +1307,25 @@
   }
   .mdc-top-app-bar {
     @include top-app-bar.fill-color(
-      if($dark, themes.overlay-elevation(map-get($theme, surface), 4), map-get($theme, primary))
+      if(
+        $dark,
+        themes.overlay-elevation(map-get($theme, surface), 4),
+        map-get($theme, primary)
+      )
     );
-    @include top-app-bar.ink-color(if($dark, map-get($theme, text-high), map-get($theme, on-primary)));
-    @include top-app-bar.icon-ink-color(if($dark, map-get($theme, text-high), map-get($theme, on-primary)));
+    @include top-app-bar.ink-color(
+      if($dark, map-get($theme, text-high), map-get($theme, on-primary))
+    );
+    @include top-app-bar.icon-ink-color(
+      if($dark, map-get($theme, text-high), map-get($theme, on-primary))
+    );
     &.contextual {
       $background: if(
         $dark,
-        themes.overlay-elevation(color.scale(map-get($theme, surface), $lightness: -50%), 4),
+        themes.overlay-elevation(
+          color.scale(map-get($theme, surface), $lightness: -50%),
+          4
+        ),
         palette.$grey-900
       );
       @include top-app-bar.fill-color($background);
@@ -1081,8 +1336,15 @@
       .segmented-button.segmented-button--toggle {
         .segmented-button__segment {
           @include button.ink-color(rgba(map-get($theme, on-primary), 0.6));
-          @include button.outline-color(rgba(map-get($theme, on-primary), 0.38));
-          @include ripple.states(map-get($theme, on-primary), false, feature-targeting.all(), ".mdc-button__ripple");
+          @include button.outline-color(
+            rgba(map-get($theme, on-primary), 0.38)
+          );
+          @include ripple.states(
+            map-get($theme, on-primary),
+            false,
+            feature-targeting.all(),
+            ".mdc-button__ripple"
+          );
           @include ripple.states-selected(
             map-get($theme, on-primary),
             false,
@@ -1116,53 +1378,114 @@
       @include chips.fill-color-accessible(
         mix(
           map-get($theme, on-surface),
-          if($dark, themes.overlay-elevation(map-get($theme, surface), 4), map-get($theme, primary)),
+          if(
+            $dark,
+            themes.overlay-elevation(map-get($theme, surface), 4),
+            map-get($theme, primary)
+          ),
           12%
         )
       );
     }
     .search-bar {
       &--persistent .search-bar__field.mdc-text-field {
-        background-color: rgba(map-get($theme, if($dark, on-surface, on-primary)), 0.15);
+        background-color: rgba(
+          map-get($theme, if($dark, on-surface, on-primary)),
+          0.15
+        );
         .mdc-text-field__input {
           &::placeholder {
-            color: if($dark, map-get($theme, text-medium), rgba(map-get($theme, on-primary), 0.6));
+            color: if(
+              $dark,
+              map-get($theme, text-medium),
+              rgba(map-get($theme, on-primary), 0.6)
+            );
             opacity: 1;
           }
           &::-ms-input-placeholder {
-            color: if($dark, map-get($theme, text-medium), rgba(map-get($theme, on-primary), 0.6)) !important;
+            color: if(
+              $dark,
+              map-get($theme, text-medium),
+              rgba(map-get($theme, on-primary), 0.6)
+            ) !important;
           }
         }
         &:not(.mdc-text-field--focused) {
           @include text-field-icon.leading-icon-color(
-            if($dark, map-get($theme, text-medium), rgba(map-get($theme, on-primary), 0.6))
+            if(
+              $dark,
+              map-get($theme, text-medium),
+              rgba(map-get($theme, on-primary), 0.6)
+            )
           );
           @include text-field-icon.trailing-icon-color(
-            if($dark, map-get($theme, text-medium), rgba(map-get($theme, on-primary), 0.6))
+            if(
+              $dark,
+              map-get($theme, text-medium),
+              rgba(map-get($theme, on-primary), 0.6)
+            )
           );
-          @include text-field.ink-color(if($dark, map-get($theme, text-high), rgba(map-get($theme, on-primary), 0.87)));
-          @include text-field.caret-color(if($dark, map-get($theme, on-surface), map-get($theme, on-primary)));
+          @include text-field.ink-color(
+            if(
+              $dark,
+              map-get($theme, text-high),
+              rgba(map-get($theme, on-primary), 0.87)
+            )
+          );
+          @include text-field.caret-color(
+            if($dark, map-get($theme, on-surface), map-get($theme, on-primary))
+          );
           @include text-field.outline-color(
-            if($dark, map-get($theme, text-disabled), rgba(map-get($theme, on-primary), 0.38))
+            if(
+              $dark,
+              map-get($theme, text-disabled),
+              rgba(map-get($theme, on-primary), 0.38)
+            )
           );
           @include text-field.hover-outline-color(
-            if($dark, map-get($theme, text-medium), rgba(map-get($theme, on-primary), 0.6))
+            if(
+              $dark,
+              map-get($theme, text-medium),
+              rgba(map-get($theme, on-primary), 0.6)
+            )
           );
         }
         &.mdc-text-field--focused {
           @include text-field-icon.leading-icon-color(
-            if($dark, map-get($theme, text-medium), rgba(map-get($theme, on-primary), 0.6))
+            if(
+              $dark,
+              map-get($theme, text-medium),
+              rgba(map-get($theme, on-primary), 0.6)
+            )
           );
           @include text-field-icon.trailing-icon-color(
-            if($dark, map-get($theme, text-medium), rgba(map-get($theme, on-primary), 0.6))
+            if(
+              $dark,
+              map-get($theme, text-medium),
+              rgba(map-get($theme, on-primary), 0.6)
+            )
           );
-          @include text-field.ink-color(if($dark, map-get($theme, text-high), rgba(map-get($theme, on-primary), 0.87)));
-          @include text-field.caret-color(if($dark, map-get($theme, primary), map-get($theme, on-primary)));
-          @include text-field.outline-color(if($dark, map-get($theme, primary), map-get($theme, on-primary)));
+          @include text-field.ink-color(
+            if(
+              $dark,
+              map-get($theme, text-high),
+              rgba(map-get($theme, on-primary), 0.87)
+            )
+          );
+          @include text-field.caret-color(
+            if($dark, map-get($theme, primary), map-get($theme, on-primary))
+          );
+          @include text-field.outline-color(
+            if($dark, map-get($theme, primary), map-get($theme, on-primary))
+          );
         }
       }
       &--modal {
-        background-color: if($dark, themes.overlay-elevation(map-get($theme, surface), 8), map-get($theme, surface));
+        background-color: if(
+          $dark,
+          themes.overlay-elevation(map-get($theme, surface), 8),
+          map-get($theme, surface)
+        );
         .search-bar__field.mdc-text-field {
           .mdc-text-field__input {
             &::placeholder {
@@ -1175,8 +1498,12 @@
           }
           &:not(.mdc-text-field--focused),
           &.mdc-text-field--focused {
-            @include text-field-icon.leading-icon-color(map-get($theme, text-medium));
-            @include text-field-icon.trailing-icon-color(map-get($theme, text-medium));
+            @include text-field-icon.leading-icon-color(
+              map-get($theme, text-medium)
+            );
+            @include text-field-icon.trailing-icon-color(
+              map-get($theme, text-medium)
+            );
             @include text-field.ink-color(map-get($theme, text-high));
             @include text-field.caret-color(map-get($theme, on-surface));
           }
@@ -1185,10 +1512,18 @@
     }
     &.bottom-app-bar--indent {
       .mdc-top-app-bar__section:not(.indent) {
-        background-color: if($dark, themes.overlay-elevation(map-get($theme, surface), 4), map-get($theme, primary));
+        background-color: if(
+          $dark,
+          themes.overlay-elevation(map-get($theme, surface), 4),
+          map-get($theme, primary)
+        );
       }
       .indent {
-        fill: if($dark, themes.overlay-elevation(map-get($theme, surface), 4), map-get($theme, primary));
+        fill: if(
+          $dark,
+          themes.overlay-elevation(map-get($theme, surface), 4),
+          map-get($theme, primary)
+        );
       }
     }
 
@@ -1206,11 +1541,17 @@
     }
 
     .mdc-linear-progress {
-      @include linear-progress.bar-color(map-get($theme, if($dark, primary, secondary)));
+      @include linear-progress.bar-color(
+        map-get($theme, if($dark, primary, secondary))
+      );
       @include linear-progress.buffer-color(
         mix(
           map-get($theme, if($dark, on-surface, on-primary)),
-          if($dark, themes.overlay-elevation(map-get($theme, surface), 4), map-get($theme, primary)),
+          if(
+            $dark,
+            themes.overlay-elevation(map-get($theme, surface), 4),
+            map-get($theme, primary)
+          ),
           10%
         )
       );
@@ -1234,7 +1575,11 @@
       color: map-get($theme, text-medium);
       background-color: mix(
         map-get($theme, on-surface),
-        if($dark, themes.overlay-elevation(map-get($theme, surface), 24), map-get($theme, surface)),
+        if(
+          $dark,
+          themes.overlay-elevation(map-get($theme, surface), 24),
+          map-get($theme, surface)
+        ),
         12%
       );
     }

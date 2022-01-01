@@ -1,5 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import {
+  SegmentedButton,
+  SegmentedButtonSegment,
+} from "@c/util/segmented-button";
 
 it("displays specified content", () => {
   const text = "Test";
@@ -30,6 +33,8 @@ it("adds selected class to button", () => {
     </SegmentedButton>
   );
   expect(() =>
-    screen.getByText((_, element) => element.classList.contains("segmented-button__segment--selected"))
+    screen.getByText((_, element) =>
+      element.classList.contains("segmented-button__segment--selected")
+    )
   ).not.toThrow();
 });

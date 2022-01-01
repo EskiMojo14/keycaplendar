@@ -23,9 +23,12 @@ import type { Page, ThemeMap } from "./types";
  * @returns Object with `strategy` set to `"component"` and `icon` set to the value of `jsx`.
  */
 
-const iconObject = (jsx: ReactNode, config?: Omit<IconOptions, "icon">): IconPropT => ({
-  strategy: "component",
+const iconObject = (
+  jsx: ReactNode,
+  config?: Omit<IconOptions, "icon">
+): IconPropT => ({
   icon: jsx,
+  strategy: "component",
   ...config,
 });
 
@@ -75,7 +78,14 @@ export const mainPages = [
 
 /** Main pages which can be accessed without being logged in. */
 
-export const standardPages: Page[] = ["calendar", "live", "ic", "previous", "timeline", "archive"];
+export const standardPages: Page[] = [
+  "calendar",
+  "live",
+  "ic",
+  "previous",
+  "timeline",
+  "archive",
+];
 
 /** Pages to allow linking to using URL params or path. (e.g. {@link https://keycaplendar.firebaseapp.com/ic} or {@link https://keycaplendar.firebaseapp.com/?page=ic}). */
 
@@ -104,81 +114,80 @@ export const adminPages: Page[] = ["audit", "users", "images"];
 /** Formatted page title to use within nav and app bar. */
 
 export const pageTitle: Record<Page, string> = {
-  calendar: "Calendar",
-  live: "Live GBs",
-  ic: "IC Tracker",
-  previous: "Previous Sets",
-  timeline: "Timeline",
   archive: "Archive",
-  favorites: "Favorites",
-  bought: "Bought",
-  hidden: "Hidden",
-  statistics: "Statistics",
-  history: "History",
   audit: "Audit Log",
-  users: "Users",
-  images: "Images",
+  bought: "Bought",
+  calendar: "Calendar",
+  favorites: "Favorites",
   guides: "Guides",
-  updates: "Updates",
+  hidden: "Hidden",
+  history: "History",
+  ic: "IC Tracker",
+  images: "Images",
+  live: "Live GBs",
+  previous: "Previous Sets",
   settings: "Settings",
+  statistics: "Statistics",
+  timeline: "Timeline",
+  updates: "Updates",
+  users: "Users",
 };
 
 /** Corresponding icons for each page, to use in the nav drawer. */
 
 export const pageIcons: Record<Page, IconPropT> = {
-  calendar: iconObject(<CalendarToday />),
-  live: iconObject(<Store />),
-  ic: iconObject(<Forum />),
-  previous: "history",
-  timeline: "timeline",
   archive: "all_inclusive",
-  favorites: iconObject(<Favorites />),
-  bought: iconObject(<ShoppingBasket />),
-  hidden: iconObject(<VisibilityOff />),
-  statistics: "bar_chart",
-  history: "history",
   audit: iconObject(<HistoryEdu />),
-  users: iconObject(<People />),
-  images: iconObject(<Collections />),
+  bought: iconObject(<ShoppingBasket />),
+  calendar: iconObject(<CalendarToday />),
+  favorites: iconObject(<Favorites />),
   guides: iconObject(<Info />),
-  updates: iconObject(<Campaign />),
+  hidden: iconObject(<VisibilityOff />),
+  history: "history",
+  ic: iconObject(<Forum />),
+  images: iconObject(<Collections />),
+  live: iconObject(<Store />),
+  previous: "history",
   settings: iconObject(<Settings />),
+  statistics: "bar_chart",
+  timeline: "timeline",
+  updates: iconObject(<Campaign />),
+  users: iconObject(<People />),
 };
 
 export const blankTheme: ThemeMap = {
-  dark: false,
-
   background: "",
-  primary: "",
-  onPrimary: "",
-  primaryDark: "",
-  onPrimaryDark: "",
-  primaryLight: "",
-  onPrimaryLight: "",
-  secondary: "",
-  onSecondary: "",
-  secondaryDark: "",
-  onSecondaryDark: "",
-  secondaryLight: "",
-  onSecondaryLight: "",
-  error: "",
-  onError: "",
-  surface: "",
-  onSurface: "",
-
-  textHigh: "",
-  textMedium: "",
-  textDisabled: "",
-
-  meta: "",
+  dark: false,
   divider: "",
-  lighterDivider: "",
+  elevatedSurface: Array(25).fill(""),
+  error: "",
   grey1: "",
   grey2: "",
+  lighterDivider: "",
+  meta: "",
+  onError: "",
+  onPrimary: "",
+  onPrimaryDark: "",
+  onPrimaryLight: "",
+  onSecondary: "",
+  onSecondaryDark: "",
+  onSecondaryLight: "",
+  onSurface: "",
+  primary: "",
 
+  primaryDark: "",
   primaryGradient: Array(10).fill(""),
+  primaryLight: "",
+
+  secondary: "",
+  secondaryDark: "",
   secondaryGradient: Array(10).fill(""),
-  elevatedSurface: Array(25).fill(""),
+  secondaryLight: "",
+  surface: "",
+
+  textDisabled: "",
+  textHigh: "",
+  textMedium: "",
 };
 
 const createThemeList = (prefix: string, list: string, length: number) =>
@@ -187,12 +196,12 @@ const createThemeList = (prefix: string, list: string, length: number) =>
     .map((_, index) => `var(--${prefix}-${list}${index + 1})`);
 
 export const themeLists = {
+  elevatedSurface: createThemeList("theme", "elevated-surface", 25),
   primary: createThemeList("theme", "primary-gradient", 10),
   secondary: createThemeList("theme", "secondary-gradient", 10),
-  elevatedSurface: createThemeList("theme", "elevated-surface", 25),
 };
 
 export const graphColors = {
-  rainbow: createThemeList("graph-color", "rainbow", 38),
   heatmap: createThemeList("graph-color", "heatmap", 8),
+  rainbow: createThemeList("graph-color", "rainbow", 38),
 };

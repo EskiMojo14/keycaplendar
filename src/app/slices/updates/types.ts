@@ -1,9 +1,9 @@
 export type UpdateEntryType = {
+  body: string;
+  date: string;
   id: string;
   /** The author of the update. */
   name: string;
-  title: string;
-  date: string;
-  body: string;
   pinned: boolean;
+  title: string;
 };

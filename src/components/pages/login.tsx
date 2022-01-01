@@ -1,4 +1,9 @@
-import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
+import {
+  TopAppBar,
+  TopAppBarRow,
+  TopAppBarSection,
+  TopAppBarTitle,
+} from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import { Redirect } from "react-router-dom";
@@ -16,20 +21,20 @@ export const Login = () => {
   const user = useAppSelector(selectUser);
 
   const uiConfig: firebaseui.auth.Config = {
+    callbacks: {
+      // Avoid redirects after sign-in.
+      signInSuccessWithAuthResult: () => false,
+    },
     // Popup signin flow rather than redirect flow.
     signInFlow: device === "desktop" ? "popup" : "redirect",
-    // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
-    signInSuccessUrl: "/",
     // We will display Google and Facebook as auth providers.
     signInOptions: [
       firebase.auth.GoogleAuthProvider.PROVIDER_ID,
       firebase.auth.GithubAuthProvider.PROVIDER_ID,
       firebase.auth.TwitterAuthProvider.PROVIDER_ID,
     ],
-    callbacks: {
-      // Avoid redirects after sign-in.
-      signInSuccessWithAuthResult: () => false,
-    },
+    // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
+    signInSuccessUrl: "/",
   };
 
   if (user.email) {
@@ -46,14 +51,18 @@ export const Login = () => {
         </TopAppBarRow>
       </TopAppBar>
       <div className="login-container">
-        <img className="image" src={peach} alt="Peach" />
-        <Typography className="title" use="headline6" tag="h3">
+        <img alt="Peach" className="image" src={peach} />
+        <Typography className="title" tag="h3" use="headline6">
           Sign in
         </Typography>
-        <Typography className="subtitle" use="body1" tag="p">
-          Log in to gain access to features such as favorites, hiding sets, and filter presets.
+        <Typography className="subtitle" tag="p" use="body1">
+          Log in to gain access to features such as favorites, hiding sets, and
+          filter presets.
         </Typography>
-        <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+        <StyledFirebaseAuth
+          firebaseAuth={firebase.auth()}
+          uiConfig={uiConfig}
+        />
       </div>
       <Footer />
     </div>

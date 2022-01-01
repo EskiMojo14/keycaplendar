@@ -4,50 +4,49 @@ import type { RootState } from "~/app/store";
 import type { ActionType } from "./types";
 
 type AuditState = {
-  loading: boolean;
-
   allActions: ActionType[];
-  filteredActions: ActionType[];
-
-  users: string[];
   filterAction: "created" | "deleted" | "none" | "updated";
+  filteredActions: ActionType[];
   filterUser: string;
   length: number;
+  loading: boolean;
+  users: string[];
 };
 
 export const initialState: AuditState = {
-  loading: false,
-  //actions
   allActions: [],
-  filteredActions: [],
-  //filter
-  users: [],
   filterAction: "none",
+  filteredActions: [],
   filterUser: "all",
   length: 50,
+  loading: false,
+  users: [],
 };
 
 export const auditSlice = createSlice({
-  name: "audit",
   initialState,
+  name: "audit",
   reducers: {
-    setLoading: (state, { payload }: PayloadAction<boolean>) => {
-      state.loading = payload;
-    },
     setAllActions: (state, { payload }: PayloadAction<ActionType[]>) => {
       state.allActions = payload;
     },
+    setFilterAction: (
+      state,
+      { payload }: PayloadAction<"created" | "deleted" | "none" | "updated">
+    ) => {
+      state.filterAction = payload;
+    },
     setFilteredActions: (state, { payload }: PayloadAction<ActionType[]>) => {
       state.filteredActions = payload;
-    },
-    setFilterAction: (state, { payload }: PayloadAction<"created" | "deleted" | "none" | "updated">) => {
-      state.filterAction = payload;
     },
     setFilterUser: (state, { payload }: PayloadAction<string>) => {
       state.filterUser = payload;
     },
     setLength: (state, { payload }: PayloadAction<number>) => {
       state.length = payload;
+    },
+    setLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.loading = payload;
     },
     setUsers: (state, { payload }: PayloadAction<string[]>) => {
       state.users = payload;
@@ -56,16 +55,26 @@ export const auditSlice = createSlice({
 });
 
 export const {
-  actions: { setLoading, setAllActions, setFilteredActions, setFilterAction, setFilterUser, setLength, setUsers },
+  actions: {
+    setAllActions,
+    setFilterAction,
+    setFilteredActions,
+    setFilterUser,
+    setLength,
+    setLoading,
+    setUsers,
+  },
 } = auditSlice;
 
 export const selectLoading = (state: RootState) => state.audit.loading;
 
 export const selectAllActions = (state: RootState) => state.audit.allActions;
 
-export const selectFilteredActions = (state: RootState) => state.audit.filteredActions;
+export const selectFilteredActions = (state: RootState) =>
+  state.audit.filteredActions;
 
-export const selectFilterAction = (state: RootState) => state.audit.filterAction;
+export const selectFilterAction = (state: RootState) =>
+  state.audit.filterAction;
 
 export const selectFilterUser = (state: RootState) => state.audit.filterUser;
 

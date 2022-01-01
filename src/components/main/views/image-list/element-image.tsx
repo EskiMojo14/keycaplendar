@@ -66,14 +66,20 @@ export const ElementImage = ({
   const useLink = device === "desktop";
 
   const liveIndicator = live
-    ? withTooltip(<Icon className="live-indicator" icon={iconObject(<NewReleases />)} />, "Live")
+    ? withTooltip(
+        <Icon className="live-indicator" icon={iconObject(<NewReleases />)} />,
+        "Live"
+      )
     : null;
   const shipIndicator = set?.shipped
-    ? withTooltip(<Icon className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
+    ? withTooltip(
+        <Icon className="ship-indicator" icon={iconObject(<CheckCircle />)} />,
+        "Shipped"
+      )
     : null;
   const timeIndicator = thisWeek ? (
     <div className="time-indicator">
-      <Typography use="overline" className="live-indicator-text">
+      <Typography className="live-indicator-text" use="overline">
         {pluralise`${daysLeft} ${[daysLeft, "day"]}`}
       </Typography>
     </div>
@@ -83,12 +89,12 @@ export const ElementImage = ({
     ? withTooltip(
         <IconButton
           className="link-icon"
-          icon="open_in_new"
-          tag="a"
           href={link}
-          target="_blank"
-          rel="noopener noreferrer"
+          icon="open_in_new"
           label={"Link to " + title}
+          rel="noopener noreferrer"
+          tag="a"
+          target="_blank"
         />,
         "Link"
       )
@@ -96,22 +102,31 @@ export const ElementImage = ({
   return (
     <Ripple>
       <ImageListItem
-        onClick={() => (!selected ? details(set) : closeDetails())}
         className={classNames("image-list-item", { selected })}
+        onClick={() => (!selected ? details(set) : closeDetails())}
       >
         <div className="container">
           <div className="link-icon-container">
             {linkIcon}
             {withTooltip(
-              <IconButton className="link-icon" icon={iconObject(<Share />)} onClick={copyShareLink} />,
+              <IconButton
+                className="link-icon"
+                icon={iconObject(<Share />)}
+                onClick={copyShareLink}
+              />,
               "Share"
             )}
           </div>
           <div className="media-container">
             {timeIndicator}
-            <ImageListImageAspectContainer style={{ paddingBottom: "calc(100% / 1)" }}>
+            <ImageListImageAspectContainer
+              style={{ paddingBottom: "calc(100% / 1)" }}
+            >
               <LazyLoad debounce={false} offsetVertical={480}>
-                <ImageListImage tag="div" style={{ backgroundImage: "url(" + image + ")" }} />
+                <ImageListImage
+                  style={{ backgroundImage: "url(" + image + ")" }}
+                  tag="div"
+                />
               </LazyLoad>
             </ImageListImageAspectContainer>
           </div>

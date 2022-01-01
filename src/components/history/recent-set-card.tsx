@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { Button } from "@rmwc/button";
-import { Card, CardMedia, CardMediaContent, CardPrimaryAction } from "@rmwc/card";
+import {
+  Card,
+  CardMedia,
+  CardMediaContent,
+  CardPrimaryAction,
+} from "@rmwc/card";
 import { Icon } from "@rmwc/icon";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
@@ -15,20 +20,30 @@ import type { RecentSet } from "@s/history/types";
 import { pageConditions } from "@s/main/functions";
 import type { SetType } from "@s/main/types";
 import { selectBought, selectFavorites, selectHidden } from "@s/user";
-import { arrayIncludes, iconObject, objectKeys, ordinal } from "@s/util/functions";
+import {
+  arrayIncludes,
+  iconObject,
+  objectKeys,
+  ordinal,
+} from "@s/util/functions";
 import { FilterVariantRemove, ImageNotSupported } from "@i";
 import "./recent-set-card.scss";
 
 type RecentSetCardProps = {
-  recentSet: RecentSet;
-  filtered: boolean;
-  selected: boolean;
   filterChangelog: (set: RecentSet) => void;
+  filtered: boolean;
   openDetails: (set: SetType) => void;
+  recentSet: RecentSet;
+  selected: boolean;
 };
 
-export const RecentSetCard = (props: RecentSetCardProps) => {
-  const { recentSet, filtered, selected } = props;
+export const RecentSetCard = ({
+  filterChangelog,
+  filtered,
+  openDetails,
+  recentSet,
+  selected,
+}: RecentSetCardProps) => {
   const { currentSet: set, deleted } = recentSet;
   const favorites = useAppSelector(selectFavorites);
   const bought = useAppSelector(selectBought);
@@ -36,53 +51,71 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
   const [pages, setPages] = useState<string[]>([]);
 
   useEffect(() => {
-    if (props.recentSet.currentSet) {
+    if (recentSet.currentSet) {
       const falsePages: Record<MainPage, boolean> = {
+        archive: false,
+        bought: false,
         calendar: false,
-        live: false,
+        favorites: false,
+        hidden: false,
         ic: false,
+        live: false,
         previous: false,
         timeline: false,
-        archive: false,
-        favorites: false,
-        bought: false,
-        hidden: false,
       };
-      const pageBools: Record<MainPage, boolean> = set ? pageConditions(set, favorites, bought, hidden) : falsePages;
+      const pageBools: Record<MainPage, boolean> = set
+        ? pageConditions(set, favorites, bought, hidden)
+        : falsePages;
       const keysetPages = objectKeys(pageBools).filter((key) => pageBools[key]);
       setPages(keysetPages);
     }
-  }, [props.recentSet.currentSet]);
+  }, [recentSet.currentSet]);
 
   return (
-    <Card className={classNames("set-changelog", { "mdc-card--selected": selected, deleted })}>
+    <Card
+      className={classNames("set-changelog", {
+        deleted,
+        "mdc-card--selected": selected,
+      })}
+    >
       <ConditionalWrapper
         condition={!!set}
         wrapper={(children) => (
           <CardPrimaryAction
-            onClick={
-              set
-                ? () => {
-                    props.openDetails(set);
-                  }
-                : undefined
-            }
-            className={classNames({ "mdc-card__primary-action--selected": selected })}
+            className={classNames({
+              "mdc-card__primary-action--selected": selected,
+            })}
+            onClick={set ? () => openDetails(set) : undefined}
           >
             {children}
           </CardPrimaryAction>
         )}
       >
-        <LazyLoad debounce={false} offsetVertical={480} className="lazy-load">
+        <LazyLoad className="lazy-load" debounce={false} offsetVertical={480}>
           <CardMedia
             sixteenByNine
-            style={!deleted && set ? { backgroundImage: `url(${set.image.replace("keysets", "thumbs")})` } : undefined}
+            style={
+              !deleted && set
+                ? {
+                    backgroundImage: `url(${set.image.replace(
+                      "keysets",
+                      "thumbs"
+                    )})`,
+                  }
+                : undefined
+            }
           >
             {!set ? (
               <CardMediaContent>
-                <Icon icon={iconObject(<ImageNotSupported />, { size: "xlarge" })} />
+                <Icon
+                  icon={iconObject(<ImageNotSupported />, { size: "xlarge" })}
+                />
                 {deleted ? (
-                  <Typography use="overline" tag="div" className="deleted-indicator">
+                  <Typography
+                    className="deleted-indicator"
+                    tag="div"
+                    use="overline"
+                  >
                     Deleted
                   </Typography>
                 ) : null}
@@ -92,40 +125,53 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
         </LazyLoad>
         <div className="info-container">
           <div className="overline">
-            <Typography use="overline" tag="h3">
+            <Typography tag="h3" use="overline">
               {set?.designer.join(" + ") ?? recentSet.designer?.join(" + ")}
             </Typography>
           </div>
-          <Typography use="headline5" tag="h2">
+          <Typography tag="h2" use="headline5">
             {set ? `${set.profile} ${set.colorway}` : recentSet.title}
           </Typography>
-          <Typography use="subtitle2" tag="p">
+          <Typography tag="p" use="subtitle2">
             Last updated:{" "}
-            {DateTime.fromISO(recentSet.latestTimestamp, { zone: "utc" }).toFormat(
-              `d'${ordinal(DateTime.fromISO(recentSet.latestTimestamp, { zone: "utc" }).day)}' MMM yyyy HH:mm`
+            {DateTime.fromISO(recentSet.latestTimestamp, {
+              zone: "utc",
+            }).toFormat(
+              `d'${ordinal(
+                DateTime.fromISO(recentSet.latestTimestamp, { zone: "utc" }).day
+              )}' MMM yyyy HH:mm`
             )}
           </Typography>
         </div>
       </ConditionalWrapper>
       <div className="filter-button-container">
         <Button
-          outlined
-          label={filtered ? "Clear filter" : "Filter changelog"}
           icon={filtered ? iconObject(<FilterVariantRemove />) : "filter_list"}
-          onClick={() => props.filterChangelog(recentSet)}
+          label={filtered ? "Clear filter" : "Filter changelog"}
+          onClick={() => filterChangelog(recentSet)}
+          outlined
         />
       </div>
       {pages.length > 0 ? (
         <div className="page-list">
-          <Typography use="caption" className="caption">
+          <Typography className="caption" use="caption">
             Pages
           </Typography>
           <div className="button-container">
             {pages.map((page) => {
               if (arrayIncludes(mainPages, page)) {
-                const title = page === "previous" ? pageTitle[page].split(" ")[0] : pageTitle[page];
+                const title =
+                  page === "previous"
+                    ? pageTitle[page].split(" ")[0]
+                    : pageTitle[page];
                 return (
-                  <Button outlined label={title} icon={pageIcons[page]} onClick={() => setPage(page)} key={page} />
+                  <Button
+                    key={page}
+                    icon={pageIcons[page]}
+                    label={title}
+                    onClick={() => setPage(page)}
+                    outlined
+                  />
                 );
               }
               return null;

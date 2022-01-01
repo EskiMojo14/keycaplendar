@@ -54,10 +54,13 @@ $exit-time: 200ms;
     opacity: 1;
     transition-property: width, opacity;
     transition-timing-function: animation.$standard-curve-timing-function;
-    .mdc-text-field--with-trailing-icon .mdc-text-field__icon ~ .mdc-text-field__icon {
+    .mdc-text-field--with-trailing-icon
+      .mdc-text-field__icon
+      ~ .mdc-text-field__icon {
       transform: scale(1) translateY(-50%);
       opacity: 1;
-      transition: animation.standard(opacity, 150ms), animation.standard(transform, 150ms);
+      transition: animation.standard(opacity, 150ms),
+        animation.standard(transform, 150ms);
       outline: none;
     }
     .search-bar__field-container {
@@ -85,7 +88,9 @@ $exit-time: 200ms;
     &.search-bar--animate .search-bar__field-container {
       opacity: 0;
       width: 64px;
-      .mdc-text-field--with-trailing-icon .mdc-text-field__icon ~ .mdc-text-field__icon {
+      .mdc-text-field--with-trailing-icon
+        .mdc-text-field__icon
+        ~ .mdc-text-field__icon {
         transform: scale(0.92) translateY(-50%);
         opacity: 0;
       }
@@ -93,7 +98,9 @@ $exit-time: 200ms;
     &.search-bar--opening .search-bar__field-container {
       opacity: 1;
       width: 100%;
-      .mdc-text-field--with-trailing-icon .mdc-text-field__icon ~ .mdc-text-field__icon {
+      .mdc-text-field--with-trailing-icon
+        .mdc-text-field__icon
+        ~ .mdc-text-field__icon {
         transform: scale(1) translateY(-50%);
         opacity: 0;
       }
@@ -103,7 +110,9 @@ $exit-time: 200ms;
       opacity: 0;
       width: 64px;
       transition-duration: $exit-time;
-      .mdc-text-field--with-trailing-icon .mdc-text-field__icon ~ .mdc-text-field__icon {
+      .mdc-text-field--with-trailing-icon
+        .mdc-text-field__icon
+        ~ .mdc-text-field__icon {
         transform: scale(0.92);
         opacity: 0;
       }

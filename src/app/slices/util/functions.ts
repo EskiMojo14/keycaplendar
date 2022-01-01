@@ -18,7 +18,10 @@ const storageRef = storage.ref();
  * @returns Whether `obj` has the specified `key`.
  */
 
-export const hasKey = <O extends Record<string, unknown>>(obj: O, key: keyof any): key is keyof O => key in obj;
+export const hasKey = <O extends Record<string, unknown>>(
+  obj: O,
+  key: keyof any
+): key is keyof O => key in obj;
 
 /**
  * Use function to check type and inform typescript you've done so.
@@ -27,7 +30,10 @@ export const hasKey = <O extends Record<string, unknown>>(obj: O, key: keyof any
  * @returns If item is desired type, and asserts so.
  */
 
-export const typeGuard = <T>(item: any, predicate: (item: any) => boolean): item is T => predicate(item);
+export const typeGuard = <T>(
+  item: any,
+  predicate: (item: any) => boolean
+): item is T => predicate(item);
 
 /**
  * Checks if item is included in array, and asserts that the types are the same.
@@ -36,7 +42,10 @@ export const typeGuard = <T>(item: any, predicate: (item: any) => boolean): item
  * @returns Whether the item is contained in the array.
  */
 
-export const arrayIncludes = <T>(arr: Readonly<T[]> | T[], item: any): item is T => arr.includes(item);
+export const arrayIncludes = <T>(
+  arr: Readonly<T[]> | T[],
+  item: any
+): item is T => arr.includes(item);
 
 /**
  * Checks every item of an array matches a condition, and asserts that the items are a specified type.
@@ -52,21 +61,26 @@ export const arrayEveryType = <T>(
 
 /** Merge objects and modify specified keys. */
 
-export const mergeObjects = <T>(obj: T, ...objs: Partial<T>[]): T => Object.assign({}, obj, ...objs);
+export const mergeObjects = <T>(obj: T, ...objs: Partial<T>[]): T =>
+  Object.assign({}, obj, ...objs);
 
 /** Returns an array of object keys to iterate on.
  *
  * Only use for objects you're certain won't gain more keys in runtime.
  */
 
-export const objectKeys = <T extends Record<string, any>>(obj: T): (keyof T)[] => Object.keys(obj);
+export const objectKeys = <T extends Record<string, any>>(
+  obj: T
+): (keyof T)[] => Object.keys(obj);
 
 /**
  * Returns an array of object entries to iterate on.
  * Only use for objects you're certain won't gain more entries in runtime.
  */
 
-export const objectEntries = <T extends Record<string, any>>(obj: T): [keyof T, T[keyof T]][] => Object.entries(obj);
+export const objectEntries = <T extends Record<string, any>>(
+  obj: T
+): [keyof T, T[keyof T]][] => Object.entries(obj);
 
 /**
  * Remove all duplicate values within an array.
@@ -74,7 +88,8 @@ export const objectEntries = <T extends Record<string, any>>(obj: T): [keyof T, 
  * @returns `array` with only unique values.
  */
 
-export const removeDuplicates = <T>(arr: T[]): T[] => arr.filter((item, index) => arr.indexOf(item) === index);
+export const removeDuplicates = <T>(arr: T[]): T[] =>
+  arr.filter((item, index) => arr.indexOf(item) === index);
 
 /**
  * "Toggles" an element in an array. *MUTATES*
@@ -123,20 +138,22 @@ export const chunks = <T>(array: T[], size: number): T[][] =>
  * objArr.sort((a, b) => alphabeticalSortCurried()(a.key, b.key) || alphabeticalSortCurried()(a.key2, b.key2))
  */
 
-export const alphabeticalSortCurried = <T>(descending = false, hoist?: T) => (a: T, b: T) => {
-  if (hoist && (a === hoist || b === hoist) && a !== b) {
-    return a === hoist ? -1 : 1;
-  }
-  const x = is<string>(a) ? a.toLowerCase() : a;
-  const y = is<string>(b) ? b.toLowerCase() : b;
-  if (x < y) {
-    return descending ? 1 : -1;
-  }
-  if (x > y) {
-    return descending ? -1 : 1;
-  }
-  return 0;
-};
+export const alphabeticalSortCurried =
+  <T>(descending = false, hoist?: T) =>
+  (a: T, b: T) => {
+    if (hoist && (a === hoist || b === hoist) && a !== b) {
+      return a === hoist ? -1 : 1;
+    }
+    const x = is<string>(a) ? a.toLowerCase() : a;
+    const y = is<string>(b) ? b.toLowerCase() : b;
+    if (x < y) {
+      return descending ? 1 : -1;
+    }
+    if (x > y) {
+      return descending ? -1 : 1;
+    }
+    return 0;
+  };
 
 /**
  * Sorts an array of strings in alphabetical order. *MUTATES*
@@ -146,8 +163,11 @@ export const alphabeticalSortCurried = <T>(descending = false, hoist?: T) => (a:
  * @returns `array` sorted alphabetically in ascending or descending order, with hoisted value at the beginning if provided.
  */
 
-export const alphabeticalSort = (array: string[], descending = false, hoist?: string) =>
-  array.sort(alphabeticalSortCurried(descending, hoist));
+export const alphabeticalSort = (
+  array: string[],
+  descending = false,
+  hoist?: string
+) => array.sort(alphabeticalSortCurried(descending, hoist));
 
 /**
  * Creates a function to pass to sort an array of objects by a specified prop, in alphabetical order.
@@ -161,11 +181,14 @@ export const alphabeticalSort = (array: string[], descending = false, hoist?: st
  * arr.sort((a,b) => alphabeticalSortProp("key")(a,b) || alphabeticalSortProp("key2")(a,b))
  */
 
-export const alphabeticalSortPropCurried = <O extends Record<string, unknown>, K extends keyof O = keyof O>(
-  prop: K,
-  descending = false,
-  hoist?: O[K]
-) => (a: O, b: O) => alphabeticalSortCurried(descending, hoist)(a[prop], b[prop]);
+export const alphabeticalSortPropCurried =
+  <O extends Record<string, unknown>, K extends keyof O = keyof O>(
+    prop: K,
+    descending = false,
+    hoist?: O[K]
+  ) =>
+  (a: O, b: O) =>
+    alphabeticalSortCurried(descending, hoist)(a[prop], b[prop]);
 
 /**
  * Sorts an array of objects by a specified prop, in alphabetical order. *MUTATES*
@@ -176,7 +199,10 @@ export const alphabeticalSortPropCurried = <O extends Record<string, unknown>, K
  * @returns `array` sorted by provided prop, with hoisted value at the beginning if provided.
  */
 
-export const alphabeticalSortProp = <O extends Record<string, unknown>, K extends keyof O = keyof O>(
+export const alphabeticalSortProp = <
+  O extends Record<string, unknown>,
+  K extends keyof O = keyof O
+>(
   array: O[],
   prop: K,
   descending = false,
@@ -190,7 +216,8 @@ export const alphabeticalSortProp = <O extends Record<string, unknown>, K extend
  * @returns String truncated with ... at the end.
  */
 
-export const truncate = (str: string, num: number) => (str.length <= num ? str : str.slice(0, num) + "...");
+export const truncate = (str: string, num: number) =>
+  str.length <= num ? str : str.slice(0, num) + "...";
 
 /**
  * Capitalise a string's first character.
@@ -198,7 +225,8 @@ export const truncate = (str: string, num: number) => (str.length <= num ? str :
  * @returns `str` with first character capitalised.
  */
 
-export const capitalise = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+export const capitalise = (str: string) =>
+  str.charAt(0).toUpperCase() + str.slice(1);
 
 /**
  * Convert a string to camelCase.
@@ -253,7 +281,8 @@ export const replaceFunction = (str: string) => {
  * @returns `str` after being replaced, normalised, and camelCased.
  */
 
-export const formatFileName = (str: string) => camelise(normalise(replaceFunction(str)));
+export const formatFileName = (str: string) =>
+  camelise(normalise(replaceFunction(str)));
 
 /**
  * Interweaves multiple arrays into a single array.
@@ -282,7 +311,10 @@ export const braidArrays = <T>(...arrays: T[][]) => {
  * pluralise`I have ${cows} ${[cows, "cow"]}, ${sheep} ${[sheep, "sheep", "sheep"]}, and ${geese} ${[geese, "goose", "geese"]}`
  */
 
-export const pluralise = (strings: TemplateStringsArray, ...expressions: any[]) => {
+export const pluralise = (
+  strings: TemplateStringsArray,
+  ...expressions: any[]
+) => {
   const plurals = expressions.map((value) => {
     if (is<[number, string, string] | [number, string]>(value)) {
       const [val, single, plural] = value;
@@ -300,7 +332,8 @@ export const pluralise = (strings: TemplateStringsArray, ...expressions: any[]) 
  * @returns Amount of items within `arr` equal to `val`.
  */
 
-export const countInArray = <T>(arr: T[], val: T) => arr.reduce((count, item) => count + Number(item === val), 0);
+export const countInArray = <T>(arr: T[], val: T) =>
+  arr.reduce((count, item) => count + Number(item === val), 0);
 
 /**
  * Moves an item within an array to a new position. *MUTATES*
@@ -311,7 +344,12 @@ export const countInArray = <T>(arr: T[], val: T) => arr.reduce((count, item) =>
  * @returns `arr` with item moved.
  */
 
-export const arrayMove = <T>(arr: T[], old_index: number, new_index: number, fill = (undefined as unknown) as T) => {
+export const arrayMove = <T>(
+  arr: T[],
+  old_index: number,
+  new_index: number,
+  fill = undefined as unknown as T
+) => {
   if (new_index >= arr.length) {
     let k = new_index - arr.length + 1;
     while (k--) {
@@ -328,9 +366,12 @@ export const arrayMove = <T>(arr: T[], old_index: number, new_index: number, fil
  * @returns Object with `strategy` set to `"component"` and `icon` set to the value of `jsx`.
  */
 
-export const iconObject = (jsx: ReactNode, config: Omit<IconOptions, "icon"> = {}): IconPropT => ({
-  strategy: "component",
+export const iconObject = (
+  jsx: ReactNode,
+  config: Omit<IconOptions, "icon"> = {}
+): IconPropT => ({
   icon: jsx,
+  strategy: "component",
   ...config,
 });
 
@@ -362,7 +403,9 @@ export const closeModal = () => {
  * @returns An tuple of callbacks, the first being `func(false)` and the second being `func(true)`.
  */
 
-export const useBoolStates = <T>(func: (bool: boolean) => T): [setFalse: () => T, setTrue: () => T] => [
+export const useBoolStates = <T>(
+  func: (bool: boolean) => T
+): [setFalse: () => T, setTrue: () => T] => [
   () => func(false),
   () => func(true),
 ];
@@ -375,9 +418,15 @@ export const useBoolStates = <T>(func: (bool: boolean) => T): [setFalse: () => T
  * @returns Array of months from earliest to latest, in specified format.
  */
 
-export const getSetMonthRange = (sets: SetType[], prop: DateSortKeys, format: string) => {
+export const getSetMonthRange = (
+  sets: SetType[],
+  prop: DateSortKeys,
+  format: string
+) => {
   const setMonths = removeDuplicates(
-    sets.map(({ [prop]: val }) => (val && !val.includes("Q") ? DateTime.fromISO(val).toFormat("yyyy-MM") : ""))
+    sets.map(({ [prop]: val }) =>
+      val && !val.includes("Q") ? DateTime.fromISO(val).toFormat("yyyy-MM") : ""
+    )
   ).filter(Boolean);
   alphabeticalSort(setMonths);
   const monthDiff = (dateFrom: DateTime, dateTo: DateTime) =>
@@ -389,13 +438,19 @@ export const getSetMonthRange = (sets: SetType[], prop: DateSortKeys, format: st
     ) + 1;
   const allMonths = Array(length)
     .fill("")
-    .map((v, i) => DateTime.fromISO(setMonths[0], { zone: "utc" }).plus({ months: i }).toFormat(format));
+    .map((v, i) =>
+      DateTime.fromISO(setMonths[0], { zone: "utc" })
+        .plus({ months: i })
+        .toFormat(format)
+    );
   return allMonths;
 };
 
 /** Generates a range of DateTimes separated by day between an Interval. */
 
-export function* iterateDays(interval: Interval): Generator<DateTime, void, unknown> {
+export function* iterateDays(
+  interval: Interval
+): Generator<DateTime, void, unknown> {
   let cursor = interval.start.startOf("day");
   while (cursor < interval.end) {
     yield cursor;
@@ -428,7 +483,10 @@ export const formatBytes = (bytes: number, decimals = 2) => {
  * @returns "th", "rd", "nd" or "st"
  */
 
-export const ordinal = (n: number, { th = "th", rd = "rd", nd = "nd", st = "st" } = {}) => {
+export const ordinal = (
+  n: number,
+  { nd = "nd", rd = "rd", st = "st", th = "th" } = {}
+) => {
   if (n === 11 || n === 12 || n === 13) return th;
 
   const lastDigit = n.toString().slice(-1);
@@ -501,4 +559,5 @@ export const localeUses24HourTime = (langCode?: string) =>
  * @param max Maximum value to return
  * @returns Random integer between `min` and `max`
  */
-export const randomInt = (min = 0, max = 1) => Math.round(Math.random() * (max - min)) + min;
+export const randomInt = (min = 0, max = 1) =>
+  Math.round(Math.random() * (max - min)) + min;

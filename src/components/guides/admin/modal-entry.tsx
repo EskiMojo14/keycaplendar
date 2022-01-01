@@ -5,12 +5,21 @@ import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { Select } from "@rmwc/select";
 import { TextField } from "@rmwc/textfield";
-import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
+import {
+  TopAppBarNavigationIcon,
+  TopAppBarRow,
+  TopAppBarSection,
+  TopAppBarTitle,
+} from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
-import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/full-screen-dialog";
+import {
+  FullScreenDialog,
+  FullScreenDialogAppBar,
+  FullScreenDialogContent,
+} from "@c/util/full-screen-dialog";
 import { CustomReactMarkdown, CustomReactMde } from "@c/util/react-markdown";
 import { selectDevice } from "@s/common";
 import firestore from "@s/firebase/firestore";
@@ -24,12 +33,16 @@ import { arrayIncludes } from "@s/util/functions";
 import "./modal-entry.scss";
 
 type ModalCreateProps = {
-  open: boolean;
-  onClose: () => void;
   getEntries: () => void;
+  onClose: () => void;
+  open: boolean;
 };
 
-export const ModalCreate = (props: ModalCreateProps) => {
+export const ModalCreate = ({
+  getEntries,
+  onClose,
+  open,
+}: ModalCreateProps) => {
   const device = useAppSelector(selectDevice);
   const user = useAppSelector(selectUser);
 
@@ -39,14 +52,16 @@ export const ModalCreate = (props: ModalCreateProps) => {
   const [description, setDescription] = useState("");
   const [body, setBody] = useState("");
   useEffect(() => {
-    if (!props.open) {
+    if (!open) {
       setTags([]);
       setTitle("");
       setDescription("");
       setBody("");
     }
-  }, [props.open]);
-  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+  }, [open]);
+  const handleChange = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
     if (name === "tags") {
       setTags(value.split(", "));
     } else if (name === "title") {
@@ -58,7 +73,9 @@ export const ModalCreate = (props: ModalCreateProps) => {
     }
   };
 
-  const selectVisibility = ({ target: { value } }: ChangeEvent<HTMLSelectElement>) => {
+  const selectVisibility = ({
+    target: { value },
+  }: ChangeEvent<HTMLSelectElement>) => {
     if (arrayIncludes<UserRoles | "all">([...userRoles, "all"], value)) {
       setVisibility(value);
     }
@@ -77,18 +94,18 @@ export const ModalCreate = (props: ModalCreateProps) => {
       firestore
         .collection("guides")
         .add({
+          body,
+          description,
           name: user.nickname,
-          visibility,
           tags,
           title,
-          description,
-          body,
+          visibility,
         })
         .then((docRef) => {
           console.log("Document written with ID: ", docRef.id);
           queue.notify({ title: "Entry written successfully." });
-          props.onClose();
-          props.getEntries();
+          onClose();
+          getEntries();
         })
         .catch((error) => {
           console.error("Error adding document: ", error);
@@ -102,96 +119,125 @@ export const ModalCreate = (props: ModalCreateProps) => {
   return (
     <BoolWrapper
       condition={useDrawer}
-      trueWrapper={(children) => (
-        <Drawer modal open={props.open} onClose={props.onClose} className="drawer-right guide-entry-modal">
-          {children}
-        </Drawer>
-      )}
       falseWrapper={(children) => (
-        <FullScreenDialog open={props.open} onClose={props.onClose} className="guide-entry-modal">
+        <FullScreenDialog
+          className="guide-entry-modal"
+          onClose={onClose}
+          open={open}
+        >
           {children}
         </FullScreenDialog>
+      )}
+      trueWrapper={(children) => (
+        <Drawer
+          className="drawer-right guide-entry-modal"
+          modal
+          onClose={onClose}
+          open={open}
+        >
+          {children}
+        </Drawer>
       )}
     >
       <BoolWrapper
         condition={useDrawer}
-        trueWrapper={(children) => <DrawerHeader>{children}</DrawerHeader>}
         falseWrapper={(children) => (
           <FullScreenDialogAppBar>
             <TopAppBarRow>{children}</TopAppBarRow>
           </FullScreenDialogAppBar>
         )}
+        trueWrapper={(children) => <DrawerHeader>{children}</DrawerHeader>}
       >
         <BoolWrapper
           condition={useDrawer}
-          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
           falseWrapper={(children) => (
             <TopAppBarSection alignStart>
-              <TopAppBarNavigationIcon icon="close" onClick={props.onClose} />
+              <TopAppBarNavigationIcon icon="close" onClick={onClose} />
               <TopAppBarTitle>{children}</TopAppBarTitle>
             </TopAppBarSection>
           )}
+          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
         >
           Create guide
         </BoolWrapper>
         <ConditionalWrapper
           condition={!useDrawer}
-          wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
+          wrapper={(children) => (
+            <TopAppBarSection alignEnd>{children}</TopAppBarSection>
+          )}
         >
-          <Button label="Save" outlined={useDrawer} onClick={saveEntry} disabled={!formFilled} />
+          <Button
+            disabled={!formFilled}
+            label="Save"
+            onClick={saveEntry}
+            outlined={useDrawer}
+          />
         </ConditionalWrapper>
       </BoolWrapper>
       <BoolWrapper
         condition={useDrawer}
+        falseWrapper={(children) => (
+          <FullScreenDialogContent>{children}</FullScreenDialogContent>
+        )}
         trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
-        falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
       >
         <div className="form">
           <div className="double-field">
             <div className="half-field">
               <Select
-                outlined
                 enhanced
-                label="Visibility"
-                options={(["all", ...userRoles] as const).map((role) => ({
-                  value: role,
-                  label: formattedVisibility[role],
-                  key: role,
-                }))}
                 icon={visibilityIcons[visibility]}
-                value={visibility}
+                label="Visibility"
                 onChange={selectVisibility}
+                options={(["all", ...userRoles] as const).map((role) => ({
+                  key: role,
+                  label: formattedVisibility[role],
+                  value: role,
+                }))}
+                outlined
+                value={visibility}
               />
             </div>
             <div className="half-field">
-              <TextField outlined label="Tags" name="tags" value={tags.join(", ")} onChange={handleChange} required />
+              <TextField
+                label="Tags"
+                name="tags"
+                onChange={handleChange}
+                outlined
+                required
+                value={tags.join(", ")}
+              />
             </div>
           </div>
           <TextField
-            outlined
             autoComplete="off"
             label="Title"
-            value={title}
             name="title"
             onChange={handleChange}
+            outlined
             required
+            value={title}
           />
           <TextField
-            outlined
             autoComplete="off"
             label="Description"
-            value={description}
             name="description"
             onChange={handleChange}
+            outlined
             required
-            textarea
             rows={2}
+            textarea
+            value={description}
           />
           <div>
-            <Typography use="caption" tag="div" className="subheader">
+            <Typography className="subheader" tag="div" use="caption">
               Body*
             </Typography>
-            <CustomReactMde value={body} onChange={(string) => handleEditorChange("body", string)} required />
+            <CustomReactMde
+              onChange={(string) => handleEditorChange("body", string)}
+              required
+              value={body}
+            />
           </div>
         </div>
         <div className="preview">
@@ -204,9 +250,13 @@ export const ModalCreate = (props: ModalCreateProps) => {
             <Typography use="caption">{description}</Typography>
             <div className="tag-container">
               <ChipSet>
-                <Chip icon={visibilityIcons[visibility]} label={formattedVisibility[visibility]} disabled />
+                <Chip
+                  disabled
+                  icon={visibilityIcons[visibility]}
+                  label={formattedVisibility[visibility]}
+                />
                 {tags.map((tag) => (
-                  <Chip label={tag} key={tag} disabled />
+                  <Chip key={tag} disabled label={tag} />
                 ))}
               </ChipSet>
             </div>
@@ -219,14 +269,18 @@ export const ModalCreate = (props: ModalCreateProps) => {
 };
 
 type ModalEditProps = {
-  open: boolean;
-  onClose: () => void;
   entry: GuideEntryType;
   getEntries: () => void;
+  onClose: () => void;
+  open: boolean;
 };
 
-export const ModalEdit = (props: ModalEditProps) => {
-  const { entry } = props;
+export const ModalEdit = ({
+  entry,
+  getEntries,
+  onClose,
+  open,
+}: ModalEditProps) => {
   const device = useAppSelector(selectDevice);
   const user = useAppSelector(selectUser);
 
@@ -236,7 +290,7 @@ export const ModalEdit = (props: ModalEditProps) => {
   const [description, setDescription] = useState("");
   const [body, setBody] = useState("");
   useEffect(() => {
-    if (props.open) {
+    if (open) {
       setVisibility(entry.visibility);
       setTags(entry.tags);
       setTitle(entry.title);
@@ -249,9 +303,11 @@ export const ModalEdit = (props: ModalEditProps) => {
       setDescription("");
       setBody("");
     }
-  }, [props.open, entry]);
+  }, [open, entry]);
 
-  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
     if (name === "tags") {
       setTags(value.split(", "));
     } else if (name === "title") {
@@ -263,7 +319,9 @@ export const ModalEdit = (props: ModalEditProps) => {
     }
   };
 
-  const selectVisibility = ({ target: { value } }: ChangeEvent<HTMLSelectElement>) => {
+  const selectVisibility = ({
+    target: { value },
+  }: ChangeEvent<HTMLSelectElement>) => {
     if (arrayIncludes<UserRoles | "all">([...userRoles, "all"], value)) {
       setVisibility(value);
     }
@@ -283,17 +341,17 @@ export const ModalEdit = (props: ModalEditProps) => {
         .collection("guides")
         .doc(entry.id as GuideId)
         .set({
+          body,
+          description,
           name: user.nickname,
-          visibility,
           tags,
           title,
-          description,
-          body,
+          visibility,
         })
         .then(() => {
           queue.notify({ title: "Entry edited successfully." });
-          props.onClose();
-          props.getEntries();
+          onClose();
+          getEntries();
         })
         .catch((error) => {
           console.error("Error adding document: ", error);
@@ -307,97 +365,126 @@ export const ModalEdit = (props: ModalEditProps) => {
   return (
     <BoolWrapper
       condition={useDrawer}
-      trueWrapper={(children) => (
-        <Drawer modal open={props.open} onClose={props.onClose} className="drawer-right guide-entry-modal">
-          {children}
-        </Drawer>
-      )}
       falseWrapper={(children) => (
-        <FullScreenDialog open={props.open} onClose={props.onClose} className="guide-entry-modal">
+        <FullScreenDialog
+          className="guide-entry-modal"
+          onClose={onClose}
+          open={open}
+        >
           {children}
         </FullScreenDialog>
+      )}
+      trueWrapper={(children) => (
+        <Drawer
+          className="drawer-right guide-entry-modal"
+          modal
+          onClose={onClose}
+          open={open}
+        >
+          {children}
+        </Drawer>
       )}
     >
       <BoolWrapper
         condition={useDrawer}
-        trueWrapper={(children) => <DrawerHeader>{children}</DrawerHeader>}
         falseWrapper={(children) => (
           <FullScreenDialogAppBar>
             <TopAppBarRow>{children}</TopAppBarRow>
           </FullScreenDialogAppBar>
         )}
+        trueWrapper={(children) => <DrawerHeader>{children}</DrawerHeader>}
       >
         <BoolWrapper
           condition={useDrawer}
-          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
           falseWrapper={(children) => (
             <TopAppBarSection alignStart>
-              <TopAppBarNavigationIcon icon="close" onClick={props.onClose} />
+              <TopAppBarNavigationIcon icon="close" onClick={onClose} />
               <TopAppBarTitle>{children}</TopAppBarTitle>
             </TopAppBarSection>
           )}
+          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
         >
           Create guide
         </BoolWrapper>
 
         <ConditionalWrapper
           condition={!useDrawer}
-          wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
+          wrapper={(children) => (
+            <TopAppBarSection alignEnd>{children}</TopAppBarSection>
+          )}
         >
-          <Button label="Save" outlined={useDrawer} onClick={saveEntry} disabled={!formFilled} />
+          <Button
+            disabled={!formFilled}
+            label="Save"
+            onClick={saveEntry}
+            outlined={useDrawer}
+          />
         </ConditionalWrapper>
       </BoolWrapper>
       <BoolWrapper
         condition={useDrawer}
+        falseWrapper={(children) => (
+          <FullScreenDialogContent>{children}</FullScreenDialogContent>
+        )}
         trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
-        falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
       >
         <div className="form">
           <div className="double-field">
             <div className="half-field">
               <Select
-                outlined
                 enhanced
-                label="Visibility"
-                options={(["all", ...userRoles] as const).map((role) => ({
-                  value: role,
-                  label: formattedVisibility[role],
-                  key: role,
-                }))}
                 icon={visibilityIcons[visibility]}
-                value={visibility}
+                label="Visibility"
                 onChange={selectVisibility}
+                options={(["all", ...userRoles] as const).map((role) => ({
+                  key: role,
+                  label: formattedVisibility[role],
+                  value: role,
+                }))}
+                outlined
+                value={visibility}
               />
             </div>
             <div className="half-field">
-              <TextField outlined label="Tags" name="tags" value={tags.join(", ")} onChange={handleChange} required />
+              <TextField
+                label="Tags"
+                name="tags"
+                onChange={handleChange}
+                outlined
+                required
+                value={tags.join(", ")}
+              />
             </div>
           </div>
           <TextField
-            outlined
             autoComplete="off"
             label="Title"
-            value={title}
             name="title"
             onChange={handleChange}
+            outlined
             required
+            value={title}
           />
           <TextField
-            outlined
             autoComplete="off"
             label="Description"
-            value={description}
             name="description"
             onChange={handleChange}
+            outlined
             required
-            textarea
             rows={2}
+            textarea
+            value={description}
           />
           <div>
-            <Typography use="caption" tag="div" className="subheader">
+            <Typography className="subheader" tag="div" use="caption">
               Body*
             </Typography>
-            <CustomReactMde value={body} onChange={(string) => handleEditorChange("body", string)} required />
+            <CustomReactMde
+              onChange={(string) => handleEditorChange("body", string)}
+              required
+              value={body}
+            />
           </div>
         </div>
         <div className="preview">
@@ -410,9 +497,13 @@ export const ModalEdit = (props: ModalEditProps) => {
             <Typography use="caption">{description}</Typography>
             <div className="tag-container">
               <ChipSet>
-                <Chip icon={visibilityIcons[visibility]} label={formattedVisibility[visibility]} disabled />
+                <Chip
+                  disabled
+                  icon={visibilityIcons[visibility]}
+                  label={formattedVisibility[visibility]}
+                />
                 {tags.map((tag) => (
-                  <Chip label={tag} key={tag} disabled />
+                  <Chip key={tag} disabled label={tag} />
                 ))}
               </ChipSet>
             </div>

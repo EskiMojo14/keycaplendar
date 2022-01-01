@@ -1,5 +1,11 @@
 import type { MouseEvent } from "react";
-import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
+import {
+  Dialog,
+  DialogActions,
+  DialogButton,
+  DialogContent,
+  DialogTitle,
+} from "@rmwc/dialog";
 import { deleteGlobalPreset, deletePreset } from "@s/main/functions";
 import type { PresetType } from "@s/main/types";
 
@@ -9,25 +15,29 @@ type DialogDeleteFilterPresetProps = {
   preset: PresetType;
 };
 
-export const DialogDeleteFilterPreset = (props: DialogDeleteFilterPresetProps) => {
+export const DialogDeleteFilterPreset = ({
+  close,
+  open,
+  preset,
+}: DialogDeleteFilterPresetProps) => {
   const deleteFn = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (props.preset.global) {
-      deleteGlobalPreset(props.preset);
+    if (preset.global) {
+      deleteGlobalPreset(preset);
     } else {
-      deletePreset(props.preset);
+      deletePreset(preset);
     }
-    props.close();
+    close();
   };
   return (
-    <Dialog open={props.open}>
-      <DialogTitle>Delete {`"${props.preset.name}"`}</DialogTitle>
+    <Dialog open={open}>
+      <DialogTitle>Delete {`"${preset.name}"`}</DialogTitle>
       <DialogContent>
-        Are you sure you want to delete the{props.preset.global ? ` global` : null} filter preset{" "}
-        {`"${props.preset.name}"`}?
+        Are you sure you want to delete the{preset.global ? ` global` : ""}{" "}
+        filter preset {`"${preset.name}"`}?
       </DialogContent>
       <DialogActions>
-        <DialogButton action="close" onClick={props.close} isDefaultAction>
+        <DialogButton action="close" isDefaultAction onClick={close}>
           Cancel
         </DialogButton>
         <DialogButton action="accept" className="delete" onClick={deleteFn}>

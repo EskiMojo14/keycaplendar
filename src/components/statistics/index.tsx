@@ -18,32 +18,60 @@ import { VirtuosoGrid } from "react-virtuoso";
 import { useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
 import { withTooltip } from "@c/util/hocs";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import {
+  SegmentedButton,
+  SegmentedButtonSegment,
+} from "@c/util/segmented-button";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import firebase from "@s/firebase";
 import { selectBottomNav } from "@s/settings";
-import { selectData, selectLoading, selectSettings, selectSort, selectTab } from "@s/statistics";
+import {
+  selectData,
+  selectLoading,
+  selectSettings,
+  selectSort,
+  selectTab,
+} from "@s/statistics";
 import { statsTabs } from "@s/statistics/constants";
-import { getData, setSetting, setSort, setStatisticsTab } from "@s/statistics/functions";
+import {
+  getData,
+  setSetting,
+  setSort,
+  setStatisticsTab,
+} from "@s/statistics/functions";
 import type { StatisticsType } from "@s/statistics/types";
-import { capitalise, hasKey, iconObject, useBoolStates } from "@s/util/functions";
-import { Category, DateRange, SortAlphabeticalVariant, SortNumericVariant } from "@i";
+import {
+  capitalise,
+  hasKey,
+  iconObject,
+  useBoolStates,
+} from "@s/util/functions";
+import {
+  Category,
+  DateRange,
+  SortAlphabeticalVariant,
+  SortNumericVariant,
+} from "@i";
 import { CalendarCard, CalendarSummaryCard } from "./calendar-card";
 import { DialogStatistics } from "./dialog-statistics";
 import { StatusCard, StatusSummaryCard } from "./pie-card";
 import { TableCard, TableSummaryCard } from "./table-card";
-import { ShippedCard, ShippedSummaryCard, TimelinesCard, TimelinesSummaryCard } from "./timeline-card";
+import {
+  ShippedCard,
+  ShippedSummaryCard,
+  TimelinesCard,
+  TimelinesSummaryCard,
+} from "./timeline-card";
 import "./index.scss";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
 type ContentStatisticsProps = {
-  navOpen: boolean;
   openNav: () => void;
 };
 
-export const ContentStatistics = (props: ContentStatisticsProps) => {
+export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
   const device = useAppSelector(selectDevice);
   const bottomNav = useAppSelector(selectBottomNav);
 
@@ -54,7 +82,9 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
   const statisticsSort = useAppSelector(selectSort);
 
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
-  const [closeCategoryDialog, openCategoryDialog] = useBoolStates(setCategoryDialogOpen);
+  const [closeCategoryDialog, openCategoryDialog] = useBoolStates(
+    setCategoryDialogOpen
+  );
 
   useEffect(() => {
     if (statisticsData.timelines.icDate.summary.months.length === 0) {
@@ -72,34 +102,34 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
     device === "desktop" ? (
       <SegmentedButton toggle>
         <SegmentedButtonSegment
-          selected={settings[tab] === "profile"}
+          label="Profile"
           onClick={() => {
             setSetting(tab, "profile");
           }}
-          label="Profile"
+          selected={settings[tab] === "profile"}
         />
         <SegmentedButtonSegment
-          selected={settings[tab] === "designer"}
+          label="Designer"
           onClick={() => {
             setSetting(tab, "designer");
           }}
-          label="Designer"
+          selected={settings[tab] === "designer"}
         />
         <SegmentedButtonSegment
-          selected={settings[tab] === "vendor"}
+          label="Vendor"
           onClick={() => {
             setSetting(tab, "vendor");
           }}
-          label="Vendor"
+          selected={settings[tab] === "vendor"}
         />
       </SegmentedButton>
     ) : (
       withTooltip(
         <TopAppBarActionItem
           className="category-button"
+          icon={iconObject(<Category />)}
           onClick={openCategoryDialog}
           style={{ "--animation-delay": 0 }}
-          icon={iconObject(<Category />)}
         />,
         "Category",
         { align: tooltipAlign }
@@ -111,26 +141,32 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       <SegmentedButton toggle>
         {withTooltip(
           <SegmentedButtonSegment
-            selected={hasKey(statisticsSort, statisticsTab) && statisticsSort[statisticsTab] === "total"}
+            icon={iconObject(<SortNumericVariant />)}
             onClick={() => {
               if (hasKey(statisticsSort, statisticsTab)) {
                 setSort(statisticsTab, "total");
               }
             }}
-            icon={iconObject(<SortNumericVariant />)}
+            selected={
+              hasKey(statisticsSort, statisticsTab) &&
+              statisticsSort[statisticsTab] === "total"
+            }
           />,
           "Sort by total",
           { align: tooltipAlign }
         )}
         {withTooltip(
           <SegmentedButtonSegment
-            selected={hasKey(statisticsSort, statisticsTab) && statisticsSort[statisticsTab] === "alphabetical"}
+            icon={iconObject(<SortAlphabeticalVariant />)}
             onClick={() => {
               if (hasKey(statisticsSort, statisticsTab)) {
                 setSort(statisticsTab, "alphabetical");
               }
             }}
-            icon={iconObject(<SortAlphabeticalVariant />)}
+            selected={
+              hasKey(statisticsSort, statisticsTab) &&
+              statisticsSort[statisticsTab] === "alphabetical"
+            }
           />,
           "Sort alphabetically",
           { align: tooltipAlign }
@@ -141,22 +177,125 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
   );
 
   const buttons = {
+    calendar: (
+      <>
+        <SegmentedButton toggle>
+          {withTooltip(
+            <SegmentedButtonSegment
+              icon={iconObject(<SortNumericVariant />)}
+              onClick={() => {
+                setSort("calendar", "total");
+              }}
+              selected={statisticsSort.calendar === "total"}
+            />,
+            "Sort by total",
+            { align: tooltipAlign }
+          )}
+          {withTooltip(
+            <SegmentedButtonSegment
+              icon={iconObject(<SortAlphabeticalVariant />)}
+              onClick={() => {
+                setSort("calendar", "alphabetical");
+              }}
+              selected={statisticsSort.calendar === "alphabetical"}
+            />,
+            "Sort alphabetically",
+            { align: tooltipAlign }
+          )}
+        </SegmentedButton>
+        <SegmentedButton toggle>
+          <SegmentedButtonSegment
+            label="IC"
+            onClick={() => {
+              setSetting("calendarCat", "icDate");
+            }}
+            selected={settings.calendarCat === "icDate"}
+          />
+          <SegmentedButtonSegment
+            label="GB"
+            onClick={() => {
+              setSetting("calendarCat", "gbLaunch");
+            }}
+            selected={settings.calendarCat === "gbLaunch"}
+          />
+        </SegmentedButton>
+        {categoryButtons("calendarGroup")}
+      </>
+    ),
+    duration: (
+      <>
+        <SegmentedButton toggle>
+          {withTooltip(
+            <SegmentedButtonSegment
+              icon={iconObject(<SortNumericVariant />)}
+              onClick={() => {
+                setSort("duration", "total");
+              }}
+              selected={statisticsSort.duration === "total"}
+            />,
+            "Sort by total",
+            { align: tooltipAlign }
+          )}
+          {withTooltip(
+            <SegmentedButtonSegment
+              icon={iconObject(<SortNumericVariant />)}
+              onClick={() => {
+                setSort("duration", "alphabetical");
+              }}
+              selected={statisticsSort.duration === "alphabetical"}
+            />,
+            "Sort alphabetically",
+            { align: tooltipAlign }
+          )}
+          {withTooltip(
+            <SegmentedButtonSegment
+              icon={iconObject(<DateRange />)}
+              onClick={() => {
+                setSort("duration", "duration");
+              }}
+              selected={statisticsSort.duration === "duration"}
+            />,
+            "Sort by duration",
+            { align: tooltipAlign }
+          )}
+        </SegmentedButton>
+        <SegmentedButton toggle>
+          <SegmentedButtonSegment
+            label="IC"
+            onClick={() => {
+              setSetting("durationCat", "icDate");
+            }}
+            selected={settings.durationCat === "icDate"}
+          />
+          <SegmentedButtonSegment
+            label="GB"
+            onClick={() => {
+              setSetting("durationCat", "gbLaunch");
+            }}
+            selected={settings.durationCat === "gbLaunch"}
+          />
+        </SegmentedButton>
+        {categoryButtons("durationGroup")}
+      </>
+    ),
+    shipped: genericButtons,
+    status: genericButtons,
     summary: (
       <>
         <SegmentedButton toggle>
           <SegmentedButtonSegment
-            selected={settings.summary === "icDate"}
+            label="IC"
             onClick={() => {
               setSetting("summary", "icDate");
             }}
-            label="IC"
+            selected={settings.summary === "icDate"}
           />
           <SegmentedButtonSegment
-            selected={settings.summary === "gbLaunch"}
+            label="GB"
             onClick={() => {
               setSetting("summary", "gbLaunch");
             }}
-            label="GB"
+            selected={settings.summary === "gbLaunch"}
           />
         </SegmentedButton>
       </>
@@ -166,22 +305,22 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
         <SegmentedButton toggle>
           {withTooltip(
             <SegmentedButtonSegment
-              selected={statisticsSort.timelines === "total"}
+              icon={iconObject(<SortNumericVariant />)}
               onClick={() => {
                 setSort("timelines", "total");
               }}
-              icon={iconObject(<SortNumericVariant />)}
+              selected={statisticsSort.timelines === "total"}
             />,
             "Sort by total",
             { align: tooltipAlign }
           )}
           {withTooltip(
             <SegmentedButtonSegment
-              selected={statisticsSort.timelines === "alphabetical"}
+              icon={iconObject(<SortAlphabeticalVariant />)}
               onClick={() => {
                 setSort("timelines", "alphabetical");
               }}
-              icon={iconObject(<SortAlphabeticalVariant />)}
+              selected={statisticsSort.timelines === "alphabetical"}
             />,
             "Sort alphabetically",
             { align: tooltipAlign }
@@ -189,124 +328,21 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
         </SegmentedButton>
         <SegmentedButton toggle>
           <SegmentedButtonSegment
-            selected={settings.timelinesCat === "icDate"}
+            label="IC"
             onClick={() => {
               setSetting("timelinesCat", "icDate");
             }}
-            label="IC"
+            selected={settings.timelinesCat === "icDate"}
           />
           <SegmentedButtonSegment
-            selected={settings.timelinesCat === "gbLaunch"}
+            label="GB"
             onClick={() => {
               setSetting("timelinesCat", "gbLaunch");
             }}
-            label="GB"
+            selected={settings.timelinesCat === "gbLaunch"}
           />
         </SegmentedButton>
         {categoryButtons("timelinesGroup")}
-      </>
-    ),
-    calendar: (
-      <>
-        <SegmentedButton toggle>
-          {withTooltip(
-            <SegmentedButtonSegment
-              selected={statisticsSort.calendar === "total"}
-              onClick={() => {
-                setSort("calendar", "total");
-              }}
-              icon={iconObject(<SortNumericVariant />)}
-            />,
-            "Sort by total",
-            { align: tooltipAlign }
-          )}
-          {withTooltip(
-            <SegmentedButtonSegment
-              selected={statisticsSort.calendar === "alphabetical"}
-              onClick={() => {
-                setSort("calendar", "alphabetical");
-              }}
-              icon={iconObject(<SortAlphabeticalVariant />)}
-            />,
-            "Sort alphabetically",
-            { align: tooltipAlign }
-          )}
-        </SegmentedButton>
-        <SegmentedButton toggle>
-          <SegmentedButtonSegment
-            selected={settings.calendarCat === "icDate"}
-            onClick={() => {
-              setSetting("calendarCat", "icDate");
-            }}
-            label="IC"
-          />
-          <SegmentedButtonSegment
-            selected={settings.calendarCat === "gbLaunch"}
-            onClick={() => {
-              setSetting("calendarCat", "gbLaunch");
-            }}
-            label="GB"
-          />
-        </SegmentedButton>
-        {categoryButtons("calendarGroup")}
-      </>
-    ),
-    status: genericButtons,
-    shipped: genericButtons,
-    duration: (
-      <>
-        <SegmentedButton toggle>
-          {withTooltip(
-            <SegmentedButtonSegment
-              selected={statisticsSort.duration === "total"}
-              onClick={() => {
-                setSort("duration", "total");
-              }}
-              icon={iconObject(<SortNumericVariant />)}
-            />,
-            "Sort by total",
-            { align: tooltipAlign }
-          )}
-          {withTooltip(
-            <SegmentedButtonSegment
-              selected={statisticsSort.duration === "alphabetical"}
-              onClick={() => {
-                setSort("duration", "alphabetical");
-              }}
-              icon={iconObject(<SortNumericVariant />)}
-            />,
-            "Sort alphabetically",
-            { align: tooltipAlign }
-          )}
-          {withTooltip(
-            <SegmentedButtonSegment
-              selected={statisticsSort.duration === "duration"}
-              onClick={() => {
-                setSort("duration", "duration");
-              }}
-              icon={iconObject(<DateRange />)}
-            />,
-            "Sort by duration",
-            { align: tooltipAlign }
-          )}
-        </SegmentedButton>
-        <SegmentedButton toggle>
-          <SegmentedButtonSegment
-            selected={settings.durationCat === "icDate"}
-            onClick={() => {
-              setSetting("durationCat", "icDate");
-            }}
-            label="IC"
-          />
-          <SegmentedButtonSegment
-            selected={settings.durationCat === "gbLaunch"}
-            onClick={() => {
-              setSetting("durationCat", "gbLaunch");
-            }}
-            label="GB"
-          />
-        </SegmentedButton>
-        {categoryButtons("durationGroup")}
       </>
     ),
     vendors: genericButtons,
@@ -314,7 +350,10 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
 
   const categoryDialog =
     statisticsTab !== "summary" && device !== "desktop" ? (
-      <DialogStatistics open={categoryDialogOpen} onClose={closeCategoryDialog} />
+      <DialogStatistics
+        onClose={closeCategoryDialog}
+        open={categoryDialogOpen}
+      />
     ) : null;
 
   const tabRow = (
@@ -335,105 +374,9 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
   const slideRenderer: SlideRendererCallback = ({ index, key }) => {
     const { [index]: tab } = statsTabs;
     const tabs = {
-      summary: (
-        <div className="stats-tab stats-grid summary" key={key}>
-          <div className="stats-grid-item full-span">
-            <TimelinesSummaryCard
-              overline="Timelines"
-              data={statisticsData.timelines[settings.summary].summary}
-              breakdownData={statisticsData.timelines[settings.summary].breakdown.profile}
-              months={statisticsData.timelines[settings.summary].months}
-              chartKeys={["summary"]}
-              category={settings.summary}
-              singleTheme="secondary"
-              note="Based on the data included in KeycapLendar. Earlier data will be less representative, as not all sets are
-            included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019."
-            />
-          </div>
-          <div className="stats-grid-item full-span">
-            <TimelinesSummaryCard
-              overline="Timelines"
-              chartKeys={statisticsData.timelines[settings.summary].allProfiles}
-              months={statisticsData.timelines[settings.summary].months}
-              data={statisticsData.timelines[settings.summary].summary}
-              category={settings.summary}
-            />
-          </div>
-          <div className="stats-grid-item full-span">
-            <CalendarSummaryCard
-              overline="Calendar"
-              data={statisticsData.calendar[settings.summary].summary}
-              breakdownData={statisticsData.calendar[settings.summary].breakdown.profile}
-              start={statisticsData.calendar[settings.summary].start}
-              end={statisticsData.calendar[settings.summary].end}
-              category={settings.summary}
-              unit={settings.summary === "gbLaunch" ? "GB" : "IC"}
-            />
-          </div>
-          <div className="stats-grid-item full-span">
-            <StatusSummaryCard
-              overline="Status"
-              data={statisticsData.status.summary}
-              breakdownData={statisticsData.status.breakdown.profile}
-            />
-          </div>
-          <div className="stats-grid-item full-span">
-            <ShippedSummaryCard
-              overline="Shipped"
-              data={statisticsData.shipped.summary}
-              months={statisticsData.shipped.months}
-              breakdownData={statisticsData.shipped.breakdown.profile}
-              category={settings.summary}
-            />
-          </div>
-          <div className="stats-grid-item full-span">
-            <TableSummaryCard
-              overline="Duration"
-              data={statisticsData.duration[settings.summary].summary}
-              breakdownData={statisticsData.duration[settings.summary].breakdown.profile}
-              tab="duration"
-              category={settings.summary}
-              unit={`Time ${settings.summary === "icDate" ? "(months)" : "(days)"}`}
-              theme="secondary"
-            />
-          </div>
-          <div className="stats-grid-item full-span">
-            <TableSummaryCard
-              overline="Vendors"
-              data={statisticsData.vendors.summary}
-              breakdownData={statisticsData.vendors.breakdown.profile}
-              tab="vendors"
-              category={settings.summary}
-              unit="Vendors"
-              note="Only includes sets that have completed GB."
-              theme="secondary"
-            />
-          </div>
-        </div>
-      ),
-      timelines: (
-        <div className="stats-tab stats-tab--padded timelines" key={key}>
-          {settings.timelinesGroup === "profile" ? (
-            <TimelinesCard
-              data={statisticsData.timelines[settings.timelinesCat].breakdown[settings.timelinesGroup]}
-              months={statisticsData.timelines[settings.timelinesCat].months}
-              singleTheme="primary"
-            />
-          ) : (
-            <TimelinesCard
-              data={statisticsData.timelines[settings.timelinesCat].breakdown[settings.timelinesGroup]}
-              months={statisticsData.timelines[settings.timelinesCat].months}
-              allProfiles={statisticsData.timelines[settings.timelinesCat].allProfiles}
-            />
-          )}
-        </div>
-      ),
       calendar: (
-        <div className="stats-tab calendar" key={key}>
+        <div key={key} className="stats-tab calendar">
           <VirtuosoGrid
-            useWindowScroll
-            totalCount={statisticsData.calendar[settings.calendarCat].breakdown[settings.calendarGroup].length}
-            listClassName="stats-grid"
             itemClassName="stats-grid-item half-span"
             itemContent={(index) => {
               const {
@@ -448,64 +391,26 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
               return (
                 <CalendarCard
                   data={data}
-                  start={statisticsData.calendar[settings.calendarCat].start}
                   end={statisticsData.calendar[settings.calendarCat].end}
+                  start={statisticsData.calendar[settings.calendarCat].start}
                   unit={settings.calendarCat === "gbLaunch" ? "GB" : "IC"}
                 />
               );
             }}
-            overscan={1000}
-          />
-        </div>
-      ),
-      status: (
-        <div className="stats-tab status" key={key}>
-          <VirtuosoGrid
-            useWindowScroll
-            totalCount={statisticsData.status.breakdown[settings.status].length}
             listClassName="stats-grid"
-            itemClassName="stats-grid-item"
-            itemContent={(index) => {
-              const {
-                status: {
-                  breakdown: {
-                    [settings.status]: { [index]: data },
-                  },
-                },
-              } = statisticsData;
-              return <StatusCard data={data} />;
-            }}
             overscan={1000}
-          />
-        </div>
-      ),
-      shipped: (
-        <div className="stats-tab shipped" key={key}>
-          <VirtuosoGrid
+            totalCount={
+              statisticsData.calendar[settings.calendarCat].breakdown[
+                settings.calendarGroup
+              ].length
+            }
             useWindowScroll
-            totalCount={statisticsData.shipped.breakdown[settings.shipped].length}
-            listClassName="stats-grid"
-            itemClassName="stats-grid-item full-span"
-            itemContent={(index) => {
-              const {
-                shipped: {
-                  breakdown: {
-                    [settings.shipped]: { [index]: data },
-                  },
-                },
-              } = statisticsData;
-              return <ShippedCard data={data} months={statisticsData.shipped.months} />;
-            }}
-            overscan={1000}
           />
         </div>
       ),
       duration: (
-        <div className="stats-tab duration" key={key}>
+        <div key={key} className="stats-tab duration">
           <VirtuosoGrid
-            useWindowScroll
-            totalCount={statisticsData.duration[settings.durationCat].breakdown[settings.durationGroup].length}
-            listClassName="stats-grid"
             itemClassName="stats-grid-item full-span"
             itemContent={(index) => {
               const {
@@ -521,20 +426,186 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
                 <TableCard
                   data={data}
                   tab="duration"
-                  unit={`Time ${settings.durationCat === "icDate" ? "(months)" : "(days)"}`}
+                  unit={`Time ${
+                    settings.durationCat === "icDate" ? "(months)" : "(days)"
+                  }`}
                 />
               );
             }}
+            listClassName="stats-grid"
             overscan={1000}
+            totalCount={
+              statisticsData.duration[settings.durationCat].breakdown[
+                settings.durationGroup
+              ].length
+            }
+            useWindowScroll
           />
         </div>
       ),
-      vendors: (
-        <div className="stats-tab vendors" key={key}>
+      shipped: (
+        <div key={key} className="stats-tab shipped">
           <VirtuosoGrid
-            useWindowScroll
-            totalCount={statisticsData.vendors.breakdown[settings.vendors].length}
+            itemClassName="stats-grid-item full-span"
+            itemContent={(index) => {
+              const {
+                shipped: {
+                  breakdown: {
+                    [settings.shipped]: { [index]: data },
+                  },
+                },
+              } = statisticsData;
+              return (
+                <ShippedCard
+                  data={data}
+                  months={statisticsData.shipped.months}
+                />
+              );
+            }}
             listClassName="stats-grid"
+            overscan={1000}
+            totalCount={
+              statisticsData.shipped.breakdown[settings.shipped].length
+            }
+            useWindowScroll
+          />
+        </div>
+      ),
+      status: (
+        <div key={key} className="stats-tab status">
+          <VirtuosoGrid
+            itemClassName="stats-grid-item"
+            itemContent={(index) => {
+              const {
+                status: {
+                  breakdown: {
+                    [settings.status]: { [index]: data },
+                  },
+                },
+              } = statisticsData;
+              return <StatusCard data={data} />;
+            }}
+            listClassName="stats-grid"
+            overscan={1000}
+            totalCount={statisticsData.status.breakdown[settings.status].length}
+            useWindowScroll
+          />
+        </div>
+      ),
+      summary: (
+        <div key={key} className="stats-tab stats-grid summary">
+          <div className="stats-grid-item full-span">
+            <TimelinesSummaryCard
+              breakdownData={
+                statisticsData.timelines[settings.summary].breakdown.profile
+              }
+              category={settings.summary}
+              chartKeys={["summary"]}
+              data={statisticsData.timelines[settings.summary].summary}
+              months={statisticsData.timelines[settings.summary].months}
+              note="Based on the data included in KeycapLendar. Earlier data will be less representative, as not all sets are
+            included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019."
+              overline="Timelines"
+              singleTheme="secondary"
+            />
+          </div>
+          <div className="stats-grid-item full-span">
+            <TimelinesSummaryCard
+              category={settings.summary}
+              chartKeys={statisticsData.timelines[settings.summary].allProfiles}
+              data={statisticsData.timelines[settings.summary].summary}
+              months={statisticsData.timelines[settings.summary].months}
+              overline="Timelines"
+            />
+          </div>
+          <div className="stats-grid-item full-span">
+            <CalendarSummaryCard
+              breakdownData={
+                statisticsData.calendar[settings.summary].breakdown.profile
+              }
+              category={settings.summary}
+              data={statisticsData.calendar[settings.summary].summary}
+              end={statisticsData.calendar[settings.summary].end}
+              overline="Calendar"
+              start={statisticsData.calendar[settings.summary].start}
+              unit={settings.summary === "gbLaunch" ? "GB" : "IC"}
+            />
+          </div>
+          <div className="stats-grid-item full-span">
+            <StatusSummaryCard
+              breakdownData={statisticsData.status.breakdown.profile}
+              data={statisticsData.status.summary}
+              overline="Status"
+            />
+          </div>
+          <div className="stats-grid-item full-span">
+            <ShippedSummaryCard
+              breakdownData={statisticsData.shipped.breakdown.profile}
+              category={settings.summary}
+              data={statisticsData.shipped.summary}
+              months={statisticsData.shipped.months}
+              overline="Shipped"
+            />
+          </div>
+          <div className="stats-grid-item full-span">
+            <TableSummaryCard
+              breakdownData={
+                statisticsData.duration[settings.summary].breakdown.profile
+              }
+              category={settings.summary}
+              data={statisticsData.duration[settings.summary].summary}
+              overline="Duration"
+              tab="duration"
+              theme="secondary"
+              unit={`Time ${
+                settings.summary === "icDate" ? "(months)" : "(days)"
+              }`}
+            />
+          </div>
+          <div className="stats-grid-item full-span">
+            <TableSummaryCard
+              breakdownData={statisticsData.vendors.breakdown.profile}
+              category={settings.summary}
+              data={statisticsData.vendors.summary}
+              note="Only includes sets that have completed GB."
+              overline="Vendors"
+              tab="vendors"
+              theme="secondary"
+              unit="Vendors"
+            />
+          </div>
+        </div>
+      ),
+      timelines: (
+        <div key={key} className="stats-tab stats-tab--padded timelines">
+          {settings.timelinesGroup === "profile" ? (
+            <TimelinesCard
+              data={
+                statisticsData.timelines[settings.timelinesCat].breakdown[
+                  settings.timelinesGroup
+                ]
+              }
+              months={statisticsData.timelines[settings.timelinesCat].months}
+              singleTheme="primary"
+            />
+          ) : (
+            <TimelinesCard
+              allProfiles={
+                statisticsData.timelines[settings.timelinesCat].allProfiles
+              }
+              data={
+                statisticsData.timelines[settings.timelinesCat].breakdown[
+                  settings.timelinesGroup
+                ]
+              }
+              months={statisticsData.timelines[settings.timelinesCat].months}
+            />
+          )}
+        </div>
+      ),
+      vendors: (
+        <div key={key} className="stats-tab vendors">
+          <VirtuosoGrid
             itemClassName="stats-grid-item full-span"
             itemContent={(index) => {
               const {
@@ -546,7 +617,12 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
               } = statisticsData;
               return <TableCard data={data} tab="vendors" unit="Vendors" />;
             }}
+            listClassName="stats-grid"
             overscan={1000}
+            totalCount={
+              statisticsData.vendors.breakdown[settings.vendors].length
+            }
+            useWindowScroll
           />
         </div>
       ),
@@ -555,7 +631,9 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
   };
 
   const createStatistics = () => {
-    const cloudFn = firebase.functions().httpsCallable("createStatistics", { timeout: 540000 });
+    const cloudFn = firebase
+      .functions()
+      .httpsCallable("createStatistics", { timeout: 540000 });
     cloudFn()
       .then(() => {
         firebase.storage().ref("statisticsDataTest.json").getDownloadURL();
@@ -565,16 +643,18 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
 
   return (
     <>
-      <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav })}>
+      <TopAppBar className={classNames({ "bottom-app-bar": bottomNav })} fixed>
         {bottomNav ? tabRow : null}
         <TopAppBarRow>
           <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
+            <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
             <TopAppBarTitle onClick={createStatistics}>
               {device !== "mobile" ? pageTitle.statistics : null}
             </TopAppBarTitle>
           </TopAppBarSection>
-          <TopAppBarSection alignEnd>{hasKey(buttons, statisticsTab) ? buttons[statisticsTab] : null}</TopAppBarSection>
+          <TopAppBarSection alignEnd>
+            {hasKey(buttons, statisticsTab) ? buttons[statisticsTab] : null}
+          </TopAppBarSection>
         </TopAppBarRow>
         {bottomNav ? null : tabRow}
         <LinearProgress closed={!loading} />
@@ -584,17 +664,17 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
         {categoryDialog}
         <VirtualizeSwipeableViews
           className={statisticsTab}
-          springConfig={{
-            duration: "0.35s",
-            easeFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-            delay: "0s",
-          }}
-          slideCount={statsTabs.length}
           index={statsTabs.indexOf(statisticsTab)}
           onChangeIndex={handleChangeIndex}
-          slideRenderer={slideRenderer}
-          overscanSlideBefore={0}
           overscanSlideAfter={0}
+          overscanSlideBefore={0}
+          slideCount={statsTabs.length}
+          slideRenderer={slideRenderer}
+          springConfig={{
+            delay: "0s",
+            duration: "0.35s",
+            easeFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+          }}
         />
         <Footer />
       </div>

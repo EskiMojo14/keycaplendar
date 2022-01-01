@@ -9,7 +9,11 @@ import App from "./app";
 
 class LocalizedUtils extends LuxonUtils {
   getDatePickerHeaderText(date: DateTime) {
-    return date.toLocaleString({ weekday: "short", month: "short", day: "numeric" });
+    return date.toLocaleString({
+      day: "numeric",
+      month: "short",
+      weekday: "short",
+    });
   }
 }
 
@@ -18,7 +22,7 @@ export const Root = () => (
     <MuiPickersUtilsProvider utils={LocalizedUtils}>
       <ThemeProvider>
         <NivoThemeProvider>
-          <RMWCProvider tooltip={{ enterDelay: 500, align: "bottom" }}>
+          <RMWCProvider tooltip={{ align: "bottom", enterDelay: 500 }}>
             <App />
           </RMWCProvider>
         </NivoThemeProvider>

@@ -16,19 +16,28 @@ import {
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { BoolWrapper } from "@c/util/conditional-wrapper";
 import { selectDevice } from "@s/common";
-import { selectAllTags, selectEntries, selectFilteredTag, setFilteredTag } from "@s/guides";
-import { formattedVisibility, visibilityIcons, visibilityVals } from "@s/guides/constants";
+import {
+  selectAllTags,
+  selectEntries,
+  selectFilteredTag,
+  setFilteredTag,
+} from "@s/guides";
+import {
+  formattedVisibility,
+  visibilityIcons,
+  visibilityVals,
+} from "@s/guides/constants";
 import type { GuideEntryType } from "@s/guides/types";
 import { iconObject } from "@s/util/functions";
 import { Article } from "@i";
 import "./entries-list.scss";
 
 type EntriesDrawerProps = {
-  openEntry: (entry: GuideEntryType) => void;
   detailEntry: GuideEntryType;
+  openEntry: (entry: GuideEntryType) => void;
 };
 
-export const EntriesList = (props: EntriesDrawerProps) => {
+export const EntriesList = ({ detailEntry, openEntry }: EntriesDrawerProps) => {
   const dispatch = useAppDispatch();
 
   const device = useAppSelector(selectDevice);
@@ -40,7 +49,9 @@ export const EntriesList = (props: EntriesDrawerProps) => {
   const setScroll = () => {
     const chipSet = document.getElementById("filter-chip-set");
     if (chipSet) {
-      const selectedChip = chipSet.querySelector(".mdc-chip-set .mdc-chip--selected");
+      const selectedChip = chipSet.querySelector(
+        ".mdc-chip-set .mdc-chip--selected"
+      );
       if (selectedChip && selectedChip instanceof HTMLElement) {
         chipSet.scrollLeft = selectedChip.offsetLeft - 24;
       } else {
@@ -61,16 +72,16 @@ export const EntriesList = (props: EntriesDrawerProps) => {
   const filterChips = (
     <div className="filter-chips-container">
       <div className="filter-chips">
-        <ChipSet id="filter-chip-set" choice>
+        <ChipSet choice id="filter-chip-set">
           <div className="padding-fix" />
           {allTags.map((value) => (
             <Chip
-              label={value}
               key={value}
-              selected={value === filteredTag}
+              label={value}
               onClick={() => {
                 setFilter(value);
               }}
+              selected={value === filteredTag}
             />
           ))}
         </ChipSet>
@@ -81,23 +92,25 @@ export const EntriesList = (props: EntriesDrawerProps) => {
   return (
     <BoolWrapper
       condition={device === "desktop"}
-      trueWrapper={(children) => (
-        <Drawer className="entries-drawer">
-          {filterChips}
-          <DrawerContent>{children}</DrawerContent>
-        </Drawer>
-      )}
       falseWrapper={(children) => (
         <div className="entries-list-container">
           {filterChips}
           {children}
         </div>
       )}
+      trueWrapper={(children) => (
+        <Drawer className="entries-drawer">
+          {filterChips}
+          <DrawerContent>{children}</DrawerContent>
+        </Drawer>
+      )}
     >
-      <List twoLine className="entries-list three-line">
+      <List className="entries-list three-line" twoLine>
         {visibilityVals.map((visibility) => {
           const filteredEntries = entries.filter(
-            (entry) => entry.visibility === visibility && (filteredTag === "" || entry.tags.includes(filteredTag))
+            (entry) =>
+              entry.visibility === visibility &&
+              (filteredTag === "" || entry.tags.includes(filteredTag))
           );
           const { [visibility]: icon } = visibilityIcons;
           if (filteredEntries.length > 0) {
@@ -113,23 +126,24 @@ export const EntriesList = (props: EntriesDrawerProps) => {
                     {formattedVisibility[visibility]}
                   </ListGroupSubheader>
                   {filteredEntries.map((entry) => (
-                      <ListItem
-                        key={entry.id}
-                        onClick={() => {
-                          props.openEntry(entry);
-                        }}
-                        selected={props.detailEntry.id === entry.id}
-                      >
-                        <ListItemGraphic icon={iconObject(<Article />)} />
-                        <ListItemText>
-                          <ListItemPrimaryText>{entry.title}</ListItemPrimaryText>
-                          {entry.description ? (
-                            <ListItemSecondaryText>{entry.description}</ListItemSecondaryText>
-                          ) : null}
-                        </ListItemText>
-                      </ListItem>
-                    )
-                  )}
+                    <ListItem
+                      key={entry.id}
+                      onClick={() => {
+                        openEntry(entry);
+                      }}
+                      selected={detailEntry.id === entry.id}
+                    >
+                      <ListItemGraphic icon={iconObject(<Article />)} />
+                      <ListItemText>
+                        <ListItemPrimaryText>{entry.title}</ListItemPrimaryText>
+                        {entry.description ? (
+                          <ListItemSecondaryText>
+                            {entry.description}
+                          </ListItemSecondaryText>
+                        ) : null}
+                      </ListItemText>
+                    </ListItem>
+                  ))}
                 </ListGroup>
                 <ListDivider />
               </Fragment>

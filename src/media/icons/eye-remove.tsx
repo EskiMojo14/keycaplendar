@@ -1,7 +1,14 @@
 import { memo } from "react";
 
 const SvgEyeRemove = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" {...props}>
+  <svg
+    data-name="Layer 1"
+    height="1em"
+    viewBox="0 0 24 24"
+    width="1em"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
     <path d="M0 0h24v24H0z" fill="none" />
     <path
       d="M13.717 16.156a4.512 4.512 0 112.439-2.44 5.995 5.995 0 014.017-.6A9.949 9.949 0 0020.82 12a9.822 9.822 0 00-17.64 0A9.77 9.77 0 0012 17.5a9.959 9.959 0 001.219-.085 5.964 5.964 0 01.498-1.26z"

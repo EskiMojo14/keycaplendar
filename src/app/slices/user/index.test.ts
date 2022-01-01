@@ -28,14 +28,14 @@ beforeEach(() => {
 });
 
 const user: CurrentUserType = {
-  email: "me@test.com",
-  name: "me",
   avatar: "imgur",
-  isEditor: false,
-  isAdmin: false,
-  nickname: "test",
-  isDesigner: true,
+  email: "me@test.com",
   id: "nice",
+  isAdmin: false,
+  isDesigner: true,
+  isEditor: false,
+  name: "me",
+  nickname: "test",
 };
 
 const array = ["test"];

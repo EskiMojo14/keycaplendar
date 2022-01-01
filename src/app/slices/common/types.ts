@@ -9,39 +9,35 @@ export type Page = typeof allPages[number];
 export type MainPage = typeof mainPages[number];
 
 export type ThemeMap = {
-  dark: boolean;
-
   background: string;
-  primary: string;
-  onPrimary: string;
-  primaryDark: string;
-  onPrimaryDark: string;
-  primaryLight: string;
-  onPrimaryLight: string;
-  secondary: string;
-  onSecondary: string;
-  secondaryDark: string;
-  onSecondaryDark: string;
-  secondaryLight: string;
-  onSecondaryLight: string;
-  error: string;
-  onError: string;
-  surface: string;
-  onSurface: string;
-
-  textHigh: string;
-  textMedium: string;
-  textDisabled: string;
-
-  meta: string;
+  dark: boolean;
   divider: string;
-  lighterDivider: string;
+  elevatedSurface: string[];
+  error: string;
   grey1: string;
   grey2: string;
-
+  lighterDivider: string;
+  meta: string;
+  onError: string;
+  onPrimary: string;
+  onPrimaryDark: string;
+  onPrimaryLight: string;
+  onSecondary: string;
+  onSecondaryDark: string;
+  onSecondaryLight: string;
+  onSurface: string;
+  primary: string;
+  primaryDark: string;
   primaryGradient: string[];
+  primaryLight: string;
+  secondary: string;
+  secondaryDark: string;
   secondaryGradient: string[];
-  elevatedSurface: string[];
+  secondaryLight: string;
+  surface: string;
+  textDisabled: string;
+  textHigh: string;
+  textMedium: string;
 };
 
 /** Theme variables with `on-` variants */

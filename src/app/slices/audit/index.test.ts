@@ -17,8 +17,8 @@ import type { ActionType } from "@s/audit/types";
 
 const blankAction: ActionType = {
   action: "created",
-  before: {},
   after: {},
+  before: {},
   changelogId: "",
   documentId: "",
   timestamp: "",

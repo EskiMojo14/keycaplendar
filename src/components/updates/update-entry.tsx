@@ -1,4 +1,11 @@
-import { Card, CardActionButton, CardActionButtons, CardActionIcon, CardActionIcons, CardActions } from "@rmwc/card";
+import {
+  Card,
+  CardActionButton,
+  CardActionButtons,
+  CardActionIcon,
+  CardActionIcons,
+  CardActions,
+} from "@rmwc/card";
 import { Icon } from "@rmwc/icon";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
@@ -15,15 +22,18 @@ import { Delete, Edit, PushPin, Share } from "@i";
 import "./update-entry.scss";
 
 type UpdateEntryProps = {
-  entry: UpdateEntryType;
-  edit: (entry: UpdateEntryType) => void;
   delete: (entry: UpdateEntryType) => void;
+  edit: (entry: UpdateEntryType) => void;
+  entry: UpdateEntryType;
   pin: (entry: UpdateEntryType) => void;
 };
 
-export const UpdateEntry = (props: UpdateEntryProps) => {
-  const { entry } = props;
-
+export const UpdateEntry = ({
+  delete: deleteFn,
+  edit,
+  entry,
+  pin,
+}: UpdateEntryProps) => {
   const user = useAppSelector(selectUser);
 
   const urlEntry = useAppSelector(selectURLEntry);
@@ -43,41 +53,43 @@ export const UpdateEntry = (props: UpdateEntryProps) => {
 
   const linkedIndicator =
     entry.id === urlEntry ? (
-      <div className="linked-indicator">{withTooltip(<Icon icon="link" />, "Linked")}</div>
+      <div className="linked-indicator">
+        {withTooltip(<Icon icon="link" />, "Linked")}
+      </div>
     ) : null;
 
   const pinIndicator = entry.pinned ? (
-    <div className="pin-indicator">{withTooltip(<Icon icon={iconObject(<PushPin />)} />, "Pinned")}</div>
+    <div className="pin-indicator">
+      {withTooltip(<Icon icon={iconObject(<PushPin />)} />, "Pinned")}
+    </div>
   ) : null;
   const buttons = user.isAdmin ? (
     <CardActions>
       <CardActionButtons>
         <CardActionButton
-          label={entry.pinned ? "Unpin" : "Pin"}
-          icon={iconObject(<PushPin />)}
           className={classNames({ secondary: entry.pinned })}
-          onClick={() => {
-            props.pin(entry);
-          }}
+          icon={iconObject(<PushPin />)}
+          label={entry.pinned ? "Unpin" : "Pin"}
+          onClick={() => pin(entry)}
         />
-        <CardActionButton icon={iconObject(<Share />)} label="Share" onClick={copyLink} />
+        <CardActionButton
+          icon={iconObject(<Share />)}
+          label="Share"
+          onClick={copyLink}
+        />
       </CardActionButtons>
       <CardActionIcons>
         {withTooltip(
           <CardActionIcon
             icon={iconObject(<Edit />)}
-            onClick={() => {
-              props.edit(entry);
-            }}
+            onClick={() => edit(entry)}
           />,
           "Edit"
         )}
         {withTooltip(
           <CardActionIcon
             icon={iconObject(<Delete />)}
-            onClick={() => {
-              props.delete(entry);
-            }}
+            onClick={() => deleteFn(entry)}
           />,
           "Delete"
         )}
@@ -86,25 +98,33 @@ export const UpdateEntry = (props: UpdateEntryProps) => {
   ) : (
     <CardActions>
       <CardActionIcons>
-        {withTooltip(<CardActionIcon icon={iconObject(<Share />)} onClick={copyLink} />, "Share")}
+        {withTooltip(
+          <CardActionIcon icon={iconObject(<Share />)} onClick={copyLink} />,
+          "Share"
+        )}
       </CardActionIcons>
     </CardActions>
   );
   return (
     <Card
-      className={classNames("update-entry", { pinned: entry.pinned, linked: entry.id === urlEntry })}
+      className={classNames("update-entry", {
+        linked: entry.id === urlEntry,
+        pinned: entry.pinned,
+      })}
       id={"update-entry-" + entry.id}
     >
       <div className="title-container">
         <div className="title">
-          <Typography use="overline" tag="h3">
+          <Typography tag="h3" use="overline">
             {entry.name}
           </Typography>
-          <Typography use="headline5" tag="h1">
+          <Typography tag="h1" use="headline5">
             {entry.title}
           </Typography>
-          <Typography use="caption" tag="p">
-            {DateTime.fromISO(entry.date).toFormat(`d'${ordinal(DateTime.fromISO(entry.date).day)}' MMMM yyyy`)}
+          <Typography tag="p" use="caption">
+            {DateTime.fromISO(entry.date).toFormat(
+              `d'${ordinal(DateTime.fromISO(entry.date).day)}' MMMM yyyy`
+            )}
           </Typography>
         </div>
         {linkedIndicator}

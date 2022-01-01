@@ -2,7 +2,13 @@ import { useState } from "react";
 import type { ChangeEvent } from "react";
 import { Checkbox } from "@rmwc/checkbox";
 import { Chip, ChipSet } from "@rmwc/chip";
-import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
+import {
+  Dialog,
+  DialogActions,
+  DialogButton,
+  DialogContent,
+  DialogTitle,
+} from "@rmwc/dialog";
 import { useAppDispatch } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { setLoading } from "@s/images";
@@ -19,7 +25,13 @@ type DialogDeleteProps = {
   toggleImageChecked: (image: ImageType) => void;
 };
 
-export const DialogDelete = (props: DialogDeleteProps) => {
+export const DialogDelete = ({
+  close,
+  folders,
+  images,
+  open,
+  toggleImageChecked,
+}: DialogDeleteProps) => {
   const dispatch = useAppDispatch();
   const [deleteAllVersions, setDeleteAllVersions] = useState(false);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -27,10 +39,12 @@ export const DialogDelete = (props: DialogDeleteProps) => {
   };
   const createArray = (allVersions = deleteAllVersions) => {
     if (allVersions) {
-      const array = props.images.map((image) => props.folders.map((folder) => `${folder}/${image.name}`)).flat(1);
+      const array = images
+        .map((image) => folders.map((folder) => `${folder}/${image.name}`))
+        .flat(1);
       return array;
     } else {
-      const array = props.images.map((image) => image.fullPath);
+      const array = images.map((image) => image.fullPath);
       return array;
     }
   };
@@ -40,7 +54,7 @@ export const DialogDelete = (props: DialogDeleteProps) => {
     batchStorageDelete(array)
       .then(() => {
         queue.notify({ title: "Successfully deleted files." });
-        props.close();
+        close();
         listAll();
       })
       .catch((error) => {
@@ -50,31 +64,42 @@ export const DialogDelete = (props: DialogDeleteProps) => {
       });
   };
   return (
-    <Dialog open={props.open} onClose={props.close} className="delete-image-dialog">
-      <DialogTitle>{pluralise`Delete ${[props.images.length, "image"]}`}</DialogTitle>
+    <Dialog className="delete-image-dialog" onClose={close} open={open}>
+      <DialogTitle>{pluralise`Delete ${[images.length, "image"]}`}</DialogTitle>
       <DialogContent>
-        {pluralise`The following ${[props.images.length, "image"]} will be deleted:`}
+        {pluralise`The following ${[images.length, "image"]} will be deleted:`}
         <div className="chips-container">
           <ChipSet>
-            {props.images.map((image) => (
+            {images.map((image) => (
               <Chip
                 key={image.fullPath}
-                label={image.name}
                 disabled
+                label={image.name}
+                onTrailingIconInteraction={() => toggleImageChecked(image)}
                 trailingIcon="close"
-                onTrailingIconInteraction={() => props.toggleImageChecked(image)}
               />
             ))}
           </ChipSet>
         </div>
-        {`Are you sure you want to delete ${props.images.length > 1 ? "these" : "this"}?`} This cannot be undone.
+        {`Are you sure you want to delete ${
+          images.length > 1 ? "these" : "this"
+        }?`}{" "}
+        This cannot be undone.
       </DialogContent>
       <DialogActions>
         <div className="checkbox-container">
-          <Checkbox label="Delete all versions" checked={deleteAllVersions} onChange={handleChange} />
+          <Checkbox
+            checked={deleteAllVersions}
+            label="Delete all versions"
+            onChange={handleChange}
+          />
         </div>
-        <DialogButton label="Close" onClick={props.close} action="close" />
-        <DialogButton label="Delete" onClick={deleteImages} className="delete" />
+        <DialogButton action="close" label="Close" onClick={close} />
+        <DialogButton
+          className="delete"
+          label="Delete"
+          onClick={deleteImages}
+        />
       </DialogActions>
     </Dialog>
   );

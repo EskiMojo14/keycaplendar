@@ -1,8 +1,14 @@
 import { memo } from "react";
 
 const SvgHistoryEdu = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 24 24" width="1em" {...props}>
-    <path fill="none" d="M0 0h24v24H0z" />
+  <svg
+    height="1em"
+    viewBox="0 0 24 24"
+    width="1em"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
     <path
       d="M11.34 9.76L9.93 8.34c-.95-.94-2.2-1.46-3.54-1.46-.63 0-1.25.12-1.82.34l1.04 1.04h2.28v2.14c.4.23.86.35 1.33.35.73 0 1.41-.28 1.92-.8l.2-.19z"
       opacity={0.3}

@@ -15,20 +15,44 @@ type SnackbarDeletedProps = {
   set: SetType;
 };
 
-export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
+export const SnackbarDeleted = ({
+  close,
+  open,
+  set: { id, ...set },
+}: SnackbarDeletedProps) => {
   const user = useAppSelector(selectUser);
+  const deleteImages = async (name: string) => {
+    const folders = await getStorageFolders();
+    const allImages = folders.map((folder) => `${folder}/${name}`);
+    batchStorageDelete(allImages)
+      .then(() => {
+        queue.notify({ title: "Successfully deleted thumbnails." });
+      })
+      .catch((error) => {
+        queue.notify({ title: "Failed to delete thumbnails: " + error });
+        console.log(error);
+      });
+  };
+  const closeBar = (recreated = false) => {
+    if (!recreated) {
+      const fileNameRegex = /keysets%2F(.*)\?/;
+      const regexMatch = set.image.match(fileNameRegex);
+      if (regexMatch) {
+        const [, imageName] = regexMatch;
+        deleteImages(imageName);
+      }
+    }
+    close();
+  };
   const recreateEntry = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const {
-      set: { id, ...set },
-    } = props;
     firestore
       .collection("keysets")
       .doc(id as KeysetId)
       .set(
         {
           ...set,
-          gbLaunch: props.set.gbMonth ? props.set.gbLaunch.slice(0, 7) : props.set.gbLaunch,
+          gbLaunch: set.gbMonth ? set.gbLaunch.slice(0, 7) : set.gbLaunch,
           latestEditor: user.id,
         },
         { merge: true }
@@ -42,38 +66,15 @@ export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
         console.error("Error recreating document: ", error);
         queue.notify({ title: "Error recreating document: " + error });
       });
-    close(true);
-  };
-  const deleteImages = async (name: string) => {
-    const folders = await getStorageFolders();
-    const allImages = folders.map((folder) => `${folder}/${name}`);
-    batchStorageDelete(allImages)
-      .then(() => {
-        queue.notify({ title: "Successfully deleted thumbnails." });
-      })
-      .catch((error) => {
-        queue.notify({ title: "Failed to delete thumbnails: " + error });
-        console.log(error);
-      });
-  };
-  const close = (recreated = false) => {
-    if (!recreated) {
-      const fileNameRegex = /keysets%2F(.*)\?/;
-      const regexMatch = props.set.image.match(fileNameRegex);
-      if (regexMatch) {
-        const [, imageName] = regexMatch;
-        deleteImages(imageName);
-      }
-    }
-    props.close();
+    closeBar(true);
   };
   return (
     <Snackbar
-      open={props.open}
-      message={`${props.set.profile} ${props.set.colorway} has been deleted.`}
-      onClose={() => close()}
       action={<SnackbarAction label="Undo" onClick={recreateEntry} />}
       dismissesOnAction={false}
+      message={`${set.profile} ${set.colorway} has been deleted.`}
+      onClose={() => closeBar()}
+      open={open}
     />
   );
 };

@@ -4,7 +4,14 @@ import { Button } from "@rmwc/button";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
-import { List, ListItem, ListItemMeta, ListItemPrimaryText, ListItemSecondaryText, ListItemText } from "@rmwc/list";
+import {
+  List,
+  ListItem,
+  ListItemMeta,
+  ListItemPrimaryText,
+  ListItemSecondaryText,
+  ListItemText,
+} from "@rmwc/list";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { DateTime } from "luxon";
@@ -21,9 +28,20 @@ import { setSearch } from "@s/main/functions";
 import type { SetType } from "@s/main/types";
 import { selectView } from "@s/settings";
 import { toggleLichTheme } from "@s/settings/functions";
-import { selectBought, selectFavorites, selectHidden, selectUser } from "@s/user";
+import {
+  selectBought,
+  selectFavorites,
+  selectHidden,
+  selectUser,
+} from "@s/user";
 import { toggleBought, toggleFavorite, toggleHidden } from "@s/user/functions";
-import { alphabeticalSortProp, arrayIncludes, hasKey, iconObject, ordinal } from "@s/util/functions";
+import {
+  alphabeticalSortProp,
+  arrayIncludes,
+  hasKey,
+  iconObject,
+  ordinal,
+} from "@s/util/functions";
 import {
   Delete,
   Edit,
@@ -39,14 +57,21 @@ import "./drawer-details.scss";
 
 type DrawerDetailsProps = {
   close: () => void;
-  delete?: (set: SetType) => void;
-  edit?: (set: SetType) => void;
   open: boolean;
   openSales: (set: SetType) => void;
   set: SetType;
+  delete?: (set: SetType) => void;
+  edit?: (set: SetType) => void;
 };
 
-export const DrawerDetails = (props: DrawerDetailsProps) => {
+export const DrawerDetails = ({
+  close,
+  delete: deleteSet,
+  edit,
+  open,
+  openSales,
+  set,
+}: DrawerDetailsProps) => {
   const device = useAppSelector(selectDevice);
   const page = useAppSelector(selectPage);
 
@@ -61,7 +86,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
 
   const copyLink = () => {
     const arr = window.location.href.split("/");
-    const url = arr[0] + "//" + arr[2] + "?keysetAlias=" + props.set.alias;
+    const url = arr[0] + "//" + arr[2] + "?keysetAlias=" + set.alias;
     navigator.clipboard
       .writeText(url)
       .then(() => {
@@ -75,7 +100,9 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
   const setScroll = () => {
     const chipSet = document.getElementById("search-chip-set");
     if (chipSet) {
-      const selectedChip = chipSet.querySelector(".mdc-chip-set .mdc-chip--selected");
+      const selectedChip = chipSet.querySelector(
+        ".mdc-chip-set .mdc-chip--selected"
+      );
       if (selectedChip && selectedChip instanceof HTMLElement) {
         chipSet.scrollLeft = selectedChip.offsetLeft - 24;
       } else {
@@ -83,19 +110,20 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
       }
     }
   };
-  useEffect(setScroll, [search, JSON.stringify(props.set)]);
+  useEffect(setScroll, [search, JSON.stringify(set)]);
   useEffect(() => {
-    const drawerContent = document.querySelector(".details-drawer .mdc-drawer__content");
+    const drawerContent = document.querySelector(
+      ".details-drawer .mdc-drawer__content"
+    );
     if (drawerContent) {
       drawerContent.scrollTop = 0;
     }
-  }, [JSON.stringify(props.set)]);
+  }, [JSON.stringify(set)]);
 
-  const dismissible = device === "desktop" && view !== "compact" && arrayIncludes(mainPages, page);
-  const set = { ...props.set };
-  if (!set.image) {
-    set.image = "";
-  }
+  const dismissible =
+    device === "desktop" &&
+    view !== "compact" &&
+    arrayIncludes(mainPages, page);
   const today = DateTime.utc();
   let gbLaunch: DateTime | string = "";
   let gbEnd: DateTime | null = null;
@@ -106,7 +134,9 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
   let shippedLine: ReactNode | null = "";
   const chips: string[] = [];
   const chipsContent = ["profile", "colorway", "designer", "vendors"];
-  const sortedVendors = set.vendors ? alphabeticalSortProp([...set.vendors], "region") : [];
+  const sortedVendors = set.vendors
+    ? alphabeticalSortProp([...set.vendors], "region")
+    : [];
 
   if (set.icDate) {
     gbLaunch = set.gbLaunch
@@ -114,7 +144,8 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
         ? set.gbLaunch
         : DateTime.fromISO(set.gbLaunch, { zone: "utc" })
       : "";
-    const gbLaunchOrdinal = gbLaunch instanceof DateTime ? ordinal(gbLaunch.day) : "";
+    const gbLaunchOrdinal =
+      gbLaunch instanceof DateTime ? ordinal(gbLaunch.day) : "";
 
     gbEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }) : null;
     const gbEndOrdinal = gbEnd instanceof DateTime ? ordinal(gbEnd.day) : "";
@@ -135,7 +166,9 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
     }
     if (gbLaunch && gbLaunch instanceof DateTime && gbEnd) {
       gb = `${verb} from ${gbLaunch.toFormat(`d'${gbLaunchOrdinal}'\xa0MMMM`)}${
-        gbLaunch.year !== today.year && gbLaunch.year !== gbEnd.year ? gbLaunch.toFormat("\xa0yyyy") : ""
+        gbLaunch.year !== today.year && gbLaunch.year !== gbEnd.year
+          ? gbLaunch.toFormat("\xa0yyyy")
+          : ""
       } until ${gbEnd.toFormat(`d'${gbEndOrdinal}'\xa0MMMM`)}${
         gbEnd.year !== today.year ? gbEnd.toFormat("\xa0yyyy") : ""
       }.`;
@@ -174,33 +207,35 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
     });
     shippedLine =
       gbEnd && gbEnd <= today ? (
-        props.set.shipped ? (
-          <Typography use="body2" tag="p">
+        set.shipped ? (
+          <Typography tag="p" use="body2">
             This set has shipped.
           </Typography>
         ) : (
-          <Typography use="body2" tag="p">
+          <Typography tag="p" use="body2">
             This set has not shipped.
           </Typography>
         )
       ) : null;
   }
   const gbLine = gb ? (
-    <Typography use="body2" tag="p">
+    <Typography tag="p" use="body2">
       {gb}
     </Typography>
   ) : null;
   const vendorList =
     set.vendors && set.vendors.length > 0 ? (
       <div className="details-list">
-        <Typography className="subheader" use="caption" tag="h4">
+        <Typography className="subheader" tag="h4" use="caption">
           Vendors
         </Typography>
         <List twoLine>
           {sortedVendors.map((vendor) => {
             let differentDate;
             if (vendor.endDate) {
-              const dateObject = DateTime.fromISO(vendor.endDate, { zone: "utc" });
+              const dateObject = DateTime.fromISO(vendor.endDate, {
+                zone: "utc",
+              });
               const dateOrdinal = ordinal(dateObject.day);
               const todayObject = DateTime.utc();
               const yesterdayObject = todayObject.minus({ days: 1 });
@@ -208,8 +243,12 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
               differentDate = (
                 <div className="caption">
                   <Typography use="caption">
-                    {`${dateVerb} ${dateObject.toFormat(`d'${dateOrdinal}' MMMM`)} ${
-                      dateObject.year !== todayObject.year ? dateObject.toFormat(" yyyy") : ""
+                    {`${dateVerb} ${dateObject.toFormat(
+                      `d'${dateOrdinal}' MMMM`
+                    )} ${
+                      dateObject.year !== todayObject.year
+                        ? dateObject.toFormat(" yyyy")
+                        : ""
                     }`}
                   </Typography>
                 </div>
@@ -220,15 +259,24 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
                 key={vendor.name}
                 condition={!!vendor.storeLink}
                 wrapper={(children) => (
-                  <a href={vendor.storeLink} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={vendor.storeLink}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
                     {children}
                   </a>
                 )}
               >
-                <ListItem disabled={!vendor.storeLink} className={classNames({ "three-line": !!differentDate })}>
+                <ListItem
+                  className={classNames({ "three-line": !!differentDate })}
+                  disabled={!vendor.storeLink}
+                >
                   <ListItemText>
                     <ListItemPrimaryText>{vendor.name}</ListItemPrimaryText>
-                    <ListItemSecondaryText>{vendor.region}</ListItemSecondaryText>
+                    <ListItemSecondaryText>
+                      {vendor.region}
+                    </ListItemSecondaryText>
                     {differentDate}
                   </ListItemText>
                   {vendor.storeLink ? <ListItemMeta icon="launch" /> : null}
@@ -239,89 +287,107 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
         </List>
       </div>
     ) : null;
-  const { edit, delete: deleteSet } = props;
   const editorButtons =
-    (user.isEditor || (user.isDesigner && set.designer && set.designer.includes(user.nickname))) &&
+    (user.isEditor ||
+      (user.isDesigner &&
+        set.designer &&
+        set.designer.includes(user.nickname))) &&
     edit &&
     deleteSet ? (
       <div className="editor-buttons">
-        <Button className="edit" outlined label="Edit" onClick={() => edit(set)} icon={iconObject(<Edit />)} />
+        <Button
+          className="edit"
+          icon={iconObject(<Edit />)}
+          label="Edit"
+          onClick={() => edit(set)}
+          outlined
+        />
         {user.isEditor ? (
           <Button
             className="delete"
-            outlined
             danger
-            label="Delete"
             icon={iconObject(<Delete />)}
-            onClick={() => deleteSet(props.set)}
+            label="Delete"
+            onClick={() => deleteSet(set)}
+            outlined
           />
         ) : null}
       </div>
     ) : null;
   const lichButton =
-    props.set.colorway === "Lich" ? <IconButton onClick={toggleLichTheme} icon={iconObject(<Palette />)} /> : null;
+    set.colorway === "Lich" ? (
+      <IconButton icon={iconObject(<Palette />)} onClick={toggleLichTheme} />
+    ) : null;
   const userButtons = user.email ? (
     <>
       {withTooltip(
         <IconButton
-          icon="favorite_border"
-          onIcon={iconObject(<Favorite />)}
+          checked={favorites.includes(set.id)}
           className="favorite"
-          checked={favorites.includes(props.set.id)}
-          onClick={() => toggleFavorite(props.set.id)}
+          icon="favorite_border"
+          onClick={() => toggleFavorite(set.id)}
+          onIcon={iconObject(<Favorite />)}
         />,
-        favorites.includes(props.set.id) ? "Unfavorite" : "Favorite"
+        favorites.includes(set.id) ? "Unfavorite" : "Favorite"
       )}
       {withTooltip(
         <IconButton
-          icon={iconObject(<ShoppingBasketOff />)}
-          onIcon={iconObject(<ShoppingBasket />)}
+          checked={bought.includes(set.id)}
           className="bought"
-          checked={bought.includes(props.set.id)}
-          onClick={() => toggleBought(props.set.id)}
+          icon={iconObject(<ShoppingBasketOff />)}
+          onClick={() => toggleBought(set.id)}
+          onIcon={iconObject(<ShoppingBasket />)}
         />,
-        bought.includes(props.set.id) ? "Bought" : "Not bought"
+        bought.includes(set.id) ? "Bought" : "Not bought"
       )}
       {withTooltip(
         <IconButton
-          icon={iconObject(<Visibility />)}
-          onIcon={iconObject(<VisibilityOff />)}
+          checked={hidden.includes(set.id)}
           className="hide"
-          checked={hidden.includes(props.set.id)}
-          onClick={() => toggleHidden(props.set.id)}
+          icon={iconObject(<Visibility />)}
+          onClick={() => toggleHidden(set.id)}
+          onIcon={iconObject(<VisibilityOff />)}
         />,
-        hidden.includes(props.set.id) ? "Unhide" : "Hide"
+        hidden.includes(set.id) ? "Unhide" : "Hide"
       )}
     </>
   ) : null;
   const closeIcon = dismissible
-    ? withTooltip(<IconButton className="close-icon" icon="close" onClick={props.close} />, "Close")
+    ? withTooltip(
+        <IconButton className="close-icon" icon="close" onClick={close} />,
+        "Close"
+      )
     : null;
-  const salesButton = props.set.sales?.img ? (
-    <Button outlined label="Sales" icon="bar_chart" onClick={() => props.openSales(set)} />
+  const salesButton = set.sales?.img ? (
+    <Button
+      icon="bar_chart"
+      label="Sales"
+      onClick={() => openSales(set)}
+      outlined
+    />
   ) : null;
-  const notes = props.set.notes ? (
-    <Typography use="caption" tag="p" className="multiline">
-      {props.set.notes}
+  const notes = set.notes ? (
+    <Typography className="multiline" tag="p" use="caption">
+      {set.notes}
     </Typography>
   ) : null;
   const searchChips = arrayIncludes(mainPages, page) ? (
     <div className="search-chips-container">
       <div className="search-chips">
-        <ChipSet id="search-chip-set" choice>
+        <ChipSet choice id="search-chip-set">
           <div className="padding-fix" />
           {chips.map((value, index) => (
             <Chip
+              key={value.toLowerCase() + index}
               icon="search"
               label={value}
-              key={value.toLowerCase() + index}
-              selected={search.toLowerCase() === value.toLowerCase()}
               onClick={() => {
                 setSearch(value);
                 if (!dismissible) {
-                  props.close();
+                  close();
                 }
               }}
+              selected={search.toLowerCase() === value.toLowerCase()}
             />
           ))}
         </ChipSet>
@@ -330,11 +396,11 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
   ) : null;
   return (
     <Drawer
+      className="details-drawer drawer-right"
       dismissible={dismissible}
       modal={!dismissible}
-      open={props.open}
-      onClose={props.close}
-      className="details-drawer drawer-right"
+      onClose={close}
+      open={open}
     >
       <DrawerHeader>
         <DrawerTitle>Details</DrawerTitle>
@@ -346,38 +412,48 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
         <div>
           <div
             className="details-image"
-            style={{ backgroundImage: "url(" + set.image.replace("keysets", "card") + ")" }}
+            style={{
+              backgroundImage:
+                "url(" + (set.image?.replace("keysets", "card") ?? "") + ")",
+            }}
           ></div>
           <div className="details-text">
-            <Typography use="overline" tag="h3">
+            <Typography tag="h3" use="overline">
               Designed by {set.designer ? set.designer.join(" + ") : ""}
             </Typography>
-            <Typography use="headline4" tag="h1">
+            <Typography tag="h1" use="headline4">
               <Twemoji options={{ className: "twemoji" }}>
-                {`${set.profile ? set.profile : ""} ${set.colorway ? set.colorway : ""}`}
+                {`${set.profile ? set.profile : ""} ${
+                  set.colorway ? set.colorway : ""
+                }`}
               </Twemoji>
             </Typography>
             {gbLine}
             {shippedLine}
-            <Typography use="body2" tag="p">
+            <Typography tag="p" use="body2">
               {ic}
             </Typography>
             {notes}
           </div>
           <div className="details-button">
             <Button
-              outlined
-              label="Link"
-              icon="launch"
-              tag="a"
               href={set.details}
-              target="_blank"
+              icon="launch"
+              label="Link"
+              outlined
               rel="noopener noreferrer"
+              tag="a"
+              target="_blank"
             />
             {salesButton}
           </div>
           <div className="details-button">
-            <Button outlined label="Share" icon={iconObject(<Share />)} onClick={copyLink} />
+            <Button
+              icon={iconObject(<Share />)}
+              label="Share"
+              onClick={copyLink}
+              outlined
+            />
           </div>
           {vendorList}
         </div>

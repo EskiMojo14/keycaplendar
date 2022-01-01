@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import type { ChangeEvent, DragEvent } from "react";
-import { Card, CardActionButton, CardActionButtons, CardActions } from "@rmwc/card";
+import {
+  Card,
+  CardActionButton,
+  CardActionButtons,
+  CardActions,
+} from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { Icon } from "@rmwc/icon";
 import { TextField } from "@rmwc/textfield";
@@ -18,31 +23,13 @@ type ImageUploadProps = {
   setImage: (image: Blob | File | null) => void;
 };
 
-export const ImageUpload = (props: ImageUploadProps) => {
+export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
   const [imageBase64, setImageBase64] = useState("");
   const [imageLink, setImageLink] = useState("");
   const [imageFromURL, setImageFromURL] = useState(true);
   const [dragOver, setDragOver] = useState(false);
   const [loading, setLoading] = useState(false);
   const [hasImage, setHasImage] = useState(false);
-
-  useEffect(() => {
-    if (props.image) {
-      if (is<string>(props.image)) {
-        setImageBase64(props.image);
-        setHasImage(true);
-      } else {
-        previewImage(props.image);
-      }
-    } else {
-      setImageBase64("");
-      setImageLink("");
-      setImageFromURL(true);
-      setDragOver(false);
-      setLoading(false);
-      setHasImage(false);
-    }
-  }, [props.image]);
 
   const previewImage = (image: Blob | File) => {
     const reader = new FileReader();
@@ -54,15 +41,23 @@ export const ImageUpload = (props: ImageUploadProps) => {
     };
   };
 
-  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
-    if (name === "imageLink") {
-      setImageLink(value);
+  useEffect(() => {
+    if (image) {
+      if (is<string>(image)) {
+        setImageBase64(image);
+        setHasImage(true);
+      } else {
+        previewImage(image);
+      }
+    } else {
+      setImageBase64("");
+      setImageLink("");
+      setImageFromURL(true);
+      setDragOver(false);
+      setLoading(false);
+      setHasImage(false);
     }
-    const regex = RegExp("https?://.+(?:.(?:jpe?g|png)|;image)");
-    if (regex.test(value)) {
-      getImageFromURL(value);
-    }
-  };
+  }, [image]);
 
   const getImageFromURL = (url: string) => {
     setLoading(true);
@@ -70,12 +65,24 @@ export const ImageUpload = (props: ImageUploadProps) => {
       .then((response) => response.blob())
       .then((blob) => {
         setLoading(false);
-        props.setImage(blob);
+        setImage(blob);
       })
       .catch((err) => {
         setLoading(false);
         queue.notify({ title: "Failed to fetch image: " + err });
       });
+  };
+
+  const handleChange = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
+    if (name === "imageLink") {
+      setImageLink(value);
+    }
+    const regex = RegExp("https?://.+(?:.(?:jpe?g|png)|;image)");
+    if (regex.test(value)) {
+      getImageFromURL(value);
+    }
   };
 
   const handleDragEnter = (e: DragEvent<HTMLDivElement>) => {
@@ -116,7 +123,7 @@ export const ImageUpload = (props: ImageUploadProps) => {
         setDragOver(false);
         setLoading(false);
       } else {
-        props.setImage(file);
+        setImage(file);
         setDragOver(false);
       }
     }
@@ -131,7 +138,7 @@ export const ImageUpload = (props: ImageUploadProps) => {
     } = e;
     if (files) {
       const [file] = files;
-      props.setImage(file);
+      setImage(file);
       setDragOver(false);
     }
   };
@@ -147,22 +154,29 @@ export const ImageUpload = (props: ImageUploadProps) => {
   const imageTextField = imageFromURL ? (
     <TextField
       autoComplete="off"
+      helpText={{
+        children: "Must be valid link",
+        persistent: false,
+        validationMsg: true,
+      }}
       icon="link"
-      outlined
       label="Image link"
-      pattern="https?://.+\.(?:jpg|jpeg|png)"
       name="imageLink"
-      value={imageLink}
       onChange={handleChange}
-      helpText={{ persistent: false, validationMsg: true, children: "Must be valid link" }}
+      outlined
+      pattern="https?://.+\.(?:jpg|jpeg|png)"
+      value={imageLink}
     />
   ) : null;
   const areaInner = hasImage ? (
-    <div className="image-display-image" style={{ backgroundImage: "url(" + imageBase64 + ")" }} />
-  ) : loading ? null : props.desktop && !imageFromURL ? (
+    <div
+      className="image-display-image"
+      style={{ backgroundImage: "url(" + imageBase64 + ")" }}
+    />
+  ) : loading ? null : desktop && !imageFromURL ? (
     <div className="drag-label">
       <Icon icon={iconObject(<AddPhotoAlternate />, { size: "medium" })} />
-      <Typography use="body2" tag="p" className="caption">
+      <Typography className="caption" tag="p" use="body2">
         Drag image here
       </Typography>
     </div>
@@ -180,8 +194,13 @@ export const ImageUpload = (props: ImageUploadProps) => {
     <CardActions>
       <CardActionButtons>
         <div className="file-input">
-          <CardActionButton tag="label" htmlFor="file-upload" label="Browse" />
-          <input type="file" id="file-upload" accept=".png, .jpg, .jpeg" onChange={handleFileChange} />
+          <CardActionButton htmlFor="file-upload" label="Browse" tag="label" />
+          <input
+            accept=".png, .jpg, .jpeg"
+            id="file-upload"
+            onChange={handleFileChange}
+            type="file"
+          />
         </div>
         <CardActionButton label="From URL" onClick={fromUrl} />
       </CardActionButtons>
@@ -194,13 +213,16 @@ export const ImageUpload = (props: ImageUploadProps) => {
     </CardActions>
   );
   return (
-    <Card outlined className="image-upload">
-      <Typography use="caption" tag="h3" className="image-upload-title">
+    <Card className="image-upload" outlined>
+      <Typography className="image-upload-title" tag="h3" use="caption">
         Image*
       </Typography>
       <div className="image-upload-form">
         <div
-          className={classNames("image-display", { over: dragOver, image: hasImage })}
+          className={classNames("image-display", {
+            image: hasImage,
+            over: dragOver,
+          })}
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
           onDragOver={handleDragOver}

@@ -15,20 +15,30 @@ type MenuSortProps = {
 
 const sortOrders: SortOrderType[] = ["ascending", "descending"];
 
-export const MenuSort = (props: MenuSortProps) => {
+export const MenuSort = ({ onClose, open }: MenuSortProps) => {
   const page = useAppSelector(selectPage);
   const sort = useAppSelector(selectSort);
   const sortOrder = useAppSelector(selectSortOrder);
   return (
-    <Menu anchorCorner="bottomLeft" open={props.open} onClose={props.onClose}>
-      {allSorts.map((key) => arrayIncludes(sortBlacklist[key], page) ? null : (
-          <MenuItem selected={sort === key} onClick={() => setSort(key)} key={key}>
+    <Menu anchorCorner="bottomLeft" onClose={onClose} open={open}>
+      {allSorts.map((key) =>
+        arrayIncludes(sortBlacklist[key], page) ? null : (
+          <MenuItem
+            key={key}
+            onClick={() => setSort(key)}
+            selected={sort === key}
+          >
             {sortNames[key]}
           </MenuItem>
-        ))}
+        )
+      )}
       <ListDivider />
       {sortOrders.map((item) => (
-        <MenuItem selected={sortOrder === item} onClick={() => setSortOrder(item)} key={item}>
+        <MenuItem
+          key={item}
+          onClick={() => setSortOrder(item)}
+          selected={sortOrder === item}
+        >
           {capitalise(item)}
         </MenuItem>
       ))}

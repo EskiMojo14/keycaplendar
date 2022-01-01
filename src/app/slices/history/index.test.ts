@@ -9,7 +9,11 @@ import {
   setRecentSets,
   setTab,
 } from "@s/history";
-import type { HistoryTab, ProcessedPublicActionType, RecentSet } from "@s/history/types";
+import type {
+  HistoryTab,
+  ProcessedPublicActionType,
+  RecentSet,
+} from "@s/history/types";
 import { Keyset } from "@s/main/constructors";
 
 let store = createStore();
@@ -20,20 +24,20 @@ beforeEach(() => {
 
 const action: ProcessedPublicActionType = {
   action: "created",
-  before: {},
   after: {},
-  timestamp: "",
+  before: {},
   documentId: "",
+  timestamp: "",
   title: "",
 };
 
 const recentSet: RecentSet = {
-  title: "",
-  latestTimestamp: "",
-  id: "",
+  currentSet: { ...new Keyset() },
   deleted: false,
   designer: [],
-  currentSet: { ...new Keyset() },
+  id: "",
+  latestTimestamp: "",
+  title: "",
 };
 
 it("sets loading state", () => {
