@@ -861,6 +861,7 @@ $overlay-values: (
       overlay-elevation(map-get($variables, surface), 1),
       map-get($variables, surface)
     );
+    color: map-get($variables, on-surface);
     &.mdc-card--selected {
       .mdc-typography--headline5 {
         color: map-get($variables, primary);

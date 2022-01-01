@@ -35,11 +35,3 @@
   }
   @return map-has-key($map, $key);
 }
-
-@function typography-get($style, $prop: font-size) {
-  @return if(
-    map-deep-has(typography-variables.$styles, $style, $prop),
-    map-deep-get(typography-variables.$styles, $style, $prop),
-    map-deep-get(typography.$styles, $style, $prop)
-  );
-}
