@@ -36,27 +36,45 @@ export const loadState = () => {
   }
 };
 
-export const sanitiseState = (state: RootState) => {
+export const sanitiseState = (
+  state: RootState
+): Partial<{
+  [key in keyof RootState]: Partial<RootState[key]>;
+}> => {
   const { common, main, settings, user } = state;
-  const sanitiseCommonSlice = (commonSlice: CommonState) => {
+  const sanitiseCommonSlice = (
+    commonSlice: CommonState
+  ): Partial<CommonState> => {
     const { theme, themeMaps } = commonSlice;
     return { theme, themeMaps };
   };
-  const sanitiseMainSlice = (mainSlice: MainState) => {
-    /* eslint-disable @typescript-eslint/no-unused-vars */
+  const sanitiseMainSlice = (mainSlice: MainState): Partial<MainState> => {
     const {
+      allDesigners,
+      allProfiles,
+      allRegions,
+      allVendorRegions,
+      allVendors,
+      appPresets,
+      currentPreset,
       defaultPreset,
-      initialLoad,
-      linkedFavorites,
-      loading,
-      search,
-      transition,
-      urlSet,
-      urlWhitelist,
-      ...filteredMainSlice
+      sort,
+      sortOrder,
+      whitelist,
     } = mainSlice;
-    /* eslint-enable @typescript-eslint/no-unused-vars */
-    return filteredMainSlice;
+    return {
+      allDesigners,
+      allProfiles,
+      allRegions,
+      allVendorRegions,
+      allVendors,
+      appPresets,
+      currentPreset,
+      defaultPreset,
+      sort,
+      sortOrder,
+      whitelist,
+    };
   };
   return {
     common: sanitiseCommonSlice(common),
