@@ -209,7 +209,11 @@ $overlay-values: (
     $list: append($list, undefined);
   }
   @each $overlay-elevation, $overlay-percent in $overlay-values {
-    $list: set-nth($list, $overlay-elevation + 1, overlay-elevation(map-get($theme, surface), $overlay-elevation));
+    $list: set-nth(
+      $list,
+      $overlay-elevation + 1,
+      overlay-elevation(map-get($theme, surface), $overlay-elevation)
+    );
   }
   @return $list;
 }
