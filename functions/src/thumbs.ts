@@ -40,7 +40,9 @@ export const createThumbsAuto = functions
 
       const cardFilePath = path.join("card/", fileName);
       // Create write stream for uploading thumbnail
-      const cardUploadStream = bucket.file(cardFilePath).createWriteStream({ metadata });
+      const cardUploadStream = bucket
+        .file(cardFilePath)
+        .createWriteStream({ metadata });
 
       // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
       const cardPipeline = sharp();
@@ -53,12 +55,16 @@ export const createThumbsAuto = functions
           console.log("Created card thumbnail for " + fileName);
         })
         .on("error", (err) => {
-          console.log("Failed to create card thumbnail for " + fileName + ": " + err);
+          console.log(
+            "Failed to create card thumbnail for " + fileName + ": " + err
+          );
         });
 
       const listFilePath = path.join("list/", fileName);
       // Create write stream for uploading thumbnail
-      const listUploadStream = bucket.file(listFilePath).createWriteStream({ metadata });
+      const listUploadStream = bucket
+        .file(listFilePath)
+        .createWriteStream({ metadata });
 
       // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
       const listPipeline = sharp();
@@ -71,12 +77,16 @@ export const createThumbsAuto = functions
           console.log("Created list thumbnail for " + fileName);
         })
         .on("error", (err) => {
-          console.log("Failed to create list thumbnail for " + fileName + ": " + err);
+          console.log(
+            "Failed to create list thumbnail for " + fileName + ": " + err
+          );
         });
 
       const imageListFilePath = path.join("image-list/", fileName);
       // Create write stream for uploading thumbnail
-      const imageListUploadStream = bucket.file(imageListFilePath).createWriteStream({ metadata });
+      const imageListUploadStream = bucket
+        .file(imageListFilePath)
+        .createWriteStream({ metadata });
 
       // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
       const imageListPipeline = sharp();
@@ -89,12 +99,16 @@ export const createThumbsAuto = functions
           console.log("Created image list thumbnail for " + fileName);
         })
         .on("error", (err) => {
-          console.log("Failed to create image list thumbnail for " + fileName + ": " + err);
+          console.log(
+            "Failed to create image list thumbnail for " + fileName + ": " + err
+          );
         });
 
       const thumbsFilePath = path.join("thumbs/", fileName);
       // Create write stream for uploading thumbnail
-      const thumbsUploadStream = bucket.file(thumbsFilePath).createWriteStream({ metadata });
+      const thumbsUploadStream = bucket
+        .file(thumbsFilePath)
+        .createWriteStream({ metadata });
 
       // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
       const thumbsPipeline = sharp();
@@ -107,14 +121,23 @@ export const createThumbsAuto = functions
           console.log("Created generic thumbnail for " + fileName);
         })
         .on("error", (err) => {
-          console.log("Failed to create generic thumbnail for " + fileName + ": " + err);
+          console.log(
+            "Failed to create generic thumbnail for " + fileName + ": " + err
+          );
         });
 
-      const streams = [cardUploadStream, listUploadStream, imageListUploadStream, thumbsUploadStream];
+      const streams = [
+        cardUploadStream,
+        listUploadStream,
+        imageListUploadStream,
+        thumbsUploadStream,
+      ];
 
       const allPromises = Promise.all(
         streams.map((stream) => {
-          return new Promise((resolve, reject) => stream.on("finish", resolve).on("error", reject));
+          return new Promise((resolve, reject) =>
+            stream.on("finish", resolve).on("error", reject)
+          );
         })
       );
 
@@ -127,7 +150,9 @@ export const createThumbsAuto = functions
           });
         })
         .catch((error) => {
-          console.log("Failed to create thumbnail for " + fileName + ": " + error);
+          console.log(
+            "Failed to create thumbnail for " + fileName + ": " + error
+          );
         });
 
       return await allPromises;
@@ -139,51 +164,57 @@ export const createThumbsAuto = functions
  *  Create thumbs for all images within `/keysets`.
  */
 
-export const createThumbs = functions.runWith(runtimeOpts).https.onCall(async (data, context) => {
-  if (!context.auth || context.auth.token.admin !== true) {
-    return {
-      error: "Current user is not an admin. Access is not permitted.",
-    };
-  }
-
-  console.log("Creating thumbnails");
-
-  // Download file from bucket.
-  const bucket = storage.bucket("keycaplendar.appspot.com");
-  const [files] = await bucket.getFiles({ prefix: "keysets/" });
-  const metadata = {
-    contentType: "image/png",
-  };
-
-  const filesPromise = new Promise<void>((resolve, reject) => {
-    let filesProcessed = 0;
-    const increase = () => filesProcessed++;
-    for (const file of files) {
-      const fileName = path.basename(file.name);
-      console.log(fileName);
-      const thumbsFilePath = path.join("thumbs/", fileName);
-      // Create write stream for uploading thumbnail
-      const thumbsUploadStream = bucket.file(thumbsFilePath).createWriteStream({ metadata });
-
-      // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
-      const thumbsPipeline = sharp();
-      thumbsPipeline.resize(480, 270).pipe(thumbsUploadStream);
-
-      file.createReadStream().pipe(thumbsPipeline);
-
-      thumbsUploadStream
-        .on("finish", () => {
-          console.log("Created generic thumbnail for " + fileName);
-          increase();
-        })
-        .on("error", (err) => {
-          console.log("Failed to generic thumbnail for " + fileName + ": " + err);
-          reject(err);
-        });
-      if (filesProcessed === files.length) {
-        resolve();
-      }
+export const createThumbs = functions
+  .runWith(runtimeOpts)
+  .https.onCall(async (data, context) => {
+    if (!context.auth || context.auth.token.admin !== true) {
+      return {
+        error: "Current user is not an admin. Access is not permitted.",
+      };
     }
+
+    console.log("Creating thumbnails");
+
+    // Download file from bucket.
+    const bucket = storage.bucket("keycaplendar.appspot.com");
+    const [files] = await bucket.getFiles({ prefix: "keysets/" });
+    const metadata = {
+      contentType: "image/png",
+    };
+
+    const filesPromise = new Promise<void>((resolve, reject) => {
+      let filesProcessed = 0;
+      const increase = () => filesProcessed++;
+      for (const file of files) {
+        const fileName = path.basename(file.name);
+        console.log(fileName);
+        const thumbsFilePath = path.join("thumbs/", fileName);
+        // Create write stream for uploading thumbnail
+        const thumbsUploadStream = bucket
+          .file(thumbsFilePath)
+          .createWriteStream({ metadata });
+
+        // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
+        const thumbsPipeline = sharp();
+        thumbsPipeline.resize(480, 270).pipe(thumbsUploadStream);
+
+        file.createReadStream().pipe(thumbsPipeline);
+
+        thumbsUploadStream
+          .on("finish", () => {
+            console.log("Created generic thumbnail for " + fileName);
+            increase();
+          })
+          .on("error", (err) => {
+            console.log(
+              "Failed to generic thumbnail for " + fileName + ": " + err
+            );
+            reject(err);
+          });
+        if (filesProcessed === files.length) {
+          resolve();
+        }
+      }
+    });
+    return filesPromise;
   });
-  return filesPromise;
-});

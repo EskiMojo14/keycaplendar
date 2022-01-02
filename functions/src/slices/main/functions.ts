@@ -11,7 +11,9 @@ import { Pages } from "./types";
  * @returns Object with page keys, containing a boolean of if that set would be shown on the page.
  */
 
-export const pageConditions = (set: StatisticsSetType): Record<Pages, boolean> => {
+export const pageConditions = (
+  set: StatisticsSetType
+): Record<Pages, boolean> => {
   const today = DateTime.utc();
   const yesterday = today.minus({ days: 1 });
   const startDate = DateTime.fromISO(set.gbLaunch, {
@@ -24,11 +26,13 @@ export const pageConditions = (set: StatisticsSetType): Record<Pages, boolean> =
     millisecond: 999,
   });
   return {
-    calendar: startDate > today || (startDate <= today && (endDate >= yesterday || !set.gbEnd)),
+    calendar:
+      startDate > today ||
+      (startDate <= today && (endDate >= yesterday || !set.gbEnd)),
     live: startDate <= today && (endDate >= yesterday || !set.gbEnd),
     ic: !set.gbLaunch || set.gbLaunch.includes("Q"),
-    previous: !!(endDate && endDate <= yesterday),
-    timeline: !!(set.gbLaunch && !set.gbLaunch.includes("Q")),
+    previous: Boolean(endDate && endDate <= yesterday),
+    timeline: Boolean(set.gbLaunch && !set.gbLaunch.includes("Q")),
     archive: true,
   };
 };

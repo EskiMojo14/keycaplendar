@@ -13,7 +13,11 @@ type FirestoreCollection<K, V, S = Record<string, never>> = {
 type FirestoreId<T extends string> = string & { [key in T]: never };
 
 export type FirestoreType = {
-  apiUsers: FirestoreCollection<ApiUserId, ApiUserDoc, { data: FirestoreCollection<ApiUserId, ApiUserDoc> }>;
+  apiUsers: FirestoreCollection<
+    ApiUserId,
+    ApiUserDoc,
+    { data: FirestoreCollection<ApiUserId, ApiUserDoc> }
+  >;
   app: FirestoreCollection<"globals", GlobalDoc>;
   changelog: FirestoreCollection<ChangelogId, ChangelogDoc>;
   guides: FirestoreCollection<GuideId, Omit<GuideEntryType, "id">>;

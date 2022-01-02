@@ -19,14 +19,19 @@ export const hasKey = <O>(obj: O, key: keyof any): key is keyof O => key in obj;
  * @returns Whether the item is contained in the array.
  */
 
-export const arrayIncludes = <T>(arr: T[] | Readonly<T[]>, item: any): item is T => arr.includes(item);
+export const arrayIncludes = <T>(
+  arr: T[] | Readonly<T[]>,
+  item: any
+): item is T => arr.includes(item);
 
 /**
  * Returns an array of object keys to iterate on.
  * Only use for objects you're certain won't gain more keys in runtime.
  */
 
-export const objectKeys = <T extends Record<string, any>>(obj: T): (keyof T)[] => Object.keys(obj);
+export const objectKeys = <T extends Record<string, any>>(
+  obj: T
+): (keyof T)[] => Object.keys(obj);
 
 /**
  * Remove all duplicate values within an array.
@@ -34,7 +39,8 @@ export const objectKeys = <T extends Record<string, any>>(obj: T): (keyof T)[] =
  * @returns `array` with only unique values.
  */
 
-export const removeDuplicates = <T>(array: T[]): T[] => array.filter((v, i, a) => a.indexOf(v) === i);
+export const removeDuplicates = <T>(array: T[]): T[] =>
+  array.filter((v, i, a) => a.indexOf(v) === i);
 
 /**
  * Counts occurrences of specified value within provided array.
@@ -43,7 +49,8 @@ export const removeDuplicates = <T>(array: T[]): T[] => array.filter((v, i, a) =
  * @returns Amount of items within `arr` equal to `val`.
  */
 
-export const countInArray = (arr: any[], val: any): number => arr.reduce((count, item) => count + (item === val), 0);
+export const countInArray = <T>(arr: T[], val: T): number =>
+  arr.reduce((count, item) => count + Number(item === val), 0);
 
 /**
  * Creates a function to pass to sort an array of items in alphabetical order.
@@ -60,23 +67,22 @@ export const countInArray = (arr: any[], val: any): number => arr.reduce((count,
  * objArr.sort((a, b) => alphabeticalSortCurried()(a.key, b.key) || alphabeticalSortCurried()(a.key2, b.key2))
  */
 
-export const alphabeticalSortCurried = <T extends unknown>(descending = false, hoist?: T) => (
-  a: T,
-  b: T
-): 1 | -1 | 0 => {
-  if (hoist && (a === hoist || b === hoist) && a !== b) {
-    return a === hoist ? -1 : 1;
-  }
-  const x = is<string>(a) ? a.toLowerCase() : a;
-  const y = is<string>(b) ? b.toLowerCase() : b;
-  if (x < y) {
-    return descending ? 1 : -1;
-  }
-  if (x > y) {
-    return descending ? -1 : 1;
-  }
-  return 0;
-};
+export const alphabeticalSortCurried =
+  <T extends unknown>(descending = false, hoist?: T) =>
+  (a: T, b: T): 1 | -1 | 0 => {
+    if (hoist && (a === hoist || b === hoist) && a !== b) {
+      return a === hoist ? -1 : 1;
+    }
+    const x = is<string>(a) ? a.toLowerCase() : a;
+    const y = is<string>(b) ? b.toLowerCase() : b;
+    if (x < y) {
+      return descending ? 1 : -1;
+    }
+    if (x > y) {
+      return descending ? -1 : 1;
+    }
+    return 0;
+  };
 
 /**
  * Sorts an array of strings in alphabetical order.
@@ -86,8 +92,11 @@ export const alphabeticalSortCurried = <T extends unknown>(descending = false, h
  * @returns `array` sorted alphabetically in ascending or descending order, with hoisted value at the beginning if provided.
  */
 
-export const alphabeticalSort = (array: string[], descending = false, hoist?: string): string[] =>
-  array.sort(alphabeticalSortCurried(descending, hoist));
+export const alphabeticalSort = (
+  array: string[],
+  descending = false,
+  hoist?: string
+): string[] => array.sort(alphabeticalSortCurried(descending, hoist));
 
 /**
  * Creates a function to pass to sort an array of objects by a specified prop, in alphabetical order.
@@ -101,26 +110,28 @@ export const alphabeticalSort = (array: string[], descending = false, hoist?: st
  * arr.sort((a,b) => alphabeticalSortProp("key")(a,b) || alphabeticalSortProp("key2")(a,b))
  */
 
-export const alphabeticalSortPropCurried = <O extends Record<string, unknown>, K extends keyof O>(
-  prop: K,
-  descending = false,
-  hoist?: O[K]
-) => (a: O, b: O): 1 | -1 | 0 => {
-  const x = a[prop];
-  const y = b[prop];
-  if (hoist && (x === hoist || y === hoist) && x !== y) {
-    return x === hoist ? -1 : 1;
-  }
-  const c = is<string>(x) ? x.toLowerCase() : x;
-  const d = is<string>(y) ? y.toLowerCase() : y;
-  if (c < d) {
-    return descending ? 1 : -1;
-  }
-  if (c > d) {
-    return descending ? -1 : 1;
-  }
-  return 0;
-};
+export const alphabeticalSortPropCurried =
+  <O extends Record<string, unknown>, K extends keyof O>(
+    prop: K,
+    descending = false,
+    hoist?: O[K]
+  ) =>
+  (a: O, b: O): 1 | -1 | 0 => {
+    const x = a[prop];
+    const y = b[prop];
+    if (hoist && (x === hoist || y === hoist) && x !== y) {
+      return x === hoist ? -1 : 1;
+    }
+    const c = is<string>(x) ? x.toLowerCase() : x;
+    const d = is<string>(y) ? y.toLowerCase() : y;
+    if (c < d) {
+      return descending ? 1 : -1;
+    }
+    if (c > d) {
+      return descending ? -1 : 1;
+    }
+    return 0;
+  };
 
 /**
  * Sorts an array of objects by a specified prop, in alphabetical order.
@@ -131,7 +142,10 @@ export const alphabeticalSortPropCurried = <O extends Record<string, unknown>, K
  * @returns `array` sorted by provided prop, with hoisted value at the beginning if provided.
  */
 
-export const alphabeticalSortProp = <O extends Record<string, unknown>, K extends keyof O>(
+export const alphabeticalSortProp = <
+  O extends Record<string, unknown>,
+  K extends keyof O
+>(
   array: O[],
   prop: K,
   descending = false,
@@ -154,7 +168,9 @@ export const getSetMonthRange = (
   const setMonths = removeDuplicates(
     sets.map((set) => {
       const val = set[prop];
-      return val && !val.includes("Q") ? DateTime.fromISO(val).toFormat("yyyy-MM") : "";
+      return val && !val.includes("Q")
+        ? DateTime.fromISO(val).toFormat("yyyy-MM")
+        : "";
     })
   ).filter(Boolean);
   alphabeticalSort(setMonths);
@@ -168,7 +184,11 @@ export const getSetMonthRange = (
     ) + 1;
   const allMonths = Array(length)
     .fill("")
-    .map((v, i) => DateTime.fromISO(setMonths[0], { zone: "utc" }).plus({ months: i }).toFormat(format));
+    .map((v, i) =>
+      DateTime.fromISO(setMonths[0], { zone: "utc" })
+        .plus({ months: i })
+        .toFormat(format)
+    );
   return allMonths;
 };
 

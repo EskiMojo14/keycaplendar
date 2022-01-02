@@ -12,7 +12,9 @@ export const getClaims = functions.https.onCall((data, context) => {
   if (context.auth) {
     return {
       nickname: context.auth.token.nickname ? context.auth.token.nickname : "",
-      designer: context.auth.token.designer ? context.auth.token.designer : false,
+      designer: context.auth.token.designer
+        ? context.auth.token.designer
+        : false,
       editor: context.auth.token.editor ? context.auth.token.editor : false,
       admin: context.auth.token.admin ? context.auth.token.admin : false,
     };
@@ -38,8 +40,12 @@ export const listUsers = functions.https.onCall(async (data, context) => {
   const listUsers = async (nextPageToken: string) => {
     const processResult = (result: admin.auth.ListUsersResult) => {
       const users = result.users.map((user) => {
-        const dateCreated = DateTime.fromHTTP(user.metadata.creationTime).toISO();
-        const lastSignIn = DateTime.fromHTTP(user.metadata.lastSignInTime).toISO();
+        const dateCreated = DateTime.fromHTTP(
+          user.metadata.creationTime
+        ).toISO();
+        const lastSignIn = DateTime.fromHTTP(
+          user.metadata.lastSignInTime
+        ).toISO();
         const lastActive = user.metadata.lastRefreshTime
           ? DateTime.fromHTTP(user.metadata.lastRefreshTime).toISO()
           : "";
@@ -48,7 +54,9 @@ export const listUsers = functions.https.onCall(async (data, context) => {
             displayName: user.displayName,
             email: user.email,
             photoURL: user.photoURL,
-            nickname: user.customClaims.nickname ? user.customClaims.nickname : "",
+            nickname: user.customClaims.nickname
+              ? user.customClaims.nickname
+              : "",
             designer: user.customClaims.designer ? true : false,
             editor: user.customClaims.editor ? true : false,
             admin: user.customClaims.admin ? true : false,
@@ -119,7 +127,12 @@ export const deleteUser = functions.https.onCall(async (data, context) => {
     .auth()
     .deleteUser(user.uid)
     .then(() => {
-      console.log(currentUser.displayName + " successfully deleted account of " + user.displayName + ".");
+      console.log(
+        currentUser.displayName +
+          " successfully deleted account of " +
+          user.displayName +
+          "."
+      );
       return null;
     })
     .catch((error) => {
@@ -185,7 +198,9 @@ export const deleteOwnUser = functions.https.onCall(async (data, context) => {
       error: "No current user signed in.",
     };
   }
-  const [currentUser, userErr] = await handle<admin.auth.UserRecord>(admin.auth().getUser(context.auth.uid));
+  const [currentUser, userErr] = await handle<admin.auth.UserRecord>(
+    admin.auth().getUser(context.auth.uid)
+  );
   if (userErr) {
     return {
       error: userErr.errorInfo.message,
@@ -201,11 +216,15 @@ export const deleteOwnUser = functions.https.onCall(async (data, context) => {
       .auth()
       .deleteUser(currentUser.uid)
       .then(() => {
-        console.log(currentUser.displayName + " successfully deleted own account.");
+        console.log(
+          currentUser.displayName + " successfully deleted own account."
+        );
         return null;
       })
       .catch((error) => {
-        console.log("Error deleting user " + currentUser.displayName + ": " + error);
+        console.log(
+          "Error deleting user " + currentUser.displayName + ": " + error
+        );
         return { error: "Error deleting user: " + error };
       });
     const deleteFile = admin
@@ -214,7 +233,9 @@ export const deleteOwnUser = functions.https.onCall(async (data, context) => {
       .doc(currentUser.uid as UserId)
       .delete()
       .then(() => {
-        console.log("Deleted user preference file for " + currentUser.displayName + ".");
+        console.log(
+          "Deleted user preference file for " + currentUser.displayName + "."
+        );
         return null;
       })
       .catch((error) => {

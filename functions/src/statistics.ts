@@ -37,7 +37,11 @@ const today = DateTime.utc();
 const yesterday = today.minus({ days: 1 });
 const categories: Categories[] = ["icDate", "gbLaunch"];
 
-const filterSets = (sets: StatisticsSetType[], prop: Properties, val: string): StatisticsSetType[] =>
+const filterSets = (
+  sets: StatisticsSetType[],
+  prop: Properties,
+  val: string
+): StatisticsSetType[] =>
   sets.filter(
     (set) =>
       (prop === "vendor" &&
@@ -106,7 +110,9 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
       },
     },
   };
-  const gbSets = sets.filter((set) => set.gbLaunch && set.gbLaunch.length === 10);
+  const gbSets = sets.filter(
+    (set) => set.gbLaunch && set.gbLaunch.length === 10
+  );
   objectKeys(timelinesData).forEach((cat) => {
     const catSets = cat === "gbLaunch" ? gbSets : sets;
     timelinesData[cat].summary.count.total = catSets.length;
@@ -130,10 +136,20 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
       }),
     ];
 
-    const profileNames = alphabeticalSort(removeDuplicates(catSets.map((set) => set.profile)));
-    const designerNames = alphabeticalSort(removeDuplicates(catSets.map((set) => set.designer).flat(1)));
+    const profileNames = alphabeticalSort(
+      removeDuplicates(catSets.map((set) => set.profile))
+    );
+    const designerNames = alphabeticalSort(
+      removeDuplicates(catSets.map((set) => set.designer).flat(1))
+    );
     const vendorNames = alphabeticalSort(
-      removeDuplicates(catSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
+      removeDuplicates(
+        catSets
+          .map((set) =>
+            set.vendors ? set.vendors.map((vendor) => vendor.name) : []
+          )
+          .flat(1)
+      )
     );
     const lists = {
       profile: profileNames,
@@ -143,28 +159,34 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
 
     timelinesData[cat].allProfiles = profileNames;
 
-    timelinesData[cat].summary.breakdown.timeline.series = profileNames.map((profile, index) => ({
-      data: months.map((month) => {
-        const length = catSets.filter((set) => {
-          const setProp = set[cat];
-          const setMonth =
-            is<string>(setProp) && !setProp.includes("Q")
-              ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat("MMM yy")
-              : null;
-          return setMonth && setMonth === month && set.profile === profile;
-        }).length;
-        return length;
-      }),
-      className: `ct-series-${String.fromCharCode(97 + (index % 26))} ct-series-index-${index}`,
-      index: index,
-      name: profile,
-    }));
+    timelinesData[cat].summary.breakdown.timeline.series = profileNames.map(
+      (profile, index) => ({
+        data: months.map((month) => {
+          const length = catSets.filter((set) => {
+            const setProp = set[cat];
+            const setMonth =
+              is<string>(setProp) && !setProp.includes("Q")
+                ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat("MMM yy")
+                : null;
+            return setMonth && setMonth === month && set.profile === profile;
+          }).length;
+          return length;
+        }),
+        className: `ct-series-${String.fromCharCode(
+          97 + (index % 26)
+        )} ct-series-index-${index}`,
+        index: index,
+        name: profile,
+      })
+    );
 
     objectKeys(timelinesData[cat].breakdown).forEach((property) => {
       const data: TimelineDataObject[] = [];
       lists[property].forEach((name) => {
         const filteredSets = filterSets(catSets, property, name);
-        const profiles = alphabeticalSort(removeDuplicates(filteredSets.map((set) => set.profile)));
+        const profiles = alphabeticalSort(
+          removeDuplicates(filteredSets.map((set) => set.profile))
+        );
 
         let timelineData: IChartistData["series"];
         if (property === "vendor" || property === "designer") {
@@ -173,13 +195,21 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
             return {
               data: months.map((month) => {
                 const monthSets = filteredSets.filter((set) => {
-                  const date = set[cat] ? DateTime.fromISO(set[cat], { zone: "utc" }).toFormat("MMM yy") : null;
+                  const date = set[cat]
+                    ? DateTime.fromISO(set[cat], { zone: "utc" }).toFormat(
+                        "MMM yy"
+                      )
+                    : null;
                   return date && date === month;
                 });
-                const num = monthSets.filter((set) => set.profile === profile).length;
+                const num = monthSets.filter(
+                  (set) => set.profile === profile
+                ).length;
                 return num;
               }),
-              className: `ct-series-${String.fromCharCode(97 + (index % 26))} ct-series-index-${index}`,
+              className: `ct-series-${String.fromCharCode(
+                97 + (index % 26)
+              )} ct-series-index-${index}`,
               index: index,
               name: profile,
             };
@@ -188,7 +218,11 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
           timelineData = [
             months.map((month) => {
               const monthSets = filteredSets.filter((set) => {
-                const date = set[cat] ? DateTime.fromISO(set[cat], { zone: "utc" }).toFormat("MMM yy") : null;
+                const date = set[cat]
+                  ? DateTime.fromISO(set[cat], { zone: "utc" }).toFormat(
+                      "MMM yy"
+                    )
+                  : null;
                 return date && date === month;
               });
               return monthSets.length;
@@ -206,7 +240,9 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
         });
       });
       data.sort(
-        (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
+        (a, b) =>
+          alphabeticalSortPropCurried("total", true)(a, b) ||
+          alphabeticalSortPropCurried("name")(a, b)
       );
       timelinesData[cat].breakdown[property] = data;
     });
@@ -230,18 +266,33 @@ const createStatusData = (sets: StatisticsSetType[]) => {
       vendor: [],
     },
   };
-  const profileNames = alphabeticalSort(removeDuplicates(sets.map((set) => set.profile)));
-  const designerNames = alphabeticalSort(removeDuplicates(sets.map((set) => set.designer).flat(1)));
+  const profileNames = alphabeticalSort(
+    removeDuplicates(sets.map((set) => set.profile))
+  );
+  const designerNames = alphabeticalSort(
+    removeDuplicates(sets.map((set) => set.designer).flat(1))
+  );
   const vendorNames = alphabeticalSort(
-    removeDuplicates(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
+    removeDuplicates(
+      sets
+        .map((set) =>
+          set.vendors ? set.vendors.map((vendor) => vendor.name) : []
+        )
+        .flat(1)
+    )
   );
   const lists = {
     profile: profileNames,
     designer: designerNames,
     vendor: vendorNames,
   };
-  const createStatusDataObject = (sets: StatisticsSetType[], name: string): StatusDataObject => {
-    const icSets = sets.filter((set) => !set.gbLaunch || set.gbLaunch.includes("Q"));
+  const createStatusDataObject = (
+    sets: StatisticsSetType[],
+    name: string
+  ): StatusDataObject => {
+    const icSets = sets.filter(
+      (set) => !set.gbLaunch || set.gbLaunch.includes("Q")
+    );
     const preGbSets = sets.filter((set) => {
       let startDate;
       if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
@@ -260,7 +311,9 @@ const createStatusData = (sets: StatisticsSetType[]) => {
         second: 59,
         millisecond: 999,
       });
-      return startDate && startDate <= today && (endDate >= yesterday || !set.gbEnd);
+      return (
+        startDate && startDate <= today && (endDate >= yesterday || !set.gbEnd)
+      );
     });
     const postGbSets = sets.filter((set) => {
       const endDate = DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({
@@ -284,9 +337,13 @@ const createStatusData = (sets: StatisticsSetType[]) => {
   statusData.summary = createStatusDataObject(sets, "Current keyset status");
 
   objectKeys(statusData.breakdown).forEach((prop) => {
-    statusData.breakdown[prop] = lists[prop].map((name) => createStatusDataObject(filterSets(sets, prop, name), name));
+    statusData.breakdown[prop] = lists[prop].map((name) =>
+      createStatusDataObject(filterSets(sets, prop, name), name)
+    );
     statusData.breakdown[prop].sort(
-      (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
+      (a, b) =>
+        alphabeticalSortPropCurried("total", true)(a, b) ||
+        alphabeticalSortPropCurried("name")(a, b)
     );
   });
   return Promise.resolve(statusData);
@@ -324,10 +381,20 @@ const createShippedData = (sets: StatisticsSetType[]) => {
 
   shippedData.months = months;
 
-  const profileNames = alphabeticalSort(removeDuplicates(pastSets.map((set) => set.profile)));
-  const designerNames = alphabeticalSort(removeDuplicates(pastSets.map((set) => set.designer).flat(1)));
+  const profileNames = alphabeticalSort(
+    removeDuplicates(pastSets.map((set) => set.profile))
+  );
+  const designerNames = alphabeticalSort(
+    removeDuplicates(pastSets.map((set) => set.designer).flat(1))
+  );
   const vendorNames = alphabeticalSort(
-    removeDuplicates(pastSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
+    removeDuplicates(
+      pastSets
+        .map((set) =>
+          set.vendors ? set.vendors.map((vendor) => vendor.name) : []
+        )
+        .flat(1)
+    )
   );
   const lists = {
     profile: profileNames,
@@ -335,13 +402,18 @@ const createShippedData = (sets: StatisticsSetType[]) => {
     vendor: vendorNames,
   };
 
-  const createShippedDataObject = (sets: StatisticsSetType[], name: string): ShippedDataObject => {
+  const createShippedDataObject = (
+    sets: StatisticsSetType[],
+    name: string
+  ): ShippedDataObject => {
     const shippedSets = sets.filter((set) => set.shipped);
     const unshippedSets = sets.filter((set) => !set.shipped);
     const shipped = {
       data: months.map((month) => {
         const filteredSets = shippedSets.filter((set) => {
-          const setEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).toFormat("MMM yy") : null;
+          const setEnd = set.gbEnd
+            ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).toFormat("MMM yy")
+            : null;
           return setEnd && setEnd === month;
         });
         return filteredSets.length;
@@ -351,7 +423,9 @@ const createShippedData = (sets: StatisticsSetType[]) => {
     const unshipped = {
       data: months.map((month) => {
         const filteredSets = unshippedSets.filter((set) => {
-          const setEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).toFormat("MMM yy") : null;
+          const setEnd = set.gbEnd
+            ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).toFormat("MMM yy")
+            : null;
           return setEnd && setEnd === month;
         });
         return filteredSets.length;
@@ -370,14 +444,19 @@ const createShippedData = (sets: StatisticsSetType[]) => {
     };
   };
 
-  shippedData.summary = createShippedDataObject(pastSets, "Shipped sets by GB month");
+  shippedData.summary = createShippedDataObject(
+    pastSets,
+    "Shipped sets by GB month"
+  );
 
   objectKeys(shippedData.breakdown).forEach((prop) => {
     shippedData.breakdown[prop] = lists[prop].map((name) =>
       createShippedDataObject(filterSets(pastSets, prop, name), name)
     );
     shippedData.breakdown[prop].sort(
-      (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
+      (a, b) =>
+        alphabeticalSortPropCurried("total", true)(a, b) ||
+        alphabeticalSortPropCurried("name")(a, b)
     );
   });
   return Promise.resolve(shippedData);
@@ -420,15 +499,29 @@ const createDurationData = (sets: StatisticsSetType[]) => {
       },
     },
   };
-  const dateSets = sets.filter((set) => set.gbLaunch && set.gbLaunch.length === 10);
+  const dateSets = sets.filter(
+    (set) => set.gbLaunch && set.gbLaunch.length === 10
+  );
   categories.forEach((cat) => {
     const propSets: StatisticsSetType[] =
-      cat === "gbLaunch" ? dateSets.filter((set) => set.gbEnd.length === 10) : dateSets;
+      cat === "gbLaunch"
+        ? dateSets.filter((set) => set.gbEnd.length === 10)
+        : dateSets;
     if (hasKey(durationData, cat)) {
-      const profileNames = alphabeticalSort(removeDuplicates(propSets.map((set) => set.profile)));
-      const designerNames = alphabeticalSort(removeDuplicates(propSets.map((set) => set.designer).flat(1)));
+      const profileNames = alphabeticalSort(
+        removeDuplicates(propSets.map((set) => set.profile))
+      );
+      const designerNames = alphabeticalSort(
+        removeDuplicates(propSets.map((set) => set.designer).flat(1))
+      );
       const vendorNames = alphabeticalSort(
-        removeDuplicates(propSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
+        removeDuplicates(
+          propSets
+            .map((set) =>
+              set.vendors ? set.vendors.map((vendor) => vendor.name) : []
+            )
+            .flat(1)
+        )
       );
       const lists = {
         profile: profileNames,
@@ -436,9 +529,20 @@ const createDurationData = (sets: StatisticsSetType[]) => {
         vendor: vendorNames,
       };
 
-      const createDurationDataObject = (data: number[], name: string, total: number): DurationDataObject => {
+      const createDurationDataObject = (
+        data: number[],
+        name: string,
+        total: number
+      ): DurationDataObject => {
         const labels = [
-          ...math.range(math.round(math.min(data)), math.round(math.max(data)), 1, true).toArray(),
+          ...math
+            .range(
+              math.round(math.min(data)),
+              math.round(math.max(data)),
+              1,
+              true
+            )
+            .toArray(),
         ] as number[];
         const count = labels.map((label) => ({
           value: countInArray(math.round(data), label),
@@ -460,29 +564,48 @@ const createDurationData = (sets: StatisticsSetType[]) => {
 
       const summaryData = propSets.map((set) => {
         const startDate = DateTime.fromISO(set[cat], { zone: "utc" });
-        const endDate = DateTime.fromISO(set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"], { zone: "utc" });
-        const length = endDate.diff(startDate, cat === "icDate" ? "months" : "days");
+        const endDate = DateTime.fromISO(
+          set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"],
+          { zone: "utc" }
+        );
+        const length = endDate.diff(
+          startDate,
+          cat === "icDate" ? "months" : "days"
+        );
         return math.round(length[cat === "icDate" ? "months" : "days"], 2);
       });
 
-      const title = cat === "icDate" ? "IC duration (months)" : "GB duration (days)";
+      const title =
+        cat === "icDate" ? "IC duration (months)" : "GB duration (days)";
 
-      durationData[cat].summary = createDurationDataObject(summaryData, title, propSets.length);
+      durationData[cat].summary = createDurationDataObject(
+        summaryData,
+        title,
+        propSets.length
+      );
 
       objectKeys(durationData[cat].breakdown).forEach((property) => {
         durationData[cat].breakdown[property] = lists[property].map((name) => {
           const filteredSets = filterSets(propSets, property, name);
           const data = filteredSets.map((set) => {
             const startDate = DateTime.fromISO(set[cat], { zone: "utc" });
-            const endDate = DateTime.fromISO(set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"], { zone: "utc" });
-            const length = endDate.diff(startDate, cat === "icDate" ? "months" : "days");
+            const endDate = DateTime.fromISO(
+              set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"],
+              { zone: "utc" }
+            );
+            const length = endDate.diff(
+              startDate,
+              cat === "icDate" ? "months" : "days"
+            );
             return math.round(length[cat === "icDate" ? "months" : "days"], 2);
           });
           return createDurationDataObject(data, name, filteredSets.length);
         });
         objectKeys(durationData[cat].breakdown).forEach((prop) => {
           durationData[cat].breakdown[prop].sort(
-            (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
+            (a, b) =>
+              alphabeticalSortPropCurried("total", true)(a, b) ||
+              alphabeticalSortPropCurried("name")(a, b)
           );
         });
       });
@@ -520,10 +643,20 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
   });
   const vendorSets = pastSets.filter((set) => set.vendors);
 
-  const profileNames = alphabeticalSort(removeDuplicates(vendorSets.map((set) => set.profile)));
-  const designerNames = alphabeticalSort(removeDuplicates(vendorSets.map((set) => set.designer).flat(1)));
+  const profileNames = alphabeticalSort(
+    removeDuplicates(vendorSets.map((set) => set.profile))
+  );
+  const designerNames = alphabeticalSort(
+    removeDuplicates(vendorSets.map((set) => set.designer).flat(1))
+  );
   const vendorNames = alphabeticalSort(
-    removeDuplicates(vendorSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
+    removeDuplicates(
+      vendorSets
+        .map((set) =>
+          set.vendors ? set.vendors.map((vendor) => vendor.name) : []
+        )
+        .flat(1)
+    )
   );
   const lists = {
     profile: profileNames,
@@ -531,8 +664,14 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
     vendor: vendorNames,
   };
 
-  const createVendorsDataObject = (data: number[], name: string, total: number): VendorDataObject => {
-    const labels = [...math.range(0, math.max(data), 1, true).toArray()] as number[];
+  const createVendorsDataObject = (
+    data: number[],
+    name: string,
+    total: number
+  ): VendorDataObject => {
+    const labels: number[] = [
+      ...math.range(0, math.max(data), 1, true).toArray(),
+    ].flat();
     const count = labels.map((_val, index) => countInArray(data, index));
     const range = math.max(data) - math.min(data);
     const rangeDisplay = `${math.min(data)} - ${math.max(data)} (${range})`;
@@ -547,19 +686,29 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
       chartData: { labels, series: [count] },
     };
   };
-  const summaryLengthArray = vendorSets.map((set) => (set.vendors ? set.vendors.length : 0)).sort();
+  const summaryLengthArray = vendorSets
+    .map((set) => (set.vendors ? set.vendors.length : 0))
+    .sort();
 
-  vendorsData.summary = createVendorsDataObject(summaryLengthArray, "Vendors per set", vendorSets.length);
+  vendorsData.summary = createVendorsDataObject(
+    summaryLengthArray,
+    "Vendors per set",
+    vendorSets.length
+  );
 
   objectKeys(vendorsData.breakdown).forEach((prop) => {
     vendorsData.breakdown[prop] = lists[prop].map((name) => {
       const propSets = filterSets(vendorSets, prop, name);
-      const lengthArray = propSets.map((set) => (set.vendors ? set.vendors.length : 0)).sort();
+      const lengthArray = propSets
+        .map((set) => (set.vendors ? set.vendors.length : 0))
+        .sort();
       return createVendorsDataObject(lengthArray, name, propSets.length);
     });
 
     vendorsData.breakdown[prop].sort(
-      (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
+      (a, b) =>
+        alphabeticalSortPropCurried("total", true)(a, b) ||
+        alphabeticalSortPropCurried("name")(a, b)
     );
   });
   return Promise.resolve(vendorsData);
@@ -582,11 +731,16 @@ export const createStatistics = functions
     const snapshot = await admin.firestore().collection("keysets").get();
     const sets: StatisticsSetType[] = snapshot.docs
       .map((doc) => {
-        const { profile, colorway, designer, icDate, gbEnd, shipped, vendors } = doc.data();
+        const { profile, colorway, designer, icDate, gbEnd, shipped, vendors } =
+          doc.data();
 
-        const lastOfMonth = DateTime.fromISO(doc.data().gbLaunch, { zone: "utc" }).daysInMonth;
+        const lastOfMonth = DateTime.fromISO(doc.data().gbLaunch, {
+          zone: "utc",
+        }).daysInMonth;
         const gbLaunch =
-          doc.data().gbMonth && doc.data().gbLaunch ? doc.data().gbLaunch + "-" + lastOfMonth : doc.data().gbLaunch;
+          doc.data().gbMonth && doc.data().gbLaunch
+            ? doc.data().gbLaunch + "-" + lastOfMonth
+            : doc.data().gbLaunch;
 
         return {
           id: doc.id,
