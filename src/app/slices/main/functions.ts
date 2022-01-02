@@ -160,9 +160,7 @@ const createGroups = (transition = false, state = store.getState()) => {
       return sets.map((set) => set[sort]).flat();
     } else if (sort === "vendor") {
       return sets
-        .map((set) =>
-          set.vendors ? set.vendors.map((vendor) => vendor.name) : []
-        )
+        .map((set) => set.vendors?.map((vendor) => vendor.name) ?? [])
         .flat();
     } else {
       return sets
@@ -517,26 +515,18 @@ const generateLists = (state = store.getState()) => {
 
   const allVendors = alphabeticalSort(
     removeDuplicates(
-      sets
-        .map((set) =>
-          set.vendors ? set.vendors.map((vendor) => vendor.name) : []
-        )
-        .flat()
+      sets.map((set) => set.vendors?.map((vendor) => vendor.name) ?? []).flat()
     )
   );
 
   const allVendorRegions = alphabeticalSort(
     removeDuplicates([
       ...sets
-        .map((set) =>
-          set.vendors ? set.vendors.map((vendor) => vendor.region) : []
-        )
+        .map((set) => set.vendors?.map((vendor) => vendor.region) ?? [])
         .flat(),
       ...sets
-        .map((set) =>
-          set.vendors
-            ? set.vendors.map((vendor) => vendor.region.split(", "))
-            : []
+        .map(
+          (set) => set.vendors?.map((vendor) => vendor.region.split(", ")) ?? []
         )
         .flat(2),
     ])
@@ -555,9 +545,7 @@ const generateLists = (state = store.getState()) => {
   );
 
   const allDesigners = alphabeticalSort(
-    removeDuplicates(
-      sets.map((set) => (set.designer ? set.designer : [])).flat()
-    )
+    removeDuplicates(sets.map((set) => set.designer ?? []).flat())
   );
 
   const allProfiles = alphabeticalSort(

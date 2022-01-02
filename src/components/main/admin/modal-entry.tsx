@@ -750,7 +750,7 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
                     return (
                       <Draggable
                         key={vendor.id}
-                        draggableId={vendor.id ? vendor.id : index.toString()}
+                        draggableId={vendor.id ?? index.toString()}
                         index={index}
                       >
                         {(provided, snapshot) => (
@@ -1674,7 +1674,7 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                     return (
                       <Draggable
                         key={vendor.id}
-                        draggableId={vendor.id ? vendor.id : index.toString()}
+                        draggableId={vendor.id ?? index.toString()}
                         index={index}
                       >
                         {(provided, snapshot) => (

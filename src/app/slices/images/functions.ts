@@ -56,7 +56,7 @@ const processItems = (items: firebase.storage.Reference[], append = false) => {
     const obj: ImageType = {
       ...new ImageObj(
         itemRef.name,
-        itemRef.parent ? itemRef.parent.fullPath : "",
+        itemRef.parent?.fullPath ?? "",
         itemRef.fullPath,
         src
       ),

@@ -162,17 +162,14 @@ export const CustomReactMde = ({
   const [invalid, setInvalid] = useState(false);
 
   const customClasses: Classes = {
-    preview: [bemClasses("preview"), classes ? classes.preview : ""],
-    reactMde: [bemClasses(), classes ? classes.reactMde : ""],
-    suggestionsDropdown: [
-      bemClasses("dropdown"),
-      classes ? classes.suggestionsDropdown : "",
-    ],
+    preview: [bemClasses("preview"), classes?.preview],
+    reactMde: [bemClasses(), classes?.reactMde],
+    suggestionsDropdown: [bemClasses("dropdown"), classes?.suggestionsDropdown],
     textArea: [
       bemClasses("textarea", { focused, hovered, invalid }),
-      classes ? classes.textArea : "",
+      classes?.textArea,
     ],
-    toolbar: [bemClasses("toolbar"), classes ? classes.toolbar : ""],
+    toolbar: [bemClasses("toolbar"), classes?.toolbar],
   };
 
   const customChildProps: ChildProps = {

@@ -145,9 +145,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
     const vendorNames = alphabeticalSort(
       removeDuplicates(
         catSets
-          .map((set) =>
-            set.vendors ? set.vendors.map((vendor) => vendor.name) : []
-          )
+          .map((set) => set.vendors?.map((vendor) => vendor.name) ?? [])
           .flat(1)
       )
     );
@@ -274,11 +272,7 @@ const createStatusData = (sets: StatisticsSetType[]) => {
   );
   const vendorNames = alphabeticalSort(
     removeDuplicates(
-      sets
-        .map((set) =>
-          set.vendors ? set.vendors.map((vendor) => vendor.name) : []
-        )
-        .flat(1)
+      sets.map((set) => set.vendors?.map((vendor) => vendor.name) ?? []).flat(1)
     )
   );
   const lists = {
@@ -390,9 +384,7 @@ const createShippedData = (sets: StatisticsSetType[]) => {
   const vendorNames = alphabeticalSort(
     removeDuplicates(
       pastSets
-        .map((set) =>
-          set.vendors ? set.vendors.map((vendor) => vendor.name) : []
-        )
+        .map((set) => set.vendors?.map((vendor) => vendor.name) ?? [])
         .flat(1)
     )
   );
@@ -517,9 +509,7 @@ const createDurationData = (sets: StatisticsSetType[]) => {
       const vendorNames = alphabeticalSort(
         removeDuplicates(
           propSets
-            .map((set) =>
-              set.vendors ? set.vendors.map((vendor) => vendor.name) : []
-            )
+            .map((set) => set.vendors?.map((vendor) => vendor.name) ?? [])
             .flat(1)
         )
       );
@@ -652,9 +642,7 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
   const vendorNames = alphabeticalSort(
     removeDuplicates(
       vendorSets
-        .map((set) =>
-          set.vendors ? set.vendors.map((vendor) => vendor.name) : []
-        )
+        .map((set) => set.vendors?.map((vendor) => vendor.name) ?? [])
         .flat(1)
     )
   );
@@ -687,7 +675,7 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
     };
   };
   const summaryLengthArray = vendorSets
-    .map((set) => (set.vendors ? set.vendors.length : 0))
+    .map((set) => set.vendors?.length ?? 0)
     .sort();
 
   vendorsData.summary = createVendorsDataObject(
@@ -700,7 +688,7 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
     vendorsData.breakdown[prop] = lists[prop].map((name) => {
       const propSets = filterSets(vendorSets, prop, name);
       const lengthArray = propSets
-        .map((set) => (set.vendors ? set.vendors.length : 0))
+        .map((set) => set.vendors?.length ?? 0)
         .sort();
       return createVendorsDataObject(lengthArray, name, propSets.length);
     });

@@ -419,13 +419,11 @@ export const DrawerDetails = ({
           ></div>
           <div className="details-text">
             <Typography tag="h3" use="overline">
-              Designed by {set.designer ? set.designer.join(" + ") : ""}
+              Designed by {set.designer?.join(" + ")}
             </Typography>
             <Typography tag="h1" use="headline4">
               <Twemoji options={{ className: "twemoji" }}>
-                {`${set.profile ? set.profile : ""} ${
-                  set.colorway ? set.colorway : ""
-                }`}
+                {`${set.profile ?? ""} ${set.colorway ?? ""}`}
               </Twemoji>
             </Typography>
             {gbLine}

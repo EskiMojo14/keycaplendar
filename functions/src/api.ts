@@ -113,7 +113,7 @@ export const getAllKeysets = functions.https.onRequest(
     };
     const validDate = (date: string | undefined): date is string => {
       const regex = /^\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$/;
-      return Boolean(date) && regex.test(date);
+      return typeof date === "string" && regex.test(date);
     };
     const keysetsRef = admin.firestore().collection("keysets");
     const dateFilterQuery = request.query.dateFilter as string | undefined;

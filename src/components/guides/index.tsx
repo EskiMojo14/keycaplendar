@@ -91,7 +91,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   };
 
   useEffect(() => {
-    const id = urlEntry ? urlEntry : "Di1F9XkWTG2M9qbP2ZcN";
+    const id = urlEntry || "Di1F9XkWTG2M9qbP2ZcN";
     const index = entries.findIndex((entry) => entry.id === id);
     if (index >= 0 && device === "desktop") {
       const { [index]: entry } = entries;

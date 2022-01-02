@@ -11,12 +11,12 @@ import { handle } from "./slices/common/functions";
 export const getClaims = functions.https.onCall((data, context) => {
   if (context.auth) {
     return {
-      nickname: context.auth.token.nickname ? context.auth.token.nickname : "",
+      nickname: context.auth.token.nickname ?? "",
       designer: context.auth.token.designer
         ? context.auth.token.designer
         : false,
-      editor: context.auth.token.editor ? context.auth.token.editor : false,
-      admin: context.auth.token.admin ? context.auth.token.admin : false,
+      editor: context.auth.token.editor ?? false,
+      admin: context.auth.token.admin ?? false,
     };
   }
   return {

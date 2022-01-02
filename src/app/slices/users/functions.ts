@@ -110,11 +110,7 @@ export const getUsers = (append = false, state = store.getState()) => {
             ? [...allUsers, ...result.data.users]
             : [...result.data.users];
           dispatch(setAllUsers(newUsers));
-          dispatch(
-            setNextPageToken(
-              result.data.nextPageToken ? result.data.nextPageToken : ""
-            )
-          );
+          dispatch(setNextPageToken(result.data.nextPageToken ?? ""));
           sortUsers(store.getState());
         }
       }

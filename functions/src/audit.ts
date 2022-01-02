@@ -27,8 +27,8 @@ export const onKeysetUpdate = functions.firestore
         .collection("changelog")
         .add({
           documentId: context.params.keysetId,
-          before: beforeData ? beforeData : {},
-          after: afterData ? afterData : {},
+          before: beforeData ?? {},
+          after: afterData ?? {},
           timestamp: context.timestamp,
           user: {
             displayName: user.displayName ?? "",

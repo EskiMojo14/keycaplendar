@@ -234,7 +234,7 @@ export const syncFavoritesId = (id: string, state = store.getState()) => {
     .doc(user.id as UserId)
     .set(
       {
-        favoritesId: id ? id : firebase.firestore.FieldValue.delete(),
+        favoritesId: id ?? firebase.firestore.FieldValue.delete(),
       },
       { merge: true }
     )

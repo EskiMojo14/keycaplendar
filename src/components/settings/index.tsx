@@ -163,7 +163,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
           {user.avatar ? (
             <BadgeAnchor className="avatar">
               <Avatar
-                name={user.name ? user.name : ""}
+                name={user.name ?? ""}
                 size={user.name || user.nickname ? "xlarge" : "large"}
                 src={user.avatar}
               />
@@ -172,7 +172,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
           ) : (
             <BadgeAnchor className="avatar">
               <Avatar
-                name={user.name ? user.name : ""}
+                name={user.name ?? ""}
                 size={user.name || user.nickname ? "xlarge" : "large"}
               />
               {userBadge}
