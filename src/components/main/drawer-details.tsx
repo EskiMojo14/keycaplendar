@@ -38,6 +38,8 @@ import { toggleBought, toggleFavorite, toggleHidden } from "@s/user/functions";
 import {
   alphabeticalSortProp,
   arrayIncludes,
+  clearSearchParams,
+  createURL,
   hasKey,
   iconObject,
   ordinal,
@@ -85,10 +87,12 @@ export const DrawerDetails = ({
   const search = useAppSelector(selectSearch);
 
   const copyLink = () => {
-    const arr = window.location.href.split("/");
-    const url = arr[0] + "//" + arr[2] + "?keysetAlias=" + set.alias;
+    const url = createURL({ pathname: "/" }, (params) => {
+      clearSearchParams(params);
+      params.set("keysetAlias", set.alias);
+    });
     navigator.clipboard
-      .writeText(url)
+      .writeText(url.href)
       .then(() => {
         queue.notify({ title: "Copied URL to clipboard." });
       })

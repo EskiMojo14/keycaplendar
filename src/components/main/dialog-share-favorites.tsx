@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ChangeEvent } from "react";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { Dialog, DialogContent, DialogTitle } from "@rmwc/dialog";
@@ -15,6 +15,7 @@ import {
   debouncedSyncFavoritesId,
   debouncedSyncShareName,
 } from "@s/user/functions";
+import { clearSearchParams, createURL } from "@s/util/functions";
 import "./dialog-share-favorites.scss";
 
 type DialogShareFavoritesProps = {
@@ -51,14 +52,18 @@ export const DialogShareFavorites = ({
 
   const shareable = !!favoritesId;
 
-  const arr = window.location.href.split("/");
-
-  const shareLink =
-    arr[0] + "//" + arr[2] + "/favorites?favoritesId=" + favoritesId;
+  const url = useMemo(
+    () =>
+      createURL({ pathname: "/guides" }, (params) => {
+        clearSearchParams(params);
+        params.set("favoritesId", favoritesId);
+      }),
+    [favoritesId]
+  );
 
   const copyLink = () => {
     navigator.clipboard
-      .writeText(shareLink)
+      .writeText(url.href)
       .then(() => {
         queue.notify({ title: "Copied URL to clipboard." });
       })
@@ -130,7 +135,7 @@ export const DialogShareFavorites = ({
                 trailingIcon={
                   <IconButton icon="content_copy" onClick={copyLink} />
                 }
-                value={shareLink}
+                value={url.href}
               />
             </>
           ) : null}

@@ -21,7 +21,12 @@ import type { SetType } from "@s/main/types";
 import { selectFavorites, selectHidden } from "@s/user";
 import { toggleFavorite, toggleHidden } from "@s/user/functions";
 import type { CurrentUserType } from "@s/user/types";
-import { iconObject, pluralise } from "@s/util/functions";
+import {
+  clearSearchParams,
+  createURL,
+  iconObject,
+  pluralise,
+} from "@s/util/functions";
 import {
   CheckCircle,
   Edit,
@@ -69,10 +74,12 @@ export const ElementCard = ({
   const hidden = useAppSelector(selectHidden);
 
   const copyShareLink = () => {
-    const arr = window.location.href.split("/");
-    const url = arr[0] + "//" + arr[2] + "?keysetAlias=" + set.alias;
+    const url = createURL({ pathname: "/" }, (params) => {
+      clearSearchParams(params);
+      params.set("keysetAlias", set.alias);
+    });
     navigator.clipboard
-      .writeText(url)
+      .writeText(url.href)
       .then(() => {
         queue.notify({ title: "Copied URL to clipboard." });
       })

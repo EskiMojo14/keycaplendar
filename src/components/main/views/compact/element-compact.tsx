@@ -13,7 +13,7 @@ import { queue } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice } from "@s/common";
 import type { SetType } from "@s/main/types";
-import { iconObject } from "@s/util/functions";
+import { clearSearchParams, createURL, iconObject } from "@s/util/functions";
 import { CheckCircle, NewReleases, Share } from "@i";
 import "./element-compact.scss";
 
@@ -43,10 +43,12 @@ export const ElementCompact = ({
   const useLink = device === "desktop";
 
   const copyShareLink = () => {
-    const arr = window.location.href.split("/");
-    const url = arr[0] + "//" + arr[2] + "?keysetAlias=" + set.alias;
+    const url = createURL({ pathname: "/" }, (params) => {
+      clearSearchParams(params);
+      params.set("keysetAlias", set.alias);
+    });
     navigator.clipboard
-      .writeText(url)
+      .writeText(url.href)
       .then(() => {
         queue.notify({ title: "Copied URL to clipboard." });
       })
