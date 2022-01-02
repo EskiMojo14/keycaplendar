@@ -2,11 +2,11 @@ import { DateTime } from "luxon";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import { selectTheme, setTheme } from "@s/common";
-import { Interval } from "@s/common/constructors";
 import firestore from "@s/firebase/firestore";
 import type { UserId } from "@s/firebase/types";
 import { selectLoading, setTransition } from "@s/main";
 import { selectUser } from "@s/user";
+import { Interval } from "@s/util/constructors";
 import { hasKey } from "@s/util/functions";
 import {
   selectCookies,
@@ -15,7 +15,7 @@ import {
   setSetting,
   toggleLich,
 } from ".";
-import type { ViewType } from "./types";
+import type { Settings, ViewType } from "./types";
 
 const { dispatch } = store;
 
@@ -40,9 +40,9 @@ export const getCookie = (name: string) => {
   if (parts.length === 2) return parts.pop()?.split(";").shift();
 };
 
-export const setStorage = (
+export const setStorage = <T>(
   name: string,
-  value: any,
+  value: T,
   state = store.getState()
 ) => {
   const cookies = selectCookies(state);
@@ -66,9 +66,9 @@ export const clearCookies = () => {
   localStorage.removeItem("accepted");
 };
 
-export const syncSetting = (
-  setting: string,
-  value: any,
+export const syncSetting = <K extends keyof Settings>(
+  setting: K,
+  value: Settings[K],
   state = store.getState()
 ) => {
   const user = selectUser(state);
@@ -76,9 +76,7 @@ export const syncSetting = (
   if (user.id && syncSettings) {
     const userDocRef = firestore.collection("users").doc(user.id as UserId);
     const sync = () => {
-      const settingObject: Record<string, any> = {};
-      settingObject[`settings.${setting}`] = value;
-      userDocRef.update(settingObject).catch((error) => {
+      userDocRef.update({ [`settings.${setting}`]: value }).catch((error) => {
         console.log("Failed to sync settings: " + error);
         queue.notify({ title: "Failed to sync settings: " + error });
       });
@@ -152,7 +150,8 @@ const isDarkTheme = (state = store.getState()) => {
   return manualBool || systemBool || timedBool;
 };
 
-let intervalCheckTheme: Interval;
+// eslint-disable-next-line no-use-before-define
+let intervalCheckTheme: Interval<typeof checkTheme>;
 
 export const checkTheme = (state = store.getState()) => {
   if (!intervalCheckTheme) {
@@ -248,7 +247,6 @@ export const setDensity = (density: string, write = true) => {
 };
 
 export const settingFns: Record<string, (val: any, write: boolean) => void> = {
-  accepted: console.log,
   applyTheme: setApplyTheme,
   bottomNav: setBottomNav,
   darkTheme: setDarkTheme,
@@ -256,7 +254,6 @@ export const settingFns: Record<string, (val: any, write: boolean) => void> = {
   fromTimeTheme: setFromTimeTheme,
   lightTheme: setLightTheme,
   manualTheme: setManualTheme,
-  presetId: console.log,
   toTimeTheme: setToTimeTheme,
   view: setView,
 };
