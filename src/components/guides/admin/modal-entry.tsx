@@ -109,7 +109,7 @@ export const ModalCreate = ({
         })
         .catch((error) => {
           console.error("Error adding document: ", error);
-          queue.notify({ title: "Error adding document: " + error });
+          queue.notify({ title: `Error adding document: ${error}` });
         });
     }
   };
@@ -355,7 +355,7 @@ export const ModalEdit = ({
         })
         .catch((error) => {
           console.error("Error adding document: ", error);
-          queue.notify({ title: "Error adding document: " + error });
+          queue.notify({ title: `Error adding document: ${error}` });
         });
     }
   };

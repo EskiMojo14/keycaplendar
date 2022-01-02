@@ -84,7 +84,7 @@ export const ElementCard = ({
         queue.notify({ title: "Copied URL to clipboard." });
       })
       .catch((error) => {
-        queue.notify({ title: "Error copying to clipboard" + error });
+        queue.notify({ title: `Error copying to clipboard ${error}` });
       });
   };
 
@@ -129,7 +129,7 @@ export const ElementCard = ({
         <CardActionIcon
           href={set.details}
           icon="open_in_new"
-          label={"Link to " + title}
+          label={`Link to ${title}`}
           rel="noopener noreferrer"
           tag="a"
           target="_blank"
@@ -141,7 +141,7 @@ export const ElementCard = ({
     ? withTooltip(
         <CardActionIcon
           icon={iconObject(<Share />)}
-          label={"Copy link to " + title}
+          label={`Copy link to ${title}`}
           onClick={copyShareLink}
         />,
         "Share"
@@ -204,7 +204,7 @@ export const ElementCard = ({
             >
               <CardMedia
                 sixteenByNine
-                style={{ backgroundImage: "url(" + image + ")" }}
+                style={{ backgroundImage: `url(${image})` }}
               />
             </LazyLoad>
             {timeIndicator}

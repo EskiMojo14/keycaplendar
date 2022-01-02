@@ -106,9 +106,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
           params.delete("keysetId");
           params.delete("keysetAlias");
           params.delete("keysetName");
-          const questionParam = params.has("page")
-            ? "?" + params.toString()
-            : "/";
+          const questionParam = params.has("page") ? `?${params}` : "/";
           window.history.pushState({}, "KeycapLendar", questionParam);
         }
       }

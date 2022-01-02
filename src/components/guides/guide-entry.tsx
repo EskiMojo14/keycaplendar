@@ -56,7 +56,7 @@ export const GuideEntry = ({
         queue.notify({ title: "Copied URL to clipboard." });
       })
       .catch((error) => {
-        queue.notify({ title: "Error copying to clipboard" + error });
+        queue.notify({ title: `Error copying to clipboard ${error}` });
       });
   };
 

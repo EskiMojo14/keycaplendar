@@ -53,7 +53,7 @@ export const ElementCompact = ({
         queue.notify({ title: "Copied URL to clipboard." });
       })
       .catch((error) => {
-        queue.notify({ title: "Error copying to clipboard" + error });
+        queue.notify({ title: `Error copying to clipboard ${error}` });
       });
   };
 
@@ -94,7 +94,7 @@ export const ElementCompact = ({
               className="mdc-list-item__meta"
               href={link}
               icon="open_in_new"
-              label={"Link to " + title}
+              label={`Link to ${title}`}
               rel="noopener noreferrer"
               tag="a"
               target="_blank"
@@ -104,7 +104,7 @@ export const ElementCompact = ({
         : withTooltip(
             <ListItemMeta
               icon={iconObject(<Share />)}
-              label={"Copy link to " + title}
+              label={`Copy link to ${title}`}
               onClick={copyShareLink}
               tag={IconButton}
             />,

@@ -34,8 +34,8 @@ export const DialogDelete = ({
         getEntries();
       })
       .catch((error) => {
-        console.log("Failed to delete entry: " + error);
-        queue.notify({ title: "Failed to delete entry: " + error });
+        console.log(`Failed to delete entry: ${error}`);
+        queue.notify({ title: `Failed to delete entry: ${error}` });
       });
   };
   return (

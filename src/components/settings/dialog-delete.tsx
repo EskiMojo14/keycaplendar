@@ -23,13 +23,13 @@ export const DialogDelete = ({ close, open, signOut }: DialogDeleteProps) => {
           const {
             data: { error },
           } = result;
-          queue.notify({ title: "Failed to delete account: " + error });
+          queue.notify({ title: `Failed to delete account: ${error}` });
           console.log(
             `Failed to delete account: ${error}. Please contact keycaplendar@gmail.com if this issue reoccurs.`
           );
         } else if (result.data[0]?.error || result.data[1]?.error) {
           const error = result.data[0]?.error || result.data[1]?.error;
-          queue.notify({ title: "Failed to delete account: " + error });
+          queue.notify({ title: `Failed to delete account: ${error}` });
           console.log(
             `Failed to delete account: ${error}. Please contact keycaplendar@gmail.com if this issue reoccurs.`
           );
@@ -40,7 +40,7 @@ export const DialogDelete = ({ close, open, signOut }: DialogDeleteProps) => {
         }
       })
       .catch((error) => {
-        queue.notify({ title: "Failed to delete account: " + error });
+        queue.notify({ title: `Failed to delete account: ${error}` });
         console.log(
           `Failed to delete account: ${error}. Please contact keycaplendar@gmail.com if this issue reoccurs.`
         );

@@ -116,7 +116,7 @@ export const getUsers = (append = false, state = store.getState()) => {
       }
     })
     .catch((error) => {
-      queue.notify({ title: "Error listing users: " + error });
+      queue.notify({ title: `Error listing users: ${error}` });
       dispatch(setLoading(false));
     });
 };

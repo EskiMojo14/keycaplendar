@@ -178,7 +178,7 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
             dispatch(setDetailMetadata(metadata));
           })
           .catch((error) => {
-            queue.notify({ title: "Failed to get metadata: " + error });
+            queue.notify({ title: `Failed to get metadata: ${error}` });
             dispatch(setDetailMetadata({}));
           });
       }
@@ -396,8 +396,7 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
                                   >
                                     <ImageListImage
                                       style={{
-                                        backgroundImage:
-                                          "url(" + image.src + ")",
+                                        backgroundImage: `url(${image.src})`,
                                       }}
                                       tag="div"
                                     />

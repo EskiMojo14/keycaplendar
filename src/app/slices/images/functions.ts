@@ -99,7 +99,7 @@ export const listAll = (state = store.getState()) => {
         }
       })
       .catch((error) => {
-        queue.notify({ title: "Failed to list images: " + error });
+        queue.notify({ title: `Failed to list images: ${error}` });
         dispatch(setLoading(false));
       });
   };

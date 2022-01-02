@@ -190,7 +190,7 @@ export const alphabeticalSortProp = <
  */
 
 export const truncate = (str: string, num: number) =>
-  str.length <= num ? str : str.slice(0, num) + "...";
+  str.length <= num ? str : `${str.slice(0, num)}...`;
 
 /**
  * Capitalise a string's first character.
@@ -291,7 +291,7 @@ export const pluralise = (
   const plurals = expressions.map((value) => {
     if (is<[number, string, string] | [number, string]>(value)) {
       const [val, single, plural] = value;
-      return val === 1 ? single : plural || single + "s";
+      return val === 1 ? single : plural ?? `${single}s`;
     }
     return value;
   });
@@ -435,7 +435,7 @@ export const formatBytes = (bytes: number, decimals = 2) => {
 
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 };
 
 /**

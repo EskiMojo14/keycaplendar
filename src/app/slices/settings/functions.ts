@@ -29,8 +29,8 @@ export const setCookie = (
   if (cookies || cname === "accepted") {
     const d = new Date();
     d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
-    const expires = "expires=" + d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    const expires = `expires=${d.toUTCString()}`;
+    document.cookie = `${cname}=${cvalue};${expires};path=/`;
   }
 };
 
@@ -77,8 +77,8 @@ export const syncSetting = <K extends keyof Settings>(
     const userDocRef = firestore.collection("users").doc(user.id as UserId);
     const sync = () => {
       userDocRef.update({ [`settings.${setting}`]: value }).catch((error) => {
-        console.log("Failed to sync settings: " + error);
-        queue.notify({ title: "Failed to sync settings: " + error });
+        console.log(`Failed to sync settings: ${error}`);
+        queue.notify({ title: `Failed to sync settings: ${error}` });
       });
     };
     userDocRef.get().then((doc) => {
@@ -91,9 +91,9 @@ export const syncSetting = <K extends keyof Settings>(
             sync();
           })
           .catch((error) => {
-            console.log("Failed to create settings object: " + error);
+            console.log(`Failed to create settings object: ${error}`);
             queue.notify({
-              title: "Failed to create settings object: " + error,
+              title: `Failed to create settings object: ${error}`,
             });
           });
       }
@@ -321,8 +321,8 @@ export const setSyncSettings = (
       .doc(user.id as UserId)
       .set({ settings: settingsObject, syncSettings: bool }, { merge: true })
       .catch((error) => {
-        console.log("Failed to set sync setting: " + error);
-        queue.notify({ title: "Failed to set sync setting: " + error });
+        console.log(`Failed to set sync setting: ${error}`);
+        queue.notify({ title: `Failed to set sync setting: ${error}` });
       });
   }
 };

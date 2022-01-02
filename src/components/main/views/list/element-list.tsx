@@ -63,7 +63,7 @@ export const ElementList = ({
         queue.notify({ title: "Copied URL to clipboard." });
       })
       .catch((error) => {
-        queue.notify({ title: "Error copying to clipboard" + error });
+        queue.notify({ title: `Error copying to clipboard ${error}` });
       });
   };
 
@@ -98,7 +98,7 @@ export const ElementList = ({
           className="link-icon"
           href={set.details}
           icon="open_in_new"
-          label={"Link to " + title}
+          label={`Link to ${title}`}
           rel="noopener noreferrer"
           tag="a"
           target="_blank"
@@ -121,7 +121,7 @@ export const ElementList = ({
       >
         <div
           className="list-image"
-          style={{ backgroundImage: "url(" + image + ")" }}
+          style={{ backgroundImage: `url(${image})` }}
         ></div>
       </LazyLoad>
       <ListItemText>

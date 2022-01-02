@@ -29,7 +29,7 @@ export const SnackbarDeleted = ({
         queue.notify({ title: "Successfully deleted thumbnails." });
       })
       .catch((error) => {
-        queue.notify({ title: "Failed to delete thumbnails: " + error });
+        queue.notify({ title: `Failed to delete thumbnails: ${error}` });
         console.log(error);
       });
   };
@@ -64,7 +64,7 @@ export const SnackbarDeleted = ({
       })
       .catch((error) => {
         console.error("Error recreating document: ", error);
-        queue.notify({ title: "Error recreating document: " + error });
+        queue.notify({ title: `Error recreating document: ${error}` });
       });
     closeBar(true);
   };

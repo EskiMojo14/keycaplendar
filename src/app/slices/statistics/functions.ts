@@ -42,7 +42,7 @@ export const getData = async () => {
             );
             queue.notify({
               timeout: 4000,
-              title: "Last updated: " + formattedTimestamp,
+              title: `Last updated: ${formattedTimestamp}`,
             });
             dispatch(setStatisticsData(statisticsData));
             dispatch(setLoading(false));
@@ -51,13 +51,13 @@ export const getData = async () => {
         .catch((error) => {
           console.log(error);
           dispatch(setLoading(false));
-          queue.notify({ title: "Failed to fetch statistics data: " + error });
+          queue.notify({ title: `Failed to fetch statistics data: ${error}` });
         });
     })
     .catch((error) => {
       console.log(error);
       dispatch(setLoading(false));
-      queue.notify({ title: "Failed to create statistics data: " + error });
+      queue.notify({ title: `Failed to create statistics data: ${error}` });
     });
 };
 
@@ -139,7 +139,7 @@ export const setStatisticsTab = (
     const params = new URLSearchParams(window.location.search);
     if (params.has("statisticsTab")) {
       params.delete("statisticsTab");
-      const questionParam = params.has("page") ? "?" + params.toString() : "/";
+      const questionParam = params.has("page") ? `?${params}` : "/";
       window.history.pushState({}, "KeycapLendar", questionParam);
     }
   }

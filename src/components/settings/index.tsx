@@ -118,8 +118,8 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
         dispatch(setUser({}));
       })
       .catch((error) => {
-        console.log("Error signing out: " + error);
-        queue.notify({ title: "Error signing out: " + error });
+        console.log(`Error signing out: ${error}`);
+        queue.notify({ title: `Error signing out: ${error}` });
       });
   };
   const selectApplyTheme = (e: ChangeEvent<HTMLSelectElement>) => {

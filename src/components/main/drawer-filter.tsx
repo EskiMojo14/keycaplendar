@@ -283,7 +283,7 @@ export const DrawerFilter = ({
         queue.notify({ title: "Copied filtered URL to clipboard." });
       })
       .catch((error) => {
-        queue.notify({ title: "Error copying to clipboard" + error });
+        queue.notify({ title: `Error copying to clipboard ${error}` });
       });
   };
 
@@ -587,7 +587,7 @@ export const DrawerFilter = ({
               <ChipSet filter>
                 {profiles.map((profile) => (
                   <Chip
-                    key={"profile-" + profile}
+                    key={profile}
                     checkmark
                     label={profile}
                     onInteraction={() => handleChange(profile, "profiles")}
@@ -641,7 +641,7 @@ export const DrawerFilter = ({
               <ChipSet filter>
                 {whitelistShipped.map((prop) => (
                   <Chip
-                    key={"shipped-" + prop}
+                    key={`shipped-${prop}`}
                     checkmark
                     label={prop}
                     onInteraction={() => handleChange(prop, "shipped")}
@@ -695,7 +695,7 @@ export const DrawerFilter = ({
               <ChipSet filter>
                 {regions.map((region) => (
                   <Chip
-                    key={"regions-" + region}
+                    key={region}
                     checkmark
                     label={region}
                     onInteraction={() => handleChange(region, "regions")}
@@ -766,7 +766,7 @@ export const DrawerFilter = ({
               <ChipSet filter>
                 {vendors.map((vendor) => (
                   <Chip
-                    key={"profile-" + vendor}
+                    key={vendor}
                     checkmark
                     label={vendor}
                     onInteraction={() => handleChange(vendor, "vendors")}

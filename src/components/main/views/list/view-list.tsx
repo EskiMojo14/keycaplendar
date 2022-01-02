@@ -69,7 +69,7 @@ export const ViewList = ({
               : ""
           }`;
         } else if (gbLaunch && is<string>(gbLaunch)) {
-          subtitle = "GB expected " + gbLaunch;
+          subtitle = `GB expected ${gbLaunch}`;
         } else if (set.gbMonth && gbLaunch && gbLaunch instanceof DateTime) {
           subtitle = `GB expected ${
             gbLaunch.toFormat("MMMM") +

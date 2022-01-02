@@ -66,7 +66,7 @@ export const ElementImage = ({
         queue.notify({ title: "Copied URL to clipboard." });
       })
       .catch((error) => {
-        queue.notify({ title: "Error copying to clipboard" + error });
+        queue.notify({ title: `Error copying to clipboard ${error}` });
       });
   };
 
@@ -98,7 +98,7 @@ export const ElementImage = ({
           className="link-icon"
           href={link}
           icon="open_in_new"
-          label={"Link to " + title}
+          label={`Link to ${title}`}
           rel="noopener noreferrer"
           tag="a"
           target="_blank"
@@ -131,7 +131,7 @@ export const ElementImage = ({
             >
               <LazyLoad debounce={false} offsetVertical={480}>
                 <ImageListImage
-                  style={{ backgroundImage: "url(" + image + ")" }}
+                  style={{ backgroundImage: `url(${image})` }}
                   tag="div"
                 />
               </LazyLoad>

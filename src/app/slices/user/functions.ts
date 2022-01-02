@@ -102,8 +102,8 @@ export const getUserPreferences = (id: string) => {
         }
       })
       .catch((error) => {
-        console.log("Failed to get user preferences: " + error);
-        queue.notify({ title: "Failed to get user preferences: " + error });
+        console.log(`Failed to get user preferences: ${error}`);
+        queue.notify({ title: `Failed to get user preferences: ${error}` });
       });
   }
 };
@@ -129,8 +129,8 @@ export const toggleFavorite = (id: string, state = store.getState()) => {
         { merge: true }
       )
       .catch((error) => {
-        console.log("Failed to sync favorites: " + error);
-        queue.notify({ title: "Failed to sync favorites: " + error });
+        console.log(`Failed to sync favorites: ${error}`);
+        queue.notify({ title: `Failed to sync favorites: ${error}` });
       });
   }
 };
@@ -156,8 +156,8 @@ export const toggleBought = (id: string, state = store.getState()) => {
         { merge: true }
       )
       .catch((error) => {
-        console.log("Failed to sync bought sets: " + error);
-        queue.notify({ title: "Failed to sync bought sets: " + error });
+        console.log(`Failed to sync bought sets: ${error}`);
+        queue.notify({ title: `Failed to sync bought sets: ${error}` });
       });
   }
 };
@@ -196,8 +196,8 @@ export const toggleHidden = (id: string, state = store.getState()) => {
         { merge: true }
       )
       .catch((error) => {
-        console.log("Failed to sync hidden sets: " + error);
-        queue.notify({ title: "Failed to sync hidden sets: " + error });
+        console.log(`Failed to sync hidden sets: ${error}`);
+        queue.notify({ title: `Failed to sync hidden sets: ${error}` });
       });
   }
 };
@@ -218,8 +218,8 @@ export const syncShareName = (shareName: string, state = store.getState()) => {
       dispatch(setShareNameLoading(false));
     })
     .catch((error) => {
-      console.log("Failed to sync display name: " + error);
-      queue.notify({ title: "Failed to sync display name: " + error });
+      console.log(`Failed to sync display name: ${error}`);
+      queue.notify({ title: `Failed to sync display name: ${error}` });
     });
 };
 
@@ -239,8 +239,8 @@ export const syncFavoritesId = (id: string, state = store.getState()) => {
       { merge: true }
     )
     .catch((error) => {
-      console.log("Failed to sync favorites ID: " + error);
-      queue.notify({ title: "Failed to sync favorites ID: " + error });
+      console.log(`Failed to sync favorites ID: ${error}`);
+      queue.notify({ title: `Failed to sync favorites ID: ${error}` });
     });
 };
 
@@ -259,6 +259,6 @@ export const getLinkedFavorites = (id: string) => {
     })
     .catch((error) => {
       console.log(error);
-      queue.notify({ title: "Failed to get linked favorites: " + error });
+      queue.notify({ title: `Failed to get linked favorites: ${error}` });
     });
 };

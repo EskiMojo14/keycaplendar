@@ -124,7 +124,7 @@ export const UserCard = ({
         getUsers();
       } else if (result.data.error) {
         queue.notify({
-          title: "Failed to edit user permissions: " + result.data.error,
+          title: `Failed to edit user permissions: ${result.data.error}`,
         });
       } else {
         queue.notify({ title: "Failed to edit user permissions." });

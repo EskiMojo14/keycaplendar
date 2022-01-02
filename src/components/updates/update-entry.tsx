@@ -54,7 +54,7 @@ export const UpdateEntry = ({
         queue.notify({ title: "Copied URL to clipboard." });
       })
       .catch((error) => {
-        queue.notify({ title: "Error copying to clipboard" + error });
+        queue.notify({ title: `Error copying to clipboard ${error}` });
       });
   };
 
@@ -118,7 +118,7 @@ export const UpdateEntry = ({
         linked: entry.id === urlEntry,
         pinned: entry.pinned,
       })}
-      id={"update-entry-" + entry.id}
+      id={`update-entry-${entry.id}`}
     >
       <div className="title-container">
         <div className="title">

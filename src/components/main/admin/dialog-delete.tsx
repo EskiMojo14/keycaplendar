@@ -42,7 +42,7 @@ export const DialogDelete = ({
       })
       .catch((error) => {
         console.error("Error deleting document: ", error);
-        queue.notify({ title: "Error deleting document: " + error });
+        queue.notify({ title: `Error deleting document: ${error}` });
       });
     close();
   };

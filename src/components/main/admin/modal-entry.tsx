@@ -76,7 +76,7 @@ const getVendorStyle = ({ draggableProps: { style } }: DraggableProvided) => {
           style.transform.length - 3
         )
       );
-      const axisLockY = "translate(0px, " + YVal + "px)";
+      const axisLockY = `translate(0px, ${YVal}px)`;
       transform = axisLockY;
     }
     return {
@@ -384,7 +384,7 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
         })
         .catch((error) => {
           console.error(error);
-          queue.notify({ title: "Error adding document: " + error });
+          queue.notify({ title: `Error adding document: ${error}` });
         })
         .finally(() => {
           setUploadingDoc(false);
@@ -400,7 +400,7 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
       const fileName = `${formatFileName(
         `${state.profile} ${state.colorway}`
       )}T${DateTime.utc().toFormat("yyyyMMddHHmmss")}`;
-      const imageRef = keysetsRef.child(fileName + ".png");
+      const imageRef = keysetsRef.child(`${fileName}.png`);
       const uploadTask = imageRef.put(state.image);
       uploadTask.on(
         "state_changed",
@@ -412,7 +412,7 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
         },
         (error) => {
           // Handle unsuccessful uploads
-          queue.notify({ title: "Failed to upload image: " + error });
+          queue.notify({ title: `Failed to upload image: ${error}` });
           setUploadingImage(false);
         },
         () => {
@@ -426,7 +426,7 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
               createEntry(downloadURL);
             })
             .catch((error) => {
-              queue.notify({ title: "Failed to get URL: " + error });
+              queue.notify({ title: `Failed to get URL: ${error}` });
               console.error(error);
             })
             .finally(() => {
@@ -739,7 +739,7 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
                           autoComplete="off"
                           icon={iconObject(<CalendarToday />)}
                           label="End date"
-                          name={"endDate" + index}
+                          name={`endDate${index}`}
                           onChange={handleNamedChangeVendor("endDate", index)}
                           outlined
                           required
@@ -768,7 +768,7 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
                                 className="vendor-title"
                                 use="caption"
                               >
-                                {"Vendor " + (index + 1)}
+                                {`Vendor ${index + 1}`}
                               </Typography>
                               {withTooltip(
                                 <IconButton
@@ -795,7 +795,7 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
                                   autoComplete="off"
                                   icon={iconObject(<Store />)}
                                   label="Name"
-                                  name={"name" + index}
+                                  name={`name${index}`}
                                   onBlur={handleBlur}
                                   onChange={handleChangeVendor}
                                   onFocus={handleFocus}
@@ -806,8 +806,8 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
                                 <Autocomplete
                                   array={allVendors}
                                   minChars={1}
-                                  open={focused === "name" + index}
-                                  prop={"name" + index}
+                                  open={focused === `name${index}`}
+                                  prop={`name${index}`}
                                   query={vendor.name}
                                   select={selectVendor}
                                 />
@@ -817,7 +817,7 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
                                   autoComplete="off"
                                   icon={iconObject(<Public />)}
                                   label="Region"
-                                  name={"region" + index}
+                                  name={`region${index}`}
                                   onBlur={handleBlur}
                                   onChange={handleChangeVendor}
                                   onFocus={handleFocus}
@@ -829,8 +829,8 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
                                   array={allVendorRegions}
                                   listSplit
                                   minChars={1}
-                                  open={focused === "region" + index}
-                                  prop={"region" + index}
+                                  open={focused === `region${index}`}
+                                  prop={`region${index}`}
                                   query={vendor.region}
                                   select={selectVendorAppend}
                                 />
@@ -844,7 +844,7 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
                                 }}
                                 icon="link"
                                 label="Store link"
-                                name={"storeLink" + index}
+                                name={`storeLink${index}`}
                                 onBlur={handleBlur}
                                 onChange={handleChangeVendor}
                                 onFocus={handleFocus}
@@ -857,9 +857,9 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
                                   !!vendor.endDate || vendor.endDate === ""
                                 }
                                 className="end-date-field"
-                                id={"editEndDate" + index}
+                                id={`editEndDate${index}`}
                                 label="Different end date"
-                                name={"endDate" + index}
+                                name={`endDate${index}`}
                                 onChange={handleChangeVendorEndDate}
                               />
                               {endDateField}
@@ -1274,7 +1274,7 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
           getData();
         })
         .catch((error) => {
-          queue.notify({ title: "Error editing document: " + error });
+          queue.notify({ title: `Error editing document: ${error}` });
           console.error(error);
         })
         .finally(() => {
@@ -1291,7 +1291,7 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
       const fileName = `${formatFileName(
         `${state.profile} ${state.colorway}`
       )}T${DateTime.utc().toFormat("yyyyMMddHHmmss")}`;
-      const imageRef = keysetsRef.child(fileName + ".png");
+      const imageRef = keysetsRef.child(`${fileName}.png`);
       const uploadTask = imageRef.put(state.image);
       uploadTask.on(
         "state_changed",
@@ -1304,7 +1304,7 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
         (error) => {
           // Handle unsuccessful uploads
           console.error(error);
-          queue.notify({ title: "Failed to upload image: " + error });
+          queue.notify({ title: `Failed to upload image: ${error}` });
           setUploadingImage(false);
         },
         () => {
@@ -1332,14 +1332,14 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                   })
                   .catch((error) => {
                     queue.notify({
-                      title: "Failed to delete previous thumbnails: " + error,
+                      title: `Failed to delete previous thumbnails: ${error}`,
                     });
                     console.error(error);
                   });
               }
             })
             .catch((error) => {
-              queue.notify({ title: "Failed to get URL: " + error });
+              queue.notify({ title: `Failed to get URL: ${error}` });
               console.error(error);
             })
             .finally(() => {
@@ -1663,7 +1663,7 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                           autoComplete="off"
                           icon={iconObject(<CalendarToday />)}
                           label="End date"
-                          name={"endDate" + index}
+                          name={`endDate${index}`}
                           onChange={handleNamedChangeVendor("endDate", index)}
                           outlined
                           required
@@ -1692,7 +1692,7 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                                 className="vendor-title"
                                 use="caption"
                               >
-                                {"Vendor " + (index + 1)}
+                                {`Vendor ${index + 1}`}
                               </Typography>
                               {withTooltip(
                                 <IconButton
@@ -1719,7 +1719,7 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                                   autoComplete="off"
                                   icon={iconObject(<Store />)}
                                   label="Name"
-                                  name={"name" + index}
+                                  name={`name${index}`}
                                   onBlur={handleBlur}
                                   onChange={handleChangeVendor}
                                   onFocus={handleFocus}
@@ -1730,8 +1730,8 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                                 <Autocomplete
                                   array={allVendors}
                                   minChars={1}
-                                  open={focused === "name" + index}
-                                  prop={"name" + index}
+                                  open={focused === `name${index}`}
+                                  prop={`name${index}`}
                                   query={vendor.name}
                                   select={selectVendor}
                                 />
@@ -1741,7 +1741,7 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                                   autoComplete="off"
                                   icon={iconObject(<Public />)}
                                   label="Region"
-                                  name={"region" + index}
+                                  name={`region${index}`}
                                   onBlur={handleBlur}
                                   onChange={handleChangeVendor}
                                   onFocus={handleFocus}
@@ -1752,8 +1752,8 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                                 <Autocomplete
                                   array={allVendorRegions}
                                   minChars={1}
-                                  open={focused === "region" + index}
-                                  prop={"region" + index}
+                                  open={focused === `region${index}`}
+                                  prop={`region${index}`}
                                   query={vendor.region}
                                   select={selectVendorAppend}
                                 />
@@ -1767,7 +1767,7 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                                 }}
                                 icon="link"
                                 label="Store link"
-                                name={"storeLink" + index}
+                                name={`storeLink${index}`}
                                 onBlur={handleBlur}
                                 onChange={handleChangeVendor}
                                 onFocus={handleFocus}
@@ -1780,9 +1780,9 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                                   !!vendor.endDate || vendor.endDate === ""
                                 }
                                 className="end-date-field"
-                                id={"editEndDate" + index}
+                                id={`editEndDate${index}`}
                                 label="Different end date"
-                                name={"endDate" + index}
+                                name={`endDate${index}`}
                                 onChange={handleChangeVendorEndDate}
                               />
                               {endDateField}

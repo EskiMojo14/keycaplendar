@@ -281,7 +281,7 @@ const createGroups = (transition = false, state = store.getState()) => {
     const diff = sets.length - allGroupedSets.length;
 
     if (diff > 0) {
-      queue.notify({ title: diff + " sets hidden due to sort setting." });
+      queue.notify({ title: `${diff} sets hidden due to sort setting.` });
     }
   }
 };
@@ -445,14 +445,12 @@ export const setWhitelistMerge = (
                 {
                   page,
                 },
-                "KeycapLendar: " + pageTitle[page],
-                "?" + params.toString()
+                `KeycapLendar: ${pageTitle[page]}`,
+                `?${params}`
               );
             }
           } else {
-            const questionParam = params.has("page")
-              ? "?" + params.toString()
-              : "/";
+            const questionParam = params.has("page") ? `?${params}` : "/";
             window.history.pushState({}, "KeycapLendar", questionParam);
           }
         }
@@ -492,14 +490,12 @@ export const setWhitelist = <T extends keyof WhitelistType>(
                 {
                   page,
                 },
-                "KeycapLendar: " + pageTitle[page],
-                "?" + params.toString()
+                `KeycapLendar: ${pageTitle[page]}`,
+                `?${params}`
               );
             }
           } else {
-            const questionParam = params.has("page")
-              ? "?" + params.toString()
-              : "/";
+            const questionParam = params.has("page") ? `?${params}` : "/";
             window.history.pushState({}, "KeycapLendar", questionParam);
           }
         }
@@ -634,7 +630,7 @@ export const getData = () => {
             : 0;
           const gbLaunch =
             doc.data().gbMonth && docGbLaunch && !docGbLaunch.includes("Q")
-              ? docGbLaunch + "-" + lastInMonth
+              ? `${docGbLaunch}-${lastInMonth}`
               : docGbLaunch;
           const sales = is<string>(docSales)
             ? { img: docSales, thirdParty: false }
@@ -658,8 +654,8 @@ export const getData = () => {
       generateLists(store.getState());
     })
     .catch((error) => {
-      console.log("Error getting data: " + error);
-      queue.notify({ title: "Error getting data: " + error });
+      console.log(`Error getting data: ${error}`);
+      queue.notify({ title: `Error getting data: ${error}` });
       dispatch(setLoading(false));
       dispatch(setSetGroups([]));
     });
@@ -761,7 +757,7 @@ export const setSort = (
     const params = new URLSearchParams(window.location.search);
     if (params.has("sort")) {
       params.delete("sort");
-      const questionParam = params.has("page") ? "?" + params.toString() : "/";
+      const questionParam = params.has("page") ? `?${params}` : "/";
       window.history.pushState({}, "KeycapLendar", questionParam);
     }
   }
@@ -775,7 +771,7 @@ export const setSortOrder = (sortOrder: SortOrderType, clearUrl = true) => {
     const params = new URLSearchParams(window.location.search);
     if (params.has("sortOrder")) {
       params.delete("sortOrder");
-      const questionParam = params.has("page") ? "?" + params.toString() : "/";
+      const questionParam = params.has("page") ? `?${params}` : "/";
       window.history.pushState({}, "KeycapLendar", questionParam);
     }
   }
@@ -850,8 +846,8 @@ export const syncPresets = (state = store.getState()) => {
     .doc(user.id as UserId)
     .set({ filterPresets: sortedPresets }, { merge: true })
     .catch((error) => {
-      console.log("Failed to sync presets: " + error);
-      queue.notify({ title: "Failed to sync presets: " + error });
+      console.log(`Failed to sync presets: ${error}`);
+      queue.notify({ title: `Failed to sync presets: ${error}` });
     });
 };
 
@@ -909,8 +905,8 @@ export const syncGlobalPresets = (state = store.getState()) => {
     .doc("globals")
     .set({ filterPresets: sortedPresets }, { merge: true })
     .catch((error) => {
-      console.log("Failed to sync presets: " + error);
-      queue.notify({ title: "Failed to sync presets: " + error });
+      console.log(`Failed to sync presets: ${error}`);
+      queue.notify({ title: `Failed to sync presets: ${error}` });
     });
 };
 

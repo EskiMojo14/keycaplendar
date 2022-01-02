@@ -36,12 +36,9 @@ const formatDate = (
   const digits = parseDigits(string);
   const chars = digits.split("");
   if (allowQuarter && string.charAt(0) === "Q") {
-    return (
-      "Q" +
-      chars
-        .reduce((r, v, index) => (index === 0 ? `${r}${v} ` : r + v), "")
-        .substr(0, 6)
-    );
+    return `Q${chars
+      .reduce((r, v, index) => (index === 0 ? `${r}${v} ` : r + v), "")
+      .substr(0, 6)}`;
   } else {
     return chars
       .reduce(
@@ -60,9 +57,9 @@ const formatDateWithAppend =
       (res.length === 4 || (res.length === 7 && !month)) &&
       (!allowQuarter || string.charAt(0) !== "Q")
     ) {
-      return res + "-";
+      return `${res}-`;
     } else if (allowQuarter && string.charAt(0) !== "Q" && res.length === 1) {
-      return res + " ";
+      return `${res} `;
     }
     return res;
   };

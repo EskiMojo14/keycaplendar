@@ -94,7 +94,7 @@ export const App = () => {
             }
           })
           .catch((error) => {
-            queue.notify({ title: "Error verifying custom claims: " + error });
+            queue.notify({ title: `Error verifying custom claims: ${error}` });
             dispatch(
               setUser({
                 avatar: user.photoURL ?? "",

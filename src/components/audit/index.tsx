@@ -133,7 +133,7 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
         closeDelete();
       })
       .catch((error) => {
-        queue.notify({ title: "Error deleting changelog entry: " + error });
+        queue.notify({ title: `Error deleting changelog entry: ${error}` });
         closeDelete();
       });
   };

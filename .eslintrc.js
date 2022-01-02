@@ -144,6 +144,7 @@ module.exports = {
         enforceForRenamedProperties: true,
       },
     ],
+    "prefer-template": "warn",
     "react/destructuring-assignment": ["error", "always"],
     "react/function-component-definition": [
       "error",

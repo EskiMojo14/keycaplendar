@@ -145,13 +145,13 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
           dispatch(setLoading(false));
         } else {
           queue.notify({
-            title: "User " + user.displayName + " successfully deleted.",
+            title: `User ${user.displayName} successfully deleted.`,
           });
           getUsers();
         }
       })
       .catch((error) => {
-        queue.notify({ title: "Error deleting user: " + error });
+        queue.notify({ title: `Error deleting user: ${error}` });
         dispatch(setLoading(false));
       });
   };
@@ -376,7 +376,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                       <div className="button-container">
                         <Button
                           disabled={!nextPageToken}
-                          label={"Next " + length}
+                          label={`Next ${length}`}
                           onClick={() => {
                             getUsers(true);
                           }}

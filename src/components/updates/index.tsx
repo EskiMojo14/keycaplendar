@@ -50,7 +50,7 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
 
   useEffect(() => {
     if (urlEntry) {
-      const element = document.getElementById("update-entry-" + urlEntry);
+      const element = document.getElementById(`update-entry-${urlEntry}`);
       const topBar = document.querySelector<HTMLElement>(".mdc-top-app-bar");
       if (element) {
         setTimeout(() => {

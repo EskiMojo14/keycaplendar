@@ -97,7 +97,7 @@ export const DrawerDetails = ({
         queue.notify({ title: "Copied URL to clipboard." });
       })
       .catch((error) => {
-        queue.notify({ title: "Error copying to clipboard" + error });
+        queue.notify({ title: `Error copying to clipboard ${error}` });
       });
   };
 
@@ -177,9 +177,9 @@ export const DrawerDetails = ({
         gbEnd.year !== today.year ? gbEnd.toFormat("\xa0yyyy") : ""
       }.`;
     } else if (gbLaunch && is<string>(gbLaunch)) {
-      gb = "GB expected " + gbLaunch + ".";
+      gb = `GB expected ${gbLaunch}.`;
     } else if (set.gbMonth && gbLaunch && gbLaunch instanceof DateTime) {
-      gb = "Expected " + gbLaunch.toFormat("MMMM") + ".";
+      gb = `Expected ${gbLaunch.toFormat("MMMM")}.`;
     } else if (gbLaunch && gbLaunch instanceof DateTime) {
       gb = `${verb} from ${gbLaunch.toFormat(`d'${gbLaunchOrdinal}'\xa0MMMM`)}${
         gbLaunch.year !== today.year ? gbLaunch.toFormat("\xa0yyyy") : ""
@@ -417,8 +417,9 @@ export const DrawerDetails = ({
           <div
             className="details-image"
             style={{
-              backgroundImage:
-                "url(" + (set.image?.replace("keysets", "card") ?? "") + ")",
+              backgroundImage: `url(${
+                set.image?.replace("keysets", "card") ?? ""
+              })`,
             }}
           ></div>
           <div className="details-text">

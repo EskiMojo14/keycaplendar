@@ -78,7 +78,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
     const params = new URLSearchParams(window.location.search);
     if (params.has("guideId")) {
       params.delete("guideId");
-      const questionParam = params.has("page") ? "?" + params.toString() : "/";
+      const questionParam = params.has("page") ? `?${params}` : "/";
       window.history.pushState({}, "KeycapLendar", questionParam);
     }
   };

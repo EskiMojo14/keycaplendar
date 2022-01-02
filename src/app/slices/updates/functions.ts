@@ -43,8 +43,8 @@ export const getEntries = () => {
       sortEntries(entries);
     })
     .catch((error) => {
-      console.log("Error getting data: " + error);
-      queue.notify({ title: "Error getting data: " + error });
+      console.log(`Error getting data: ${error}`);
+      queue.notify({ title: `Error getting data: ${error}` });
     });
 };
 
