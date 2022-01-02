@@ -107,25 +107,19 @@ export const AuditEntry = ({
             </DataTableRow>
           </DataTableHead>
           <DataTableBody>
-            {auditProperties.map((property, index) => {
+            {auditProperties.map((property) => {
               const domain =
                 /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
               if (
                 action.action === "updated" &&
-                hasKey(action.before, property) &&
-                hasKey(action.after, property) &&
+                (hasKey(action.before, property) ||
+                  hasKey(action.after, property)) &&
                 ((property !== "profile" && property !== "colorway") ||
                   ((property === "profile" || property === "colorway") &&
                     !isEqual(action.before[property], action.after[property])))
               ) {
-                const beforeProp: Partial<KeysetDoc>[keyof KeysetDoc] = action
-                  .before[property]
-                  ? action.before[property]
-                  : "";
-                const afterProp: Partial<KeysetDoc>[keyof KeysetDoc] = action
-                  .after[property]
-                  ? action.after[property]
-                  : "";
+                const beforeProp = action.before[property] ?? "";
+                const afterProp = action.after[property] ?? "";
                 if (
                   !arrayProps.includes(property) &&
                   property !== "vendors" &&
@@ -134,7 +128,7 @@ export const AuditEntry = ({
                   !boolProps.includes(property)
                 ) {
                   return (
-                    <DataTableRow key={property + index}>
+                    <DataTableRow key={property}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell className="before">
                         <span className="highlight">{beforeProp}</span>
@@ -150,7 +144,7 @@ export const AuditEntry = ({
                   is<any[]>(afterProp)
                 ) {
                   return (
-                    <DataTableRow key={property + index}>
+                    <DataTableRow key={property}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell className="before">
                         <span className="highlight">
@@ -192,7 +186,7 @@ export const AuditEntry = ({
                       : { name: "", region: "", storeLink: "" };
                     if (!isEqual(afterVendor, beforeVendor)) {
                       return (
-                        <DataTableRow key={afterVendor.name + index}>
+                        <DataTableRow key={afterVendor.name}>
                           <DataTableCell>{property + index}</DataTableCell>
                           <DataTableCell className="before">
                             <div>
@@ -333,7 +327,7 @@ export const AuditEntry = ({
                   is<string>(afterProp)
                 ) {
                   return (
-                    <DataTableRow key={property + index}>
+                    <DataTableRow key={property}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell className="before">
                         <span className="highlight">
@@ -361,7 +355,7 @@ export const AuditEntry = ({
                   );
                 } else if (boolProps.includes(property)) {
                   return (
-                    <DataTableRow key={property + index}>
+                    <DataTableRow key={property}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell className="before" hasFormControl>
                         <Checkbox checked={!!beforeProp} disabled />
@@ -383,7 +377,7 @@ export const AuditEntry = ({
                     ? afterProp.img
                     : afterProp;
                   return (
-                    <DataTableRow key={property + index}>
+                    <DataTableRow key={property}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell className="before">
                         <div>
@@ -458,7 +452,7 @@ export const AuditEntry = ({
                   !boolProps.includes(property)
                 ) {
                   return (
-                    <DataTableRow key={property + index}>
+                    <DataTableRow key={property}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell
                         className={
@@ -471,7 +465,7 @@ export const AuditEntry = ({
                   );
                 } else if (arrayProps.includes(property) && is<any[]>(prop)) {
                   return (
-                    <DataTableRow key={property + index}>
+                    <DataTableRow key={property}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell
                         className={
@@ -486,7 +480,7 @@ export const AuditEntry = ({
                   const domain =
                     /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
                   return docData.vendors.map((vendor, index) => (
-                    <DataTableRow key={vendor.name + index}>
+                    <DataTableRow key={vendor.name}>
                       <DataTableCell>{property + index}</DataTableCell>
                       <DataTableCell
                         className={
@@ -530,7 +524,7 @@ export const AuditEntry = ({
                   ));
                 } else if (urlProps.includes(property) && is<string>(prop)) {
                   return (
-                    <DataTableRow key={property + index}>
+                    <DataTableRow key={property}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell
                         className={
@@ -551,7 +545,7 @@ export const AuditEntry = ({
                   );
                 } else if (boolProps.includes(property) && is<boolean>(prop)) {
                   return (
-                    <DataTableRow key={property + index}>
+                    <DataTableRow key={property}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell
                         className={
@@ -568,7 +562,7 @@ export const AuditEntry = ({
                 ) {
                   const sales = !is<string>(prop) ? prop.img : `${prop}`;
                   return (
-                    <DataTableRow key={property + index}>
+                    <DataTableRow key={property}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell
                         className={

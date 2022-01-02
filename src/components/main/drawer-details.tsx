@@ -376,9 +376,9 @@ export const DrawerDetails = ({
       <div className="search-chips">
         <ChipSet choice id="search-chip-set">
           <div className="padding-fix" />
-          {chips.map((value, index) => (
+          {chips.map((value) => (
             <Chip
-              key={value.toLowerCase() + index}
+              key={value}
               icon="search"
               label={value}
               onClick={() => {

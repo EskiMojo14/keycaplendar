@@ -161,6 +161,7 @@ module.exports = {
         reservedFirst: true,
       },
     ],
+    "react/no-array-index-key": "warn",
     "sort-destructure-keys/sort-destructure-keys": [
       2,
       { caseSensitive: false },
