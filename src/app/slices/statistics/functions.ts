@@ -591,7 +591,7 @@ export const getData = async () => {
             );
             queue.notify({
               timeout: 4000,
-              title: "Last updated: " + formattedTimestamp,
+              title: `Last updated: ${formattedTimestamp}`,
             });
             hydrateData(statisticsData);
           });
@@ -599,13 +599,13 @@ export const getData = async () => {
         .catch((error) => {
           console.log(error);
           dispatch(setLoading(false));
-          queue.notify({ title: "Failed to fetch statistics data: " + error });
+          queue.notify({ title: `Failed to fetch statistics data: ${error}` });
         });
     })
     .catch((error) => {
       console.log(error);
       dispatch(setLoading(false));
-      queue.notify({ title: "Failed to create statistics data: " + error });
+      queue.notify({ title: `Failed to create statistics data: ${error}` });
     });
 };
 
@@ -624,14 +624,11 @@ export const filterLabels =
     )[]
   ) =>
   (label: T, index: number, array: T[]): boolean => {
-    for (const breakpoint of breakpoints.sort(
+    for (const [minLength, divisor, condition] of breakpoints.sort(
       (aTuple, bTuple) => bTuple[0] - aTuple[0]
     )) {
-      if (
-        array.length >= breakpoint[0] &&
-        (breakpoint[2] === undefined || breakpoint[2])
-      ) {
-        return index % breakpoint[1] === 0;
+      if (array.length >= minLength && (condition === undefined || condition)) {
+        return index % divisor === 0;
       }
     }
     return true;
@@ -693,7 +690,7 @@ export const setStatisticsTab = (
     const params = new URLSearchParams(window.location.search);
     if (params.has("statisticsTab")) {
       params.delete("statisticsTab");
-      const questionParam = params.has("page") ? "?" + params.toString() : "/";
+      const questionParam = params.has("page") ? `?${params}` : "/";
       window.history.pushState({}, "KeycapLendar", questionParam);
     }
   }

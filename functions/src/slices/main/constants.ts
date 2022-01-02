@@ -4,4 +4,11 @@ import { Pages } from "./types";
 
 export const dateSorts = ["icDate", "gbLaunch", "gbEnd"] as const;
 
-export const pages: Pages[] = ["calendar", "live", "ic", "previous", "timeline", "archive"];
+export const pages: Pages[] = [
+  "calendar",
+  "live",
+  "ic",
+  "previous",
+  "timeline",
+  "archive",
+];

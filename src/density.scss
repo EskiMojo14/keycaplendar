@@ -119,11 +119,6 @@
         padding-bottom: 8px + $diff;
       }
     }
-    .mdc-card__actions {
-      .skeleton-block--icon {
-        margin: 0 12px + $diff;
-      }
-    }
   }
   .content-container .mdc-drawer.mdc-drawer--dismissible {
     height: calc(100% - #{top-app-bar.$row-height + $diff});

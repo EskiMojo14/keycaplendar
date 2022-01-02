@@ -38,6 +38,8 @@ import { toggleBought, toggleFavorite, toggleHidden } from "@s/user/functions";
 import {
   alphabeticalSortProp,
   arrayIncludes,
+  clearSearchParams,
+  createURL,
   hasKey,
   iconObject,
   ordinal,
@@ -85,15 +87,17 @@ export const DrawerDetails = ({
   const search = useAppSelector(selectSearch);
 
   const copyLink = () => {
-    const arr = window.location.href.split("/");
-    const url = arr[0] + "//" + arr[2] + "?keysetAlias=" + set.alias;
+    const url = createURL({ pathname: "/" }, (params) => {
+      clearSearchParams(params);
+      params.set("keysetAlias", set.alias);
+    });
     navigator.clipboard
-      .writeText(url)
+      .writeText(url.href)
       .then(() => {
         queue.notify({ title: "Copied URL to clipboard." });
       })
       .catch((error) => {
-        queue.notify({ title: "Error copying to clipboard" + error });
+        queue.notify({ title: `Error copying to clipboard ${error}` });
       });
   };
 
@@ -173,9 +177,9 @@ export const DrawerDetails = ({
         gbEnd.year !== today.year ? gbEnd.toFormat("\xa0yyyy") : ""
       }.`;
     } else if (gbLaunch && is<string>(gbLaunch)) {
-      gb = "GB expected " + gbLaunch + ".";
+      gb = `GB expected ${gbLaunch}.`;
     } else if (set.gbMonth && gbLaunch && gbLaunch instanceof DateTime) {
-      gb = "Expected " + gbLaunch.toFormat("MMMM") + ".";
+      gb = `Expected ${gbLaunch.toFormat("MMMM")}.`;
     } else if (gbLaunch && gbLaunch instanceof DateTime) {
       gb = `${verb} from ${gbLaunch.toFormat(`d'${gbLaunchOrdinal}'\xa0MMMM`)}${
         gbLaunch.year !== today.year ? gbLaunch.toFormat("\xa0yyyy") : ""
@@ -376,9 +380,9 @@ export const DrawerDetails = ({
       <div className="search-chips">
         <ChipSet choice id="search-chip-set">
           <div className="padding-fix" />
-          {chips.map((value, index) => (
+          {chips.map((value) => (
             <Chip
-              key={value.toLowerCase() + index}
+              key={value}
               icon="search"
               label={value}
               onClick={() => {
@@ -413,19 +417,18 @@ export const DrawerDetails = ({
           <div
             className="details-image"
             style={{
-              backgroundImage:
-                "url(" + (set.image?.replace("keysets", "card") ?? "") + ")",
+              backgroundImage: `url(${
+                set.image?.replace("keysets", "card") ?? ""
+              })`,
             }}
           ></div>
           <div className="details-text">
             <Typography tag="h3" use="overline">
-              Designed by {set.designer ? set.designer.join(" + ") : ""}
+              Designed by {set.designer?.join(" + ")}
             </Typography>
             <Typography tag="h1" use="headline4">
               <Twemoji options={{ className: "twemoji" }}>
-                {`${set.profile ? set.profile : ""} ${
-                  set.colorway ? set.colorway : ""
-                }`}
+                {`${set.profile ?? ""} ${set.colorway ?? ""}`}
               </Twemoji>
             </Typography>
             {gbLine}

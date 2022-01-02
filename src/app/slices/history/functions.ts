@@ -37,7 +37,7 @@ export const setHistoryTab = (
     const params = new URLSearchParams(window.location.search);
     if (params.has("historyTab")) {
       params.delete("historyTab");
-      const questionParam = params.has("page") ? "?" + params.toString() : "/";
+      const questionParam = params.has("page") ? `?${params}` : "/";
       window.history.pushState({}, "KeycapLendar", questionParam);
     }
   }
@@ -88,7 +88,7 @@ export const getData = () => {
     })
     .catch((error) => {
       console.log(error);
-      queue.notify({ title: "Failed to get changelog: " + error });
+      queue.notify({ title: `Failed to get changelog: ${error}` });
     });
 };
 

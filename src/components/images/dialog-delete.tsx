@@ -58,7 +58,7 @@ export const DialogDelete = ({
         listAll();
       })
       .catch((error) => {
-        queue.notify({ title: "Failed to delete files: " + error });
+        queue.notify({ title: `Failed to delete files: ${error}` });
         console.log(error);
         dispatch(setLoading(false));
       });

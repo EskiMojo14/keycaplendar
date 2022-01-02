@@ -16,7 +16,7 @@ import { selectFilteredTag, setFilteredTag } from "@s/guides";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
 import type { GuideEntryType } from "@s/guides/types";
 import { selectUser } from "@s/user";
-import { iconObject } from "@s/util/functions";
+import { clearSearchParams, createURL, iconObject } from "@s/util/functions";
 import { Delete, Edit, Share } from "@i";
 import "./guide-entry.scss";
 
@@ -46,15 +46,17 @@ export const GuideEntry = ({
   };
 
   const copyLink = () => {
-    const arr = window.location.href.split("/");
-    const url = arr[0] + "//" + arr[2] + "/guides?guideId=" + entry.id;
+    const url = createURL({ pathname: "/guides" }, (params) => {
+      clearSearchParams(params);
+      params.set("guideId", entry.id);
+    });
     navigator.clipboard
-      .writeText(url)
+      .writeText(url.href)
       .then(() => {
         queue.notify({ title: "Copied URL to clipboard." });
       })
       .catch((error) => {
-        queue.notify({ title: "Error copying to clipboard" + error });
+        queue.notify({ title: `Error copying to clipboard ${error}` });
       });
   };
 

@@ -91,7 +91,7 @@ export const DrawerSearch = ({
               onClick={toggleRegex}
               onIcon={iconObject(<Regex />)}
             />,
-            (regexSearch ? "Disable" : "Enable") + " regex search"
+            `${regexSearch ? "Disable" : "Enable"} regex search`
           )}
           value={search}
         />
@@ -102,7 +102,7 @@ export const DrawerSearch = ({
             <ListItem key={image.fullPath} disabled>
               <ListItemGraphic
                 className="image"
-                style={{ backgroundImage: "url(" + image.src + ")" }}
+                style={{ backgroundImage: `url(${image.src})` }}
               />
               {withTooltip(
                 <ListItemText>

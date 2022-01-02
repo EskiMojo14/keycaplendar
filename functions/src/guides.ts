@@ -12,7 +12,11 @@ export const getGuides = functions.https.onCall((data, context) => {
   let editor = false;
   let admin = false;
   if (context.auth) {
-    const { designer: isDesigner, editor: isEditor, admin: isAdmin } = context.auth.token;
+    const {
+      designer: isDesigner,
+      editor: isEditor,
+      admin: isAdmin,
+    } = context.auth.token;
     designer = Boolean(isDesigner);
     editor = Boolean(isEditor);
     admin = Boolean(isAdmin);
@@ -24,7 +28,10 @@ export const getGuides = functions.https.onCall((data, context) => {
     .then((querySnapshot) => {
       const entries: GuideEntryType[] = [];
       querySnapshot.forEach((doc) => {
-        const { visibility, ...data } = doc.data() as Omit<GuideEntryType, "id">;
+        const { visibility, ...data } = doc.data() as Omit<
+          GuideEntryType,
+          "id"
+        >;
         const entry: GuideEntryType = {
           ...data,
           visibility,

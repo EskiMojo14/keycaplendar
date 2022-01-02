@@ -65,7 +65,18 @@ export type PresetType = {
 
 export type OldPresetType = Overwrite<
   PresetType,
-  { whitelist: Overwrite<WhitelistType, { regions?: string[]; bought?: boolean }> }
+  {
+    whitelist: Overwrite<
+      WhitelistType,
+      { regions?: string[]; bought?: boolean }
+    >;
+  }
 >;
 
-export type Pages = "calendar" | "live" | "ic" | "previous" | "timeline" | "archive";
+export type Pages =
+  | "calendar"
+  | "live"
+  | "ic"
+  | "previous"
+  | "timeline"
+  | "archive";

@@ -108,7 +108,7 @@ export const getActions = (state = store.getState()) => {
       processActions(actions);
     })
     .catch((error) => {
-      queue.notify({ title: "Error getting data: " + error });
+      queue.notify({ title: `Error getting data: ${error}` });
       dispatch(setLoading(false));
     });
 };

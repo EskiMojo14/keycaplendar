@@ -78,7 +78,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
     const params = new URLSearchParams(window.location.search);
     if (params.has("guideId")) {
       params.delete("guideId");
-      const questionParam = params.has("page") ? "?" + params.toString() : "/";
+      const questionParam = params.has("page") ? `?${params}` : "/";
       window.history.pushState({}, "KeycapLendar", questionParam);
     }
   };
@@ -91,7 +91,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   };
 
   useEffect(() => {
-    const id = urlEntry ? urlEntry : "Di1F9XkWTG2M9qbP2ZcN";
+    const id = urlEntry || "Di1F9XkWTG2M9qbP2ZcN";
     const index = entries.findIndex((entry) => entry.id === id);
     if (index >= 0 && device === "desktop") {
       const { [index]: entry } = entries;

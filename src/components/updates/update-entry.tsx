@@ -17,7 +17,12 @@ import { CustomReactMarkdown } from "@c/util/react-markdown";
 import { selectURLEntry } from "@s/updates";
 import type { UpdateEntryType } from "@s/updates/types";
 import { selectUser } from "@s/user";
-import { iconObject, ordinal } from "@s/util/functions";
+import {
+  clearSearchParams,
+  createURL,
+  iconObject,
+  ordinal,
+} from "@s/util/functions";
 import { Delete, Edit, PushPin, Share } from "@i";
 import "./update-entry.scss";
 
@@ -39,15 +44,17 @@ export const UpdateEntry = ({
   const urlEntry = useAppSelector(selectURLEntry);
 
   const copyLink = () => {
-    const arr = window.location.href.split("/");
-    const url = arr[0] + "//" + arr[2] + "/updates?updateId=" + entry.id;
+    const url = createURL({ pathname: "/updates" }, (params) => {
+      clearSearchParams(params);
+      params.set("updateId", entry.id);
+    });
     navigator.clipboard
-      .writeText(url)
+      .writeText(url.href)
       .then(() => {
         queue.notify({ title: "Copied URL to clipboard." });
       })
       .catch((error) => {
-        queue.notify({ title: "Error copying to clipboard" + error });
+        queue.notify({ title: `Error copying to clipboard ${error}` });
       });
   };
 
@@ -111,7 +118,7 @@ export const UpdateEntry = ({
         linked: entry.id === urlEntry,
         pinned: entry.pinned,
       })}
-      id={"update-entry-" + entry.id}
+      id={`update-entry-${entry.id}`}
     >
       <div className="title-container">
         <div className="title">

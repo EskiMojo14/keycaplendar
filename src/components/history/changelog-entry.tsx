@@ -80,12 +80,12 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
             } = dataObj;
             let contents: ReactNode;
             if (is<string>(useData)) {
-              const domain = useData.match(domainRegex);
+              const [domain] = useData.match(domainRegex) ?? [];
               contents = (
                 <span className="highlight">
                   {arrayIncludes(urlProps, prop) && domain ? (
                     <a href={useData} rel="noreferrer" target="_blank">
-                      {domain[0]}
+                      {domain}
                     </a>
                   ) : arrayIncludes(dateProps, prop) ? (
                     DateTime.fromISO(useData, { zone: "utc" }).toFormat(
@@ -110,7 +110,7 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
             } else if (arrayIncludes(boolProps, prop) && is<boolean>(useData)) {
               contents = <Checkbox checked={useData} disabled />;
             } else if (prop === "sales" && is<KeysetDoc["sales"]>(useData)) {
-              const domain = useData.img.match(domainRegex);
+              const [domain] = useData.img.match(domainRegex) ?? [];
               contents = (
                 <>
                   <div>
@@ -121,7 +121,7 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                         rel="noopener noreferrer"
                         target="_blank"
                       >
-                        {domain ? domain[0] : null}
+                        {domain}
                       </a>
                     </span>
                   </div>
@@ -133,9 +133,7 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
               );
             } else if (prop === "vendors" && is<VendorType[]>(useData)) {
               contents = useData.map((vendor, index) => {
-                const domain = vendor.storeLink
-                  ? vendor.storeLink.match(domainRegex)
-                  : null;
+                const [domain] = vendor.storeLink?.match(domainRegex) ?? [];
                 return (
                   <div
                     key={vendor.name + vendor.id}
@@ -150,13 +148,13 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                     {vendor.storeLink ? (
                       <>
                         <span className="highlight">
-                          Link:
+                          Link:{" "}
                           <a
                             href={vendor.storeLink}
                             rel="noopener noreferrer"
                             target="_blank"
                           >
-                            {domain ? domain[0] : null}
+                            {domain}
                           </a>
                         </span>
                         <br />
@@ -207,14 +205,14 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
             before: null,
           };
           if (is<string>(beforeData) && is<string>(afterData)) {
-            const beforeDomain = beforeData.match(domainRegex);
-            const afterDomain = afterData.match(domainRegex);
+            const [beforeDomain] = beforeData.match(domainRegex) ?? [];
+            const [afterDomain] = afterData.match(domainRegex) ?? [];
             contents = {
               after: (
                 <span className="highlight">
                   {arrayIncludes(urlProps, prop) && afterDomain ? (
                     <a href={afterData} rel="noreferrer" target="_blank">
-                      {afterDomain[0]}
+                      {afterDomain}
                     </a>
                   ) : arrayIncludes(dateProps, prop) ? (
                     DateTime.fromISO(afterData, { zone: "utc" }).toFormat(
@@ -233,7 +231,7 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                 <span className="highlight">
                   {arrayIncludes(urlProps, prop) && beforeDomain ? (
                     <a href={beforeData} rel="noreferrer" target="_blank">
-                      {beforeDomain[0]}
+                      {beforeDomain}
                     </a>
                   ) : arrayIncludes(dateProps, prop) ? (
                     beforeData ? (
@@ -276,12 +274,14 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
             is<KeysetDoc["sales"]>(beforeData) &&
             is<KeysetDoc["sales"]>(afterData)
           ) {
-            const beforeDomain = (
-              is<string>(beforeData) ? beforeData : beforeData.img
-            ).match(domainRegex);
-            const afterDomain = (
-              is<string>(afterData) ? afterData : afterData.img
-            ).match(domainRegex);
+            const [beforeDomain] =
+              (is<string>(beforeData) ? beforeData : beforeData.img).match(
+                domainRegex
+              ) ?? [];
+            const [afterDomain] =
+              (is<string>(afterData) ? afterData : afterData.img).match(
+                domainRegex
+              ) ?? [];
             contents = {
               after: (
                 <>
@@ -293,7 +293,7 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                         rel="noopener noreferrer"
                         target="_blank"
                       >
-                        {afterDomain ? afterDomain[0] : null}
+                        {afterDomain}
                       </a>
                     </span>
                   </div>
@@ -315,7 +315,7 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                         rel="noopener noreferrer"
                         target="_blank"
                       >
-                        {beforeDomain ? beforeDomain[0] : null}
+                        {beforeDomain}
                       </a>
                     </span>
                   </div>
@@ -334,9 +334,7 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
             is<VendorType[]>(afterData)
           ) {
             const displayVendor = (vendor: VendorType, index: number) => {
-              const domain = vendor.storeLink
-                ? vendor.storeLink.match(domainRegex)
-                : null;
+              const [domain] = vendor.storeLink?.match(domainRegex) ?? [];
               return (
                 <div key={vendor.name + vendor.id} className="vendor-container">
                   <Typography use="subtitle2">Vendor {index + 1}</Typography>
@@ -348,13 +346,13 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                   {vendor.storeLink ? (
                     <>
                       <span className="highlight">
-                        Link:
+                        Link:{" "}
                         <a
                           href={vendor.storeLink}
                           rel="noopener noreferrer"
                           target="_blank"
                         >
-                          {domain ? domain[0] : null}
+                          {domain}
                         </a>
                       </span>
                       <br />

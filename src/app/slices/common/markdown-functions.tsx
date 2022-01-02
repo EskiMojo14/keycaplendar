@@ -14,7 +14,7 @@ export const componentBuilder = (name: string, Component: FunctionComponent) =>
       /* eslint-enable @typescript-eslint/no-unused-vars */
       ...allProps
     }: Record<string, any>) => <Component {...allProps} />,
-    { displayName: "Custom " + name }
+    { displayName: `Custom ${name}` }
   );
 
 export const typographyBuilder = (tag: string, typography: TypographyT) =>
@@ -33,5 +33,5 @@ export const typographyBuilder = (tag: string, typography: TypographyT) =>
         {children}
       </Typography>
     ),
-    { displayName: "Custom " + tag }
+    { displayName: `Custom ${tag}` }
   );

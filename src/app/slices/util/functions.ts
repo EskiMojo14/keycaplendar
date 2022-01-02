@@ -6,6 +6,7 @@ import { is } from "typescript-is";
 import { replaceChars } from "@s/common/constants";
 import firebase from "@s/firebase";
 import type { DateSortKeys, SetType } from "@s/main/types";
+import type { KeysMatching, WritableKeys } from "./types";
 
 const storage = firebase.storage();
 
@@ -18,10 +19,7 @@ const storageRef = storage.ref();
  * @returns Whether `obj` has the specified `key`.
  */
 
-export const hasKey = <O extends Record<string, unknown>>(
-  obj: O,
-  key: keyof any
-): key is keyof O => key in obj;
+export const hasKey = <O>(obj: O, key: keyof any): key is keyof O => key in obj;
 
 /**
  * Use function to check type and inform typescript you've done so.
@@ -64,7 +62,8 @@ export const arrayEveryType = <T>(
 export const mergeObjects = <T>(obj: T, ...objs: Partial<T>[]): T =>
   Object.assign({}, obj, ...objs);
 
-/** Returns an array of object keys to iterate on.
+/**
+ * Returns an array of object keys to iterate on.
  *
  * Only use for objects you're certain won't gain more keys in runtime.
  */
@@ -75,7 +74,8 @@ export const objectKeys = <T extends Record<string, any>>(
 
 /**
  * Returns an array of object entries to iterate on.
- * Only use for objects you're certain won't gain more entries in runtime.
+ *
+ * Only use for objects you're certain won't gain more keys in runtime.
  */
 
 export const objectEntries = <T extends Record<string, any>>(
@@ -217,7 +217,7 @@ export const alphabeticalSortProp = <
  */
 
 export const truncate = (str: string, num: number) =>
-  str.length <= num ? str : str.slice(0, num) + "...";
+  str.length <= num ? str : `${str.slice(0, num)}...`;
 
 /**
  * Capitalise a string's first character.
@@ -269,8 +269,8 @@ export const normalise = (str: string, includeSpace = true) => {
 
 export const replaceFunction = (str: string) => {
   let val = str;
-  replaceChars.forEach((set) => {
-    val = val.replace(set[0], set[1]);
+  replaceChars.forEach(([searchValue, replaceValue]) => {
+    val = val.replace(searchValue, replaceValue);
   });
   return val;
 };
@@ -318,7 +318,7 @@ export const pluralise = (
   const plurals = expressions.map((value) => {
     if (is<[number, string, string] | [number, string]>(value)) {
       const [val, single, plural] = value;
-      return val === 1 ? single : plural || single + "s";
+      return val === 1 ? single : plural ?? `${single}s`;
     }
     return value;
   });
@@ -474,7 +474,7 @@ export const formatBytes = (bytes: number, decimals = 2) => {
 
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 };
 
 /**
@@ -561,3 +561,54 @@ export const localeUses24HourTime = (langCode?: string) =>
  */
 export const randomInt = (min = 0, max = 1) =>
   Math.round(Math.random() * (max - min)) + min;
+
+/**
+ * Creates a URL object with specified options (uses current URL as base if not provided), and provides searchParams to function to modify
+ * @param opts keys in URL object to modify
+ * @param paramsMod Function which receives URLSearchParams and modifies it
+ * @returns URL object
+ * @example
+ * const url = createURL({ pathname: "/page" }, (params) => {
+ *   params.set("search", "test")
+ * });
+ * console.log(url.href) // <current URL>/page?search=test<rest>
+ */
+export const createURL = (
+  {
+    href = window.location.href,
+    ...opts
+  }: Partial<
+    Pick<URL, KeysMatching<Pick<URL, WritableKeys<URL>>, string>>
+  > = {},
+  paramsMod?: (params: URLSearchParams) => void
+) => {
+  const url = new URL(href);
+  objectEntries(opts).forEach(([key, val]) => {
+    if (typeof val === "string" && hasKey(url, key)) {
+      url[key] = val;
+    }
+  });
+  paramsMod?.(url.searchParams);
+  return url;
+};
+
+/**
+ * Loops through URL search params and clears all keys that aren't in `except` whitelist
+ * @param params URLSearchParams to modify
+ * @param except Keys to keep
+ * @example
+ * const params = new URLSearchParams("foo=1&bar=2");
+ * clearSearchParams(params, ["bar"]);
+ * console.log(params.toString()) // "bar=2"
+ */
+
+export const clearSearchParams = (
+  params: URLSearchParams,
+  except: string[] = []
+) => {
+  params.forEach((_, name) => {
+    if (!except.includes(name)) {
+      params.delete(name);
+    }
+  });
+};

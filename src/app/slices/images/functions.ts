@@ -34,11 +34,8 @@ export const createSetImageList = (state = store.getState()) => {
   const setImages = alphabeticalSort(
     allSets
       .map((set) => {
-        const regexMatch = set.image.match(fileNameRegex);
-        if (regexMatch) {
-          return decodeURIComponent(regexMatch[1]);
-        }
-        return "";
+        const [, regexMatch] = set.image.match(fileNameRegex) ?? [];
+        return regexMatch ? decodeURIComponent(regexMatch) : "";
       })
       .filter(Boolean)
   );
@@ -56,7 +53,7 @@ const processItems = (items: firebase.storage.Reference[], append = false) => {
     const obj: ImageType = {
       ...new ImageObj(
         itemRef.name,
-        itemRef.parent ? itemRef.parent.fullPath : "",
+        itemRef.parent?.fullPath ?? "",
         itemRef.fullPath,
         src
       ),
@@ -102,7 +99,7 @@ export const listAll = (state = store.getState()) => {
         }
       })
       .catch((error) => {
-        queue.notify({ title: "Failed to list images: " + error });
+        queue.notify({ title: `Failed to list images: ${error}` });
         dispatch(setLoading(false));
       });
   };

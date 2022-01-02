@@ -1,5 +1,12 @@
-import { Card, CardActions, CardMedia } from "@rmwc/card";
+import {
+  Card,
+  CardActionIcon,
+  CardActionIcons,
+  CardActions,
+  CardMedia,
+} from "@rmwc/card";
 import { SkeletonBlock, SkeletonIcon } from "@c/util/skeleton-block";
+import { iconObject } from "@s/util/functions";
 
 export type SkeletonCardProps = {
   designer?: string;
@@ -62,8 +69,22 @@ export const SkeletonCard = ({
               typography="button"
             />
           </div>
-          <SkeletonIcon />
-          <SkeletonIcon />
+          <CardActionIcons>
+            <CardActionIcon
+              icon={iconObject(<SkeletonIcon />)}
+              ripple={false}
+              role="presentation"
+              tabIndex={-1}
+              tag="div"
+            />
+            <CardActionIcon
+              icon={iconObject(<SkeletonIcon />)}
+              ripple={false}
+              role="presentation"
+              tabIndex={-1}
+              tag="div"
+            />
+          </CardActionIcons>
         </CardActions>
       )}
     </Card>

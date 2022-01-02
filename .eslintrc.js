@@ -144,6 +144,7 @@ module.exports = {
         enforceForRenamedProperties: true,
       },
     ],
+    "prefer-template": "warn",
     "react/destructuring-assignment": ["error", "always"],
     "react/function-component-definition": [
       "error",
@@ -161,6 +162,7 @@ module.exports = {
         reservedFirst: true,
       },
     ],
+    "react/no-array-index-key": "warn",
     "sort-destructure-keys/sort-destructure-keys": [
       2,
       { caseSensitive: false },

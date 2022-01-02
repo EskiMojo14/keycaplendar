@@ -73,13 +73,13 @@ export const App = () => {
           .then((result) => {
             dispatch(
               setUser({
-                avatar: user.photoURL ? user.photoURL : "",
-                email: user.email ? user.email : "",
+                avatar: user.photoURL ?? "",
+                email: user.email ?? "",
                 id: user.uid,
                 isAdmin: result.data.admin,
                 isDesigner: result.data.designer,
                 isEditor: result.data.editor,
-                name: user.displayName ? user.displayName : "",
+                name: user.displayName ?? "",
                 nickname: result.data.nickname,
               })
             );
@@ -88,13 +88,13 @@ export const App = () => {
             }
           })
           .catch((error) => {
-            queue.notify({ title: "Error verifying custom claims: " + error });
+            queue.notify({ title: `Error verifying custom claims: ${error}` });
             dispatch(
               setUser({
-                avatar: user.photoURL ? user.photoURL : "",
-                email: user.email ? user.email : "",
+                avatar: user.photoURL ?? "",
+                email: user.email ?? "",
                 id: user.uid,
-                name: user.displayName ? user.displayName : "",
+                name: user.displayName ?? "",
               })
             );
           });

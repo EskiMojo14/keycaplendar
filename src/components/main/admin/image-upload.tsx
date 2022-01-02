@@ -69,7 +69,7 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
       })
       .catch((err) => {
         setLoading(false);
-        queue.notify({ title: "Failed to fetch image: " + err });
+        queue.notify({ title: `Failed to fetch image: ${err}` });
       });
   };
 
@@ -171,7 +171,7 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
   const areaInner = hasImage ? (
     <div
       className="image-display-image"
-      style={{ backgroundImage: "url(" + imageBase64 + ")" }}
+      style={{ backgroundImage: `url(${imageBase64})` }}
     />
   ) : loading ? null : desktop && !imageFromURL ? (
     <div className="drag-label">

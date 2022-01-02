@@ -37,14 +37,14 @@ export const getEntries = () => {
         entries.push({
           ...data,
           id: doc.id,
-          pinned: data.pinned ? data.pinned : false,
+          pinned: data.pinned ?? false,
         });
       });
       sortEntries(entries);
     })
     .catch((error) => {
-      console.log("Error getting data: " + error);
-      queue.notify({ title: "Error getting data: " + error });
+      console.log(`Error getting data: ${error}`);
+      queue.notify({ title: `Error getting data: ${error}` });
     });
 };
 

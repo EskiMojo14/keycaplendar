@@ -34,3 +34,28 @@ export type KeysMatching<T, V> = {
 /** Alias for standard HTML props. */
 
 export type HTMLProps = HTMLAttributes<HTMLElement>;
+
+/** Compares two types and evaluates to `A` (`X` by default) if the same, otherwise evaluates to `B` (`never` by default) */
+
+export type IfEquals<X, Y, A = X, B = never> = (<T>() => T extends X
+  ? 1
+  : 2) extends <T>() => T extends Y ? 1 : 2
+  ? A
+  : B;
+
+export type WritableKeys<T> = {
+  [P in keyof T]-?: IfEquals<
+    { [Q in P]: T[P] },
+    { -readonly [Q in P]: T[P] },
+    P
+  >;
+}[keyof T];
+
+export type ReadonlyKeys<T> = {
+  [P in keyof T]-?: IfEquals<
+    { [Q in P]: T[P] },
+    { -readonly [Q in P]: T[P] },
+    never,
+    P
+  >;
+}[keyof T];

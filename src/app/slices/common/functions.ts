@@ -294,8 +294,8 @@ export const getGlobals = () => {
       }
     })
     .catch((error) => {
-      console.log("Failed to get global settings: " + error);
-      queue.notify({ title: "Failed to get global settings: " + error });
+      console.log(`Failed to get global settings: ${error}`);
+      queue.notify({ title: `Failed to get global settings: ${error}` });
     });
 };
 
@@ -318,7 +318,7 @@ export const setPage = (page: Page, state = store.getState()) => {
       }
       document.documentElement.scrollTop = 0;
     }, 90);
-    document.title = "KeycapLendar: " + pageTitle[page];
+    document.title = `KeycapLendar: ${pageTitle[page]}`;
     const params = new URLSearchParams(window.location.search);
     params.delete("page");
     const pageParams = [
@@ -346,13 +346,13 @@ export const setPage = (page: Page, state = store.getState()) => {
     if (linkedFavorites.array.length > 0) {
       dispatch(setLinkedFavorites({ array: [], displayName: "" }));
     }
-    const urlParams = params.toString() ? "?" + params.toString() : "";
+    const urlParams = params.toString() ? `?${params}` : "";
     window.history.pushState(
       {
         page,
       },
-      "KeycapLendar: " + pageTitle[page],
-      "/" + page + urlParams
+      `KeycapLendar: ${pageTitle[page]}`,
+      `/${page}${urlParams}`
     );
   }
 };

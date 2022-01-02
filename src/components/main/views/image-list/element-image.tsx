@@ -17,7 +17,12 @@ import { queue } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice } from "@s/common";
 import type { SetType } from "@s/main/types";
-import { iconObject, pluralise } from "@s/util/functions";
+import {
+  clearSearchParams,
+  createURL,
+  iconObject,
+  pluralise,
+} from "@s/util/functions";
 import { CheckCircle, NewReleases, Share } from "@i";
 import "./element-image.scss";
 
@@ -51,15 +56,17 @@ export const ElementImage = ({
   const device = useAppSelector(selectDevice);
 
   const copyShareLink = () => {
-    const arr = window.location.href.split("/");
-    const url = arr[0] + "//" + arr[2] + "?keysetAlias=" + set.alias;
+    const url = createURL({ pathname: "/" }, (params) => {
+      clearSearchParams(params);
+      params.set("keysetAlias", set.alias);
+    });
     navigator.clipboard
-      .writeText(url)
+      .writeText(url.href)
       .then(() => {
         queue.notify({ title: "Copied URL to clipboard." });
       })
       .catch((error) => {
-        queue.notify({ title: "Error copying to clipboard" + error });
+        queue.notify({ title: `Error copying to clipboard ${error}` });
       });
   };
 
@@ -91,7 +98,7 @@ export const ElementImage = ({
           className="link-icon"
           href={link}
           icon="open_in_new"
-          label={"Link to " + title}
+          label={`Link to ${title}`}
           rel="noopener noreferrer"
           tag="a"
           target="_blank"
@@ -124,7 +131,7 @@ export const ElementImage = ({
             >
               <LazyLoad debounce={false} offsetVertical={480}>
                 <ImageListImage
-                  style={{ backgroundImage: "url(" + image + ")" }}
+                  style={{ backgroundImage: `url(${image})` }}
                   tag="div"
                 />
               </LazyLoad>

@@ -40,6 +40,8 @@ import { selectUser, selectUserPresets } from "@s/user";
 import {
   addOrRemove,
   alphabeticalSort,
+  arrayIncludes,
+  createURL,
   hasKey,
   iconObject,
 } from "@s/util/functions";
@@ -212,78 +214,76 @@ export const DrawerFilter = ({
   };
 
   const copyLink = () => {
-    const params = new URLSearchParams(window.location.search);
-    whitelistParams.forEach((param) => {
-      if (param === "profile" || param === "region" || param === "vendor") {
-        const plural = `${param}s` as const;
-        const whitelist = mainWhitelist;
-        const { [plural]: array } = whitelist;
-        if (is<string[]>(array) && array.length === 1) {
-          params.set(
-            param,
-            array.map((item: string) => item.replace(" ", "-")).join(" ")
-          );
-        } else {
-          params.delete(param);
-        }
-      } else if (param === "vendorMode") {
-        if (mainWhitelist.vendorMode !== "exclude") {
-          params.set(param, mainWhitelist[param]);
-        } else {
-          params.delete(param);
-        }
-      } else if (
-        param === "profiles" ||
-        param === "shipped" ||
-        param === "regions" ||
-        param === "vendors"
-      ) {
-        const lengths = {
-          profiles: profiles.length,
-          regions: regions.length,
-          shipped: 2,
-          vendors: 0,
-        };
-        if (
-          param === "profiles" ||
-          param === "regions" ||
-          param === "vendors"
+    const url = createURL({}, (params) => {
+      whitelistParams.forEach((param) => {
+        if (arrayIncludes(["profile", "region", "vendor"] as const, param)) {
+          const plural = `${param}s` as const;
+          const whitelist = mainWhitelist;
+          const { [plural]: array } = whitelist;
+          if (is<string[]>(array) && array.length === 1) {
+            params.set(
+              param,
+              array.map((item: string) => item.replace(" ", "-")).join(" ")
+            );
+          } else {
+            params.delete(param);
+          }
+        } else if (param === "vendorMode") {
+          if (mainWhitelist.vendorMode !== "exclude") {
+            params.set(param, mainWhitelist[param]);
+          } else {
+            params.delete(param);
+          }
+        } else if (
+          arrayIncludes(
+            ["profiles", "shipped", "regions", "vendors"] as const,
+            param
+          )
         ) {
+          const lengths = {
+            profiles: profiles.length,
+            regions: regions.length,
+            shipped: 2,
+            vendors: 0,
+          };
           if (
-            mainWhitelist[param].length > 1 &&
-            mainWhitelist[param].length !== lengths[param]
+            arrayIncludes(["profiles", "regions", "vendors"] as const, param)
           ) {
-            params.set(
-              param,
-              mainWhitelist[param]
-                .map((profile) => profile.replace(" ", "-"))
-                .join(" ")
-            );
+            if (
+              mainWhitelist[param].length > 1 &&
+              mainWhitelist[param].length !== lengths[param]
+            ) {
+              params.set(
+                param,
+                mainWhitelist[param]
+                  .map((profile) => profile.replace(" ", "-"))
+                  .join(" ")
+              );
+            } else {
+              params.delete(param);
+            }
           } else {
-            params.delete(param);
-          }
-        } else {
-          if (mainWhitelist[param].length !== lengths[param]) {
-            params.set(
-              param,
-              mainWhitelist[param]
-                .map((item) => item.replace(" ", "-"))
-                .join(" ")
-            );
-          } else {
-            params.delete(param);
+            if (mainWhitelist[param].length !== lengths[param]) {
+              params.set(
+                param,
+                mainWhitelist[param]
+                  .map((item) => item.replace(" ", "-"))
+                  .join(" ")
+              );
+            } else {
+              params.delete(param);
+            }
           }
         }
-      }
+      });
     });
-    const url = window.location.href.split("?")[0] + "?" + params.toString();
     navigator.clipboard
-      .writeText(url)
+      .writeText(url.href)
       .then(() => {
         queue.notify({ title: "Copied filtered URL to clipboard." });
       })
       .catch((error) => {
-        queue.notify({ title: "Error copying to clipboard" + error });
+        queue.notify({ title: `Error copying to clipboard ${error}` });
       });
   };
 
@@ -587,7 +587,7 @@ export const DrawerFilter = ({
               <ChipSet filter>
                 {profiles.map((profile) => (
                   <Chip
-                    key={"profile-" + profile}
+                    key={profile}
                     checkmark
                     label={profile}
                     onInteraction={() => handleChange(profile, "profiles")}
@@ -641,7 +641,7 @@ export const DrawerFilter = ({
               <ChipSet filter>
                 {whitelistShipped.map((prop) => (
                   <Chip
-                    key={"shipped-" + prop}
+                    key={`shipped-${prop}`}
                     checkmark
                     label={prop}
                     onInteraction={() => handleChange(prop, "shipped")}
@@ -695,7 +695,7 @@ export const DrawerFilter = ({
               <ChipSet filter>
                 {regions.map((region) => (
                   <Chip
-                    key={"regions-" + region}
+                    key={region}
                     checkmark
                     label={region}
                     onInteraction={() => handleChange(region, "regions")}
@@ -766,7 +766,7 @@ export const DrawerFilter = ({
               <ChipSet filter>
                 {vendors.map((vendor) => (
                   <Chip
-                    key={"profile-" + vendor}
+                    key={vendor}
                     checkmark
                     label={vendor}
                     onInteraction={() => handleChange(vendor, "vendors")}
