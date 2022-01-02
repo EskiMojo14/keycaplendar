@@ -134,15 +134,15 @@ const isDarkTheme = (state = store.getState()) => {
     window.matchMedia("(prefers-color-scheme: dark)").matches;
 
   const currentDay = DateTime.now();
-  const fromArray = settings.fromTimeTheme.split(":");
+  const [fromHour = "0", fromMinute = "0"] = settings.fromTimeTheme.split(":");
   const fromTime = currentDay.set({
-    hour: parseInt(fromArray[0] || "0"),
-    minute: parseInt(fromArray[1] || "0"),
+    hour: parseInt(fromHour),
+    minute: parseInt(fromMinute),
   });
-  const toArray = settings.toTimeTheme.split(":");
+  const [toHour = "0", toMinute = "0"] = settings.toTimeTheme.split(":");
   const toTime = currentDay.set({
-    hour: parseInt(toArray[0] || "0"),
-    minute: parseInt(toArray[1] || "0"),
+    hour: parseInt(toHour),
+    minute: parseInt(toMinute),
   });
   const timedBool =
     settings.applyTheme === "timed" &&

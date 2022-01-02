@@ -67,11 +67,11 @@ export const apiAuth = functions.https.onRequest(async (request, response) => {
 
 const verify = (req: functions.Request) => {
   if (req.headers.authorization) {
-    const accessToken = req.headers.authorization.split(" ");
-    if (accessToken.length !== 2 || !accessToken[1]) return false;
+    const [scheme, accessToken] = req.headers.authorization.split(" ");
+    if (!scheme || !accessToken) return false;
     let payload;
     try {
-      payload = jwt.verify(accessToken[1], functions.config().jwt.secret);
+      payload = jwt.verify(accessToken, functions.config().jwt.secret);
       return payload;
     } catch (e) {
       console.error(e);
@@ -158,7 +158,7 @@ export const getKeysetsByPage = functions.https.onRequest(
     if (auth === false) {
       response.status(401).send({ error: "Unauthorized" });
     }
-    const page = request.path.split("/").slice(-1)[0];
+    const [page] = request.path.split("/").slice(-1);
     if (page && arrayIncludes(pages, page)) {
       try {
         const snapshot = await admin.firestore().collection("keysets").get();

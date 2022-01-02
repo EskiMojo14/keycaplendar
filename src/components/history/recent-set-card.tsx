@@ -160,10 +160,7 @@ export const RecentSetCard = ({
           <div className="button-container">
             {pages.map((page) => {
               if (arrayIncludes(mainPages, page)) {
-                const title =
-                  page === "previous"
-                    ? pageTitle[page].split(" ")[0]
-                    : pageTitle[page];
+                const [title] = pageTitle[page].split(" ");
                 return (
                   <Button
                     key={page}

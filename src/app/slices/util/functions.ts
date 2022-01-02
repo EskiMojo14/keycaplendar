@@ -233,8 +233,8 @@ export const normalise = (str: string, includeSpace = true) => {
 
 export const replaceFunction = (str: string) => {
   let val = str;
-  replaceChars.forEach((set) => {
-    val = val.replace(set[0], set[1]);
+  replaceChars.forEach(([searchValue, replaceValue]) => {
+    val = val.replace(searchValue, replaceValue);
   });
   return val;
 };

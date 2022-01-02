@@ -80,12 +80,12 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
             } = dataObj;
             let contents: ReactNode;
             if (is<string>(useData)) {
-              const domain = useData.match(domainRegex);
+              const [domain] = useData.match(domainRegex) ?? [];
               contents = (
                 <span className="highlight">
                   {arrayIncludes(urlProps, prop) && domain ? (
                     <a href={useData} rel="noreferrer" target="_blank">
-                      {domain[0]}
+                      {domain}
                     </a>
                   ) : arrayIncludes(dateProps, prop) ? (
                     DateTime.fromISO(useData, { zone: "utc" }).toFormat(
@@ -205,14 +205,14 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
             before: null,
           };
           if (is<string>(beforeData) && is<string>(afterData)) {
-            const beforeDomain = beforeData.match(domainRegex);
-            const afterDomain = afterData.match(domainRegex);
+            const [beforeDomain] = beforeData.match(domainRegex) ?? [];
+            const [afterDomain] = afterData.match(domainRegex) ?? [];
             contents = {
               after: (
                 <span className="highlight">
                   {arrayIncludes(urlProps, prop) && afterDomain ? (
                     <a href={afterData} rel="noreferrer" target="_blank">
-                      {afterDomain[0]}
+                      {afterDomain}
                     </a>
                   ) : arrayIncludes(dateProps, prop) ? (
                     DateTime.fromISO(afterData, { zone: "utc" }).toFormat(
@@ -231,7 +231,7 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                 <span className="highlight">
                   {arrayIncludes(urlProps, prop) && beforeDomain ? (
                     <a href={beforeData} rel="noreferrer" target="_blank">
-                      {beforeDomain[0]}
+                      {beforeDomain}
                     </a>
                   ) : arrayIncludes(dateProps, prop) ? (
                     beforeData ? (

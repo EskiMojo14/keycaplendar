@@ -34,11 +34,8 @@ export const createSetImageList = (state = store.getState()) => {
   const setImages = alphabeticalSort(
     allSets
       .map((set) => {
-        const regexMatch = set.image.match(fileNameRegex);
-        if (regexMatch) {
-          return decodeURIComponent(regexMatch[1]);
-        }
-        return "";
+        const [, regexMatch] = set.image.match(fileNameRegex) ?? [];
+        return regexMatch ? decodeURIComponent(regexMatch) : "";
       })
       .filter(Boolean)
   );
