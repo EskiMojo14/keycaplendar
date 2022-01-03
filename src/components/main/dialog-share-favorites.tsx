@@ -54,7 +54,7 @@ export const DialogShareFavorites = ({
 
   const url = useMemo(
     () =>
-      createURL({ pathname: "/guides" }, (params) => {
+      createURL({ pathname: "/favorites" }, (params) => {
         clearSearchParams(params);
         params.set("favoritesId", favoritesId);
       }),

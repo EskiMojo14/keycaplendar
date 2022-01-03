@@ -22,8 +22,11 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 //firebase.analytics();
 
-/*if (process.env.NODE_ENV === "development") {
+const emulateFn = true;
+
+if (process.env.NODE_ENV === "development" && emulateFn) {
+  // eslint-disable-next-line import/no-named-as-default-member
   firebase.functions().useEmulator("localhost", 5001);
-}*/
+}
 
 export default firebase;
