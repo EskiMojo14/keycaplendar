@@ -14,7 +14,7 @@ import type {
   ProcessedPublicActionType,
   RecentSet,
 } from "@s/history/types";
-import { Keyset } from "@s/main/constructors";
+import { partialSet } from "@s/main/constructors";
 
 let store = createStore();
 
@@ -32,7 +32,7 @@ const action: ProcessedPublicActionType = {
 };
 
 const recentSet: RecentSet = {
-  currentSet: { ...new Keyset() },
+  currentSet: partialSet(),
   deleted: false,
   designer: [],
   id: "",

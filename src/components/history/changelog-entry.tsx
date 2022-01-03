@@ -110,14 +110,14 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
             } else if (arrayIncludes(boolProps, prop) && is<boolean>(useData)) {
               contents = <Checkbox checked={useData} disabled />;
             } else if (prop === "sales" && is<KeysetDoc["sales"]>(useData)) {
-              const [domain] = useData.img.match(domainRegex) ?? [];
+              const [domain] = useData?.img.match(domainRegex) ?? [];
               contents = (
                 <>
                   <div>
                     <span className="highlight">
                       Image:{" "}
                       <a
-                        href={useData.img}
+                        href={useData?.img}
                         rel="noopener noreferrer"
                         target="_blank"
                       >
@@ -127,7 +127,7 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                   </div>
                   <div className="list-checkbox">
                     <span className="highlight">Third party:</span>{" "}
-                    <Checkbox checked={useData.thirdParty} disabled />
+                    <Checkbox checked={useData?.thirdParty} disabled />
                   </div>
                 </>
               );
@@ -275,11 +275,12 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
             is<KeysetDoc["sales"]>(afterData)
           ) {
             const [beforeDomain] =
-              (is<string>(beforeData) ? beforeData : beforeData.img).match(
-                domainRegex
-              ) ?? [];
+              (is<string>(beforeData)
+                ? beforeData
+                : beforeData?.img ?? ""
+              ).match(domainRegex) ?? [];
             const [afterDomain] =
-              (is<string>(afterData) ? afterData : afterData.img).match(
+              (is<string>(afterData) ? afterData : afterData?.img ?? "").match(
                 domainRegex
               ) ?? [];
             contents = {
@@ -289,7 +290,9 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                     <span className="highlight">
                       Image:{" "}
                       <a
-                        href={is<string>(afterData) ? afterData : afterData.img}
+                        href={
+                          is<string>(afterData) ? afterData : afterData?.img
+                        }
                         rel="noopener noreferrer"
                         target="_blank"
                       >
@@ -300,7 +303,7 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                   {is<string>(afterData) ? null : (
                     <div className="list-checkbox">
                       <span className="highlight">Third party:</span>{" "}
-                      <Checkbox checked={afterData.thirdParty} disabled />
+                      <Checkbox checked={afterData?.thirdParty} disabled />
                     </div>
                   )}
                 </>
@@ -311,7 +314,9 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                     <span className="highlight">
                       Image:{" "}
                       <a
-                        href={is<string>(afterData) ? afterData : afterData.img}
+                        href={
+                          is<string>(afterData) ? afterData : afterData?.img
+                        }
                         rel="noopener noreferrer"
                         target="_blank"
                       >
@@ -322,7 +327,7 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                   {is<string>(beforeData) ? null : (
                     <div className="list-checkbox">
                       <span className="highlight">Third party:</span>{" "}
-                      <Checkbox checked={beforeData.thirdParty} disabled />
+                      <Checkbox checked={beforeData?.thirdParty} disabled />
                     </div>
                   )}
                 </>

@@ -20,7 +20,7 @@ import {
   selectURLSet,
   setURLSet,
 } from "@s/main";
-import { Keyset, Preset } from "@s/main/constructors";
+import { partialSet, Preset } from "@s/main/constructors";
 import type { PresetType, SetType } from "@s/main/types";
 import { selectBottomNav, selectView } from "@s/settings";
 import { selectUser } from "@s/user";
@@ -52,7 +52,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   const urlSet = useAppSelector(selectURLSet);
   const linkedFavorites = useAppSelector(selectLinkedFavorites);
 
-  const blankSet: SetType = new Keyset();
+  const blankSet = partialSet();
   const blankPreset: PresetType = new Preset();
 
   const [detailsOpen, setDetailsOpen] = useState(false);

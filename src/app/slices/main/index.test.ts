@@ -33,7 +33,7 @@ import {
   setURLWhitelist,
   setWhitelist,
 } from "@s/main";
-import { Keyset, Preset, Whitelist } from "@s/main/constructors";
+import { partialSet, Preset, Whitelist } from "@s/main/constructors";
 import type {
   PresetType,
   SetGroup,
@@ -83,14 +83,14 @@ it("sets specified list", () => {
 });
 
 it("sets specified set list", () => {
-  const list: SetType[] = [new Keyset("test")];
+  const list: SetType[] = [partialSet()];
   store.dispatch(setSetList("allSets", list));
   const response = selectAllSets(store.getState());
   expect(response).toEqual(list);
 });
 
 it("sets set groups", () => {
-  const groups: SetGroup[] = [{ sets: [new Keyset("test")], title: "test" }];
+  const groups: SetGroup[] = [{ sets: [partialSet()], title: "test" }];
   store.dispatch(setSetGroups(groups));
   const response = selectSetGroups(store.getState());
   expect(response).toEqual(groups);

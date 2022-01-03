@@ -3,9 +3,9 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
 import type { RootState } from "~/app/store";
+import { partialSet, Preset } from "@s/main/constructors";
 import { randomInt, removeDuplicates } from "@s/util/functions";
 import type { KeysMatching } from "@s/util/types";
-import { Keyset, Preset } from "./constructors";
 import type {
   PresetType,
   SetGroup,
@@ -15,24 +15,22 @@ import type {
   WhitelistType,
 } from "./types";
 
-export const generateRandomSet = (): SetType => ({
-  ...new Keyset(
-    nanoid(randomInt(3, 4)),
-    nanoid(randomInt(5, 14)),
-    [...Array(randomInt(1, 3))].map(() => nanoid(randomInt(5, 7))),
-    "",
-    DateTime.now()
-      .minus({ days: randomInt(0, 100) })
-      .toISODate(),
-    DateTime.now()
-      .minus({ days: randomInt(0, 100) })
-      .toISODate(),
-    DateTime.now()
+export const generateRandomSet = (): SetType =>
+  partialSet({
+    colorway: nanoid(randomInt(5, 14)),
+    designer: [...Array(randomInt(1, 3))].map(() => nanoid(randomInt(5, 7))),
+    gbEnd: DateTime.now()
       .minus({ days: randomInt(1, 100) })
-      .toISODate()
-  ),
-  id: nanoid(),
-});
+      .toISODate(),
+    gbLaunch: DateTime.now()
+      .minus({ days: randomInt(0, 100) })
+      .toISODate(),
+    icDate: DateTime.now()
+      .minus({ days: randomInt(0, 100) })
+      .toISODate(),
+    id: nanoid(),
+    profile: nanoid(randomInt(3, 4)),
+  });
 
 export const generateRandomSetGroups = (): SetGroup[] =>
   [...Array(randomInt(2, 8))].map<SetGroup>(() => ({

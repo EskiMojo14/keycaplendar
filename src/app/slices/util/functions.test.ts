@@ -1,4 +1,4 @@
-import { Keyset } from "@s/main/constructors";
+import { partialSet } from "@s/main/constructors";
 import {
   addOrRemove,
   alphabeticalSort,
@@ -145,10 +145,7 @@ describe("getSetMonthRange", () => {
   it("creates an array of months from sets provided, in specified format", () => {
     expect(
       getSetMonthRange(
-        [
-          { ...new Keyset("", "", [], "", "2021-01") },
-          { ...new Keyset("", "", [], "", "2021-03") },
-        ],
+        [partialSet({ icDate: "2021-01" }), partialSet({ icDate: "2021-03" })],
         "icDate",
         "yyyy-MM"
       )

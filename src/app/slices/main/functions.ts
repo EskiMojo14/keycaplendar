@@ -621,7 +621,6 @@ export const getData = () => {
             gbLaunch: docGbLaunch,
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             latestEditor,
-            sales: docSales,
             ...data
           } = doc.data();
 
@@ -632,15 +631,11 @@ export const getData = () => {
             doc.data().gbMonth && docGbLaunch && !docGbLaunch.includes("Q")
               ? `${docGbLaunch}-${lastInMonth}`
               : docGbLaunch;
-          const sales = is<string>(docSales)
-            ? { img: docSales, thirdParty: false }
-            : docSales;
 
           sets.push({
             id: doc.id,
             ...data,
             gbLaunch,
-            sales,
           });
         }
       });

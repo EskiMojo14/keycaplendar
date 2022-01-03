@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import type { WhitelistType } from "./types";
+import type { SetType, VendorType, WhitelistType } from "./types";
 
 /**
  * Creates a standard whitelist object with specified values, or blank values if none specified.
@@ -84,41 +84,29 @@ export class Preset {
 }
 
 /**
- * Creates a standard keyset object with specified values, or blank values if none specified.
- * Useful for creating blank keyset objects.
+ * Fills in partial keyset with defaults.
+ * @param partial
+ * @returns Full keyset type.
  */
-export class Keyset {
-  id: string;
-  alias: string;
-  colorway: string;
-  designer: string[];
-  details: string;
-  icDate: string;
-  gbLaunch: string;
-  gbEnd: string;
-  image: string;
-  profile: string;
-  constructor(
-    profile = "",
-    colorway = "",
-    designer: string[] = [],
-    details = "",
-    icDate = "",
-    gbLaunch = "",
-    gbEnd = "",
-    image = "",
-    id = "",
-    alias = ""
-  ) {
-    this.id = id;
-    this.alias = alias;
-    this.colorway = colorway;
-    this.designer = designer;
-    this.details = details;
-    this.icDate = icDate;
-    this.gbLaunch = gbLaunch;
-    this.gbEnd = gbEnd;
-    this.image = image;
-    this.profile = profile;
-  }
-}
+
+export const partialSet = (partial: Partial<SetType> = {}): SetType => ({
+  alias: "",
+  colorway: "",
+  designer: [],
+  details: "",
+  gbEnd: "",
+  gbLaunch: "",
+  gbMonth: false,
+  icDate: "",
+  id: "",
+  image: "",
+  notes: "",
+  profile: "",
+  sales: {
+    img: "",
+    thirdParty: false,
+  },
+  shipped: false,
+  vendors: [],
+  ...partial,
+});

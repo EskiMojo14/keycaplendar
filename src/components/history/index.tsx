@@ -32,7 +32,7 @@ import { historyTabs } from "@s/history/constants";
 import { generateSets, getData } from "@s/history/functions";
 import type { RecentSet } from "@s/history/types";
 import { selectAllSets } from "@s/main";
-import { Keyset } from "@s/main/constructors";
+import { partialSet } from "@s/main/constructors";
 import type { SetType } from "@s/main/types";
 import { selectBottomNav } from "@s/settings";
 import {
@@ -76,7 +76,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
   }, []);
   useEffect(generateSets, [JSON.stringify(allSets), processedActions]);
 
-  const blankSet = new Keyset();
+  const blankSet = partialSet();
 
   const [detailSet, setDetailSet] = useState(blankSet);
   const [detailsOpen, setDetailsOpen] = useState(false);
