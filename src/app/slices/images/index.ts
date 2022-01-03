@@ -1,10 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { ImageObj } from "./constructors";
+import { blankImage } from "./constants";
 import type { ImageType } from "./types";
-
-const blankImage = { ...new ImageObj() };
 
 type ImagesState = {
   checkedImages: ImageType[];

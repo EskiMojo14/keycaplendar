@@ -19,7 +19,7 @@ import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { selectBottomNav } from "@s/settings";
 import { selectEntries, selectLoading, selectURLEntry } from "@s/updates";
-import { Update } from "@s/updates/constructors";
+import { blankUpdate } from "@s/updates/constants";
 import { getEntries, pinEntry } from "@s/updates/functions";
 import type { UpdateEntryType } from "@s/updates/types";
 import { selectUser } from "@s/user";
@@ -62,8 +62,6 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
       }
     }
   }, [JSON.stringify(entries)]);
-
-  const blankEntry: UpdateEntryType = new Update();
   const [createOpen, setCreateOpen] = useState(false);
   const openCreate = () => {
     setCreateOpen(true);
@@ -74,7 +72,7 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
     closeModal();
   };
 
-  const [editEntry, setEditEntry] = useState(blankEntry);
+  const [editEntry, setEditEntry] = useState(blankUpdate);
   const [editOpen, setEditOpen] = useState(false);
   const openEdit = (entry: UpdateEntryType) => {
     setEditOpen(true);
@@ -84,12 +82,12 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
   const closeEdit = () => {
     setEditOpen(false);
     setTimeout(() => {
-      setEditEntry(blankEntry);
+      setEditEntry(blankUpdate);
     }, 300);
     closeModal();
   };
 
-  const [deleteEntry, setDeleteEntry] = useState(blankEntry);
+  const [deleteEntry, setDeleteEntry] = useState(blankUpdate);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const openDelete = (entry: UpdateEntryType) => {
     setDeleteOpen(true);
@@ -99,7 +97,7 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
   const closeDelete = () => {
     setDeleteOpen(false);
     setTimeout(() => {
-      setDeleteEntry(blankEntry);
+      setDeleteEntry(blankUpdate);
     }, 300);
     closeModal();
   };

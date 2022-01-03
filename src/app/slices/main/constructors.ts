@@ -1,6 +1,8 @@
 import { nanoid } from "nanoid";
+import { createFillFunc } from "@s/util/functions";
 import type { Overwrite } from "@s/util/types";
-import type { PresetType, SetType, WhitelistType } from "./types";
+import { blankKeyset, blankPreset, blankWhitelist } from "./constants";
+import type { PresetType, WhitelistType } from "./types";
 
 /**
  * Fills in partial whitelist with defaults.
@@ -8,20 +10,7 @@ import type { PresetType, SetType, WhitelistType } from "./types";
  * @returns Full whitelist type.
  */
 
-export const partialWhitelist = (
-  partial: Partial<WhitelistType> = {}
-): WhitelistType => ({
-  bought: false,
-  edited: [],
-  favorites: false,
-  hidden: "unhidden",
-  profiles: [],
-  regions: [],
-  shipped: ["Shipped", "Not shipped"],
-  vendorMode: "exclude",
-  vendors: [],
-  ...partial,
-});
+export const partialWhitelist = createFillFunc(blankWhitelist);
 
 /**
  * Fills in partial preset with defaults. Whitelist can be a partial too (see {@link partialWhitelist})
@@ -30,14 +19,14 @@ export const partialWhitelist = (
  */
 
 export const partialPreset = ({
-  whitelist,
+  whitelist = {},
+  id = nanoid(),
   ...partial
 }: Partial<
   Overwrite<PresetType, { whitelist: Partial<WhitelistType> }>
 > = {}): PresetType => ({
-  global: false,
-  id: nanoid(),
-  name: "",
+  ...blankPreset,
+  id,
   ...partial,
   whitelist: partialWhitelist(whitelist),
 });
@@ -48,24 +37,4 @@ export const partialPreset = ({
  * @returns Full keyset type.
  */
 
-export const partialSet = (partial: Partial<SetType> = {}): SetType => ({
-  alias: "",
-  colorway: "",
-  designer: [],
-  details: "",
-  gbEnd: "",
-  gbLaunch: "",
-  gbMonth: false,
-  icDate: "",
-  id: "",
-  image: "",
-  notes: "",
-  profile: "",
-  sales: {
-    img: "",
-    thirdParty: false,
-  },
-  shipped: false,
-  vendors: [],
-  ...partial,
-});
+export const partialSet = createFillFunc(blankKeyset);

@@ -27,7 +27,7 @@ import {
   selectURLEntry,
   setURLEntry,
 } from "@s/guides";
-import { Guide } from "@s/guides/constructors";
+import { blankGuide } from "@s/guides/constants";
 import { getEntries } from "@s/guides/functions";
 import type { GuideEntryType } from "@s/guides/types";
 import { selectBottomNav } from "@s/settings";
@@ -62,9 +62,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
     }
   }, []);
 
-  const blankEntry: GuideEntryType = new Guide();
-
-  const [detailEntry, setDetailEntry] = useState(blankEntry);
+  const [detailEntry, setDetailEntry] = useState(blankGuide);
   const [detailOpen, setDetailOpen] = useState(false);
   const openDetail = (entry: GuideEntryType) => {
     setDetailEntry(entry);
@@ -85,7 +83,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   const closeDetail = () => {
     setDetailOpen(false);
     setTimeout(() => {
-      setDetailEntry(blankEntry);
+      setDetailEntry(blankGuide);
     }, 300);
     closeModal();
   };
@@ -109,7 +107,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
     closeModal();
   };
 
-  const [editEntry, setEditEntry] = useState(blankEntry);
+  const [editEntry, setEditEntry] = useState(blankGuide);
   const [editOpen, setEditOpen] = useState(false);
   const openEdit = (entry: GuideEntryType) => {
     const open = () => {
@@ -127,12 +125,12 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   const closeEdit = () => {
     setEditOpen(false);
     setTimeout(() => {
-      setEditEntry(blankEntry);
+      setEditEntry(blankGuide);
     }, 300);
     closeModal();
   };
 
-  const [deleteEntry, setDeleteEntry] = useState(blankEntry);
+  const [deleteEntry, setDeleteEntry] = useState(blankGuide);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const openDelete = (entry: GuideEntryType) => {
     const open = () => {
@@ -150,7 +148,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   const closeDelete = () => {
     setDeleteOpen(false);
     setTimeout(() => {
-      setDeleteEntry(blankEntry);
+      setDeleteEntry(blankGuide);
     }, 300);
     closeModal();
   };

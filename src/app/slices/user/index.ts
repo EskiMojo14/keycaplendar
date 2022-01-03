@@ -4,7 +4,7 @@ import type { RootState } from "~/app/store";
 import type { PresetType } from "@s/main/types";
 import type { CurrentUserType } from "./types";
 
-export const blankUser: CurrentUserType = {
+export const blankCurrentUser: CurrentUserType = {
   avatar: "",
   email: "",
   id: "",
@@ -64,7 +64,7 @@ export const userSlice = createSlice({
       state.shareName = payload;
     },
     setUser: (state, { payload }: PayloadAction<Partial<CurrentUserType>>) => {
-      state.user = { ...blankUser, ...payload };
+      state.user = { ...blankCurrentUser, ...payload };
     },
     setUserPresets: (state, { payload }: PayloadAction<PresetType[]>) => {
       state.userPresets = payload;

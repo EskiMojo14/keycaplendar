@@ -32,7 +32,7 @@ import { historyTabs } from "@s/history/constants";
 import { generateSets, getData } from "@s/history/functions";
 import type { RecentSet } from "@s/history/types";
 import { selectAllSets } from "@s/main";
-import { partialSet } from "@s/main/constructors";
+import { blankKeyset } from "@s/main/constants";
 import type { SetType } from "@s/main/types";
 import { selectBottomNav } from "@s/settings";
 import {
@@ -76,9 +76,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
   }, []);
   useEffect(generateSets, [JSON.stringify(allSets), processedActions]);
 
-  const blankSet = partialSet();
-
-  const [detailSet, setDetailSet] = useState(blankSet);
+  const [detailSet, setDetailSet] = useState(blankKeyset);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const openDetails = (set: SetType) => {
     openModal();
@@ -88,10 +86,10 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
   const closeDetails = () => {
     closeModal();
     setDetailsOpen(false);
-    setTimeout(() => setDetailSet(blankSet), 300);
+    setTimeout(() => setDetailSet(blankKeyset), 300);
   };
 
-  const [salesSet, setSalesSet] = useState(blankSet);
+  const [salesSet, setSalesSet] = useState(blankKeyset);
   const [salesOpen, setSalesOpen] = useState(false);
   const openSales = (set: SetType) => {
     setSalesSet(set);
@@ -99,7 +97,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
   };
   const closeSales = () => {
     setSalesOpen(false);
-    setTimeout(() => setSalesSet(blankSet), 300);
+    setTimeout(() => setSalesSet(blankKeyset), 300);
   };
 
   const [filterSet, setFilterSet] = useState({ id: "", title: "" });
