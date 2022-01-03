@@ -33,7 +33,7 @@ import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import firestore from "@s/firebase/firestore";
 import type { ChangelogId } from "@s/firebase/types";
-import { Keyset } from "@s/main/constructors";
+import { blankKeyset } from "@s/main/constants";
 import { selectBottomNav } from "@s/settings";
 import { arrayIncludes, closeModal, openModal } from "@s/util/functions";
 import { AuditEntry } from "./audit-entry";
@@ -57,8 +57,8 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
 
   const blankAction: ActionType = {
     action: "created",
-    after: new Keyset(),
-    before: new Keyset(),
+    after: blankKeyset,
+    before: blankKeyset,
     changelogId: "",
     documentId: "",
     timestamp: "",

@@ -2,7 +2,6 @@ import type { GuideEntryType } from "@s/guides/types";
 import type { OldPresetType, PresetType, SetType } from "@s/main/types";
 import type { Settings } from "@s/settings/types";
 import type { UpdateEntryType } from "@s/updates/types";
-import type { Overwrite } from "@s/util/types";
 
 type FirestoreCollection<K, V, S = Record<string, never>> = {
   key: K;
@@ -14,19 +13,9 @@ type FirestoreId<T extends string> = string & { [key in T]: never };
 
 export type KeysetId = FirestoreId<"_keysetId">;
 
-export type KeysetDoc = Overwrite<
-  Omit<SetType, "id">,
-  {
-    latestEditor: string;
-    sales:
-      | string
-      | {
-          /** Direct URL to sales graph. */
-          img: string;
-          thirdParty: boolean;
-        };
-  }
->;
+export type KeysetDoc = Omit<SetType, "id"> & {
+  latestEditor: string;
+};
 
 export type ApiUserId = FirestoreId<"_apiUserId">;
 

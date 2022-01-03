@@ -33,9 +33,9 @@ import {
   setURLWhitelist,
   setWhitelist,
 } from "@s/main";
-import { Keyset, Preset, Whitelist } from "@s/main/constructors";
+import { blankKeyset } from "@s/main/constants";
+import { partialPreset, partialWhitelist } from "@s/main/constructors";
 import type {
-  PresetType,
   SetGroup,
   SetType,
   SortOrderType,
@@ -83,14 +83,14 @@ it("sets specified list", () => {
 });
 
 it("sets specified set list", () => {
-  const list: SetType[] = [new Keyset("test")];
+  const list: SetType[] = [blankKeyset];
   store.dispatch(setSetList("allSets", list));
   const response = selectAllSets(store.getState());
   expect(response).toEqual(list);
 });
 
 it("sets set groups", () => {
-  const groups: SetGroup[] = [{ sets: [new Keyset("test")], title: "test" }];
+  const groups: SetGroup[] = [{ sets: [blankKeyset], title: "test" }];
   store.dispatch(setSetGroups(groups));
   const response = selectSetGroups(store.getState());
   expect(response).toEqual(groups);
@@ -111,7 +111,7 @@ it("sets search", () => {
 });
 
 it("sets whitelist", () => {
-  const whitelist: WhitelistType = { ...new Whitelist(true, true) };
+  const whitelist = partialWhitelist({ bought: true, favorites: true });
   store.dispatch(setWhitelist(whitelist));
   const response = selectWhitelist(store.getState());
   expect(response).toEqual({ ...whitelist, edited: Object.keys(whitelist) });
@@ -136,7 +136,7 @@ it("sets URL whitelist", () => {
   expect(response).toEqual(whitelist);
 });
 
-const preset: PresetType = { ...new Preset("test") };
+const preset = partialPreset({ name: "Test" });
 
 it("sets current preset", () => {
   store.dispatch(setCurrentPreset(preset));

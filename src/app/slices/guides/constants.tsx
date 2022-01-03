@@ -6,7 +6,17 @@ import {
 } from "@s/users/constants";
 import { iconObject } from "@s/util/functions";
 import { Public } from "@i";
-import type { Visibility } from "./types";
+import type { GuideEntryType, Visibility } from "./types";
+
+export const blankGuide: GuideEntryType = {
+  body: "",
+  description: "",
+  id: "",
+  name: "",
+  tags: [],
+  title: "",
+  visibility: "all",
+};
 
 export const visibilityVals = ["all", ...userRoles] as const;
 

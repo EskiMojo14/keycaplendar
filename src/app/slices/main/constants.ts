@@ -1,5 +1,51 @@
 import type { MainPage, Page } from "@s/common/types";
-import type { SortOrderType, SortType } from "./types";
+import type {
+  PresetType,
+  SetType,
+  SortOrderType,
+  SortType,
+  WhitelistType,
+} from "./types";
+
+export const blankWhitelist: WhitelistType = {
+  bought: false,
+  edited: [],
+  favorites: false,
+  hidden: "unhidden",
+  profiles: [],
+  regions: [],
+  shipped: ["Shipped", "Not shipped"],
+  vendorMode: "exclude",
+  vendors: [],
+};
+
+export const blankPreset: PresetType = {
+  global: false,
+  id: "",
+  name: "",
+  whitelist: blankWhitelist,
+};
+
+export const blankKeyset: SetType = {
+  alias: "",
+  colorway: "",
+  designer: [],
+  details: "",
+  gbEnd: "",
+  gbLaunch: "",
+  gbMonth: false,
+  icDate: "",
+  id: "",
+  image: "",
+  notes: "",
+  profile: "",
+  sales: {
+    img: "",
+    thirdParty: false,
+  },
+  shipped: false,
+  vendors: [],
+};
 
 /** Default sorts for each page. */
 

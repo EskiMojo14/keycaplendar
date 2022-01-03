@@ -1,16 +1,10 @@
+import { createFillFunc } from "@s/util/functions";
+import { blankImage } from "./constants";
+
 /**
- * Creates a standard image info object with specified values, or blank values if none specified.
- * Useful for creating blank image info objects.
+ * Fills in partial image object with defaults.
+ * @param partial
+ * @returns Full image object type.
  */
-export class ImageObj {
-  name: string;
-  parent: string;
-  fullPath: string;
-  src: string;
-  constructor(name = "", parent = "", fullPath = "", src = "") {
-    this.name = name;
-    this.parent = parent;
-    this.fullPath = fullPath;
-    this.src = src;
-  }
-}
+
+export const partialImage = createFillFunc(blankImage);

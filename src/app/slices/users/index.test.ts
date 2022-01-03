@@ -24,7 +24,7 @@ import {
   setView,
 } from "@s/users";
 import type { sortProps } from "@s/users/constants";
-import { User } from "@s/users/constructors";
+import { partialUser } from "@s/users/constructors";
 import type { UserType } from "@s/users/types";
 
 let store = createStore();
@@ -59,7 +59,7 @@ it("sets reverse sort", () => {
   expect(response).toBe(true);
 });
 
-const userArray: UserType[] = [new User("test")];
+const userArray: UserType[] = [partialUser({ email: "test" })];
 
 it("sets all users", () => {
   store.dispatch(setAllUsers(userArray));

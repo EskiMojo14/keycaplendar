@@ -20,7 +20,7 @@ import {
   selectURLSet,
   setURLSet,
 } from "@s/main";
-import { Keyset, Preset } from "@s/main/constructors";
+import { blankKeyset, blankPreset } from "@s/main/constants";
 import type { PresetType, SetType } from "@s/main/types";
 import { selectBottomNav, selectView } from "@s/settings";
 import { selectUser } from "@s/user";
@@ -52,11 +52,8 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   const urlSet = useAppSelector(selectURLSet);
   const linkedFavorites = useAppSelector(selectLinkedFavorites);
 
-  const blankSet: SetType = new Keyset();
-  const blankPreset: PresetType = new Preset();
-
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [detailSet, setDetailSet] = useState(blankSet);
+  const [detailSet, setDetailSet] = useState(blankKeyset);
   const [filterOpen, setFilterOpen] = useState(false);
   const closeFilter = () => {
     closeModal();
@@ -65,7 +62,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   const closeDetails = () => {
     closeModal();
     setDetailsOpen(false);
-    setTimeout(() => setDetailSet(blankSet), 300);
+    setTimeout(() => setDetailSet(blankKeyset), 300);
   };
   const openFilter = () => {
     const open = () => {
@@ -135,14 +132,14 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   }, [allSets, urlSet]);
 
   const [salesOpen, setSalesOpen] = useState(false);
-  const [salesSet, setSalesSet] = useState(blankSet);
+  const [salesSet, setSalesSet] = useState(blankKeyset);
   const openSales = (set: SetType) => {
     setSalesOpen(true);
     setSalesSet(set);
   };
   const closeSales = () => {
     setSalesOpen(false);
-    setTimeout(() => setSalesSet(blankSet), 300);
+    setTimeout(() => setSalesSet(blankKeyset), 300);
   };
 
   const [createOpen, setCreateOpen] = useState(false);
@@ -156,7 +153,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   };
 
   const [editOpen, setEditOpen] = useState(false);
-  const [editSet, setEditSet] = useState(blankSet);
+  const [editSet, setEditSet] = useState(blankKeyset);
   const openEdit = (set: SetType) => {
     openModal();
     setEditOpen(true);
@@ -165,12 +162,12 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   const closeEdit = () => {
     closeModal();
     setEditOpen(false);
-    setTimeout(() => setEditSet(blankSet), 300);
+    setTimeout(() => setEditSet(blankKeyset), 300);
   };
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState(false);
-  const [deleteSet, setDeleteSet] = useState(blankSet);
+  const [deleteSet, setDeleteSet] = useState(blankKeyset);
   const openDeleteDialog = (set: SetType) => {
     closeDetails();
     setDeleteDialogOpen(true);
@@ -186,7 +183,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
 
   const closeDeleteSnackbar = () => {
     setDeleteSnackbarOpen(false);
-    setTimeout(() => setDeleteSet(blankSet), 300);
+    setTimeout(() => setDeleteSet(blankKeyset), 300);
   };
 
   const [filterPresetOpen, setFilterPresetOpen] = useState(false);
