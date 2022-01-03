@@ -18,8 +18,7 @@ import {
   setLoading,
   setSetImages,
 } from ".";
-import { ImageObj } from "./constructors";
-import type { ImageType } from "./types";
+import { partialImage } from "./constructors";
 
 const storage = firebase.storage();
 
@@ -50,15 +49,12 @@ const processItems = (items: firebase.storage.Reference[], append = false) => {
     const src = `https://firebasestorage.googleapis.com/v0/b/${
       itemRef.bucket
     }/o/${encodeURIComponent(itemRef.fullPath)}?alt=media`;
-    const obj: ImageType = {
-      ...new ImageObj(
-        itemRef.name,
-        itemRef.parent?.fullPath ?? "",
-        itemRef.fullPath,
-        src
-      ),
-    };
-    return obj;
+    return partialImage({
+      fullPath: itemRef.fullPath,
+      name: itemRef.name,
+      parent: itemRef.parent?.fullPath ?? "",
+      src,
+    });
   });
   images.sort((a, b) => {
     const nameA = a.name.replace(".png", "").toLowerCase();

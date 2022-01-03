@@ -16,7 +16,7 @@ import type {
   PublicActionType,
   RecentSet,
 } from "@s/history/types";
-import { Keyset } from "@s/main/constructors";
+import { partialSet } from "@s/main/constructors";
 
 jest.mock("~/app/store");
 
@@ -63,12 +63,11 @@ const processedAction: ProcessedPublicActionType = {
   title: "GMK Test",
 };
 
-const keyset = {
-  ...new Keyset(),
+const keyset = partialSet({
   colorway: "test",
   id: "test",
   profile: "GMK",
-};
+});
 
 const recentSet: RecentSet = {
   currentSet: keyset,

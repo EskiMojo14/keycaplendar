@@ -1,9 +1,8 @@
 import produce from "immer";
 import { createStore } from "~/app/store";
-import { Preset } from "@s/main/constructors";
-import type { PresetType } from "@s/main/types";
+import { partialPreset } from "@s/main/constructors";
 import {
-  blankUser,
+  blankCurrentUser,
   selectBought,
   selectFavorites,
   selectFavoritesId,
@@ -50,7 +49,7 @@ it("sets partial user", () => {
   const { email } = user;
   store.dispatch(setUser({ email }));
   const response = selectUser(store.getState());
-  const expected = produce(blankUser, (draftUser) => {
+  const expected = produce(blankCurrentUser, (draftUser) => {
     draftUser.email = email;
   });
   expect(response).toEqual(expected);
@@ -64,7 +63,7 @@ it("sets shareName", () => {
 });
 
 it("sets user presets", () => {
-  const presets: PresetType[] = [new Preset("hi")];
+  const presets = [partialPreset({ name: "hi" })];
   store.dispatch(setUserPresets(presets));
   const response = selectUserPresets(store.getState());
   expect(response).toEqual(presets);

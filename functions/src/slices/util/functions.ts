@@ -1,5 +1,4 @@
 import { DateTime, Interval } from "luxon";
-import { is } from "typescript-is";
 import { DateSortKeys, SetType } from "../main/types";
 import { StatisticsSetType } from "../statistics/types";
 
@@ -82,8 +81,8 @@ export const alphabeticalSortCurried =
     if (hoist && (a === hoist || b === hoist) && a !== b) {
       return a === hoist ? -1 : 1;
     }
-    const x = is<string>(a) ? a.toLowerCase() : a;
-    const y = is<string>(b) ? b.toLowerCase() : b;
+    const x = typeof a === "string" ? a.toLowerCase() : a;
+    const y = typeof b === "string" ? b.toLowerCase() : b;
     if (x < y) {
       return descending ? 1 : -1;
     }
@@ -131,8 +130,8 @@ export const alphabeticalSortPropCurried =
     if (hoist && (x === hoist || y === hoist) && x !== y) {
       return x === hoist ? -1 : 1;
     }
-    const c = is<string>(x) ? x.toLowerCase() : x;
-    const d = is<string>(y) ? y.toLowerCase() : y;
+    const c = typeof x === "string" ? x.toLowerCase() : x;
+    const d = typeof y === "string" ? y.toLowerCase() : y;
     if (c < d) {
       return descending ? 1 : -1;
     }

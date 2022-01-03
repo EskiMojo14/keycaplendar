@@ -1,6 +1,5 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { is } from "typescript-is";
 import { DateTime, Interval } from "luxon";
 import { create, all, MathJsStatic } from "mathjs";
 import {
@@ -54,7 +53,7 @@ const filterCatSetsByMonth = (
   sets.filter((set) => {
     const setProp = set[prop];
     const setMonth =
-      is<string>(setProp) && !setProp.includes("Q")
+      typeof setProp === "string" && !setProp.includes("Q")
         ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat(format)
         : null;
     return setMonth && setMonth === month;

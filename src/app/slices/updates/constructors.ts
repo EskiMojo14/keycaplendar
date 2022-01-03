@@ -1,23 +1,9 @@
-export class Update {
-  id: string;
-  name: string;
-  title: string;
-  date: string;
-  body: string;
-  pinned: boolean;
-  constructor(
-    user = "",
-    title = "",
-    date = "",
-    body = "",
-    pinned = false,
-    id = ""
-  ) {
-    this.name = user;
-    this.title = title;
-    this.date = date;
-    this.body = body;
-    this.pinned = pinned;
-    this.id = id;
-  }
-}
+import { createFillFunc } from "@s/util/functions";
+import { blankUpdate } from "./constants";
+
+/**
+ * Fills in partial update entry with defaults.
+ * @param partial
+ * @returns Full update entry type.
+ */
+export const partialUpdate = createFillFunc(blankUpdate);

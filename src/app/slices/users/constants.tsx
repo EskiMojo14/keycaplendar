@@ -1,6 +1,20 @@
 import type { IconPropT } from "@rmwc/types";
 import { iconObject } from "@s/util/functions";
 import { Edit, Palette, Shield, ViewArray, ViewList } from "@i";
+import type { UserType } from "./types";
+
+export const blankUser: UserType = {
+  admin: false,
+  dateCreated: "",
+  designer: false,
+  displayName: "",
+  editor: false,
+  email: "",
+  lastActive: "",
+  lastSignIn: "",
+  nickname: "",
+  photoURL: "",
+};
 
 export const userRoles = ["designer", "editor", "admin"] as const;
 

@@ -60,13 +60,13 @@ import {
   setLoading,
 } from "@s/users";
 import {
+  blankUser,
   sortLabels,
   sortProps,
   viewIcons,
   viewLabels,
   views,
 } from "@s/users/constants";
-import { User } from "@s/users/constructors";
 import {
   getUsers,
   setPage,
@@ -108,10 +108,8 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
   const page = useAppSelector(selectPage);
   const { first: firstIndex, last: lastIndex } = useAppSelector(selectIndices);
 
-  const blankUser = new User();
-
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [deletedUser, setDeletedUser] = useState<UserType>(blankUser);
+  const [deletedUser, setDeletedUser] = useState(blankUser);
 
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
   const [closeViewMenu, openViewMenu] = useBoolStates(setViewMenuOpen);

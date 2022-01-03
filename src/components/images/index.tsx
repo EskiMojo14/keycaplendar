@@ -51,7 +51,7 @@ import {
   setDetailImage,
   setDetailMetadata,
 } from "@s/images";
-import { ImageObj } from "@s/images/constructors";
+import { blankImage } from "@s/images/constants";
 import {
   createSetImageList,
   getFolders,
@@ -85,8 +85,6 @@ const aspectRatios = {
   list: 16 / 9,
   thumbs: 16 / 9,
 };
-
-const blankImage = { ...new ImageObj() };
 
 type ContentImagesProps = {
   openNav: () => void;

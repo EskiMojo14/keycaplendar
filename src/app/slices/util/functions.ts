@@ -612,3 +612,12 @@ export const clearSearchParams = (
     }
   });
 };
+
+/**
+ * Creates a function that fills in any partial object with given defaults.
+ * @param defaults
+ * @returns fill func
+ */
+export const createFillFunc =
+  <T extends Record<any, any>>(defaults: T) =>
+  (partial: Partial<T> = {}): T => ({ ...defaults, ...partial });

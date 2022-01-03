@@ -54,13 +54,6 @@ export type KeysetId = FirestoreId<"_keysetId">;
 export type KeysetDoc = Overwrite<
   Omit<SetType, "id">,
   {
-    sales:
-      | {
-          /** Direct URL to sales graph. */
-          img: string;
-          thirdParty: boolean;
-        }
-      | string;
     latestEditor: string;
   }
 >;

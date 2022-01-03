@@ -1,124 +1,40 @@
 import { nanoid } from "nanoid";
-import type { WhitelistType } from "./types";
+import { createFillFunc } from "@s/util/functions";
+import type { Overwrite } from "@s/util/types";
+import { blankKeyset, blankPreset, blankWhitelist } from "./constants";
+import type { PresetType, WhitelistType } from "./types";
 
 /**
- * Creates a standard whitelist object with specified values, or blank values if none specified.
- * Useful for creating blank whitelist objects.
+ * Fills in partial whitelist with defaults.
+ * @param partial
+ * @returns Full whitelist type.
  */
 
-export class Whitelist {
-  profiles: string[];
-  shipped: WhitelistType["shipped"];
-  regions: string[];
-  vendorMode: "exclude" | "include";
-  vendors: string[];
-  edited: string[];
-  favorites: boolean;
-  bought: boolean;
-  hidden: "all" | "hidden" | "unhidden";
-
-  /**
-   * @param favorites Whether to only display favorites.
-   * @param bought Whether to only display bought sets.
-   * @param hidden Whether to only display hidden sets.
-   * @param profiles Array of allowed profiles.
-   * @param shipped Array of allowed shipped values. Values are `"Shipped"` and `"Not shipped"`.
-   * @param regions Array of allowed vendor regions.
-   * @param vendorMode Whether to `include` or `exclude` specified `vendors`.
-   * @param vendors Vendors to be included or excluded.
-   * @param edited Array of keys which have been edited.
-   */
-
-  constructor(
-    favorites = false,
-    bought = false,
-    hidden: "all" | "hidden" | "unhidden" = "unhidden",
-    profiles: string[] = [],
-    shipped: WhitelistType["shipped"] = ["Shipped", "Not shipped"],
-    regions: string[] = [],
-    vendorMode: "exclude" | "include" = "exclude",
-    vendors: string[] = [],
-    edited: string[] = []
-  ) {
-    this.profiles = profiles;
-    this.shipped = shipped as WhitelistType["shipped"];
-    this.regions = regions;
-    this.vendorMode = vendorMode as "exclude" | "include";
-    this.vendors = vendors;
-    this.edited = edited;
-    this.favorites = favorites;
-    this.bought = bought;
-    this.hidden = hidden;
-  }
-}
+export const partialWhitelist = createFillFunc(blankWhitelist);
 
 /**
- * Creates a standard whitelist preset object with specified values, or blank values if none specified.
- * Useful for creating blank whitelist preset objects.
+ * Fills in partial preset with defaults. Whitelist can be a partial too (see {@link partialWhitelist})
+ * @param partial
+ * @returns Full preset type.
  */
 
-export class Preset {
-  name: string;
-  id: string;
-  global: boolean;
-  whitelist: WhitelistType;
-
-  /**
-   * @param name Display name for preset.
-   * @param global If the preset is global.
-   * @param whitelist Whitelist to use.
-   * @param id Internal ID. Will be generated with `nanoid()` if not provided.
-   */
-
-  constructor(
-    name = "",
-    global = false,
-    whitelist: WhitelistType = { ...new Whitelist() },
-    id = nanoid()
-  ) {
-    this.name = name;
-    this.id = id;
-    this.global = global;
-    this.whitelist = whitelist;
-  }
-}
+export const partialPreset = ({
+  whitelist = {},
+  id = nanoid(),
+  ...partial
+}: Partial<
+  Overwrite<PresetType, { whitelist: Partial<WhitelistType> }>
+> = {}): PresetType => ({
+  ...blankPreset,
+  id,
+  ...partial,
+  whitelist: partialWhitelist(whitelist),
+});
 
 /**
- * Creates a standard keyset object with specified values, or blank values if none specified.
- * Useful for creating blank keyset objects.
+ * Fills in partial keyset with defaults.
+ * @param partial
+ * @returns Full keyset type.
  */
-export class Keyset {
-  id: string;
-  alias: string;
-  colorway: string;
-  designer: string[];
-  details: string;
-  icDate: string;
-  gbLaunch: string;
-  gbEnd: string;
-  image: string;
-  profile: string;
-  constructor(
-    profile = "",
-    colorway = "",
-    designer: string[] = [],
-    details = "",
-    icDate = "",
-    gbLaunch = "",
-    gbEnd = "",
-    image = "",
-    id = "",
-    alias = ""
-  ) {
-    this.id = id;
-    this.alias = alias;
-    this.colorway = colorway;
-    this.designer = designer;
-    this.details = details;
-    this.icDate = icDate;
-    this.gbLaunch = gbLaunch;
-    this.gbEnd = gbEnd;
-    this.image = image;
-    this.profile = profile;
-  }
-}
+
+export const partialSet = createFillFunc(blankKeyset);

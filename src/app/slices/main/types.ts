@@ -33,19 +33,19 @@ export type SetType = {
   details: string;
   gbEnd: string;
   gbLaunch: string;
+  gbMonth: boolean;
   icDate: string;
   id: string;
   image: string;
+  notes: string;
   profile: string;
-  gbMonth?: boolean;
-  notes?: string;
-  sales?: {
+  sales: {
     /** Direct URL to sales graph. */
     img: string;
     thirdParty: boolean;
   };
-  shipped?: boolean;
-  vendors?: VendorType[];
+  shipped: boolean;
+  vendors: VendorType[];
 };
 
 export type SetGroup = { sets: SetType[]; title: string };

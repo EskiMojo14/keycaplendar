@@ -70,7 +70,7 @@ import {
   sortHiddenCheck,
   whitelistParams,
 } from "./constants";
-import { Preset, Whitelist } from "./constructors";
+import { partialPreset } from "./constructors";
 import type {
   OldPresetType,
   PresetType,
@@ -550,22 +550,14 @@ const generateLists = (state = store.getState()) => {
 
   // create default preset
 
-  const defaultWhitelist: WhitelistType = {
-    ...new Whitelist(
-      false,
-      false,
-      "unhidden",
-      allProfiles,
-      ["Shipped", "Not shipped"],
-      allRegions,
-      "exclude",
-      []
-    ),
-  };
-
-  const defaultPreset: PresetType = {
-    ...new Preset("Default", false, defaultWhitelist, "default"),
-  };
+  const defaultPreset = partialPreset({
+    id: "default",
+    name: "Default",
+    whitelist: {
+      profiles: allProfiles,
+      regions: allRegions,
+    },
+  });
 
   dispatch(setDefaultPreset(defaultPreset));
 
@@ -621,7 +613,6 @@ export const getData = () => {
             gbLaunch: docGbLaunch,
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             latestEditor,
-            sales: docSales,
             ...data
           } = doc.data();
 
@@ -632,15 +623,11 @@ export const getData = () => {
             doc.data().gbMonth && docGbLaunch && !docGbLaunch.includes("Q")
               ? `${docGbLaunch}-${lastInMonth}`
               : docGbLaunch;
-          const sales = is<string>(docSales)
-            ? { img: docSales, thirdParty: false }
-            : docSales;
 
           sets.push({
             id: doc.id,
             ...data,
             gbLaunch,
-            sales,
           });
         }
       });
