@@ -3,7 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
 import type { RootState } from "~/app/store";
-import { partialSet, Preset } from "@s/main/constructors";
+import { partialPreset, partialSet } from "@s/main/constructors";
 import { randomInt, removeDuplicates } from "@s/util/functions";
 import type { KeysMatching } from "@s/util/types";
 import type {
@@ -75,8 +75,8 @@ export const initialState: MainState = {
   allVendors: [],
   appPresets: [],
   content: true,
-  currentPreset: { ...new Preset() },
-  defaultPreset: { ...new Preset() },
+  currentPreset: partialPreset(),
+  defaultPreset: partialPreset(),
   filteredSets: [],
   initialLoad: true,
   linkedFavorites: { array: [], displayName: "" },

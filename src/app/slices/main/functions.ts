@@ -70,7 +70,7 @@ import {
   sortHiddenCheck,
   whitelistParams,
 } from "./constants";
-import { Preset, Whitelist } from "./constructors";
+import { partialPreset } from "./constructors";
 import type {
   OldPresetType,
   PresetType,
@@ -550,22 +550,14 @@ const generateLists = (state = store.getState()) => {
 
   // create default preset
 
-  const defaultWhitelist: WhitelistType = {
-    ...new Whitelist(
-      false,
-      false,
-      "unhidden",
-      allProfiles,
-      ["Shipped", "Not shipped"],
-      allRegions,
-      "exclude",
-      []
-    ),
-  };
-
-  const defaultPreset: PresetType = {
-    ...new Preset("Default", false, defaultWhitelist, "default"),
-  };
+  const defaultPreset = partialPreset({
+    id: "default",
+    name: "Default",
+    whitelist: {
+      profiles: allProfiles,
+      regions: allRegions,
+    },
+  });
 
   dispatch(setDefaultPreset(defaultPreset));
 

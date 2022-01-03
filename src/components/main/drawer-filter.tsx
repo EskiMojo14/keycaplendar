@@ -32,7 +32,7 @@ import {
   whitelistParams,
   whitelistShipped,
 } from "@s/main/constants";
-import { Preset, Whitelist } from "@s/main/constructors";
+import { partialPreset } from "@s/main/constructors";
 import { selectPreset, setWhitelist } from "@s/main/functions";
 import type { PresetType } from "@s/main/types";
 import { selectView } from "@s/settings";
@@ -115,19 +115,19 @@ export const DrawerFilter = ({
       vendorMode,
       vendors,
     } = mainWhitelist;
-    const newWhitelist = {
-      ...new Whitelist(
-        favorites,
+    const newPreset = partialPreset({
+      global,
+      whitelist: {
         bought,
+        favorites,
         hidden,
         profiles,
-        shipped,
         regions,
+        shipped,
         vendorMode,
-        vendors
-      ),
-    };
-    const newPreset = { ...new Preset("", global, newWhitelist) };
+        vendors,
+      },
+    });
     openPreset(newPreset);
   };
 

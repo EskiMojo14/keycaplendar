@@ -33,9 +33,12 @@ import {
   setURLWhitelist,
   setWhitelist,
 } from "@s/main";
-import { partialSet, Preset, Whitelist } from "@s/main/constructors";
+import {
+  partialPreset,
+  partialSet,
+  partialWhitelist,
+} from "@s/main/constructors";
 import type {
-  PresetType,
   SetGroup,
   SetType,
   SortOrderType,
@@ -111,7 +114,7 @@ it("sets search", () => {
 });
 
 it("sets whitelist", () => {
-  const whitelist: WhitelistType = { ...new Whitelist(true, true) };
+  const whitelist = partialWhitelist({ bought: true, favorites: true });
   store.dispatch(setWhitelist(whitelist));
   const response = selectWhitelist(store.getState());
   expect(response).toEqual({ ...whitelist, edited: Object.keys(whitelist) });
@@ -136,7 +139,7 @@ it("sets URL whitelist", () => {
   expect(response).toEqual(whitelist);
 });
 
-const preset: PresetType = { ...new Preset("test") };
+const preset = partialPreset({ name: "Test" });
 
 it("sets current preset", () => {
   store.dispatch(setCurrentPreset(preset));
