@@ -1,7 +1,8 @@
 import * as functions from "firebase-functions";
 import { Storage } from "@google-cloud/storage";
 import * as path from "path";
-import * as sharp from "sharp";
+
+import sharp = require("sharp");
 
 const storage = new Storage();
 

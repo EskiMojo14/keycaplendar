@@ -1,6 +1,5 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { is } from "typescript-is";
 import { DateTime } from "luxon";
 import { IChartistData } from "chartist";
 import { create, all, MathJsStatic } from "mathjs";
@@ -127,7 +126,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
         const length = catSets.filter((set) => {
           const setProp = set[cat];
           const setMonth =
-            is<string>(setProp) && !setProp.includes("Q")
+            typeof setProp === "string" && !setProp.includes("Q")
               ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat("MMM yy")
               : null;
           return setMonth && setMonth === month;
@@ -163,7 +162,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
           const length = catSets.filter((set) => {
             const setProp = set[cat];
             const setMonth =
-              is<string>(setProp) && !setProp.includes("Q")
+              typeof setProp === "string" && !setProp.includes("Q")
                 ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat("MMM yy")
                 : null;
             return setMonth && setMonth === month && set.profile === profile;

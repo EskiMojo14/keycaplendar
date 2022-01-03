@@ -7,15 +7,10 @@
     "strict": true,
     "target": "esnext",
     "allowJs": true,
-    "plugins": [
-      {
-        "transform": "typescript-is/lib/transform-inline/transformer"
-      }
-    ]
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "noEmit": true
   },
   "compileOnSave": true,
-  "include": [
-    "src",
-    ".eslintrc.js"
-  ]
+  "include": ["src", ".eslintrc.js"]
 }
