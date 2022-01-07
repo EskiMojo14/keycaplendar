@@ -22,6 +22,7 @@ import {
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
+import produce from "immer";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
@@ -1048,12 +1049,11 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
       salesThirdParty: set.sales?.thirdParty ?? false,
       shipped: set.shipped ?? false,
       vendors:
-        set.vendors?.map((vendor) => {
-          if (!vendor.id) {
-            vendor.id = nanoid();
-          }
-          return vendor;
-        }) ?? [],
+        set.vendors?.map(
+          produce((vendor) => {
+            vendor.id ??= nanoid();
+          })
+        ) ?? [],
     }));
   };
 
