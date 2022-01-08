@@ -39,7 +39,7 @@ import {
   FullScreenDialogContent,
 } from "@c/util/full-screen-dialog";
 import { withTooltip } from "@c/util/hocs";
-import { DatePicker, invalidDate } from "@c/util/pickers/date-picker";
+import { DatePicker } from "@c/util/pickers/date-picker";
 import { selectDevice } from "@s/common";
 import firebase from "@s/firebase";
 import firestore from "@s/firebase/firestore";
@@ -61,6 +61,7 @@ import {
   getStorageFolders,
   hasKey,
   iconObject,
+  invalidDate,
 } from "@s/util/functions";
 import type { KeysMatching } from "@s/util/types";
 import { AddPhotoAlternate, CalendarToday, Delete, Public, Store } from "@i";
@@ -96,7 +97,7 @@ export const validVendor = (obj: Record<string, any>): obj is VendorType =>
   obj.region &&
   hasKey(obj, "storeLink") &&
   (!obj.storeLink || new RegExp(validLink).test(obj.storeLink)) &&
-  (!obj.endDate || !invalidDate(obj.endDate, false));
+  (!obj.endDate || !invalidDate(obj.endDate));
 
 export const validSalesInfo = (
   obj: Record<string, any>
@@ -347,10 +348,13 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
     !!state.profile &&
     !!state.colorway &&
     !!state.designer &&
-    !invalidDate(state.icDate, false, true, true) &&
+    !invalidDate(state.icDate, { disableFuture: true, required: true }) &&
     new RegExp(validLink).test(state.details) &&
     !!state.image &&
-    !invalidDate(state.gbLaunch, state.gbMonth, false, true) &&
+    !invalidDate(state.gbLaunch, {
+      allowQuarter: true,
+      month: state.gbMonth,
+    }) &&
     !invalidDate(state.gbEnd) &&
     arrayEveryType(state.vendors, validVendor) &&
     validSalesInfo(state);
@@ -1236,11 +1240,14 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
     !!state.profile &&
     !!state.colorway &&
     !!state.designer &&
-    !invalidDate(state.icDate, false, true, true) &&
+    !invalidDate(state.icDate, { disableFuture: true, required: true }) &&
     new RegExp(validLink).test(state.details) &&
     ((state.newImage && state.image instanceof Blob && !!state.image) ||
       !!state.imageURL) &&
-    !invalidDate(state.gbLaunch, state.gbMonth, false, true) &&
+    !invalidDate(state.gbLaunch, {
+      allowQuarter: true,
+      month: state.gbMonth,
+    }) &&
     !invalidDate(state.gbEnd) &&
     arrayEveryType(state.vendors, validVendor) &&
     validSalesInfo(state);

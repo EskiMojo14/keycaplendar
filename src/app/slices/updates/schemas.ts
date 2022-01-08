@@ -1,13 +1,13 @@
 import { z } from "zod";
-import { invalidDate } from "@c/util/pickers/date-picker";
+import { invalidDate } from "@s/util/functions";
 // import type { UpdateEntryType } from "@s/updates/types";
 
 export const UpdateEntrySchema /*: z.ZodSchema<UpdateEntryType>*/ = z.object({
   body: z.string().min(1),
   date: z.string().refine(
-    (date) => !invalidDate(date, false, true),
+    (date) => !invalidDate(date, { required: true }),
     (date) => ({
-      message: invalidDate(date, false, true) || "",
+      message: invalidDate(date, { required: true }) || "",
     })
   ),
   id: z.string().min(1),

@@ -22,7 +22,7 @@ import {
   FullScreenDialogAppBar,
   FullScreenDialogContent,
 } from "@c/util/full-screen-dialog";
-import { DatePicker, invalidDate } from "@c/util/pickers/date-picker";
+import { DatePicker } from "@c/util/pickers/date-picker";
 import { CustomReactMarkdown, CustomReactMde } from "@c/util/react-markdown";
 import { selectDevice } from "@s/common";
 import firestore from "@s/firebase/firestore";
@@ -31,7 +31,7 @@ import { partialUpdate } from "@s/updates/constructors";
 import { UpdateEntrySchema } from "@s/updates/schemas";
 import type { UpdateEntryType } from "@s/updates/types";
 import { selectUser } from "@s/user";
-import { arrayIncludes, ordinal } from "@s/util/functions";
+import { arrayIncludes, invalidDate, ordinal } from "@s/util/functions";
 import type { KeysMatching } from "@s/util/types";
 import "./modal-entry.scss";
 
@@ -92,7 +92,7 @@ export const ModalEntry = ({
   const handleNamedChange = (name: keyof UpdateEntryType) => (value: string) =>
     updateEntry(keyedUpdate(name, value));
 
-  const formattedDate = !invalidDate(entry.date, false, true)
+  const formattedDate = !invalidDate(entry.date, { required: true })
     ? DateTime.fromISO(entry.date).toFormat(
         `d'${ordinal(DateTime.fromISO(entry.date).day)}' MMMM yyyy`
       )

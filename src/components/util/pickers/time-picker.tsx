@@ -21,7 +21,7 @@ import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice, selectOrientation } from "@s/common";
 import BEMHelper from "@s/common/bem-helper";
-import { capitalise, iconObject } from "@s/util/functions";
+import { capitalise, iconObject, invalidTime } from "@s/util/functions";
 import type { Common, Overwrite } from "@s/util/types";
 import { Event } from "@i";
 import "./pickers.scss";
@@ -35,30 +35,6 @@ const formatTime = (string: string) => {
     .concat(...Array(4 - chars.length < 0 ? 0 : 4 - chars.length).fill("0"))
     .reduce((r, v, index) => (index === 2 ? `${r}:${v}` : r + v), "")
     .substr(0, 5);
-};
-
-/** Returns an error message if invalid, otherwise returns false. */
-
-export const invalidTime = (
-  date: string,
-  required?: boolean
-): string | false => {
-  if (required && !date) {
-    return "Field is required";
-  } else if (date && date.length !== 5) {
-    return "Format: HH:YY (24hr)";
-  } else if (date.length === 5) {
-    const [hours, minutes] = date.split(":");
-    const valid =
-      hours &&
-      minutes &&
-      parseInt(hours) >= 0 &&
-      parseInt(hours) <= 23 &&
-      parseInt(minutes) >= 0 &&
-      parseInt(minutes) <= 59;
-    return valid ? false : "Format: HH:YY (24hr)";
-  }
-  return false;
 };
 
 export type TimePickerProps = Overwrite<
@@ -104,7 +80,7 @@ export const TimePicker = ({
   const landscape = orientation === "landscape";
 
   const [touched, setTouched] = useState(false);
-  const invalid = touched ? invalidTime(value, required) : false;
+  const invalid = touched ? invalidTime(value, { required }) : false;
 
   const validFallback = invalidTime(fallbackValue || "") ? "" : fallbackValue;
 
