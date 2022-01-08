@@ -52,7 +52,7 @@ export const ModalEntry = ({
 }: ModalEntryProps) => {
   const device = useAppSelector(selectDevice);
 
-  const [entry, updateEntry] = useImmer<UpdateEntryType>(partialUpdate());
+  const [entry, updateEntry] = useImmer(partialUpdate({ name }));
 
   const keyedUpdate =
     <K extends keyof UpdateEntryType>(key: K, payload: UpdateEntryType[K]) =>
@@ -62,7 +62,7 @@ export const ModalEntry = ({
 
   useEffect(() => {
     if (!open) {
-      updateEntry(partialUpdate());
+      updateEntry(partialUpdate({ name }));
     }
   }, [open]);
 
@@ -235,7 +235,7 @@ export const ModalCreate = ({
     if (result.success) {
       firestore
         .collection("updates")
-        .add({ ...result.data, name })
+        .add(result.data)
         .then((docRef) => {
           console.log("Document written with ID: ", docRef.id);
           queue.notify({ title: "Entry written successfully." });
@@ -272,7 +272,7 @@ export const ModalEdit = ({
       firestore
         .collection("updates")
         .doc(id as UpdateId)
-        .set({ ...data, name })
+        .set(data)
         .then(() => {
           queue.notify({ title: "Entry edited successfully." });
           onClose();
