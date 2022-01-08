@@ -22,7 +22,7 @@ import "./content.scss";
 
 type ContentProps = HTMLAttributes<HTMLDivElement>;
 
-export const Content = ({ className, ...filteredProps }: ContentProps) => {
+export const Content = ({ className, ...props }: ContentProps) => {
   const device = useAppSelector(selectDevice);
   const bottomNav = useAppSelector(selectBottomNav);
 
@@ -88,7 +88,7 @@ export const Content = ({ className, ...filteredProps }: ContentProps) => {
           device !== "desktop" &&
           arrayIncludes(mainPages, page),
       })}
-      {...filteredProps}
+      {...props}
     >
       <DrawerNav close={closeNav} open={navOpen} />
       <DrawerAppContent>

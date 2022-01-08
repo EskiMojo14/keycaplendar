@@ -16,7 +16,7 @@ export const FullScreenDialog = ({
   className,
   onClose,
   open: propsOpen,
-  ...filteredProps
+  ...props
 }: FullScreenDialogProps) => {
   const [open, setOpen] = useState(!!propsOpen);
   const [opening, setOpening] = useState(false);
@@ -51,7 +51,7 @@ export const FullScreenDialog = ({
   return (
     <>
       <div
-        {...filteredProps}
+        {...props}
         className={bemClasses({
           extra: className,
           modifiers: {
