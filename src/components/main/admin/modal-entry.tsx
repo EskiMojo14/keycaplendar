@@ -1007,6 +1007,7 @@ export const ModalEdit = ({ onClose, open, set }: ModalEditProps) => {
           console.error(error);
           queue.notify({ title: `Failed to upload image: ${error}` });
           setUploadingImage(false);
+          setImageUploadProgress(0);
         },
         () => {
           // Handle successful uploads on complete
@@ -1015,6 +1016,8 @@ export const ModalEdit = ({ onClose, open, set }: ModalEditProps) => {
           imageRef
             .getDownloadURL()
             .then(async (downloadURL) => {
+              setUploadingImage(false);
+              setImageUploadProgress(0);
               editEntry({ ...entry, image: downloadURL });
               const fileNameRegex = /keysets%2F(.*)\?/;
               const regexMatch = set.image.match(fileNameRegex);
@@ -1039,11 +1042,10 @@ export const ModalEdit = ({ onClose, open, set }: ModalEditProps) => {
               }
             })
             .catch((error) => {
+              setUploadingImage(false);
+              setImageUploadProgress(0);
               queue.notify({ title: `Failed to get URL: ${error}` });
               console.error(error);
-            })
-            .finally(() => {
-              setUploadingImage(false);
             });
         }
       );
