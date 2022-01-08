@@ -15,10 +15,10 @@ type SegmentedButtonProps = DivProps & {
 export const SegmentedButton = ({
   className,
   toggle,
-  ...filteredProps
+  ...props
 }: SegmentedButtonProps) => (
   <div
-    {...filteredProps}
+    {...props}
     className={bemClasses({
       extra: className,
       modifiers: { toggle: !!toggle },

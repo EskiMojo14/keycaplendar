@@ -38,11 +38,11 @@ import "./react-markdown.scss";
 
 const input = Object.assign(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  ({ node, type, ...allProps }: Record<string, any>) => {
+  ({ node, type, ...props }: Record<string, any>) => {
     if (type === "checkbox") {
-      return <Checkbox {...allProps} />;
+      return <Checkbox {...props} />;
     } else {
-      return <input type={type} {...allProps} />;
+      return <input type={type} {...props} />;
     }
   },
   { displayName: "Custom Input" }
@@ -50,8 +50,8 @@ const input = Object.assign(
 
 const dataTableContainer = Object.assign(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  ({ children, node, ...allProps }: Record<string, any>) => (
-    <DataTable {...allProps}>
+  ({ children, node, ...props }: Record<string, any>) => (
+    <DataTable {...props}>
       <DataTableContent>{children}</DataTableContent>
     </DataTable>
   ),
@@ -82,13 +82,13 @@ type CustomReactMarkdownProps = ReactMarkdownOptions;
 export const CustomReactMarkdown = ({
   className,
   components,
-  ...filteredProps
+  ...props
 }: CustomReactMarkdownProps) => (
   <ReactMarkdown
     className={classNames("markdown", className)}
     components={{ ...customComponents, ...components }}
     remarkPlugins={[gfm]}
-    {...filteredProps}
+    {...props}
   />
 );
 
@@ -109,7 +109,7 @@ export const CustomReactMde = ({
   required,
   toolbarCommands,
   value,
-  ...filteredProps
+  ...props
 }: CustomReactMdeProps) => {
   const customCommands: CommandMap = {
     "column-after": insertTableColumnAfter,
@@ -205,7 +205,7 @@ export const CustomReactMde = ({
       selectedTab={selectedTab}
       toolbarCommands={customToolbarCommands}
       value={value}
-      {...filteredProps}
+      {...props}
     />
   );
 };
