@@ -149,7 +149,7 @@ export const ModalEntry = ({
           )}
           trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
         >
-          Create guide
+          {propsEntry ? "Edit" : "Create"} guide
         </BoolWrapper>
         <ConditionalWrapper
           condition={!useDrawer}

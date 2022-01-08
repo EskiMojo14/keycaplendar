@@ -208,7 +208,7 @@ export const ModalEntry = ({
           <div className="subheader">
             <Typography use="caption">Live preview</Typography>
           </div>
-          <Typography use="overline">{name}</Typography>
+          <Typography use="overline">{entry.name}</Typography>
           <Typography use="headline5">{entry.title}</Typography>
           <Typography use="caption">{formattedDate}</Typography>
           <CustomReactMarkdown>{entry.body}</CustomReactMarkdown>

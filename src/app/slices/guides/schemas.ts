@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { visibilityVals } from "@s/guides/constants";
 //import type { GuideEntryType } from "@s/guides/types";
-import { createUnionSchema } from "@s/util/schemas";
 
 export const GuideEntrySchema /*: z.ZodSchema<GuideEntryType>*/ = z.object({
   body: z.string().min(1),
@@ -10,5 +9,5 @@ export const GuideEntrySchema /*: z.ZodSchema<GuideEntryType>*/ = z.object({
   name: z.string().min(1),
   tags: z.string().min(1).array(),
   title: z.string().min(1),
-  visibility: createUnionSchema(visibilityVals),
+  visibility: z.enum(visibilityVals),
 });
