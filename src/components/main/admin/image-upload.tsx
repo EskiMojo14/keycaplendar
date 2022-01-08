@@ -19,8 +19,8 @@ import "./image-upload.scss";
 
 type ImageUploadProps = {
   desktop: boolean;
-  image: Blob | File | string | null;
-  setImage: (image: Blob | File | null) => void;
+  image: Blob | File | string;
+  setImage: (image: Blob | File) => void;
 };
 
 export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
@@ -171,7 +171,12 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
   const areaInner = hasImage ? (
     <div
       className="image-display-image"
-      style={{ backgroundImage: `url(${imageBase64})` }}
+      style={{
+        backgroundImage: `url(${imageBase64.replace(
+          "/keysets%2F",
+          "/thumbs%2F"
+        )})`,
+      }}
     />
   ) : loading ? null : desktop && !imageFromURL ? (
     <div className="drag-label">
