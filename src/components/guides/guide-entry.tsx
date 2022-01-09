@@ -1,3 +1,4 @@
+import type { EntityId } from "@reduxjs/toolkit";
 import {
   Card,
   CardActionButton,
@@ -12,29 +13,29 @@ import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import { CustomReactMarkdown } from "@c/util/react-markdown";
-import { selectFilteredTag, setFilteredTag } from "@s/guides";
+import { selectById, selectFilteredTag, setFilteredTag } from "@s/guides";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
-import type { GuideEntryType } from "@s/guides/types";
 import { selectUser } from "@s/user";
 import { clearSearchParams, createURL, iconObject } from "@s/util/functions";
 import { Delete, Edit, Share } from "@i";
 import "./guide-entry.scss";
 
 type GuideEntryProps = {
-  delete: (entry: GuideEntryType) => void;
-  edit: (entry: GuideEntryType) => void;
-  entry: GuideEntryType;
+  delete: (entry: EntityId) => void;
+  edit: (entry: EntityId) => void;
+  entryId: EntityId;
 };
 
 export const GuideEntry = ({
   delete: deleteFn,
   edit,
-  entry,
+  entryId,
 }: GuideEntryProps) => {
   const dispatch = useAppDispatch();
 
   const user = useAppSelector(selectUser);
 
+  const entry = useAppSelector((state) => selectById(state, entryId));
   const filteredTag = useAppSelector(selectFilteredTag);
 
   const setFilter = (tag: string) => {
@@ -48,7 +49,7 @@ export const GuideEntry = ({
   const copyLink = () => {
     const url = createURL({ pathname: "/guides" }, (params) => {
       clearSearchParams(params);
-      params.set("guideId", entry.id);
+      params.set("guideId", `${entryId}`);
     });
     navigator.clipboard
       .writeText(url.href)
@@ -73,18 +74,14 @@ export const GuideEntry = ({
         {withTooltip(
           <CardActionIcon
             icon={iconObject(<Edit />)}
-            onClick={() => {
-              edit(entry);
-            }}
+            onClick={() => edit(entryId)}
           />,
           "Edit"
         )}
         {withTooltip(
           <CardActionIcon
             icon={iconObject(<Delete />)}
-            onClick={() => {
-              deleteFn(entry);
-            }}
+            onClick={() => deleteFn(entryId)}
           />,
           "Delete"
         )}
@@ -100,7 +97,7 @@ export const GuideEntry = ({
       </CardActionIcons>
     </CardActions>
   );
-  return (
+  return entry ? (
     <Card className="guide-entry">
       <div className="title">
         <Typography tag="h3" use="overline">
@@ -136,5 +133,5 @@ export const GuideEntry = ({
       </div>
       {buttons}
     </Card>
-  );
+  ) : null;
 };

@@ -1,3 +1,4 @@
+import type { EntityId } from "@reduxjs/toolkit";
 import {
   Dialog,
   DialogActions,
@@ -5,28 +6,30 @@ import {
   DialogContent,
   DialogTitle,
 } from "@rmwc/dialog";
+import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import firestore from "@s/firebase/firestore";
 import type { GuideId } from "@s/firebase/types";
-import type { GuideEntryType } from "@s/guides/types";
+import { selectById } from "@s/guides";
 
 type DialogDeleteProps = {
-  entry: GuideEntryType;
+  entryId: EntityId;
   getEntries: () => void;
   onClose: () => void;
   open: boolean;
 };
 
 export const DialogDelete = ({
-  entry,
+  entryId,
   getEntries,
   onClose,
   open,
 }: DialogDeleteProps) => {
+  const entry = useAppSelector((state) => selectById(state, entryId));
   const deleteEntry = () => {
     firestore
       .collection("guides")
-      .doc(entry.id as GuideId)
+      .doc(entryId as GuideId)
       .delete()
       .then(() => {
         queue.notify({ title: "Successfully deleted entry." });
@@ -40,9 +43,9 @@ export const DialogDelete = ({
   };
   return (
     <Dialog onClose={onClose} open={open}>
-      <DialogTitle>Delete &ldquo;{entry.title}&rdquo;</DialogTitle>
+      <DialogTitle>Delete &ldquo;{entry?.title}&rdquo;</DialogTitle>
       <DialogContent>
-        Are you sure you want to delete the guide entry &ldquo;{entry.title}
+        Are you sure you want to delete the guide entry &ldquo;{entry?.title}
         &rdquo;? This cannot be undone.
       </DialogContent>
       <DialogActions>

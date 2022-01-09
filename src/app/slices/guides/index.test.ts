@@ -5,7 +5,7 @@ import {
   selectFilteredTag,
   selectLoading,
   selectURLEntry,
-  setAllTags,
+  selectVisibilityMap,
   setEntries,
   setFilteredTag,
   setLoading,
@@ -19,17 +19,17 @@ beforeEach(() => {
   store = createStore();
 });
 
+const string = "tag";
+
 const blankEntry: GuideEntryType = {
   body: "",
   description: "",
-  id: "",
+  id: "test",
   name: "",
-  tags: [],
+  tags: [string],
   title: "",
   visibility: "all",
 };
-
-const string = "test";
 
 it("sets loading state", () => {
   store.dispatch(setLoading(true));
@@ -37,22 +37,21 @@ it("sets loading state", () => {
   expect(response).toBe(true);
 });
 
-it("sets guides array", () => {
+it("sets guides array, tags, and visibility map", () => {
   store.dispatch(setEntries([blankEntry]));
-  const response = selectEntries(store.getState());
-  expect(response).toEqual([blankEntry]);
+  const guides = selectEntries(store.getState());
+  expect(guides).toEqual([blankEntry]);
+  const tags = selectAllTags(store.getState());
+  expect(tags).toEqual([string]);
+  const visibilityMap = selectVisibilityMap(store.getState());
+  const expectedVisibilityMap = { all: [blankEntry.id] };
+  expect(visibilityMap).toEqual(expectedVisibilityMap);
 });
 
 it("sets URL entry ID", () => {
   store.dispatch(setURLEntry(string));
   const response = selectURLEntry(store.getState());
   expect(response).toBe(string);
-});
-
-it("sets tags array", () => {
-  store.dispatch(setAllTags([string]));
-  const response = selectAllTags(store.getState());
-  expect(response).toEqual([string]);
 });
 
 it("sets filtered tag", () => {

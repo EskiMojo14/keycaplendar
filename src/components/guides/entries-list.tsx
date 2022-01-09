@@ -1,4 +1,5 @@
 import { Fragment, useEffect } from "react";
+import type { EntityId } from "@reduxjs/toolkit";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent } from "@rmwc/drawer";
 import { Icon } from "@rmwc/icon";
@@ -18,23 +19,19 @@ import { BoolWrapper } from "@c/util/conditional-wrapper";
 import { selectDevice } from "@s/common";
 import {
   selectAllTags,
-  selectEntries,
+  selectEntryMap,
   selectFilteredTag,
+  selectVisibilityMap,
   setFilteredTag,
 } from "@s/guides";
-import {
-  formattedVisibility,
-  visibilityIcons,
-  visibilityVals,
-} from "@s/guides/constants";
-import type { GuideEntryType } from "@s/guides/types";
-import { iconObject } from "@s/util/functions";
+import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
+import { iconObject, objectEntries } from "@s/util/functions";
 import { Article } from "@i";
 import "./entries-list.scss";
 
 type EntriesDrawerProps = {
-  detailEntry: GuideEntryType;
-  openEntry: (entry: GuideEntryType) => void;
+  detailEntry: EntityId;
+  openEntry: (entry: EntityId) => void;
 };
 
 export const EntriesList = ({ detailEntry, openEntry }: EntriesDrawerProps) => {
@@ -42,7 +39,8 @@ export const EntriesList = ({ detailEntry, openEntry }: EntriesDrawerProps) => {
 
   const device = useAppSelector(selectDevice);
 
-  const entries = useAppSelector(selectEntries);
+  const entriesMap = useAppSelector(selectEntryMap);
+  const visibilityMap = useAppSelector(selectVisibilityMap);
   const allTags = useAppSelector(selectAllTags);
   const filteredTag = useAppSelector(selectFilteredTag);
 
@@ -106,14 +104,14 @@ export const EntriesList = ({ detailEntry, openEntry }: EntriesDrawerProps) => {
       )}
     >
       <List className="entries-list three-line" twoLine>
-        {visibilityVals.map((visibility) => {
-          const filteredEntries = entries.filter(
-            (entry) =>
-              entry.visibility === visibility &&
-              (filteredTag === "" || entry.tags.includes(filteredTag))
-          );
+        {objectEntries(visibilityMap).map(([visibility, entryIds]) => {
+          const entries = entryIds
+            ?.map((id) => entriesMap[id])
+            .filter(
+              (entry) => filteredTag === "" || entry?.tags.includes(filteredTag)
+            );
           const { [visibility]: icon } = visibilityIcons;
-          if (filteredEntries.length > 0) {
+          if (entries && entries.length > 0) {
             return (
               <Fragment key={visibility}>
                 <ListGroup>
@@ -125,25 +123,28 @@ export const EntriesList = ({ detailEntry, openEntry }: EntriesDrawerProps) => {
                     )}
                     {formattedVisibility[visibility]}
                   </ListGroupSubheader>
-                  {filteredEntries.map((entry) => (
-                    <ListItem
-                      key={entry.id}
-                      onClick={() => {
-                        openEntry(entry);
-                      }}
-                      selected={detailEntry.id === entry.id}
-                    >
-                      <ListItemGraphic icon={iconObject(<Article />)} />
-                      <ListItemText>
-                        <ListItemPrimaryText>{entry.title}</ListItemPrimaryText>
-                        {entry.description ? (
-                          <ListItemSecondaryText>
-                            {entry.description}
-                          </ListItemSecondaryText>
-                        ) : null}
-                      </ListItemText>
-                    </ListItem>
-                  ))}
+                  {entries.map(
+                    (entry) =>
+                      entry && (
+                        <ListItem
+                          key={entry.id}
+                          onClick={() => openEntry(entry.id)}
+                          selected={detailEntry === entry.id}
+                        >
+                          <ListItemGraphic icon={iconObject(<Article />)} />
+                          <ListItemText>
+                            <ListItemPrimaryText>
+                              {entry?.title}
+                            </ListItemPrimaryText>
+                            {entry?.description ? (
+                              <ListItemSecondaryText>
+                                {entry.description}
+                              </ListItemSecondaryText>
+                            ) : null}
+                          </ListItemText>
+                        </ListItem>
+                      )
+                  )}
                 </ListGroup>
                 <ListDivider />
               </Fragment>

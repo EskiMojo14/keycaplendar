@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { EntityId } from "@reduxjs/toolkit";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { Fab } from "@rmwc/fab";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -24,12 +25,11 @@ import { pageTitle } from "@s/common/constants";
 import {
   selectEntries,
   selectLoading,
+  selectTotal,
   selectURLEntry,
   setURLEntry,
 } from "@s/guides";
-import { blankGuide } from "@s/guides/constants";
 import { getEntries } from "@s/guides/functions";
-import type { GuideEntryType } from "@s/guides/types";
 import { selectBottomNav } from "@s/settings";
 import { selectUser } from "@s/user";
 import { closeModal, openModal } from "@s/util/functions";
@@ -53,18 +53,19 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   const user = useAppSelector(selectUser);
 
   const loading = useAppSelector(selectLoading);
+  const total = useAppSelector(selectTotal);
   const entries = useAppSelector(selectEntries);
   const urlEntry = useAppSelector(selectURLEntry);
 
   useEffect(() => {
-    if (entries.length === 0) {
+    if (total === 0) {
       getEntries();
     }
   }, []);
 
-  const [detailEntry, setDetailEntry] = useState(blankGuide);
+  const [detailEntry, setDetailEntry] = useState<EntityId>("");
   const [detailOpen, setDetailOpen] = useState(false);
-  const openDetail = (entry: GuideEntryType) => {
+  const openDetail = (entry: EntityId) => {
     setDetailEntry(entry);
     if (device !== "desktop") {
       setDetailOpen(true);
@@ -83,17 +84,14 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   const closeDetail = () => {
     setDetailOpen(false);
     setTimeout(() => {
-      setDetailEntry(blankGuide);
+      setDetailEntry("");
     }, 300);
     closeModal();
   };
 
   useEffect(() => {
-    const id = urlEntry || "Di1F9XkWTG2M9qbP2ZcN";
-    const index = entries.findIndex((entry) => entry.id === id);
-    if (index >= 0 && device === "desktop") {
-      const { [index]: entry } = entries;
-      setDetailEntry(entry);
+    if (device === "desktop") {
+      setDetailEntry(urlEntry || "Di1F9XkWTG2M9qbP2ZcN");
     }
   }, [entries]);
 
@@ -107,9 +105,9 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
     closeModal();
   };
 
-  const [editEntry, setEditEntry] = useState(blankGuide);
+  const [editEntry, setEditEntry] = useState<EntityId>("");
   const [editOpen, setEditOpen] = useState(false);
-  const openEdit = (entry: GuideEntryType) => {
+  const openEdit = (entry: EntityId) => {
     const open = () => {
       setEditOpen(true);
       setEditEntry(entry);
@@ -125,14 +123,14 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   const closeEdit = () => {
     setEditOpen(false);
     setTimeout(() => {
-      setEditEntry(blankGuide);
+      setEditEntry("");
     }, 300);
     closeModal();
   };
 
-  const [deleteEntry, setDeleteEntry] = useState(blankGuide);
+  const [deleteEntry, setDeleteEntry] = useState<EntityId>("");
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const openDelete = (entry: GuideEntryType) => {
+  const openDelete = (entry: EntityId) => {
     const open = () => {
       setDeleteOpen(true);
       setDeleteEntry(entry);
@@ -148,7 +146,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   const closeDelete = () => {
     setDeleteOpen(false);
     setTimeout(() => {
-      setDeleteEntry(blankGuide);
+      setDeleteEntry("");
     }, 300);
     closeModal();
   };
@@ -159,12 +157,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
         <CircularProgress />
       ) : (
         withTooltip(
-          <TopAppBarActionItem
-            icon="refresh"
-            onClick={() => {
-              getEntries();
-            }}
-          />,
+          <TopAppBarActionItem icon="refresh" onClick={() => getEntries()} />,
           "Refresh"
         )
       )
@@ -188,13 +181,13 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
         open={createOpen}
       />
       <ModalEdit
-        entry={editEntry}
+        entryId={editEntry}
         getEntries={getEntries}
         onClose={closeEdit}
         open={editOpen}
       />
       <DialogDelete
-        entry={deleteEntry}
+        entryId={deleteEntry}
         getEntries={getEntries}
         onClose={closeDelete}
         open={deleteOpen}
@@ -217,11 +210,11 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
         <EntriesList detailEntry={detailEntry} openEntry={openDetail} />
         <div className="main drawer-margin">
           <div className="guide-container">
-            {detailEntry.id ? (
+            {detailEntry ? (
               <GuideEntry
                 delete={openDelete}
                 edit={openEdit}
-                entry={detailEntry}
+                entryId={detailEntry}
               />
             ) : (
               <div className="empty-container">
@@ -245,7 +238,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
           <ModalDetail
             delete={openDelete}
             edit={openEdit}
-            entry={detailEntry}
+            entryId={detailEntry}
             onClose={closeDetail}
             open={detailOpen}
           />

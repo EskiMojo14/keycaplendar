@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import type { ChangeEvent } from "react";
+import type { EntityId } from "@reduxjs/toolkit";
 import { Button } from "@rmwc/button";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
@@ -26,6 +27,7 @@ import { CustomReactMarkdown, CustomReactMde } from "@c/util/react-markdown";
 import { selectDevice } from "@s/common";
 import firestore from "@s/firebase/firestore";
 import type { GuideId } from "@s/firebase/types";
+import { selectById } from "@s/guides";
 import {
   formattedVisibility,
   visibilityIcons,
@@ -297,29 +299,32 @@ export const ModalCreate = ({
 };
 
 type ModalEditProps = {
-  entry: GuideEntryType;
+  entryId: EntityId;
   getEntries: () => void;
   onClose: () => void;
   open: boolean;
 };
 
 export const ModalEdit = ({
-  entry,
+  entryId,
   getEntries,
   onClose,
   open,
 }: ModalEditProps) => {
   const { nickname: name } = useAppSelector(selectUser);
 
+  const entry = useAppSelector((state) => selectById(state, entryId));
+
   const saveEntry = (entry: GuideEntryType) => {
     const result = GuideEntrySchema.safeParse(entry);
     if (result.success) {
       const {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         data: { id, ...data },
       } = result;
       firestore
         .collection("guides")
-        .doc(id as GuideId)
+        .doc(entryId as GuideId)
         .set({ ...data, name })
         .then(() => {
           queue.notify({ title: "Entry edited successfully." });

@@ -1,3 +1,4 @@
+import type { EntityId } from "@reduxjs/toolkit";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
@@ -20,18 +21,17 @@ import {
 import { withTooltip } from "@c/util/hocs";
 import { CustomReactMarkdown } from "@c/util/react-markdown";
 import { selectDevice } from "@s/common";
-import { selectFilteredTag, setFilteredTag } from "@s/guides";
+import { selectById, selectFilteredTag, setFilteredTag } from "@s/guides";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
-import type { GuideEntryType } from "@s/guides/types";
 import { selectUser } from "@s/user";
 import { clearSearchParams, createURL, iconObject } from "@s/util/functions";
 import { Delete, Edit, Share } from "@i";
 import "./modal-detail.scss";
 
 type ModalCreateProps = {
-  delete: (entry: GuideEntryType) => void;
-  edit: (entry: GuideEntryType) => void;
-  entry: GuideEntryType;
+  delete: (entry: EntityId) => void;
+  edit: (entry: EntityId) => void;
+  entryId: EntityId;
   onClose: () => void;
   open: boolean;
 };
@@ -39,7 +39,7 @@ type ModalCreateProps = {
 export const ModalDetail = ({
   delete: deleteFn,
   edit,
-  entry,
+  entryId,
   onClose,
   open,
 }: ModalCreateProps) => {
@@ -49,6 +49,7 @@ export const ModalDetail = ({
 
   const user = useAppSelector(selectUser);
 
+  const entry = useAppSelector((state) => selectById(state, entryId));
   const filteredTag = useAppSelector(selectFilteredTag);
 
   const useDrawer = device !== "mobile";
@@ -65,7 +66,7 @@ export const ModalDetail = ({
   const copyLink = () => {
     const url = createURL({ pathname: "/guides" }, (params) => {
       clearSearchParams(params);
-      params.set("guideId", entry.id);
+      params.set("guideId", `${entryId}`);
     });
     navigator.clipboard
       .writeText(url.href)
@@ -87,18 +88,14 @@ export const ModalDetail = ({
         {withTooltip(
           <IconButton
             icon={iconObject(<Edit />)}
-            onClick={() => {
-              edit(entry);
-            }}
+            onClick={() => edit(entryId)}
           />,
           "Edit"
         )}
         {withTooltip(
           <IconButton
             icon={iconObject(<Delete />)}
-            onClick={() => {
-              deleteFn(entry);
-            }}
+            onClick={() => deleteFn(entryId)}
           />,
           "Delete"
         )}
@@ -115,18 +112,14 @@ export const ModalDetail = ({
         {withTooltip(
           <TopAppBarActionItem
             icon={iconObject(<Edit />)}
-            onClick={() => {
-              edit(entry);
-            }}
+            onClick={() => edit(entryId)}
           />,
           "Edit"
         )}
         {withTooltip(
           <TopAppBarActionItem
             icon={iconObject(<Delete />)}
-            onClick={() => {
-              edit(entry);
-            }}
+            onClick={() => edit(entryId)}
           />,
           "Delete"
         )}
@@ -194,38 +187,42 @@ export const ModalDetail = ({
         )}
         trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
       >
-        <div className="title">
-          <Typography tag="h3" use="overline">
-            {entry.name}
-          </Typography>
-          <Typography tag="h1" use="headline5">
-            {entry.title}
-          </Typography>
-          <Typography tag="p" use="caption">
-            {entry.description}
-          </Typography>
-          <div className="tags-container">
-            <ChipSet>
-              <Chip
-                icon={visibilityIcons[entry.visibility]}
-                label={formattedVisibility[entry.visibility]}
-              />
-              {entry.tags.map((tag) => (
-                <Chip
-                  key={tag}
-                  label={tag}
-                  onClick={() => {
-                    setFilter(tag);
-                  }}
-                  selected={tag === filteredTag}
-                />
-              ))}
-            </ChipSet>
-          </div>
-        </div>
-        <div className="content">
-          <CustomReactMarkdown>{entry.body}</CustomReactMarkdown>
-        </div>
+        {entry ? (
+          <>
+            <div className="title">
+              <Typography tag="h3" use="overline">
+                {entry.name}
+              </Typography>
+              <Typography tag="h1" use="headline5">
+                {entry.title}
+              </Typography>
+              <Typography tag="p" use="caption">
+                {entry.description}
+              </Typography>
+              <div className="tags-container">
+                <ChipSet>
+                  <Chip
+                    icon={visibilityIcons[entry.visibility]}
+                    label={formattedVisibility[entry.visibility]}
+                  />
+                  {entry.tags.map((tag) => (
+                    <Chip
+                      key={tag}
+                      label={tag}
+                      onClick={() => {
+                        setFilter(tag);
+                      }}
+                      selected={tag === filteredTag}
+                    />
+                  ))}
+                </ChipSet>
+              </div>
+            </div>
+            <div className="content">
+              <CustomReactMarkdown>{entry.body}</CustomReactMarkdown>
+            </div>
+          </>
+        ) : null}
       </BoolWrapper>
     </BoolWrapper>
   );
