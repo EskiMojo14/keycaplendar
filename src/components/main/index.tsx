@@ -288,8 +288,8 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
           label={device === "desktop" ? "Create" : null}
           onClick={openCreate}
         />
-        <ModalCreate close={closeCreate} open={createOpen} />
-        <ModalEdit close={closeEdit} open={editOpen} set={editSet} />
+        <ModalCreate onClose={closeCreate} open={createOpen} />
+        <ModalEdit onClose={closeEdit} open={editOpen} set={editSet} />
         {deleteElements}
       </ConditionalWrapper>
     ) : null;

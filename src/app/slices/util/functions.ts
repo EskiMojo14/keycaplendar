@@ -621,3 +621,59 @@ export const clearSearchParams = (
 export const createFillFunc =
   <T extends Record<any, any>>(defaults: T) =>
   (partial: Partial<T> = {}): T => ({ ...defaults, ...partial });
+
+/** Returns an error message if invalid, otherwise returns false. */
+
+export const invalidDate = (
+  date: string,
+  {
+    allowQuarter = false,
+    disableFuture = false,
+    month = false,
+    required = false,
+  } = {}
+): string | false => {
+  const { invalidExplanation: luxonExplanation } = DateTime.fromISO(date);
+  if (allowQuarter && /^Q[1-4]{1} \d{4}$/.test(date)) {
+    // allow Q1-4 YYYY if quarters are allowed.
+    return false;
+  } else if (required && !date) {
+    return "Field is required.";
+  } else if (disableFuture && date && date > DateTime.now().toISODate()) {
+    return "Date is in the future";
+  } else if (luxonExplanation && date) {
+    return `${luxonExplanation}${
+      allowQuarter ? " (and date isn't Q1-4 YYYY)" : ""
+    }`;
+  } else if (required && !(date.length === (month ? 7 : 10))) {
+    // valid ISO but not the format we want
+    return `Format: ${month ? "YYYY-MM" : "YYYY-MM-DD"}${
+      allowQuarter ? " or Q1-4 YYYY" : ""
+    }`;
+  }
+  return false;
+};
+
+/** Returns an error message if invalid, otherwise returns false. */
+
+export const invalidTime = (
+  date: string,
+  { required = false } = {}
+): string | false => {
+  if (required && !date) {
+    return "Field is required";
+  } else if (date && date.length !== 5) {
+    return "Format: HH:YY (24hr)";
+  } else if (date.length === 5) {
+    const [hours, minutes] = date.split(":");
+    const valid =
+      hours &&
+      minutes &&
+      parseInt(hours) >= 0 &&
+      parseInt(hours) <= 23 &&
+      parseInt(minutes) >= 0 &&
+      parseInt(minutes) <= 59;
+    return valid ? false : "Format: HH:YY (24hr)";
+  }
+  return false;
+};

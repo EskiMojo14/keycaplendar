@@ -21,7 +21,7 @@ import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice, selectOrientation } from "@s/common";
 import BEMHelper from "@s/common/bem-helper";
-import { capitalise, iconObject } from "@s/util/functions";
+import { capitalise, iconObject, invalidDate } from "@s/util/functions";
 import type { Common, Overwrite } from "@s/util/types";
 import { Event } from "@i";
 import "./pickers.scss";
@@ -63,36 +63,6 @@ const formatDateWithAppend =
     }
     return res;
   };
-
-/** Returns an error message if invalid, otherwise returns false. */
-
-export const invalidDate = (
-  date: string,
-  month = false,
-  required = false,
-  allowQuarter = false,
-  disableFuture = false
-): string | false => {
-  const { invalidExplanation: luxonExplanation } = DateTime.fromISO(date);
-  if (allowQuarter && /^Q[1-4]{1} \d{4}$/.test(date)) {
-    // allow Q1-4 YYYY if quarters are allowed.
-    return false;
-  } else if (required && !date) {
-    return "Field is required.";
-  } else if (disableFuture && date && date > DateTime.now().toISODate()) {
-    return "Date is in the future";
-  } else if (luxonExplanation && date) {
-    return `${luxonExplanation}${
-      allowQuarter ? " (and date isn't Q1-4 YYYY)" : ""
-    }`;
-  } else if (required && !(date.length === (month ? 7 : 10))) {
-    // valid ISO but not the format we want
-    return `Format: ${month ? "YYYY-MM" : "YYYY-MM-DD"}${
-      allowQuarter ? " or Q1-4 YYYY" : ""
-    }`;
-  }
-  return false;
-};
 
 export type DatePickerProps = Overwrite<
   Omit<TextFieldHTMLProps & TextFieldProps, "helpText" | "onBlur" | "onFocus">,
@@ -142,13 +112,12 @@ export const DatePicker = ({
 
   const [touched, setTouched] = useState(false);
   const invalid = touched
-    ? invalidDate(
-        value,
+    ? invalidDate(value, {
+        allowQuarter,
+        disableFuture: pickerProps?.disableFuture,
         month,
         required,
-        allowQuarter,
-        pickerProps?.disableFuture
-      )
+      })
     : false;
 
   const validFallback = invalidDate(fallbackValue || "") ? "" : fallbackValue;

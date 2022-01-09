@@ -12,8 +12,8 @@ export const componentBuilder = (name: string, Component: FunctionComponent) =>
       node,
       ordered,
       /* eslint-enable @typescript-eslint/no-unused-vars */
-      ...allProps
-    }: Record<string, any>) => <Component {...allProps} />,
+      ...props
+    }: Record<string, any>) => <Component {...props} />,
     { displayName: `Custom ${name}` }
   );
 
@@ -27,9 +27,9 @@ export const typographyBuilder = (tag: string, typography: TypographyT) =>
       node,
       ordered,
       /* eslint-enable @typescript-eslint/no-unused-vars */
-      ...allProps
+      ...props
     }: Record<string, any>) => (
-      <Typography tag={tag} use={typography} {...allProps}>
+      <Typography tag={tag} use={typography} {...props}>
         {children}
       </Typography>
     ),

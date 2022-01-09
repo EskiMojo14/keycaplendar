@@ -25,7 +25,7 @@ export const Autocomplete = ({
   prop,
   query,
   select,
-  ...filteredProps
+  ...props
 }: AutocompleteProps) => {
   const splitQuery = query.split(", ");
   const { [splitQuery.length - 1]: lastItem } = splitQuery;
@@ -36,7 +36,7 @@ export const Autocomplete = ({
   const firstFour = matchingItems.slice(0, 4);
   return (
     <Menu
-      {...filteredProps}
+      {...props}
       anchorCorner="bottomLeft"
       className={classNames("autocomplete", className)}
       focusOnOpen={false}
@@ -91,7 +91,7 @@ export const AutocompleteMobile = ({
   prop,
   query,
   select,
-  ...filteredProps
+  ...props
 }: AutocompleteProps) => {
   const splitQuery = query.split(", ");
   const { [splitQuery.length - 1]: lastItem } = splitQuery;
@@ -101,7 +101,7 @@ export const AutocompleteMobile = ({
   );
   return (
     <div
-      {...filteredProps}
+      {...props}
       className={bemClasses({ extra: className, modifiers: { open } })}
     >
       <List>
