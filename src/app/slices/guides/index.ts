@@ -1,12 +1,21 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
+import produce from "immer";
 import type { RootState } from "~/app/store";
+import { visibilityVals } from "@s/guides/constants";
 import {
   alphabeticalSort,
   alphabeticalSortPropCurried,
   removeDuplicates,
 } from "@s/util/functions";
 import type { GuideEntryType, Visibility } from "./types";
+
+const blankVisibilityMap = visibilityVals.reduce<
+  Record<Visibility, EntityId[]>
+>((acc, vis) => {
+  acc[vis] ??= [];
+  return acc;
+}, {} as Record<Visibility, EntityId[]>);
 
 const sortEntries = alphabeticalSortPropCurried<GuideEntryType, "title">(
   "title",
@@ -24,7 +33,7 @@ type GuidesState = {
   filteredTag: string;
   loading: boolean;
   urlEntry: EntityId;
-  visibilityMap: Partial<Record<Visibility, EntityId[]>>;
+  visibilityMap: Record<Visibility, EntityId[]>;
 };
 
 export const initialState: GuidesState = {
@@ -33,7 +42,7 @@ export const initialState: GuidesState = {
   filteredTag: "",
   loading: false,
   urlEntry: "",
-  visibilityMap: {},
+  visibilityMap: blankVisibilityMap,
 };
 
 export const guidesSlice = createSlice({
@@ -42,15 +51,14 @@ export const guidesSlice = createSlice({
   reducers: {
     setEntries: (state, { payload }: PayloadAction<GuideEntryType[]>) => {
       guideEntryAdapter.setAll(state.entries, payload);
-      state.visibilityMap = payload
+      state.visibilityMap = [...payload]
         .sort(sortEntries)
-        .reduce<Partial<Record<Visibility, EntityId[]>>>(
-          (prev, { id, visibility }) => {
-            prev[visibility] ??= [];
-            prev[visibility]?.push(id);
+        .reduce<Record<Visibility, EntityId[]>>(
+          produce((prev, { id, visibility }) => {
+            prev[visibility].push(id);
             return prev;
-          },
-          {}
+          }),
+          blankVisibilityMap
         );
       state.allTags = alphabeticalSort(
         removeDuplicates(payload.map((entry) => entry.tags).flat(1))

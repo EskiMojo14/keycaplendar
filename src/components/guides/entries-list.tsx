@@ -106,12 +106,12 @@ export const EntriesList = ({ detailEntry, openEntry }: EntriesDrawerProps) => {
       <List className="entries-list three-line" twoLine>
         {objectEntries(visibilityMap).map(([visibility, entryIds]) => {
           const entries = entryIds
-            ?.map((id) => entriesMap[id])
+            .map((id) => entriesMap[id])
             .filter(
               (entry) => filteredTag === "" || entry?.tags.includes(filteredTag)
             );
           const { [visibility]: icon } = visibilityIcons;
-          if (entries && entries.length > 0) {
+          if (entries.length > 0) {
             return (
               <Fragment key={visibility}>
                 <ListGroup>
