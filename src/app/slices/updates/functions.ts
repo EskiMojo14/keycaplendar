@@ -1,28 +1,12 @@
+import type { EntityId } from "@reduxjs/toolkit";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import firestore from "@s/firebase/firestore";
 import type { UpdateId } from "@s/firebase/types";
-import { alphabeticalSortPropCurried } from "@s/util/functions";
-import { setEntries, setLoading } from ".";
+import { selectById, setEntries, setLoading } from ".";
 import type { UpdateEntryType } from "./types";
 
 const { dispatch } = store;
-
-export const sortEntries = (entries: UpdateEntryType[]) => {
-  const sortedEntries = entries.sort((a, b) => {
-    if ((a.pinned || b.pinned) && !(a.pinned && b.pinned)) {
-      return a.pinned ? -1 : 1;
-    }
-    return (
-      alphabeticalSortPropCurried<UpdateEntryType, "date">("date", true)(
-        a,
-        b
-      ) || alphabeticalSortPropCurried<UpdateEntryType, "title">("title")(a, b)
-    );
-  });
-  dispatch(setEntries(sortedEntries));
-  dispatch(setLoading(false));
-};
 
 export const getEntries = () => {
   dispatch(setLoading(true));
@@ -40,29 +24,34 @@ export const getEntries = () => {
           pinned: data.pinned ?? false,
         });
       });
-      sortEntries(entries);
+      dispatch(setEntries(entries));
+      dispatch(setLoading(false));
     })
     .catch((error) => {
+      dispatch(setLoading(false));
       console.log(`Error getting data: ${error}`);
       queue.notify({ title: `Error getting data: ${error}` });
     });
 };
 
-export const pinEntry = (entry: UpdateEntryType) => {
+export const pinEntry = (entryId: EntityId, state = store.getState()) => {
+  const entry = selectById(state, entryId);
   firestore
     .collection("updates")
-    .doc(entry.id as UpdateId)
-    .set({ pinned: !entry.pinned }, { merge: true })
+    .doc(entryId as UpdateId)
+    .set({ pinned: !entry?.pinned }, { merge: true })
     .then(() => {
-      queue.notify({ title: `Entry ${entry.pinned ? "unpinned" : "pinned"}.` });
+      queue.notify({
+        title: `Entry ${entry?.pinned ? "unpinned" : "pinned"}.`,
+      });
       getEntries();
     })
     .catch((error) => {
       console.log(
-        `Failed to ${entry.pinned ? "unpin" : "pin"} entry: ${error}`
+        `Failed to ${entry?.pinned ? "unpin" : "pin"} entry: ${error}`
       );
       queue.notify({
-        title: `Failed to ${entry.pinned ? "unpin" : "pin"} entry: ${error}`,
+        title: `Failed to ${entry?.pinned ? "unpin" : "pin"} entry: ${error}`,
       });
     });
 };

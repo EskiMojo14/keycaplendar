@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import type { ChangeEvent } from "react";
+import type { EntityId } from "@reduxjs/toolkit";
 import { Button } from "@rmwc/button";
 import { Checkbox } from "@rmwc/checkbox";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
@@ -27,6 +28,7 @@ import { CustomReactMarkdown, CustomReactMde } from "@c/util/react-markdown";
 import { selectDevice } from "@s/common";
 import firestore from "@s/firebase/firestore";
 import type { UpdateId } from "@s/firebase/types";
+import { selectById } from "@s/updates";
 import { partialUpdate } from "@s/updates/constructors";
 import { UpdateEntrySchema } from "@s/updates/schemas";
 import type { UpdateEntryType } from "@s/updates/types";
@@ -252,26 +254,28 @@ export const ModalCreate = ({
 };
 
 type ModalEditProps = Omit<ModalEntryProps, "name" | "onSubmit"> & {
-  entry: UpdateEntryType;
+  entryId: EntityId;
   getEntries: () => void;
 };
 
 export const ModalEdit = ({
-  entry,
+  entryId,
   getEntries,
   onClose,
   open,
 }: ModalEditProps) => {
   const { nickname: name } = useAppSelector(selectUser);
+  const entry = useAppSelector((state) => selectById(state, entryId));
   const saveEntry = (entry: UpdateEntryType) => {
     const result = UpdateEntrySchema.safeParse(entry);
     if (result.success) {
       const {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         data: { id, ...data },
       } = result;
       firestore
         .collection("updates")
-        .doc(id as UpdateId)
+        .doc(entryId as UpdateId)
         .set(data)
         .then(() => {
           queue.notify({ title: "Entry edited successfully." });

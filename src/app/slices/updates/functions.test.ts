@@ -1,6 +1,5 @@
 import store from "~/app/store";
-import { setEntries, setLoading } from "@s/updates";
-import { sortEntries } from "@s/updates/functions";
+import { sortEntries } from "@s/updates";
 import type { UpdateEntryType } from "@s/updates/types";
 
 jest.mock("~/app/store");
@@ -25,12 +24,11 @@ const blankEntry: UpdateEntryType = {
 };
 
 describe("sortEntries", () => {
-  it("sorts given entries, and dispatches sorted entries to state", () => {
-    sortEntries([blankEntry, { ...blankEntry, pinned: true }]);
-    expect(dispatchSpy).toHaveBeenNthCalledWith(
-      1,
-      setEntries([{ ...blankEntry, pinned: true }, blankEntry])
+  it("sorts given entries", () => {
+    const response = [blankEntry, { ...blankEntry, pinned: true }].sort(
+      sortEntries
     );
-    expect(dispatchSpy).toHaveBeenNthCalledWith(2, setLoading(false));
+    const expected = [{ ...blankEntry, pinned: true }, blankEntry];
+    expect(response).toEqual(expected);
   });
 });

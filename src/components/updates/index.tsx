@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { EntityId } from "@reduxjs/toolkit";
 import { Fab } from "@rmwc/fab";
 import { LinearProgress } from "@rmwc/linear-progress";
 import {
@@ -18,10 +19,8 @@ import { AppBarIndent } from "@c/util/app-bar-indent";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { selectBottomNav } from "@s/settings";
-import { selectEntries, selectLoading, selectURLEntry } from "@s/updates";
-import { blankUpdate } from "@s/updates/constants";
+import { selectIds, selectLoading, selectURLEntry } from "@s/updates";
 import { getEntries, pinEntry } from "@s/updates/functions";
-import type { UpdateEntryType } from "@s/updates/types";
 import { selectUser } from "@s/user";
 import { closeModal, openModal } from "@s/util/functions";
 import { UpdateEntry } from "./update-entry";
@@ -39,7 +38,7 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
   const user = useAppSelector(selectUser);
 
   const loading = useAppSelector(selectLoading);
-  const entries = useAppSelector(selectEntries);
+  const entries = useAppSelector(selectIds);
   const urlEntry = useAppSelector(selectURLEntry);
 
   useEffect(() => {
@@ -72,9 +71,9 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
     closeModal();
   };
 
-  const [editEntry, setEditEntry] = useState(blankUpdate);
+  const [editEntry, setEditEntry] = useState<EntityId>("");
   const [editOpen, setEditOpen] = useState(false);
-  const openEdit = (entry: UpdateEntryType) => {
+  const openEdit = (entry: EntityId) => {
     setEditOpen(true);
     setEditEntry(entry);
     openModal();
@@ -82,14 +81,14 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
   const closeEdit = () => {
     setEditOpen(false);
     setTimeout(() => {
-      setEditEntry(blankUpdate);
+      setEditEntry("");
     }, 300);
     closeModal();
   };
 
-  const [deleteEntry, setDeleteEntry] = useState(blankUpdate);
+  const [deleteEntry, setDeleteEntry] = useState<EntityId>("");
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const openDelete = (entry: UpdateEntryType) => {
+  const openDelete = (entry: EntityId) => {
     setDeleteOpen(true);
     setDeleteEntry(entry);
     openModal();
@@ -97,7 +96,7 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
   const closeDelete = () => {
     setDeleteOpen(false);
     setTimeout(() => {
-      setDeleteEntry(blankUpdate);
+      setDeleteEntry("");
     }, 300);
     closeModal();
   };
@@ -118,13 +117,13 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
         open={createOpen}
       />
       <ModalEdit
-        entry={editEntry}
+        entryId={editEntry}
         getEntries={getEntries}
         onClose={closeEdit}
         open={editOpen}
       />
       <DialogDelete
-        entry={deleteEntry}
+        entryId={deleteEntry}
         getEntries={getEntries}
         onClose={closeDelete}
         open={deleteOpen}
@@ -153,12 +152,12 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
       <div className="content-container">
         <div className="main extended-app-bar">
           <div className="update-container">
-            {entries.map((entry) => (
+            {entries.map((entryId) => (
               <UpdateEntry
-                key={entry.id}
+                key={entryId}
                 delete={openDelete}
                 edit={openEdit}
-                entry={entry}
+                entryId={entryId}
                 pin={pinEntry}
               />
             ))}
