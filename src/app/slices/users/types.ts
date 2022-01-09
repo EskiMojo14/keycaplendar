@@ -7,6 +7,7 @@ export type UserType = {
   displayName: string;
   editor: boolean;
   email: string;
+  id: string;
   lastActive: string;
   lastSignIn: string;
   nickname: string;

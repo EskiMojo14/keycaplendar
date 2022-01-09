@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { ChangeEvent, FocusEvent } from "react";
+import type { EntityId } from "@reduxjs/toolkit";
 import { Avatar } from "@rmwc/avatar";
 import { Checkbox } from "@rmwc/checkbox";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -15,6 +16,8 @@ import { Autocomplete } from "@c/util/autocomplete";
 import firebase from "@s/firebase";
 import { selectAllDesigners } from "@s/main";
 import { selectUser } from "@s/user";
+import { selectById } from "@s/users";
+import { partialUser } from "@s/users/constructors";
 import type { UserType } from "@s/users/types";
 import {
   arrayIncludes,
@@ -26,9 +29,9 @@ import {
 import { Delete, Save } from "@i";
 
 type UserRowProps = {
-  delete: (user: UserType) => void;
+  delete: (user: EntityId) => void;
   getUsers: () => void;
-  user: UserType;
+  userId: EntityId;
 };
 
 const roles = ["designer", "editor", "admin"] as const;
@@ -36,16 +39,18 @@ const roles = ["designer", "editor", "admin"] as const;
 export const UserRow = ({
   delete: deleteFn,
   getUsers,
-  user: propsUser,
+  userId,
 }: UserRowProps) => {
   const currentUser = useAppSelector(selectUser);
+  const propsUser = useAppSelector((state) => selectById(state, userId));
 
   const allDesigners = useAppSelector(selectAllDesigners);
 
-  const [user, updateUser] = useImmer<UserType>(propsUser);
-  const [edited, setEdited] = useState(false);
+  const [user, updateUser] = useImmer<UserType>(partialUser());
   const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState("");
+
+  const edited = propsUser !== user;
 
   const keyedUpdate =
     <T extends UserType, K extends keyof T>(key: K, payload: T[K]) =>
@@ -54,10 +59,7 @@ export const UserRow = ({
     };
 
   useEffect(() => {
-    if (propsUser !== user) {
-      updateUser(user);
-      setEdited(false);
-    }
+    updateUser(propsUser ?? partialUser());
   }, [propsUser]);
 
   const handleFocus = (e: FocusEvent<HTMLInputElement>) =>
@@ -69,7 +71,6 @@ export const UserRow = ({
   }: ChangeEvent<HTMLInputElement>) => {
     if (arrayIncludes(roles, name)) {
       updateUser(keyedUpdate(name, checked));
-      setEdited(true);
     }
   };
 
@@ -78,17 +79,13 @@ export const UserRow = ({
   }: ChangeEvent<HTMLInputElement>) => {
     if (hasKey(user, name)) {
       updateUser(keyedUpdate(name, value));
-      setEdited(true);
     }
   };
 
   const selectValue = <Key extends keyof UserType>(
     prop: Key,
     value: UserType[Key]
-  ) => {
-    updateUser(keyedUpdate(prop, value));
-    setEdited(true);
-  };
+  ) => updateUser(keyedUpdate(prop, value));
 
   const setRoles = () => {
     setLoading(true);
@@ -130,14 +127,16 @@ export const UserRow = ({
       }}
     />
   );
-  const deleteButton =
-    user.email === currentUser.email ||
-    user.email === "ben.j.durrant@gmail.com" ? null : (
-      <IconButton
-        icon={iconObject(<Delete />)}
-        onClick={() => deleteFn(user)}
-      />
-    );
+  const myEmail = "ben.j.durrant@gmail.com";
+  const cantEdit =
+    (user.email === currentUser.email && currentUser.email !== myEmail) ||
+    (user.email === myEmail && currentUser.email !== myEmail);
+  const deleteButton = cantEdit ? null : (
+    <IconButton
+      icon={iconObject(<Delete />)}
+      onClick={() => deleteFn(userId)}
+    />
+  );
   return (
     <DataTableRow>
       <DataTableCell>
@@ -186,6 +185,7 @@ export const UserRow = ({
       <DataTableCell hasFormControl>
         <Checkbox
           checked={user.designer}
+          disabled={cantEdit}
           name="designer"
           onChange={handleCheckboxChange}
         />
@@ -193,10 +193,7 @@ export const UserRow = ({
       <DataTableCell hasFormControl>
         <Checkbox
           checked={user.editor}
-          disabled={
-            user.email === currentUser.email ||
-            user.email === "ben.j.durrant@gmail.com"
-          }
+          disabled={cantEdit}
           name="editor"
           onChange={handleCheckboxChange}
         />
@@ -204,10 +201,7 @@ export const UserRow = ({
       <DataTableCell hasFormControl>
         <Checkbox
           checked={user.admin}
-          disabled={
-            user.email === currentUser.email ||
-            user.email === "ben.j.durrant@gmail.com"
-          }
+          disabled={cantEdit}
           name="admin"
           onChange={handleCheckboxChange}
         />

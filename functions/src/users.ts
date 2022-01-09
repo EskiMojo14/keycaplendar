@@ -12,9 +12,7 @@ export const getClaims = functions.https.onCall((data, context) => {
   if (context.auth) {
     return {
       nickname: context.auth.token.nickname ?? "",
-      designer: context.auth.token.designer
-        ? context.auth.token.designer
-        : false,
+      designer: context.auth.token.designer ?? false,
       editor: context.auth.token.editor ?? false,
       admin: context.auth.token.admin ?? false,
     };
@@ -51,21 +49,21 @@ export const listUsers = functions.https.onCall(async (data, context) => {
           : "";
         if (user.customClaims) {
           return {
+            id: user.uid,
             displayName: user.displayName,
             email: user.email,
             photoURL: user.photoURL,
-            nickname: user.customClaims.nickname
-              ? user.customClaims.nickname
-              : "",
-            designer: user.customClaims.designer ? true : false,
-            editor: user.customClaims.editor ? true : false,
-            admin: user.customClaims.admin ? true : false,
+            nickname: user.customClaims.nickname ?? "",
+            designer: user.customClaims.designer ?? false,
+            editor: user.customClaims.editor ?? false,
+            admin: user.customClaims.admin ?? false,
             dateCreated: dateCreated,
             lastSignIn: lastSignIn,
             lastActive: lastActive,
           };
         } else {
           return {
+            id: user.uid,
             displayName: user.displayName,
             email: user.email,
             photoURL: user.photoURL,

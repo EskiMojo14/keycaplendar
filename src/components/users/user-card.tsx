@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { ChangeEvent, FocusEvent } from "react";
+import type { EntityId } from "@reduxjs/toolkit";
 import { Avatar } from "@rmwc/avatar";
 import {
   Card,
@@ -35,15 +36,17 @@ import { selectDevice } from "@s/common";
 import firebase from "@s/firebase";
 import { selectAllDesigners } from "@s/main";
 import { selectUser } from "@s/user";
+import { selectById } from "@s/users";
 import { userRoleIcons } from "@s/users/constants";
+import { partialUser } from "@s/users/constructors";
 import type { UserType } from "@s/users/types";
 import { hasKey, iconObject, ordinal } from "@s/util/functions";
 import { Delete, Save } from "@i";
 
 type UserCardProps = {
-  delete: (user: UserType) => void;
+  delete: (user: EntityId) => void;
   getUsers: () => void;
-  user: UserType;
+  userId: EntityId;
 };
 
 const roles = ["designer", "editor", "admin"] as const;
@@ -51,17 +54,19 @@ const roles = ["designer", "editor", "admin"] as const;
 export const UserCard = ({
   delete: deleteFn,
   getUsers,
-  user: propsUser,
+  userId,
 }: UserCardProps) => {
   const device = useAppSelector(selectDevice);
 
   const currentUser = useAppSelector(selectUser);
+  const propsUser = useAppSelector((state) => selectById(state, userId));
 
   const allDesigners = useAppSelector(selectAllDesigners);
-  const [user, updateUser] = useImmer<UserType>(propsUser);
-  const [edited, setEdited] = useState(false);
+  const [user, updateUser] = useImmer<UserType>(partialUser());
   const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState("");
+
+  const edited = propsUser !== user;
 
   const keyedUpdate =
     <T extends UserType, K extends keyof T>(key: K, payload: T[K]) =>
@@ -70,10 +75,7 @@ export const UserCard = ({
     };
 
   useEffect(() => {
-    if (propsUser !== user) {
-      updateUser(user);
-      setEdited(false);
-    }
+    updateUser(propsUser ?? partialUser());
   }, [propsUser]);
 
   const handleFocus = (e: FocusEvent<HTMLInputElement>) =>
@@ -85,22 +87,17 @@ export const UserCard = ({
   }: ChangeEvent<HTMLInputElement>) => {
     if (hasKey(user, name)) {
       updateUser(keyedUpdate(name, value));
-      setEdited(true);
     }
   };
   const selectValue = <Key extends keyof UserType>(
     prop: Key,
     value: UserType[Key]
-  ) => {
-    updateUser(keyedUpdate(prop, value));
-    setEdited(true);
-  };
+  ) => updateUser(keyedUpdate(prop, value));
   const toggleRole = (role: typeof roles[number]) => {
     if (roles.includes(role)) {
       updateUser((user) => {
         user[role] = !user[role];
       });
-      setEdited(true);
     }
   };
 
@@ -150,7 +147,7 @@ export const UserCard = ({
     user.email === "ben.j.durrant@gmail.com" ? null : (
       <IconButton
         icon={iconObject(<Delete />)}
-        onClick={() => deleteFn(user)}
+        onClick={() => deleteFn(userId)}
       />
     );
   return (

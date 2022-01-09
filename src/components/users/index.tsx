@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import type { EntityId } from "@reduxjs/toolkit";
 import { Button } from "@rmwc/button";
 import { Card } from "@rmwc/card";
 import {
@@ -9,13 +10,6 @@ import {
   DataTableHeadCell,
   DataTableRow,
 } from "@rmwc/data-table";
-import {
-  Dialog,
-  DialogActions,
-  DialogButton,
-  DialogContent,
-  DialogTitle,
-} from "@rmwc/dialog";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { Menu, MenuItem, MenuSurfaceAnchor } from "@rmwc/menu";
 import {
@@ -28,9 +22,9 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
+import { DialogDelete } from "@c/users/dialog-delete";
 import {
   DataTablePagination,
   DataTablePaginationButton,
@@ -44,23 +38,19 @@ import {
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
-import firebase from "@s/firebase";
 import { selectBottomNav } from "@s/settings";
 import {
-  selectIndices,
+  selectIds,
   selectLoading,
   selectNextPageToken,
   selectPage,
-  selectPaginatedUsers,
   selectReverseSort,
   selectRowsPerPage,
   selectSort,
-  selectSortedUsers,
+  selectTotal,
   selectView,
-  setLoading,
 } from "@s/users";
 import {
-  blankUser,
   sortLabels,
   sortProps,
   viewIcons,
@@ -69,13 +59,13 @@ import {
 } from "@s/users/constants";
 import {
   getUsers,
+  paginateUsers,
   setPage,
   setRowsPerPage,
   setSort,
   setSortIndex,
   setViewIndex,
 } from "@s/users/functions";
-import type { UserType } from "@s/users/types";
 import { useBoolStates } from "@s/util/functions";
 import { UserCard } from "./user-card";
 import { UserRow } from "./user-row";
@@ -89,27 +79,33 @@ type ContentUsersProps = {
 };
 
 export const ContentUsers = ({ openNav }: ContentUsersProps) => {
-  const dispatch = useAppDispatch();
-
   const device = useAppSelector(selectDevice);
   const bottomNav = useAppSelector(selectBottomNav);
 
   const view = useAppSelector(selectView);
   const loading = useAppSelector(selectLoading);
 
-  const sortedUsers = useAppSelector(selectSortedUsers);
-  const paginatedUsers = useAppSelector(selectPaginatedUsers);
-
   const userSort = useAppSelector(selectSort);
   const reverseUserSort = useAppSelector(selectReverseSort);
+
+  const total = useAppSelector(selectTotal);
+  const ids = useAppSelector(selectIds);
 
   const nextPageToken = useAppSelector(selectNextPageToken);
   const rowsPerPage = useAppSelector(selectRowsPerPage);
   const page = useAppSelector(selectPage);
-  const { first: firstIndex, last: lastIndex } = useAppSelector(selectIndices);
+
+  const {
+    first,
+    ids: paginatedIds,
+    last,
+  } = useMemo(
+    () => paginateUsers(ids, page, rowsPerPage),
+    [ids, page, rowsPerPage]
+  );
 
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [deletedUser, setDeletedUser] = useState(blankUser);
+  const [deletedUser, setDeletedUser] = useState<EntityId>("");
 
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
   const [closeViewMenu, openViewMenu] = useBoolStates(setViewMenuOpen);
@@ -117,41 +113,20 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
   const [closeSortMenu, openSortMenu] = useBoolStates(setSortMenuOpen);
 
   useEffect(() => {
-    if (sortedUsers.length === 0) {
+    if (total === 0) {
       getUsers();
     }
   }, []);
 
-  const openDeleteDialog = (user: UserType) => {
+  const openDeleteDialog = (user: EntityId) => {
     setDeleteOpen(true);
     setDeletedUser(user);
   };
   const closeDeleteDialog = () => {
     setDeleteOpen(false);
     setTimeout(() => {
-      setDeletedUser(blankUser);
+      setDeletedUser("");
     }, 75);
-  };
-  const deleteUser = (user: UserType) => {
-    closeDeleteDialog();
-    dispatch(setLoading(true));
-    const deleteUser = firebase.functions().httpsCallable("deleteUser");
-    deleteUser(user)
-      .then((result) => {
-        if (result.data.error) {
-          queue.notify({ title: result.data.error });
-          dispatch(setLoading(false));
-        } else {
-          queue.notify({
-            title: `User ${user.displayName} successfully deleted.`,
-          });
-          getUsers();
-        }
-      })
-      .catch((error) => {
-        queue.notify({ title: `Error deleting user: ${error}` });
-        dispatch(setLoading(false));
-      });
   };
 
   const sortMenu =
@@ -360,12 +335,12 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                         </DataTableRow>
                       </DataTableHead>
                       <DataTableBody>
-                        {paginatedUsers.map((user) => (
+                        {paginatedIds.map((user) => (
                           <UserRow
-                            key={user.email}
+                            key={user}
                             delete={openDeleteDialog}
                             getUsers={getUsers}
-                            user={user}
+                            userId={user}
                           />
                         ))}
                       </DataTableBody>
@@ -401,43 +376,33 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                         </DataTablePaginationRowsPerPage>
                         <DataTablePaginationNavigation>
                           <DataTablePaginationTotal>
-                            {`${firstIndex + 1}-${lastIndex + 1} of ${
-                              sortedUsers.length
-                            }`}
+                            {`${first + 1}-${last + 1} of ${total}`}
                           </DataTablePaginationTotal>
                           <DataTablePaginationButton
                             className="rtl-flip"
-                            disabled={firstIndex === 0}
+                            disabled={first === 0}
                             icon="first_page"
-                            onClick={() => {
-                              setPage(1);
-                            }}
+                            onClick={() => setPage(1)}
                           />
                           <DataTablePaginationButton
                             className="rtl-flip"
-                            disabled={firstIndex === 0}
+                            disabled={first === 0}
                             icon="chevron_left"
-                            onClick={() => {
-                              setPage(page - 1);
-                            }}
+                            onClick={() => setPage(page - 1)}
                           />
                           <DataTablePaginationButton
                             className="rtl-flip"
-                            disabled={lastIndex === sortedUsers.length - 1}
+                            disabled={last === total - 1}
                             icon="chevron_right"
-                            onClick={() => {
-                              setPage(page + 1);
-                            }}
+                            onClick={() => setPage(page + 1)}
                           />
                           <DataTablePaginationButton
                             className="rtl-flip"
-                            disabled={lastIndex === sortedUsers.length - 1}
+                            disabled={last === total - 1}
                             icon="last_page"
-                            onClick={() => {
-                              setPage(
-                                Math.ceil(sortedUsers.length / rowsPerPage)
-                              );
-                            }}
+                            onClick={() =>
+                              setPage(Math.ceil(total / rowsPerPage))
+                            }
                           />
                         </DataTablePaginationNavigation>
                       </DataTablePaginationTrailing>
@@ -446,41 +411,23 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                 </Card>
               ) : (
                 <div className="user-container">
-                  {sortedUsers.map((user) => (
+                  {ids.map((user) => (
                     <UserCard
-                      key={user.email}
+                      key={user}
                       delete={openDeleteDialog}
                       getUsers={getUsers}
-                      user={user}
+                      userId={user}
                     />
                   ))}
                 </div>
               )}
             </div>
           </div>
-          <Dialog open={deleteOpen}>
-            <DialogTitle>Delete User</DialogTitle>
-            <DialogContent>
-              Are you sure you want to delete the user {deletedUser.displayName}
-              ?
-            </DialogContent>
-            <DialogActions>
-              <DialogButton
-                action="close"
-                isDefaultAction
-                onClick={closeDeleteDialog}
-              >
-                Cancel
-              </DialogButton>
-              <DialogButton
-                action="accept"
-                className="delete"
-                onClick={() => deleteUser(deletedUser)}
-              >
-                Delete
-              </DialogButton>
-            </DialogActions>
-          </Dialog>
+          <DialogDelete
+            onClose={closeDeleteDialog}
+            open={deleteOpen}
+            userId={deletedUser}
+          />
         </div>
         <Footer />
       </div>

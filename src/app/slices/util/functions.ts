@@ -12,6 +12,15 @@ const storage = firebase.storage();
 const storageRef = storage.ref();
 
 /**
+ * Use within `.filter` to remove `undefined` and `null` types.
+ */
+/* eslint-disable no-use-before-define */
+export const filterFalsey = Boolean as unknown as <T>(
+  val: T
+) => val is NonNullable<T>;
+/* eslint-enable no-use-before-define */
+
+/**
  * Checks that object contains specified key.
  * @param obj Object to be checked.
  * @param key Key to check against `obj`.
@@ -124,6 +133,9 @@ export const alphabeticalSortCurried =
     }
     if (x > y) {
       return descending ? -1 : 1;
+    }
+    if (is<string>(a) && is<string>(b)) {
+      return descending ? b.localeCompare(a) : a.localeCompare(b);
     }
     return 0;
   };

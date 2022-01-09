@@ -10,6 +10,7 @@ export const blankUser: UserType = {
   displayName: "",
   editor: false,
   email: "",
+  id: "",
   lastActive: "",
   lastSignIn: "",
   nickname: "",
