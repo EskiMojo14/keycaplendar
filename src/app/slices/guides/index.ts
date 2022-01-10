@@ -29,20 +29,22 @@ const guideEntryAdapter = createEntityAdapter<GuideEntryType>({
 
 type GuidesState = {
   allTags: string[];
-  entries: EntityState<GuideEntryType>;
+  entries: EntityState<GuideEntryType> & {
+    urlEntry: EntityId;
+    visibilityMap: Record<Visibility, EntityId[]>;
+  };
   filteredTag: string;
   loading: boolean;
-  urlEntry: EntityId;
-  visibilityMap: Record<Visibility, EntityId[]>;
 };
 
 export const initialState: GuidesState = {
   allTags: [],
-  entries: guideEntryAdapter.getInitialState(),
+  entries: guideEntryAdapter.getInitialState({
+    urlEntry: "",
+    visibilityMap: blankVisibilityMap,
+  }),
   filteredTag: "",
   loading: false,
-  urlEntry: "",
-  visibilityMap: blankVisibilityMap,
 };
 
 export const guidesSlice = createSlice({
@@ -51,7 +53,7 @@ export const guidesSlice = createSlice({
   reducers: {
     setEntries: (state, { payload }: PayloadAction<GuideEntryType[]>) => {
       guideEntryAdapter.setAll(state.entries, payload);
-      state.visibilityMap = {
+      state.entries.visibilityMap = {
         ...blankVisibilityMap,
         ...groupBy(
           [...payload].sort(sortEntries),
@@ -70,7 +72,7 @@ export const guidesSlice = createSlice({
       state.loading = payload;
     },
     setURLEntry: (state, { payload }: PayloadAction<EntityId>) => {
-      state.urlEntry = payload;
+      state.entries.urlEntry = payload;
     },
   },
 });
@@ -89,13 +91,14 @@ export const {
   selectTotal,
 } = guideEntryAdapter.getSelectors<RootState>((state) => state.guides.entries);
 
-export const selectURLEntry = (state: RootState) => state.guides.urlEntry;
+export const selectURLEntry = (state: RootState) =>
+  state.guides.entries.urlEntry;
 
 export const selectAllTags = (state: RootState) => state.guides.allTags;
 
 export const selectFilteredTag = (state: RootState) => state.guides.filteredTag;
 
 export const selectVisibilityMap = (state: RootState) =>
-  state.guides.visibilityMap;
+  state.guides.entries.visibilityMap;
 
 export default guidesSlice.reducer;

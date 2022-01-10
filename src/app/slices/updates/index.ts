@@ -19,15 +19,15 @@ const updateEntryAdapter = createEntityAdapter<UpdateEntryType>({
 });
 
 type UpdatesState = {
-  entries: EntityState<UpdateEntryType>;
+  entries: EntityState<UpdateEntryType> & {
+    urlEntry: EntityId;
+  };
   loading: boolean;
-  urlEntry: EntityId;
 };
 
 export const initialState: UpdatesState = {
-  entries: updateEntryAdapter.getInitialState(),
+  entries: updateEntryAdapter.getInitialState({ urlEntry: "" }),
   loading: false,
-  urlEntry: "",
 };
 
 export const updatesSlice = createSlice({
@@ -41,7 +41,7 @@ export const updatesSlice = createSlice({
       state.loading = payload;
     },
     setURLEntry: (state, { payload }: PayloadAction<EntityId>) => {
-      state.urlEntry = payload;
+      state.entries.urlEntry = payload;
     },
   },
 });
@@ -62,6 +62,7 @@ export const {
   (state) => state.updates.entries
 );
 
-export const selectURLEntry = (state: RootState) => state.updates.urlEntry;
+export const selectURLEntry = (state: RootState) =>
+  state.updates.entries.urlEntry;
 
 export default updatesSlice.reducer;
