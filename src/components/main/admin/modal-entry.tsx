@@ -162,6 +162,9 @@ export const ModalEntry = ({
           draft.vendors.forEach((vendor) => {
             vendor.id ??= nanoid();
           });
+          if (draft.gbMonth && draft.gbLaunch.length === 10) {
+            draft.gbLaunch = draft.gbLaunch.slice(0, 7);
+          }
         })
       );
     }
