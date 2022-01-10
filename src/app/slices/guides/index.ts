@@ -1,11 +1,11 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
-import produce from "immer";
 import type { RootState } from "~/app/store";
 import { visibilityVals } from "@s/guides/constants";
 import {
   alphabeticalSort,
   alphabeticalSortPropCurried,
+  groupBy,
   removeDuplicates,
 } from "@s/util/functions";
 import type { GuideEntryType, Visibility } from "./types";
@@ -51,15 +51,14 @@ export const guidesSlice = createSlice({
   reducers: {
     setEntries: (state, { payload }: PayloadAction<GuideEntryType[]>) => {
       guideEntryAdapter.setAll(state.entries, payload);
-      state.visibilityMap = [...payload]
-        .sort(sortEntries)
-        .reduce<Record<Visibility, EntityId[]>>(
-          produce((prev, { id, visibility }) => {
-            prev[visibility].push(id);
-            return prev;
-          }),
-          blankVisibilityMap
-        );
+      state.visibilityMap = {
+        ...blankVisibilityMap,
+        ...groupBy(
+          [...payload].sort(sortEntries),
+          "visibility",
+          ({ id }) => id
+        ),
+      };
       state.allTags = alphabeticalSort(
         removeDuplicates(payload.map((entry) => entry.tags).flat(1))
       );

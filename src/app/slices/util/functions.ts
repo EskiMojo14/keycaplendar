@@ -79,6 +79,76 @@ export const objectEntries = <T extends Record<string, any>>(
 ): [keyof T, T[keyof T]][] => Object.entries(obj);
 
 /**
+ * Group objects by a specified key or accessor function result
+ * @param arr Array of objects to group
+ * @param accessor Key or function to provide value to use key
+ * @param [createVal] Function that receives object and returns what the value should be
+ * @returns Object with values as keys and object arrays as value
+ */
+
+export const groupBy = <
+  T extends Record<any, any>,
+  Accessor extends KeysMatching<T, keyof any> | ((obj: T) => keyof any),
+  ValCreate extends (obj: T) => any = (obj: T) => T
+>(
+  arr: T[] | readonly T[],
+  accessor: Accessor,
+  createVal: ValCreate = ((obj) => obj) as ValCreate
+): ValCreate extends (obj: T) => infer Val
+  ? Accessor extends (obj: T) => infer Key
+    ? Key extends keyof any
+      ? Record<Key, Val[]>
+      : never
+    : Accessor extends keyof T
+    ? Record<T[Accessor], Val[]>
+    : never
+  : never =>
+  arr.reduce((acc: any, obj) => {
+    const key =
+      typeof accessor === "function"
+        ? accessor(obj)
+        : (obj[accessor as KeysMatching<T, keyof any>] as keyof any);
+    acc[key] ??= [];
+    acc[key].push(createVal(obj));
+    return acc;
+  }, {} as any) as any;
+
+/**
+ * Group objects by a specified key or accessor function result
+ * @param arr Array of objects to group
+ * @param accessor Key or function to provide value to use key
+ * @param [createVal] Function that receives object and returns what the value should be
+ * @returns Map with values as keys and object arrays as value
+ */
+
+export const groupByMap = <
+  T extends Record<string, any>,
+  Accessor extends keyof T | ((obj: T) => any),
+  ValCreate extends (obj: T) => any = (obj: T) => T
+>(
+  arr: T[] | readonly T[],
+  accessor: Accessor,
+  createVal: ValCreate = ((obj) => obj) as ValCreate
+): ValCreate extends (obj: T) => infer Val
+  ? Accessor extends (obj: T) => infer Key
+    ? Map<Key, Val[]>
+    : Accessor extends keyof T
+    ? Map<T[Accessor], Val[]>
+    : never
+  : never =>
+  arr.reduce((acc, obj) => {
+    const key =
+      typeof accessor === "function" ? accessor(obj) : obj[accessor as keyof T];
+    const val = createVal(obj);
+    if (acc.has(key)) {
+      acc.get(key).push(val);
+    } else {
+      acc.set(key, [val]);
+    }
+    return acc;
+  }, new Map() as any) as any;
+
+/**
  * Remove all duplicate values within an array.
  * @param array Array of values.
  * @returns `array` with only unique values.
@@ -278,7 +348,8 @@ export const formatFileName = (str: string) =>
  */
 export const braidArrays = <T>(...arrays: T[][]) => {
   const braided: T[] = [];
-  for (let i = 0; i < Math.max(...arrays.map((a) => a.length)); i++) {
+  const length = Math.max(...arrays.map((a) => a.length));
+  for (let i = 0; i < length; i++) {
     arrays.forEach((array) => {
       if (array[i] !== undefined) braided.push(array[i]);
     });

@@ -7,9 +7,76 @@ import {
   alphabeticalSortPropCurried,
   arrayMove,
   getSetMonthRange,
+  groupBy,
+  groupByMap,
   pluralise,
   removeDuplicates,
 } from "@s/util/functions";
+
+const keyset = partialSet({ colorway: "Lich", id: "test", profile: "KAT" });
+const keyset2 = partialSet({
+  colorway: "Phantom",
+  id: "test2",
+  profile: "GMK",
+});
+
+describe("groupBy", () => {
+  it("groups objects by a specified property value", () => {
+    expect(groupBy([keyset, keyset2], "profile")).toEqual({
+      GMK: [keyset2],
+      KAT: [keyset],
+    });
+  });
+  it("allows an accessor function instead of key", () => {
+    expect(
+      groupBy(
+        [keyset, keyset2],
+        ({ colorway, profile }) => `${profile} ${colorway}`
+      )
+    ).toEqual({
+      "GMK Phantom": [keyset2],
+      "KAT Lich": [keyset],
+    });
+  });
+  it("allows a value to create a custom value", () => {
+    expect(groupBy([keyset, keyset2], "profile", ({ id }) => id)).toEqual({
+      GMK: [keyset2.id],
+      KAT: [keyset.id],
+    });
+  });
+});
+
+describe("groupByMap", () => {
+  it("groups objects by a specified property value", () => {
+    expect(groupByMap([keyset, keyset2], "profile")).toEqual(
+      new Map([
+        ["GMK", [keyset2]],
+        ["KAT", [keyset]],
+      ])
+    );
+  });
+  it("allows an accessor function instead of key", () => {
+    expect(
+      groupByMap(
+        [keyset, keyset2],
+        ({ colorway, profile }) => `${profile} ${colorway}`
+      )
+    ).toEqual(
+      new Map([
+        ["GMK Phantom", [keyset2]],
+        ["KAT Lich", [keyset]],
+      ])
+    );
+  });
+  it("allows a value to create a custom value", () => {
+    expect(groupByMap([keyset, keyset2], "profile", ({ id }) => id)).toEqual(
+      new Map([
+        ["GMK", [keyset2.id]],
+        ["KAT", [keyset.id]],
+      ])
+    );
+  });
+});
 
 describe("removeDuplicates", () => {
   it("removes duplicates from an array", () => {
