@@ -1,4 +1,5 @@
 import type { ChangeEvent } from "react";
+import { useMemo } from "react";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import { Select } from "@rmwc/select";
@@ -12,23 +13,21 @@ import {
   selectFilterUser,
   selectLength,
   selectUsers,
+  setFilterAction,
+  setFilterUser,
   setLength,
 } from "@s/audit";
 import { getActions } from "@s/audit/functions";
 import { selectDevice } from "@s/common";
+import { arrayIncludes } from "@s/util/functions";
 import "./drawer-audit-filter.scss";
 
 type DrawerAuditFilterProps = {
   close: () => void;
-  handleFilterChange: (e: any, prop: string) => void;
   open: boolean;
 };
 
-export const DrawerAuditFilter = ({
-  close,
-  handleFilterChange,
-  open,
-}: DrawerAuditFilterProps) => {
+export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
   const dispatch = useAppDispatch();
 
   const device = useAppSelector(selectDevice);
@@ -37,6 +36,28 @@ export const DrawerAuditFilter = ({
   const filterAction = useAppSelector(selectFilterAction);
   const filterUser = useAppSelector(selectFilterUser);
   const users = useAppSelector(selectUsers);
+
+  const userOptions = useMemo(
+    () => [
+      { label: "All", value: "all" },
+      ...users.map((user) => ({ label: user, value: user })),
+    ],
+    [users]
+  );
+
+  const handleFilterChange = (
+    prop: "filterAction" | "filterUser",
+    val: string
+  ) => {
+    if (prop === "filterUser") {
+      dispatch(setFilterUser(val));
+    } else if (
+      prop === "filterAction" &&
+      arrayIncludes(["none", "created", "updated", "deleted"] as const, val)
+    ) {
+      dispatch(setFilterAction(val));
+    }
+  };
 
   const closeButton =
     device === "desktop"
@@ -52,6 +73,7 @@ export const DrawerAuditFilter = ({
       getActions();
     }
   };
+
   return (
     <Drawer
       className="drawer-right audit-filter"
@@ -102,9 +124,9 @@ export const DrawerAuditFilter = ({
           <Select
             className="action-select"
             enhanced={{ fixed: true }}
-            onChange={(e) => {
-              handleFilterChange(e, "filterAction");
-            }}
+            onChange={(e) =>
+              handleFilterChange("filterAction", e.currentTarget.value)
+            }
             options={[
               { label: "None", value: "none" },
               { label: "Created", value: "created" },
@@ -122,13 +144,10 @@ export const DrawerAuditFilter = ({
           <Select
             className="user-select"
             enhanced={{ fixed: true }}
-            onChange={(e) => {
-              handleFilterChange(e, "filterUser");
-            }}
-            options={[
-              { label: "All", value: "all" },
-              ...users.map((user) => ({ label: user, value: user })),
-            ]}
+            onChange={(e) =>
+              handleFilterChange("filterUser", e.currentTarget.value)
+            }
+            options={userOptions}
             outlined
             value={filterUser}
           />

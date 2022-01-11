@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import type { ChangeEvent } from "react";
+import { useEffect, useMemo, useState } from "react";
+import type { EntityId } from "@reduxjs/toolkit";
 import { Card } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -14,28 +14,21 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
-import { DateTime } from "luxon";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
 import {
-  selectAllActions,
-  selectFilteredActions,
+  selectActions,
+  selectFilter,
   selectLoading,
-  setFilterAction,
-  setFilterUser,
+  selectTotal,
 } from "@s/audit";
 import { filterActions, getActions } from "@s/audit/functions";
-import type { ActionType } from "@s/audit/types";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
-import firestore from "@s/firebase/firestore";
-import type { ChangelogId } from "@s/firebase/types";
-import { blankKeyset } from "@s/main/constants";
 import { selectBottomNav } from "@s/settings";
-import { arrayIncludes, closeModal, openModal } from "@s/util/functions";
+import { closeModal, openModal } from "@s/util/functions";
 import { AuditEntry } from "./audit-entry";
 import { DialogAuditDelete } from "./dialog-audit-delete";
 import { DrawerAuditFilter } from "./drawer-audit-filter";
@@ -46,31 +39,28 @@ type ContentAuditProps = {
 };
 
 export const ContentAudit = ({ openNav }: ContentAuditProps) => {
-  const dispatch = useAppDispatch();
+  const total = useAppSelector(selectTotal);
+
+  useEffect(() => {
+    if (total === 0) {
+      getActions();
+    }
+  }, []);
 
   const device = useAppSelector(selectDevice);
   const bottomNav = useAppSelector(selectBottomNav);
 
   const loading = useAppSelector(selectLoading);
-  const allAuditActions = useAppSelector(selectAllActions);
-  const filteredActions = useAppSelector(selectFilteredActions);
+  const actions = useAppSelector(selectActions);
+  const filter = useAppSelector(selectFilter);
+  const filteredActions = useMemo(
+    () => filterActions(actions, filter),
+    [actions, filter]
+  );
 
-  const blankAction: ActionType = {
-    action: "created",
-    after: blankKeyset,
-    before: blankKeyset,
-    changelogId: "",
-    documentId: "",
-    timestamp: "",
-    user: {
-      displayName: "",
-      email: "",
-      nickname: "",
-    },
-  };
   const [filterOpen, setFilterOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [deleteAction, setDeleteAction] = useState<ActionType>(blankAction);
+  const [deleteAction, setDeleteAction] = useState<EntityId>("");
 
   const toggleFilter = () => {
     if (filterOpen && device !== "desktop") {
@@ -86,56 +76,15 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
     }
     setFilterOpen(false);
   };
-  const openDelete = (action: ActionType) => {
+  const openDelete = (action: EntityId) => {
     setDeleteOpen(true);
     setDeleteAction(action);
   };
   const closeDelete = () => {
     setDeleteOpen(false);
     setTimeout(() => {
-      setDeleteAction(blankAction);
+      setDeleteAction("");
     }, 100);
-  };
-
-  const handleFilterChange = (
-    e: ChangeEvent<HTMLInputElement>,
-    prop: string
-  ) => {
-    if (prop === "filterUser") {
-      dispatch(setFilterUser(e.target.value));
-      filterActions();
-    } else if (
-      prop === "filterAction" &&
-      arrayIncludes(
-        ["none", "created", "updated", "deleted"] as const,
-        e.target.value
-      )
-    ) {
-      dispatch(setFilterAction(e.target.value));
-      filterActions();
-    }
-  };
-
-  useEffect(() => {
-    if (allAuditActions.length === 0) {
-      getActions();
-    }
-  }, []);
-
-  const deleteActionFn = (action: ActionType) => {
-    firestore
-      .collection("changelog")
-      .doc(action.changelogId as ChangelogId)
-      .delete()
-      .then(() => {
-        queue.notify({ title: "Successfully deleted changelog entry." });
-        getActions();
-        closeDelete();
-      })
-      .catch((error) => {
-        queue.notify({ title: `Error deleting changelog entry: ${error}` });
-        closeDelete();
-      });
   };
 
   const refreshButton = loading ? (
@@ -177,11 +126,7 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
         })}
       >
         <div className="main extended-app-bar">
-          <DrawerAuditFilter
-            close={closeFilter}
-            handleFilterChange={handleFilterChange}
-            open={filterOpen}
-          />
+          <DrawerAuditFilter close={closeFilter} open={filterOpen} />
           <ConditionalWrapper
             condition={device === "desktop"}
             wrapper={(children) => (
@@ -196,17 +141,13 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
                   })}
                 >
                   <List className="three-line" twoLine>
-                    {filteredActions.map((action) => {
-                      const timestamp = DateTime.fromISO(action.timestamp);
-                      return (
-                        <AuditEntry
-                          key={action.timestamp}
-                          action={action}
-                          openDeleteDialog={openDelete}
-                          timestamp={timestamp}
-                        />
-                      );
-                    })}
+                    {filteredActions.map((actionId) => (
+                      <AuditEntry
+                        key={actionId}
+                        actionId={actionId}
+                        openDeleteDialog={openDelete}
+                      />
+                    ))}
                   </List>
                 </Card>
               </div>
@@ -215,7 +156,6 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
           <DialogAuditDelete
             close={closeDelete}
             deleteAction={deleteAction}
-            deleteActionFn={deleteActionFn}
             open={deleteOpen}
           />
         </div>

@@ -265,6 +265,11 @@
     &--fixed-adjust {
       padding-top: top-app-bar.$row-height + $diff;
     }
+    .rmwc-circular-progress {
+      padding: 12px + ($diff / 2);
+      height: calc(2em + $diff);
+      width: calc(2em + $diff);
+    }
     .mdc-linear-progress {
       top: top-app-bar.$row-height + $diff - 4px;
     }

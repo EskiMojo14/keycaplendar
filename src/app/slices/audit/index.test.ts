@@ -1,6 +1,6 @@
 import { createStore } from "~/app/store";
 import {
-  selectAllActions,
+  selectActions,
   selectFilterAction,
   selectFilterUser,
   selectLength,
@@ -42,13 +42,7 @@ it("sets loading state", () => {
 
 it("sets all actions array", () => {
   store.dispatch(setAllActions([blankAction]));
-  const response = selectAllActions(store.getState());
-  expect(response).toEqual([blankAction]);
-});
-
-it("sets filtered actions array", () => {
-  store.dispatch(setAllActions([blankAction]));
-  const response = selectAllActions(store.getState());
+  const response = selectActions(store.getState());
   expect(response).toEqual([blankAction]);
 });
 

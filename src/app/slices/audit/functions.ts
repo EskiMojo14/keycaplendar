@@ -3,27 +3,18 @@ import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import firestore from "@s/firebase/firestore";
 import { alphabeticalSortProp } from "@s/util/functions";
-import {
-  selectAllActions,
-  selectFilterAction,
-  selectFilterUser,
-  selectLength,
-  setAllActions,
-  setFilteredActions,
-  setLoading,
-  setUsers,
-} from ".";
+import { selectLength, setAllActions, setLoading, setUsers } from ".";
+import type { initialState } from ".";
 import { auditProperties } from "./constants";
 import type { ActionType } from "./types";
 
 const { dispatch } = store;
 
-export const filterActions = (state = store.getState()) => {
-  const allActions = selectAllActions(state);
-  const filterAction = selectFilterAction(state);
-  const filterUser = selectFilterUser(state);
-
-  let filteredActions = allActions;
+export const filterActions = (
+  actions: ActionType[],
+  { action: filterAction, user: filterUser }: typeof initialState["filter"]
+) => {
+  let filteredActions = actions;
 
   if (filterAction !== "none") {
     filteredActions = filteredActions.filter(
@@ -37,13 +28,11 @@ export const filterActions = (state = store.getState()) => {
     );
   }
 
-  dispatch(setFilteredActions(filteredActions));
-
-  dispatch(setLoading(false));
+  return filteredActions.map(({ changelogId }) => changelogId);
 };
 
-const processActions = (actions: ActionType[]) => {
-  const processedActions: ActionType[] = actions.map((action) => {
+const processActions = (actions: ActionType[]) =>
+  actions.map((action) => {
     const { after, before, ...restAction } = action;
     if (before && after) {
       auditProperties.forEach((prop) => {
@@ -66,11 +55,6 @@ const processActions = (actions: ActionType[]) => {
     };
   });
 
-  dispatch(setAllActions(processedActions));
-
-  filterActions(store.getState());
-};
-
 export const getActions = (state = store.getState()) => {
   const length = selectLength(state);
   dispatch(setLoading(true));
@@ -89,13 +73,11 @@ export const getActions = (state = store.getState()) => {
             ? "updated"
             : "deleted"
           : "created";
-        const { id: changelogId } = doc;
-        const actionObj: ActionType = {
+        actions.push({
           ...data,
           action,
-          changelogId,
-        };
-        actions.push(actionObj);
+          changelogId: doc.id,
+        });
         if (!users.includes(data.user.nickname)) {
           users.push(data.user.nickname);
         }
@@ -105,10 +87,13 @@ export const getActions = (state = store.getState()) => {
 
       dispatch(setUsers(users));
 
-      processActions(actions);
+      dispatch(setAllActions(processActions(actions)));
     })
     .catch((error) => {
       queue.notify({ title: `Error getting data: ${error}` });
+      dispatch(setLoading(false));
+    })
+    .finally(() => {
       dispatch(setLoading(false));
     });
 };
