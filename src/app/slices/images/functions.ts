@@ -52,7 +52,6 @@ const processItems = (items: firebase.storage.Reference[], append = false) => {
     return partialImage({
       fullPath: itemRef.fullPath,
       name: itemRef.name,
-      parent: itemRef.parent?.fullPath ?? "",
       src,
     });
   });

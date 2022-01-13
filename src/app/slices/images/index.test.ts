@@ -33,7 +33,6 @@ const folder = "test";
 const image: ImageType = {
   fullPath: "",
   name: "",
-  parent: "",
   src: "",
 };
 
