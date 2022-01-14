@@ -89,6 +89,7 @@ export const getPublicAudit = functions.https.onCall((data, context) => {
         const { user, ...data } = doc.data() as ActionType;
         const action: PublicActionType = {
           ...data,
+          changelogId: doc.id,
           before: removeLatestEditor(data.before),
           after: removeLatestEditor(data.after),
           action:
