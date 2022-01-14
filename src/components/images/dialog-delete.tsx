@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { ChangeEvent } from "react";
+import type { EntityId } from "@reduxjs/toolkit";
 import { Checkbox } from "@rmwc/checkbox";
 import { Chip, ChipSet } from "@rmwc/chip";
 import {
@@ -9,45 +10,50 @@ import {
   DialogContent,
   DialogTitle,
 } from "@rmwc/dialog";
-import { useAppDispatch } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
-import { setLoading } from "@s/images";
+import {
+  imageAdapter,
+  selectFolders,
+  selectImageMap,
+  setLoading,
+} from "@s/images";
 import { listAll } from "@s/images/functions";
-import type { ImageType } from "@s/images/types";
-import { batchStorageDelete, pluralise } from "@s/util/functions";
+import { batchStorageDelete, filterFalsey, pluralise } from "@s/util/functions";
 import "./dialog-delete.scss";
 
 type DialogDeleteProps = {
+  checkedImages: EntityId[];
   close: () => void;
-  folders: string[];
-  images: ImageType[];
   open: boolean;
-  toggleImageChecked: (image: ImageType) => void;
+  toggleImageChecked: (image: EntityId) => void;
 };
 
 export const DialogDelete = ({
+  checkedImages,
   close,
-  folders,
-  images,
   open,
   toggleImageChecked,
 }: DialogDeleteProps) => {
   const dispatch = useAppDispatch();
+
+  const folders = useAppSelector(selectFolders);
+  const imagesMap = useAppSelector(selectImageMap);
+  const images = useMemo(
+    () => checkedImages.map((id) => imagesMap[id]).filter(filterFalsey),
+    [checkedImages, imagesMap]
+  );
+
   const [deleteAllVersions, setDeleteAllVersions] = useState(false);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setDeleteAllVersions(e.target.checked);
   };
-  const createArray = (allVersions = deleteAllVersions) => {
-    if (allVersions) {
-      const array = images
-        .map((image) => folders.map((folder) => `${folder}/${image.name}`))
-        .flat(1);
-      return array;
-    } else {
-      const array = images.map((image) => image.fullPath);
-      return array;
-    }
-  };
+  const createArray = (allVersions = deleteAllVersions) =>
+    allVersions
+      ? images
+          .map((image) => folders.map((folder) => `${folder}/${image.name}`))
+          .flat(1)
+      : images.map((image) => image.fullPath);
   const deleteImages = () => {
     const array = createArray();
     dispatch(setLoading(true));
@@ -75,7 +81,9 @@ export const DialogDelete = ({
                 key={image.fullPath}
                 disabled
                 label={image.name}
-                onTrailingIconInteraction={() => toggleImageChecked(image)}
+                onTrailingIconInteraction={() =>
+                  toggleImageChecked(imageAdapter.selectId(image))
+                }
                 trailingIcon="close"
               />
             ))}

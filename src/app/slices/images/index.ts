@@ -1,31 +1,36 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
+import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { blankImage } from "./constants";
+import { alphabeticalSortCurried } from "@s/util/functions";
 import type { ImageType } from "./types";
 
+export const imageAdapter = createEntityAdapter<ImageType>({
+  selectId: (image) => image.name,
+  sortComparer: ({ name: aName }, { name: bName }) => {
+    const nameA = aName.replace(".png", "").toLowerCase();
+    const nameB = bName.replace(".png", "").toLowerCase();
+    return alphabeticalSortCurried()(nameA, nameB);
+  },
+});
+
 type ImagesState = {
-  checkedImages: ImageType[];
   currentFolder: string;
-  detailImage: ImageType;
-  detailMetadata: Record<string, unknown>;
-  duplicateSetImages: string[];
   folders: string[];
-  images: ImageType[];
+  images: EntityState<ImageType> & {
+    duplicateSetImages: EntityId[];
+    setImages: EntityId[];
+  };
   loading: boolean;
-  setImages: string[];
 };
 
 export const initialState: ImagesState = {
-  checkedImages: [],
   currentFolder: "thumbs",
-  detailImage: blankImage,
-  detailMetadata: {},
-  duplicateSetImages: [],
   folders: [],
-  images: [],
+  images: imageAdapter.getInitialState({
+    duplicateSetImages: [],
+    setImages: [],
+  }),
   loading: false,
-  setImages: [],
 };
 
 export const imagesSlice = createSlice({
@@ -33,37 +38,25 @@ export const imagesSlice = createSlice({
   name: "images",
   reducers: {
     appendImages: (state, { payload }: PayloadAction<ImageType[]>) => {
-      state.images = state.images.concat(payload);
-    },
-    setCheckedImages: (state, { payload }: PayloadAction<ImageType[]>) => {
-      state.checkedImages = payload;
+      imageAdapter.addMany(state.images, payload);
     },
     setCurrentFolder: (state, { payload }: PayloadAction<string>) => {
       state.currentFolder = payload;
     },
-    setDetailImage: (state, { payload }: PayloadAction<ImageType>) => {
-      state.detailImage = payload;
-    },
-    setDetailMetadata: (
-      state,
-      { payload }: PayloadAction<Record<string, unknown>>
-    ) => {
-      state.detailMetadata = payload;
-    },
     setDuplicateSetImages: (state, { payload }: PayloadAction<string[]>) => {
-      state.duplicateSetImages = payload;
+      state.images.duplicateSetImages = payload;
     },
     setFolders: (state, { payload }: PayloadAction<string[]>) => {
       state.folders = payload;
     },
     setImages: (state, { payload }: PayloadAction<ImageType[]>) => {
-      state.images = payload;
+      imageAdapter.setAll(state.images, payload);
     },
     setLoading: (state, { payload }: PayloadAction<boolean>) => {
       state.loading = payload;
     },
     setSetImages: (state, { payload }: PayloadAction<string[]>) => {
-      state.setImages = payload;
+      state.images.setImages = payload;
     },
   },
 });
@@ -71,10 +64,7 @@ export const imagesSlice = createSlice({
 export const {
   actions: {
     appendImages,
-    setCheckedImages,
     setCurrentFolder,
-    setDetailImage,
-    setDetailMetadata,
     setDuplicateSetImages,
     setFolders,
     setImages,
@@ -90,19 +80,18 @@ export const selectCurrentFolder = (state: RootState) =>
 
 export const selectFolders = (state: RootState) => state.images.folders;
 
-export const selectImages = (state: RootState) => state.images.images;
-
-export const selectCheckedImages = (state: RootState) =>
-  state.images.checkedImages;
-
-export const selectSetImages = (state: RootState) => state.images.setImages;
+export const selectSetImages = (state: RootState) =>
+  state.images.images.setImages;
 
 export const selectDuplicateSetImages = (state: RootState) =>
-  state.images.duplicateSetImages;
+  state.images.images.duplicateSetImages;
 
-export const selectDetailImage = (state: RootState) => state.images.detailImage;
-
-export const selectDetailMetadata = (state: RootState) =>
-  state.images.detailMetadata;
+export const {
+  selectAll: selectImages,
+  selectById,
+  selectEntities: selectImageMap,
+  selectIds,
+  selectTotal,
+} = imageAdapter.getSelectors<RootState>((state) => state.images.images);
 
 export default imagesSlice.reducer;

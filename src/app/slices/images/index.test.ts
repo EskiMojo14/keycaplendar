@@ -1,26 +1,20 @@
 import { createStore } from "~/app/store";
 import {
   appendImages,
-  selectCheckedImages,
   selectCurrentFolder,
-  selectDetailImage,
-  selectDetailMetadata,
   selectDuplicateSetImages,
   selectFolders,
   selectImages,
   selectLoading,
   selectSetImages,
-  setCheckedImages,
   setCurrentFolder,
-  setDetailImage,
-  setDetailMetadata,
   setDuplicateSetImages,
   setFolders,
   setImages,
   setLoading,
   setSetImages,
 } from "@s/images";
-import type { ImageType } from "@s/images/types";
+import { partialImage } from "@s/images/constructors";
 
 let store = createStore();
 
@@ -30,11 +24,8 @@ beforeEach(() => {
 
 const folder = "test";
 
-const image: ImageType = {
-  fullPath: "",
-  name: "",
-  src: "",
-};
+const image = partialImage({ name: "hi" });
+const image2 = partialImage({ name: "oh " });
 
 it("sets loading state", () => {
   store.dispatch(setLoading(true));
@@ -62,15 +53,9 @@ it("sets image array", () => {
 
 it("appends image array", () => {
   store.dispatch(setImages([image]));
-  store.dispatch(appendImages([image]));
+  store.dispatch(appendImages([image2]));
   const response = selectImages(store.getState());
-  expect(response).toEqual([image, image]);
-});
-
-it("sets checked image array", () => {
-  store.dispatch(setCheckedImages([image]));
-  const response = selectCheckedImages(store.getState());
-  expect(response).toEqual([image]);
+  expect(response).toEqual([image, image2]);
 });
 
 it("sets set image array", () => {
@@ -83,17 +68,4 @@ it("sets duplicate set image array", () => {
   store.dispatch(setDuplicateSetImages([folder]));
   const response = selectDuplicateSetImages(store.getState());
   expect(response).toEqual([folder]);
-});
-
-it("sets detail image", () => {
-  store.dispatch(setDetailImage(image));
-  const response = selectDetailImage(store.getState());
-  expect(response).toEqual(image);
-});
-
-it("sets detail metadata", () => {
-  const metadata = { test: "test" };
-  store.dispatch(setDetailMetadata({ test: "test" }));
-  const response = selectDetailMetadata(store.getState());
-  expect(response).toEqual(metadata);
 });

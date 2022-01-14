@@ -1,83 +1,40 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import type { EntityId } from "@reduxjs/toolkit";
 import { Button } from "@rmwc/button";
-import { Checkbox } from "@rmwc/checkbox";
 import { DrawerAppContent } from "@rmwc/drawer";
-import {
-  ImageList,
-  ImageListImage,
-  ImageListImageAspectContainer,
-  ImageListItem,
-  ImageListLabel,
-  ImageListSupporting,
-} from "@rmwc/image-list";
-import { LinearProgress } from "@rmwc/linear-progress";
-import { Menu, MenuItem, MenuSurfaceAnchor } from "@rmwc/menu";
-import { Ripple } from "@rmwc/ripple";
-import {
-  TopAppBar,
-  TopAppBarActionItem,
-  TopAppBarFixedAdjust,
-  TopAppBarNavigationIcon,
-  TopAppBarRow,
-  TopAppBarSection,
-  TopAppBarTitle,
-} from "@rmwc/top-app-bar";
+import { ImageList } from "@rmwc/image-list";
+import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
-import LazyLoad from "react-lazy-load";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { useImmer } from "use-immer";
+import { useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
+import ImageAppBar from "@c/images/app-bar";
+import ImageItem from "@c/images/image-item";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
-import { withTooltip } from "@c/util/hocs";
-import {
-  SegmentedButton,
-  SegmentedButtonSegment,
-} from "@c/util/segmented-button";
 import { selectDevice } from "@s/common";
-import { pageTitle } from "@s/common/constants";
-import firebase from "@s/firebase";
 import {
-  selectCheckedImages,
+  imageAdapter,
   selectCurrentFolder,
-  selectDetailImage,
-  selectDetailMetadata,
   selectDuplicateSetImages,
-  selectFolders,
   selectImages,
-  selectLoading,
   selectSetImages,
-  setCheckedImages,
-  setDetailImage,
-  setDetailMetadata,
 } from "@s/images";
-import { blankImage } from "@s/images/constants";
-import {
-  createSetImageList,
-  getFolders,
-  listAll,
-  setFolder,
-} from "@s/images/functions";
-import type { ImageType } from "@s/images/types";
+import { createSetImageList, getFolders, listAll } from "@s/images/functions";
 import { selectAllSets } from "@s/main";
 import { selectBottomNav } from "@s/settings";
 import {
   addOrRemove,
   closeModal,
   hasKey,
-  iconObject,
   openModal,
+  removeDuplicates,
   useBoolStates,
 } from "@s/util/functions";
-import { Delete, PermMedia } from "@i";
 import { DialogDelete } from "./dialog-delete";
 import { DrawerDetails } from "./drawer-details";
 import { DrawerSearch } from "./drawer-search";
 import "./index.scss";
-
-const storage = firebase.storage();
-
-const storageRef = storage.ref();
 
 const aspectRatios = {
   card: 16 / 9,
@@ -91,30 +48,23 @@ type ContentImagesProps = {
 };
 
 export const ContentImages = ({ openNav }: ContentImagesProps) => {
-  const dispatch = useAppDispatch();
-
   const device = useAppSelector(selectDevice);
 
   const bottomNav = useAppSelector(selectBottomNav);
 
   const allSets = useAppSelector(selectAllSets);
 
-  const loading = useAppSelector(selectLoading);
-
   const currentFolder = useAppSelector(selectCurrentFolder);
-  const folders = useAppSelector(selectFolders);
 
   const images = useAppSelector(selectImages);
-  const checkedImages = useAppSelector(selectCheckedImages);
   const keysetImages = useAppSelector(selectSetImages);
   const duplicateSetImages = useAppSelector(selectDuplicateSetImages);
 
-  const detailImage = useAppSelector(selectDetailImage);
-  const detailMetadata = useAppSelector(selectDetailMetadata);
+  const [checkedImages, setCheckedImages] = useImmer<EntityId[]>([]);
+
+  const [detailImage, setDetailImage] = useState<EntityId>("");
 
   const [detailOpen, setDetailOpen] = useState(false);
-  const [folderMenuOpen, setFolderMenuOpen] = useState(false);
-  const [closeFolderMenu, openFolderMenu] = useBoolStates(setFolderMenuOpen);
   const [searchOpen, setSearchOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [closeDelete, openDelete] = useBoolStates(setDeleteOpen);
@@ -140,8 +90,7 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
       closeModal();
     }
     setDetailOpen(false);
-    dispatch(setDetailImage(blankImage));
-    dispatch(setDetailMetadata({}));
+    setTimeout(() => setDetailImage(""), 300);
   };
 
   const openSearch = () => {
@@ -159,7 +108,7 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
     }
   };
 
-  const openDetails = (image: ImageType) => {
+  const openDetails = (image: EntityId) => {
     const open = () => {
       if (detailImage === image) {
         closeDetails();
@@ -168,17 +117,7 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
         if (device !== "desktop") {
           openModal();
         }
-        dispatch(setDetailImage(image));
-        storageRef
-          .child(image.fullPath)
-          .getMetadata()
-          .then((metadata) => {
-            dispatch(setDetailMetadata(metadata));
-          })
-          .catch((error) => {
-            queue.notify({ title: `Failed to get metadata: ${error}` });
-            dispatch(setDetailMetadata({}));
-          });
+        setDetailImage(image);
       }
     };
     if (searchOpen) {
@@ -189,140 +128,54 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
     }
   };
 
-  const toggleImageChecked = (image: ImageType) => {
-    const editedArray = addOrRemove([...checkedImages], image);
-    dispatch(setCheckedImages(editedArray));
-  };
-  const toggleImageCheckedArray = (array: ImageType[], append = false) => {
-    const editedArray = append ? [...checkedImages, ...array] : array;
-    dispatch(setCheckedImages(editedArray));
-  };
-  const clearChecked = () => {
-    dispatch(setCheckedImages([]));
-  };
-  const unusedImages = images.filter(
-    (image) => !keysetImages.includes(image.name)
+  const toggleImageChecked = (image: EntityId) =>
+    setCheckedImages((images) => addOrRemove(images, image));
+  const toggleImageCheckedArray = (array: EntityId[], append = false) =>
+    setCheckedImages((images) =>
+      append ? removeDuplicates(images.concat(array)) : array
+    );
+  const clearChecked = () => setCheckedImages([]);
+  const unusedImages = useMemo(
+    () =>
+      images
+        .filter((image) => !keysetImages.includes(image.name))
+        .map(imageAdapter.selectId),
+    [images, keysetImages]
   );
-  const usedImages = images.filter((image) =>
-    keysetImages.includes(image.name)
+  const usedImages = useMemo(
+    () =>
+      images
+        .filter((image) => keysetImages.includes(image.name))
+        .map(imageAdapter.selectId),
+    [images, keysetImages]
   );
-  const duplicateImages = usedImages.filter((image) =>
-    duplicateSetImages.includes(image.name)
+  const duplicateImages = useMemo(
+    () => usedImages.filter((image) => duplicateSetImages.includes(image)),
+    [usedImages, duplicateSetImages]
   );
-  const display = [
-    {
-      array: unusedImages,
-      title: "Unused images",
-    },
-    {
-      array: duplicateImages,
-      title: "Duplicate images",
-    },
-    {
-      array: usedImages,
-      title: "Used images",
-    },
-  ];
-  const contextual = checkedImages.length > 0;
-  const tooltipAlign = bottomNav ? "top" : "bottom";
+  const display = useMemo(
+    () => [
+      {
+        array: unusedImages,
+        title: "Unused images",
+      },
+      {
+        array: duplicateImages,
+        title: "Duplicate images",
+      },
+      {
+        array: usedImages,
+        title: "Used images",
+      },
+    ],
+    [unusedImages, duplicateImages, usedImages]
+  );
   return (
     <>
-      <TopAppBar
-        className={classNames("is-contextual", {
-          "bottom-app-bar": bottomNav,
-          contextual,
-        })}
-        fixed
-      >
-        <TopAppBarRow>
-          <TopAppBarSection alignStart>
-            {contextual ? (
-              withTooltip(
-                <TopAppBarActionItem icon="close" onClick={clearChecked} />,
-                "Close",
-                { align: tooltipAlign }
-              )
-            ) : (
-              <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
-            )}
-            <TopAppBarTitle>
-              {contextual
-                ? `${checkedImages.length} selected`
-                : pageTitle.images}
-            </TopAppBarTitle>
-          </TopAppBarSection>
-          <TopAppBarSection alignEnd>
-            {contextual ? (
-              <>
-                {withTooltip(
-                  <TopAppBarActionItem
-                    icon={iconObject(<Delete />)}
-                    onClick={openDelete}
-                  />,
-                  "Delete",
-                  {
-                    align: tooltipAlign,
-                  }
-                )}
-              </>
-            ) : (
-              <>
-                {withTooltip(
-                  <TopAppBarActionItem icon="search" onClick={openSearch} />,
-                  "Search",
-                  {
-                    align: tooltipAlign,
-                  }
-                )}
-                {device === "mobile" ? (
-                  <MenuSurfaceAnchor>
-                    {withTooltip(
-                      <TopAppBarActionItem
-                        icon={iconObject(<PermMedia />)}
-                        onClick={openFolderMenu}
-                      />,
-                      "Folder",
-                      { align: tooltipAlign }
-                    )}
-                    <Menu
-                      anchorCorner="bottomLeft"
-                      className="folder-menu"
-                      onClose={closeFolderMenu}
-                      open={folderMenuOpen}
-                    >
-                      {folders.map((folder) => (
-                        <MenuItem
-                          key={folder}
-                          onClick={() => {
-                            setFolder(folder);
-                          }}
-                          selected={currentFolder === folder}
-                        >
-                          {`${folder}/`}
-                        </MenuItem>
-                      ))}
-                    </Menu>
-                  </MenuSurfaceAnchor>
-                ) : (
-                  <SegmentedButton toggle>
-                    {folders.map((folder) => (
-                      <SegmentedButtonSegment
-                        key={folder}
-                        label={folder}
-                        onClick={() => {
-                          setFolder(folder);
-                        }}
-                        selected={currentFolder === folder}
-                      />
-                    ))}
-                  </SegmentedButton>
-                )}
-              </>
-            )}
-          </TopAppBarSection>
-        </TopAppBarRow>
-        <LinearProgress closed={!loading} />
-      </TopAppBar>
+      <ImageAppBar
+        checkedImages={checkedImages.length}
+        {...{ clearChecked, openDelete, openNav, openSearch }}
+      />
       {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div
         className={classNames("content-container", {
@@ -332,20 +185,17 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
         <div className="main">
           <DrawerSearch
             close={closeSearch}
-            images={images}
             open={searchOpen}
             unusedImages={unusedImages}
           />
           <DrawerDetails
             close={closeDetails}
-            image={detailImage}
-            metadata={detailMetadata}
+            imageId={detailImage}
             open={detailOpen}
           />
           <DialogDelete
+            checkedImages={checkedImages}
             close={closeDelete}
-            folders={folders}
-            images={checkedImages}
             open={deleteOpen && checkedImages.length > 0}
             toggleImageChecked={toggleImageChecked}
           />
@@ -374,49 +224,16 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
                         onClick={() => toggleImageCheckedArray(obj.array)}
                       />
                     </div>
-                    <ImageList style={{ margin: -2 }} withTextProtection>
+                    <ImageList withTextProtection>
                       {obj.array.map((image) => (
-                        <Ripple key={image.fullPath}>
-                          <ImageListItem
-                            className={classNames({
-                              selected: image === detailImage,
-                            })}
-                          >
-                            <div className="container">
-                              <div
-                                className="item-container"
-                                onClick={() => openDetails(image)}
-                              >
-                                <ImageListImageAspectContainer>
-                                  <LazyLoad
-                                    debounce={false}
-                                    offsetVertical={480}
-                                  >
-                                    <ImageListImage
-                                      style={{
-                                        backgroundImage: `url(${image.src})`,
-                                      }}
-                                      tag="div"
-                                    />
-                                  </LazyLoad>
-                                </ImageListImageAspectContainer>
-                                <ImageListSupporting>
-                                  <ImageListLabel>{image.name}</ImageListLabel>
-                                </ImageListSupporting>
-                              </div>
-                              <div className="checkbox-container">
-                                <div className="checkbox">
-                                  <Checkbox
-                                    checked={checkedImages.includes(image)}
-                                    onClick={() => {
-                                      toggleImageChecked(image);
-                                    }}
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          </ImageListItem>
-                        </Ripple>
+                        <ImageItem
+                          key={image}
+                          checked={checkedImages.includes(image)}
+                          imageId={image}
+                          openDetails={openDetails}
+                          selected={image === detailImage}
+                          toggleChecked={toggleImageChecked}
+                        />
                       ))}
                     </ImageList>
                   </div>

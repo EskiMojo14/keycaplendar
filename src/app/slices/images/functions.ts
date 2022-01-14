@@ -9,8 +9,9 @@ import {
 } from "@s/util/functions";
 import {
   appendImages,
+  imageAdapter,
   selectCurrentFolder,
-  setCheckedImages,
+  selectImages,
   setCurrentFolder,
   setDuplicateSetImages,
   setFolders,
@@ -44,30 +45,22 @@ export const createSetImageList = (state = store.getState()) => {
   dispatch(setDuplicateSetImages(findDuplicates(setImages)));
 };
 
-const processItems = (items: firebase.storage.Reference[], append = false) => {
-  const images = items.map((itemRef) => {
-    const src = `https://firebasestorage.googleapis.com/v0/b/${
-      itemRef.bucket
-    }/o/${encodeURIComponent(itemRef.fullPath)}?alt=media`;
-    return partialImage({
-      fullPath: itemRef.fullPath,
-      name: itemRef.name,
-      src,
+const processItems = (items: firebase.storage.Reference[]) =>
+  items
+    .map((itemRef) =>
+      partialImage({
+        fullPath: itemRef.fullPath,
+        name: itemRef.name,
+        src: `https://firebasestorage.googleapis.com/v0/b/${
+          itemRef.bucket
+        }/o/${encodeURIComponent(itemRef.fullPath)}?alt=media`,
+      })
+    )
+    .sort((a, b) => {
+      const nameA = a.name.replace(".png", "").toLowerCase();
+      const nameB = b.name.replace(".png", "").toLowerCase();
+      return alphabeticalSortCurried()(nameA, nameB);
     });
-  });
-  images.sort((a, b) => {
-    const nameA = a.name.replace(".png", "").toLowerCase();
-    const nameB = b.name.replace(".png", "").toLowerCase();
-    return alphabeticalSortCurried()(nameA, nameB);
-  });
-  if (append) {
-    dispatch(appendImages(images));
-  } else {
-    dispatch(setImages(images));
-  }
-  dispatch(setCheckedImages([]));
-  dispatch(setLoading(false));
-};
 
 export const getFolders = async () => {
   const folders = await getStorageFolders();
@@ -83,14 +76,17 @@ export const getFolders = async () => {
 export const listAll = (state = store.getState()) => {
   const path = selectCurrentFolder(state);
   const paginatedListAll = (nextPageToken?: string) => {
+    const addItems = nextPageToken ? appendImages : setImages;
     dispatch(setLoading(true));
     storageRef
       .child(path)
       .list({ maxResults: 100, pageToken: nextPageToken })
       .then((res) => {
-        processItems(res.items, Boolean(nextPageToken));
+        dispatch(addItems(processItems(res.items)));
         if (res.nextPageToken) {
           paginatedListAll(res.nextPageToken);
+        } else {
+          dispatch(setLoading(false));
         }
       })
       .catch((error) => {
@@ -104,4 +100,25 @@ export const listAll = (state = store.getState()) => {
 export const setFolder = (folder: string) => {
   dispatch(setCurrentFolder(folder));
   listAll();
+};
+
+export const searchImages = (
+  search: string,
+  regexSearch: boolean,
+  state = store.getState()
+) => {
+  const images = selectImages(state);
+  return images
+    .filter((image) => {
+      if (regexSearch) {
+        const regex = new RegExp(search);
+        return regex.test(image.name) && search.length > 1;
+      } else {
+        return (
+          image.name.toLowerCase().includes(search.toLowerCase()) &&
+          search.length > 1
+        );
+      }
+    })
+    .map(imageAdapter.selectId);
 };

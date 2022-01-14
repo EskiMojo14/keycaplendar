@@ -1,37 +1,27 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { ChangeEvent } from "react";
-import { Checkbox } from "@rmwc/checkbox";
+import type { EntityId } from "@reduxjs/toolkit";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
-import {
-  List,
-  ListItem,
-  ListItemGraphic,
-  ListItemMeta,
-  ListItemPrimaryText,
-  ListItemSecondaryText,
-  ListItemText,
-} from "@rmwc/list";
+import { List } from "@rmwc/list";
 import { TextField } from "@rmwc/textfield";
-import reactStringReplace from "react-string-replace";
 import { useAppSelector } from "~/app/hooks";
+import { SearchItem } from "@c/images/search-item";
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice } from "@s/common";
-import type { ImageType } from "@s/images/types";
+import { searchImages } from "@s/images/functions";
 import { iconObject } from "@s/util/functions";
 import { Regex, RegexOff } from "@i";
 import "./drawer-search.scss";
 
 type DrawerSearchProps = {
   close: () => void;
-  images: ImageType[];
   open: boolean;
-  unusedImages: ImageType[];
+  unusedImages: EntityId[];
 };
 
 export const DrawerSearch = ({
   close,
-  images,
   open,
   unusedImages,
 }: DrawerSearchProps) => {
@@ -55,17 +45,11 @@ export const DrawerSearch = ({
     setRegexSearch(!regexSearch);
   };
 
-  const searchedImages = images.filter((image) => {
-    if (regexSearch) {
-      const regex = new RegExp(search);
-      return regex.test(image.name) && search.length > 1;
-    } else {
-      return (
-        image.name.toLowerCase().includes(search.toLowerCase()) &&
-        search.length > 1
-      );
-    }
-  });
+  const searchedImages = useMemo(
+    () => searchImages(search, regexSearch),
+    [search, regexSearch]
+  );
+
   return (
     <Drawer
       className="drawer-right search-drawer"
@@ -99,36 +83,12 @@ export const DrawerSearch = ({
       <DrawerContent>
         <List twoLine>
           {searchedImages.map((image) => (
-            <ListItem key={image.fullPath} disabled>
-              <ListItemGraphic
-                className="image"
-                style={{ backgroundImage: `url(${image.src})` }}
-              />
-              {withTooltip(
-                <ListItemText>
-                  <ListItemPrimaryText>
-                    {reactStringReplace(image.name, search, (match, i) => (
-                      <span key={match + i} className="highlight">
-                        {match}
-                      </span>
-                    ))}
-                  </ListItemPrimaryText>
-                  <ListItemSecondaryText>
-                    {image.fullPath}
-                  </ListItemSecondaryText>
-                </ListItemText>,
-                image.name
-              )}
-              <ListItemMeta>
-                <Checkbox
-                  checked={
-                    !unusedImages.map(({ name }) => name).includes(image.name)
-                  }
-                  disabled
-                  readOnly
-                />
-              </ListItemMeta>
-            </ListItem>
+            <SearchItem
+              key={image}
+              checked={!unusedImages.includes(image)}
+              imageId={image}
+              search={search}
+            />
           ))}
         </List>
       </DrawerContent>

@@ -1,0 +1,17 @@
+@use "@material/rtl/_index" as rtl;
+.search-drawer-item {
+  padding: 0 16px;
+  &__graphic {
+    width: 85px;
+    height: 48px;
+    background-size: cover;
+    background-position: center;
+    @include rtl.reflexive-box(margin, right, 16px);
+  }
+  .highlight {
+    font-weight: bold;
+  }
+  &__meta {
+    @include rtl.reflexive-box(margin, left, auto);
+  }
+}
