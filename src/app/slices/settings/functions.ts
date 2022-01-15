@@ -311,8 +311,7 @@ export const setSyncSettings = (
     if (bool) {
       Object.keys(settingFns).forEach((setting) => {
         if (hasKey(settings, setting)) {
-          const { [setting]: settingVal } = settings;
-          settingsObject[setting] = settingVal;
+          ({ [setting]: settingsObject[setting] } = settings);
         }
       });
     }

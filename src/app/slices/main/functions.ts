@@ -590,10 +590,9 @@ const generateLists = (state = store.getState()) => {
     const defaultParams = ["profiles", "regions"] as const;
     defaultParams.forEach((param) => {
       if (!urlParams.includes(param)) {
-        const {
-          whitelist: { [param]: defaultParam },
-        } = defaultPreset;
-        partialWhitelist[param] = defaultParam;
+        ({
+          whitelist: { [param]: partialWhitelist[param] },
+        } = defaultPreset);
       }
     });
     setWhitelistMerge(partialWhitelist, false);

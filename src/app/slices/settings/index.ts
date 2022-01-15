@@ -51,9 +51,10 @@ export const settingsSlice = createSlice({
     }),
     setSettingState: <K extends keyof SettingsState>(
       state: SettingsState,
-      { payload }: PayloadAction<{ key: K; value: SettingsState[K] }>
+      {
+        payload: { key, value },
+      }: PayloadAction<{ key: K; value: SettingsState[K] }>
     ) => {
-      const { key, value } = payload;
       state[key] = value;
     },
     setShareNameLoading: (state, { payload }: PayloadAction<boolean>) => {

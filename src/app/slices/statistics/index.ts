@@ -194,16 +194,18 @@ export const statisticsSlice = createSlice({
     },
     setStatisticsSettingState: <T extends keyof StatisticsType>(
       state: StatisticsState,
-      { payload }: PayloadAction<{ key: T; value: StatisticsType[T] }>
+      {
+        payload: { key, value },
+      }: PayloadAction<{ key: T; value: StatisticsType[T] }>
     ) => {
-      const { key, value } = payload;
       state.settings[key] = value;
     },
     setStatisticsSortState: <T extends keyof StatisticsSortType>(
       state: StatisticsState,
-      { payload }: PayloadAction<{ key: T; value: StatisticsSortType[T] }>
+      {
+        payload: { key, value },
+      }: PayloadAction<{ key: T; value: StatisticsSortType[T] }>
     ) => {
-      const { key, value } = payload;
       state.sort[key] = value;
     },
     setStatsTab: (state, { payload }: PayloadAction<StatsTab>) => {
