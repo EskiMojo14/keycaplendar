@@ -43,48 +43,46 @@ export const setHistoryTab = (
   }
 };
 
-export const processActions = (actions: PublicActionType[]) => {
-  const processedActions: ProcessedPublicActionType[] = actions.map(
-    (action) => {
-      const { after, before, ...restAction } = action;
-      const title =
-        action.action !== "deleted"
-          ? `${action.after.profile} ${action.after.colorway}`
-          : `${action.before.profile} ${action.before.colorway}`;
-      if (before && after) {
-        auditProperties.forEach((prop) => {
-          const { [prop]: beforeProp } = before;
-          const { [prop]: afterProp } = after;
-          if (
-            isEqual(beforeProp, afterProp) ||
-            (!is<boolean>(beforeProp) &&
-              !beforeProp &&
-              !is<boolean>(afterProp) &&
-              !afterProp)
-          ) {
-            delete before[prop];
-            delete after[prop];
-          }
-        });
-      }
-      return {
-        ...restAction,
-        after,
-        before,
-        title,
-      };
+export const processActions = (
+  actions: PublicActionType[]
+): ProcessedPublicActionType[] =>
+  actions.map((action) => {
+    const { after, before, ...restAction } = action;
+    const title =
+      action.action !== "deleted"
+        ? `${action.after.profile} ${action.after.colorway}`
+        : `${action.before.profile} ${action.before.colorway}`;
+    if (before && after) {
+      auditProperties.forEach((prop) => {
+        const { [prop]: beforeProp } = before;
+        const { [prop]: afterProp } = after;
+        if (
+          isEqual(beforeProp, afterProp) ||
+          (!is<boolean>(beforeProp) &&
+            !beforeProp &&
+            !is<boolean>(afterProp) &&
+            !afterProp)
+        ) {
+          delete before[prop];
+          delete after[prop];
+        }
+      });
     }
-  );
-  dispatch(setProcessedActions(processedActions));
-  dispatch(setLoading(false));
-};
+    return {
+      ...restAction,
+      after,
+      before,
+      title,
+    };
+  });
 
 export const getData = () => {
   const cloudFn = firebase.functions().httpsCallable("getPublicAudit");
   dispatch(setLoading(true));
   cloudFn({ num: 25 })
     .then(({ data: actions }) => {
-      processActions(actions);
+      dispatch(setProcessedActions(processActions(actions)));
+      dispatch(setLoading(false));
     })
     .catch((error) => {
       console.log(error);

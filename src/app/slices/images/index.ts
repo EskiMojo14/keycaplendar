@@ -5,7 +5,7 @@ import { alphabeticalSortCurried } from "@s/util/functions";
 import type { ImageType } from "./types";
 
 export const imageAdapter = createEntityAdapter<ImageType>({
-  selectId: (image) => image.name,
+  selectId: ({ name }) => name,
   sortComparer: ({ name: aName }, { name: bName }) => {
     const nameA = aName.replace(".png", "").toLowerCase();
     const nameB = bName.replace(".png", "").toLowerCase();

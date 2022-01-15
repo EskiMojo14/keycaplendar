@@ -5,7 +5,7 @@ import { alphabeticalSortPropCurried } from "@s/util/functions";
 import type { ActionType } from "./types";
 
 const actionAdapter = createEntityAdapter<ActionType>({
-  selectId: (action) => action.changelogId,
+  selectId: ({ changelogId }) => changelogId,
   sortComparer: alphabeticalSortPropCurried("timestamp", true),
 });
 

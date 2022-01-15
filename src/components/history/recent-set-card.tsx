@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { EntityId } from "@reduxjs/toolkit";
 import { Button } from "@rmwc/button";
 import {
   Card,
@@ -16,7 +17,7 @@ import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { mainPages, pageIcons, pageTitle } from "@s/common/constants";
 import { setPage } from "@s/common/functions";
 import type { MainPage } from "@s/common/types";
-import type { RecentSet } from "@s/history/types";
+import { selectRecentSetById } from "@s/history";
 import { pageConditions } from "@s/main/functions";
 import type { SetType } from "@s/main/types";
 import { selectBought, selectFavorites, selectHidden } from "@s/user";
@@ -30,10 +31,10 @@ import { FilterVariantRemove, ImageNotSupported } from "@i";
 import "./recent-set-card.scss";
 
 type RecentSetCardProps = {
-  filterChangelog: (set: RecentSet) => void;
+  filterChangelog: (set: { id: string; title: string }) => void;
   filtered: boolean;
   openDetails: (set: SetType) => void;
-  recentSet: RecentSet;
+  recentSetId: EntityId;
   selected: boolean;
 };
 
@@ -41,9 +42,17 @@ export const RecentSetCard = ({
   filterChangelog,
   filtered,
   openDetails,
-  recentSet,
+  recentSetId,
   selected,
 }: RecentSetCardProps) => {
+  const recentSet = useAppSelector((state) =>
+    selectRecentSetById(state, recentSetId)
+  );
+
+  if (!recentSet) {
+    return null;
+  }
+
   const { currentSet: set, deleted } = recentSet;
   const favorites = useAppSelector(selectFavorites);
   const bought = useAppSelector(selectBought);
@@ -148,7 +157,9 @@ export const RecentSetCard = ({
         <Button
           icon={filtered ? iconObject(<FilterVariantRemove />) : "filter_list"}
           label={filtered ? "Clear filter" : "Filter changelog"}
-          onClick={() => filterChangelog(recentSet)}
+          onClick={() =>
+            filterChangelog({ id: recentSet.id, title: recentSet.title })
+          }
           outlined
         />
       </div>

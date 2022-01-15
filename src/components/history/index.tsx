@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card } from "@rmwc/card";
 import { Chip } from "@rmwc/chip";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -22,15 +22,15 @@ import { DialogSales } from "@c/main/dialog-sales";
 import { DrawerDetails } from "@c/main/drawer-details";
 import { pageTitle } from "@s/common/constants";
 import {
+  processedActionsAdapter,
   selectLoading,
   selectProcessedActions,
-  selectRecentSets,
+  selectRecentSetsIds,
   selectTab,
   setTab,
 } from "@s/history";
 import { historyTabs } from "@s/history/constants";
 import { generateSets, getData } from "@s/history/functions";
-import type { RecentSet } from "@s/history/types";
 import { selectAllSets } from "@s/main";
 import { blankKeyset } from "@s/main/constants";
 import type { SetType } from "@s/main/types";
@@ -65,7 +65,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
   const loading = useAppSelector(selectLoading);
 
   const processedActions = useAppSelector(selectProcessedActions);
-  const recentSets = useAppSelector(selectRecentSets);
+  const recentSets = useAppSelector(selectRecentSetsIds);
 
   const [swiping, setSwiping] = useState(false);
 
@@ -74,7 +74,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
       getData();
     }
   }, []);
-  useEffect(generateSets, [JSON.stringify(allSets), processedActions]);
+  useEffect(generateSets, [allSets, processedActions]);
 
   const [detailSet, setDetailSet] = useState(blankKeyset);
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -106,8 +106,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
     setFilterSet({ id: "", title: "" });
   };
 
-  const filterChangelog = (recentSet: RecentSet) => {
-    const { id, title } = recentSet;
+  const filterChangelog = ({ id, title }: { id: string; title: string }) => {
     if (id === filterSet.id) {
       clearFilter();
     } else {
@@ -116,9 +115,15 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
     }
   };
 
-  const filteredActions = filterSet.id
-    ? processedActions.filter((action) => action.documentId === filterSet.id)
-    : processedActions;
+  const filteredActions = useMemo(
+    () =>
+      filterSet.id
+        ? processedActions
+            .filter((action) => action.documentId === filterSet.id)
+            .map(processedActionsAdapter.selectId)
+        : processedActions.map(processedActionsAdapter.selectId),
+    [filterSet.id, processedActions]
+  );
 
   const tabRow = (
     <TopAppBarRow className="tab-row">
@@ -148,9 +153,8 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
     </TopAppBarSection>
   ) : null;
 
-  const handleChangeIndex = (index: number) => {
+  const handleChangeIndex = (index: number) =>
     dispatch(setTab(historyTabs[index]));
-  };
 
   const slideRenderer: SlideRendererCallback = ({ index, key }) => {
     const { [index]: tab } = historyTabs;
@@ -164,7 +168,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
           >
             <List className="three-line" twoLine>
               {filteredActions.map((action) => (
-                <ChangelogEntry key={action.timestamp} action={action} />
+                <ChangelogEntry key={action} actionId={action} />
               ))}
             </List>
           </Card>
@@ -174,12 +178,12 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
         <div key={key} className="history-tab recent recent-grid">
           {recentSets.map((recentSet) => (
             <RecentSetCard
-              key={recentSet.id}
+              key={recentSet}
               filterChangelog={filterChangelog}
-              filtered={recentSet.id === filterSet.id}
+              filtered={recentSet === filterSet.id}
               openDetails={openDetails}
-              recentSet={recentSet}
-              selected={recentSet.id === detailSet.id}
+              recentSetId={recentSet}
+              selected={recentSet === detailSet.id}
             />
           ))}
         </div>

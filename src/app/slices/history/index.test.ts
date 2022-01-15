@@ -26,6 +26,7 @@ const action: ProcessedPublicActionType = {
   action: "created",
   after: {},
   before: {},
+  changelogId: "",
   documentId: "",
   timestamp: "",
   title: "",

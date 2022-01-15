@@ -8,6 +8,7 @@ export type PublicActionType = {
   action: "created" | "deleted" | "updated";
   after: ActionSetType;
   before: ActionSetType;
+  changelogId: string;
   documentId: string;
   timestamp: string;
 };

@@ -1,11 +1,6 @@
 import produce from "immer";
 import store from "~/app/store";
-import {
-  setLoading,
-  setProcessedActions,
-  setRecentSets,
-  setTab,
-} from "@s/history";
+import { setRecentSets, setTab } from "@s/history";
 import {
   generateSets,
   processActions,
@@ -46,6 +41,7 @@ const action: PublicActionType = {
     icDate: "2021-04-02",
     profile: "GMK",
   },
+  changelogId: "test2",
   documentId: "test",
   timestamp: "test",
 };
@@ -58,6 +54,7 @@ const processedAction: ProcessedPublicActionType = {
   before: {
     details: "test",
   },
+  changelogId: "test2",
   documentId: "test",
   timestamp: "test",
   title: "GMK Test",
@@ -94,12 +91,7 @@ describe("setHistoryTab", () => {
 
 describe("processActions", () => {
   it("processes actions and dispatches to state", () => {
-    processActions([action]);
-    expect(dispatchSpy).toHaveBeenNthCalledWith(
-      1,
-      setProcessedActions([processedAction])
-    );
-    expect(dispatchSpy).toHaveBeenNthCalledWith(2, setLoading(false));
+    expect(processActions([action])).toEqual([processedAction]);
   });
 });
 
@@ -107,7 +99,12 @@ describe("generateSets", () => {
   it("generates recent set entries", () => {
     const modifiedState = produce(store.getState(), (draftState) => {
       draftState.main.allSets = [keyset];
-      draftState.history.processedActions = [processedAction];
+      draftState.history.processedActions = {
+        entities: {
+          [processedAction.changelogId]: processedAction,
+        },
+        ids: [processedAction.changelogId],
+      };
     });
     generateSets(modifiedState);
     expect(dispatchSpy).toHaveBeenCalledWith(setRecentSets([recentSet]));

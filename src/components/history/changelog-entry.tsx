@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { EntityId } from "@reduxjs/toolkit";
 import { Checkbox } from "@rmwc/checkbox";
 import {
   DataTable,
@@ -21,17 +22,24 @@ import {
 import { Typography } from "@rmwc/typography";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
+import { useAppSelector } from "~/app/hooks";
 import { auditProperties, auditPropertiesFormatted } from "@s/audit/constants";
 import type { ActionSetType } from "@s/audit/types";
 import type { KeysetDoc } from "@s/firebase/types";
-import type { ProcessedPublicActionType } from "@s/history/types";
+import { selectProcessedActionById } from "@s/history";
 import type { VendorType } from "@s/main/types";
 import { arrayIncludes, hasKey, objectKeys, ordinal } from "@s/util/functions";
 import "./changelog-entry.scss";
 
-type ChangelogEntryProps = {
-  action: ProcessedPublicActionType;
-};
+const icons = {
+  created: "add_circle_outline",
+  deleted: "remove_circle_outline",
+  updated: "update",
+} as const;
+const arrayProps = ["designer"] as const;
+const urlProps = ["details"] as const;
+const boolProps = ["gbMonth", "shipped"] as const;
+const dateProps = ["icDate", "gbLaunch", "gbEnd"] as const;
 
 type DataObject = {
   after?: Omit<ActionSetType, "latestEditor">;
@@ -41,16 +49,18 @@ type DataObject = {
 
 const domainRegex = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
 
-export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
-  const icons = {
-    created: "add_circle_outline",
-    deleted: "remove_circle_outline",
-    updated: "update",
-  } as const;
-  const arrayProps = ["designer"] as const;
-  const urlProps = ["details"] as const;
-  const boolProps = ["gbMonth", "shipped"] as const;
-  const dateProps = ["icDate", "gbLaunch", "gbEnd"] as const;
+type ChangelogEntryProps = {
+  actionId: EntityId;
+};
+
+export const ChangelogEntry = ({ actionId }: ChangelogEntryProps) => {
+  const action = useAppSelector((state) =>
+    selectProcessedActionById(state, actionId)
+  );
+
+  if (!action) {
+    return null;
+  }
 
   const data: DataObject =
     action.action === "updated"
