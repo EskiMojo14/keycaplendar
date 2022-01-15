@@ -149,6 +149,24 @@ export const groupByMap = <
   }, new Map() as any) as any;
 
 /**
+ * Creates a copy of `obj` with keys sorted by `compareFn` (uses default if not provided)
+ * @param obj
+ * @param compareFn
+ * @returns Sorted object
+ */
+export const sortObjectKeys = <O extends Record<any, any>>(
+  obj: O,
+  compareFn?: (a: keyof O, b: keyof O) => number
+) =>
+  objectKeys(obj)
+    .sort(compareFn)
+    .reduce<O>((acc: O, key) => {
+      ({ [key]: acc[key] } = obj);
+      return acc;
+      // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
+    }, {} as O);
+
+/**
  * Remove all duplicate values within an array.
  * @param array Array of values.
  * @returns `array` with only unique values.
