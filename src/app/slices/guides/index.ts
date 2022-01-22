@@ -17,14 +17,12 @@ const blankVisibilityMap = visibilityVals.reduce<
   return acc;
 }, {} as Record<Visibility, EntityId[]>);
 
-const sortEntries = alphabeticalSortPropCurried<GuideEntryType, "title">(
-  "title",
-  false,
-  "Welcome to KeycapLendar!"
-);
-
 const guideEntryAdapter = createEntityAdapter<GuideEntryType>({
-  sortComparer: sortEntries,
+  sortComparer: alphabeticalSortPropCurried<GuideEntryType, "title">(
+    "title",
+    false,
+    "Welcome to KeycapLendar!"
+  ),
 });
 
 type GuidesState = {
@@ -56,7 +54,11 @@ export const guidesSlice = createSlice({
       state.entries.visibilityMap = {
         ...blankVisibilityMap,
         ...groupBy(
-          [...payload].sort(sortEntries),
+          [...payload].sort(
+            typeof guideEntryAdapter.sortComparer === "function"
+              ? guideEntryAdapter.sortComparer
+              : undefined
+          ),
           "visibility",
           ({ id }) => id
         ),

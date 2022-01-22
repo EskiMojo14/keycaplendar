@@ -4,18 +4,18 @@ import type { RootState } from "~/app/store";
 import { alphabeticalSortPropCurried } from "@s/util/functions";
 import type { UpdateEntryType } from "./types";
 
-export const sortEntries = (a: UpdateEntryType, b: UpdateEntryType) => {
-  if ((a.pinned || b.pinned) && !(a.pinned && b.pinned)) {
-    return a.pinned ? -1 : 1;
-  }
-  return (
-    alphabeticalSortPropCurried<UpdateEntryType, "date">("date", true)(a, b) ||
-    alphabeticalSortPropCurried<UpdateEntryType, "title">("title")(a, b)
-  );
-};
-
 const updateEntryAdapter = createEntityAdapter<UpdateEntryType>({
-  sortComparer: sortEntries,
+  sortComparer: (a: UpdateEntryType, b: UpdateEntryType) => {
+    if ((a.pinned || b.pinned) && !(a.pinned && b.pinned)) {
+      return a.pinned ? -1 : 1;
+    }
+    return (
+      alphabeticalSortPropCurried<UpdateEntryType, "date">("date", true)(
+        a,
+        b
+      ) || alphabeticalSortPropCurried<UpdateEntryType, "title">("title")(a, b)
+    );
+  },
 });
 
 type UpdatesState = {
