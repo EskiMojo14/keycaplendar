@@ -8,7 +8,6 @@ import {
   arrayMove,
   getSetMonthRange,
   groupBy,
-  groupByMap,
   pluralise,
   removeDuplicates,
 } from "@s/util/functions";
@@ -39,27 +38,28 @@ describe("groupBy", () => {
     });
   });
   it("allows a value to create a custom value", () => {
-    expect(groupBy([keyset, keyset2], "profile", ({ id }) => id)).toEqual({
+    expect(
+      groupBy([keyset, keyset2], "profile", { createVal: ({ id }) => id })
+    ).toEqual({
       GMK: [keyset2.id],
       KAT: [keyset.id],
     });
   });
-});
 
-describe("groupByMap", () => {
-  it("groups objects by a specified property value", () => {
-    expect(groupByMap([keyset, keyset2], "profile")).toEqual(
+  it("groups objects by a specified property value (map)", () => {
+    expect(groupBy([keyset, keyset2], "profile", { map: true })).toEqual(
       new Map([
         ["GMK", [keyset2]],
         ["KAT", [keyset]],
       ])
     );
   });
-  it("allows an accessor function instead of key", () => {
+  it("allows an accessor function instead of key (map)", () => {
     expect(
-      groupByMap(
+      groupBy(
         [keyset, keyset2],
-        ({ colorway, profile }) => `${profile} ${colorway}`
+        ({ colorway, profile }) => `${profile} ${colorway}`,
+        { map: true }
       )
     ).toEqual(
       new Map([
@@ -68,8 +68,13 @@ describe("groupByMap", () => {
       ])
     );
   });
-  it("allows a value to create a custom value", () => {
-    expect(groupByMap([keyset, keyset2], "profile", ({ id }) => id)).toEqual(
+  it("allows a value to create a custom value (map)", () => {
+    expect(
+      groupBy([keyset, keyset2], "profile", {
+        createVal: ({ id }) => id,
+        map: true,
+      })
+    ).toEqual(
       new Map([
         ["GMK", [keyset2.id]],
         ["KAT", [keyset.id]],

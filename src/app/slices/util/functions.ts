@@ -82,71 +82,73 @@ export const objectEntries = <T extends Record<string, any>>(
  * Group objects by a specified key or accessor function result
  * @param arr Array of objects to group
  * @param accessor Key or function to provide value to use key
- * @param [createVal] Function that receives object and returns what the value should be
- * @returns Object with values as keys and object arrays as value
+ * @param opts Further options to customise output.
+ * @returns Object/map with values as keys and object arrays (unless specified) as value
  */
 
 export const groupBy = <
   T extends Record<any, any>,
-  Accessor extends KeysMatching<T, keyof any> | ((obj: T) => keyof any),
-  ValCreate extends (obj: T) => any = (obj: T) => T
+  Accessor extends keyof T | ((obj: T) => any),
+  ValCreate extends (obj: T) => any = (obj: T) => T,
+  UseMap extends boolean = false,
+  UseArray extends boolean = true
 >(
   arr: T[] | readonly T[],
   accessor: Accessor,
-  createVal: ValCreate = ((obj) => obj) as ValCreate
+  {
+    createVal = ((obj) => obj) as ValCreate,
+    map = false as UseMap,
+    array = true as UseArray,
+  }: {
+    /** Whether to use an array for each value. If set to false, later objects will overwrite previous ones. */
+    array?: UseArray;
+    /** Function that receives object and returns what the value should be */
+    createVal?: ValCreate;
+    /** Whether to use a Map instead of a plain object (allows object/array keys) */
+    map?: UseMap;
+  } = {}
 ): ValCreate extends (obj: T) => infer Val
   ? Accessor extends (obj: T) => infer Key
-    ? Key extends keyof any
-      ? Record<Key, Val[]>
+    ? UseMap extends true
+      ? Map<Key, UseArray extends true ? Val[] : Val>
+      : Key extends keyof any
+      ? Record<Key, UseArray extends true ? Val[] : Val>
       : never
     : Accessor extends keyof T
-    ? Record<T[Accessor], Val[]>
+    ? UseMap extends true
+      ? Map<T[Accessor], UseArray extends true ? Val[] : Val>
+      : T[Accessor] extends keyof any
+      ? Record<T[Accessor], UseArray extends true ? Val[] : Val>
+      : never
     : never
   : never =>
-  arr.reduce((acc: any, obj) => {
-    const key =
-      typeof accessor === "function"
-        ? accessor(obj)
-        : (obj[accessor as KeysMatching<T, keyof any>] as keyof any);
-    acc[key] ??= [];
-    acc[key].push(createVal(obj));
-    return acc;
-  }, {} as any) as any;
-
-/**
- * Group objects by a specified key or accessor function result
- * @param arr Array of objects to group
- * @param accessor Key or function to provide value to use key
- * @param [createVal] Function that receives object and returns what the value should be
- * @returns Map with values as keys and object arrays as value
- */
-
-export const groupByMap = <
-  T extends Record<string, any>,
-  Accessor extends keyof T | ((obj: T) => any),
-  ValCreate extends (obj: T) => any = (obj: T) => T
->(
-  arr: T[] | readonly T[],
-  accessor: Accessor,
-  createVal: ValCreate = ((obj) => obj) as ValCreate
-): ValCreate extends (obj: T) => infer Val
-  ? Accessor extends (obj: T) => infer Key
-    ? Map<Key, Val[]>
-    : Accessor extends keyof T
-    ? Map<T[Accessor], Val[]>
-    : never
-  : never =>
-  arr.reduce((acc, obj) => {
-    const key =
-      typeof accessor === "function" ? accessor(obj) : obj[accessor as keyof T];
-    const val = createVal(obj);
-    if (acc.has(key)) {
-      acc.get(key).push(val);
-    } else {
-      acc.set(key, [val]);
-    }
-    return acc;
-  }, new Map() as any) as any;
+  arr.reduce(
+    (acc: any, obj) => {
+      const key =
+        typeof accessor === "function" ? accessor(obj) : obj[accessor];
+      const val = createVal(obj);
+      if (map) {
+        if (array) {
+          if (acc.has(key)) {
+            acc.get(key).push(val);
+          } else {
+            acc.set(key, [val]);
+          }
+        } else {
+          acc.set(key, val);
+        }
+      } else {
+        if (array) {
+          acc[key] ??= [];
+          acc[key].push(val);
+        } else {
+          acc[key] = val;
+        }
+      }
+      return acc;
+    },
+    map ? new Map() : ({} as any)
+  ) as any;
 
 /**
  * Creates a copy of `obj` with keys sorted by `compareFn` (uses default if not provided)
