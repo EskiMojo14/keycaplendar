@@ -44,7 +44,12 @@ it("sets guides array, tags, and visibility map", () => {
   const tags = selectAllTags(store.getState());
   expect(tags).toEqual([string]);
   const visibilityMap = selectVisibilityMap(store.getState());
-  const expectedVisibilityMap = { all: [blankEntry.id] };
+  const expectedVisibilityMap = {
+    admin: [],
+    all: [blankEntry.id],
+    designer: [],
+    editor: [],
+  };
   expect(visibilityMap).toEqual(expectedVisibilityMap);
 });
 
