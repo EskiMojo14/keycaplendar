@@ -20,7 +20,10 @@ export const SetSchema = schemaForType<SetType>()(
     designer: z.string().min(1).array(),
     details: z.string().url(),
     gbEnd: allowEmpty(zodDate()),
-    gbLaunch: z.union([zodDate(), zodDate({ month: true })]),
+    gbLaunch: z.union([
+      zodDate({ allowQuarter: true }),
+      zodDate({ month: true }),
+    ]),
     gbMonth: z.boolean(),
     icDate: zodDate({ required: true }),
     id: z.string().min(1),
