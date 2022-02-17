@@ -137,16 +137,21 @@ export const mainSlice = createSlice({
     ) => {
       state.linkedFavorites = payload;
     },
-    setListState: (
-      state,
-      {
+    setList: {
+      prepare: (name: KeysMatching<MainState, string[]>, array: string[]) => ({
         payload: { array, name },
-      }: PayloadAction<{
-        array: string[];
-        name: KeysMatching<MainState, string[]>;
-      }>
-    ) => {
-      state[name] = array;
+      }),
+      reducer: (
+        state,
+        {
+          payload: { array, name },
+        }: PayloadAction<{
+          array: string[];
+          name: KeysMatching<MainState, string[]>;
+        }>
+      ) => {
+        state[name] = array;
+      },
     },
     setLoading: (state, { payload }: PayloadAction<boolean>) => {
       state.loading = payload;
@@ -157,16 +162,24 @@ export const mainSlice = createSlice({
     setSetGroups: (state, { payload }: PayloadAction<SetGroup[]>) => {
       state.setGroups = payload;
     },
-    setSetListState: (
-      state,
-      {
+    setSetList: {
+      prepare: (
+        name: KeysMatching<MainState, SetType[]>,
+        array: SetType[]
+      ) => ({
         payload: { array, name },
-      }: PayloadAction<{
-        array: SetType[];
-        name: KeysMatching<MainState, SetType[]>;
-      }>
-    ) => {
-      state[name] = array;
+      }),
+      reducer: (
+        state,
+        {
+          payload: { array, name },
+        }: PayloadAction<{
+          array: SetType[];
+          name: KeysMatching<MainState, SetType[]>;
+        }>
+      ) => {
+        state[name] = array;
+      },
     },
     setSort: (state, { payload }: PayloadAction<SortType>) => {
       state.sort = payload;
@@ -177,16 +190,21 @@ export const mainSlice = createSlice({
     setTransition: (state, { payload }: PayloadAction<boolean>) => {
       state.transition = payload;
     },
-    setURLSetState: (
-      state,
-      {
-        payload,
-      }: PayloadAction<{
-        prop: "alias" | "id" | "name";
-        value: string;
-      }>
-    ) => {
-      state.urlSet = payload;
+    setURLSet: {
+      prepare: (prop: "alias" | "id" | "name", value: string) => ({
+        payload: { prop, value },
+      }),
+      reducer: (
+        state,
+        {
+          payload,
+        }: PayloadAction<{
+          prop: "alias" | "id" | "name";
+          value: string;
+        }>
+      ) => {
+        state.urlSet = payload;
+      },
     },
     setURLWhitelist: (
       state,
@@ -208,34 +226,19 @@ export const {
     setDefaultPreset,
     setInitialLoad,
     setLinkedFavorites,
-    setListState,
+    setList,
     setLoading,
     setSearch,
     setSetGroups,
-    setSetListState,
+    setSetList,
     setSort,
     setSortOrder,
     setTransition,
-    setURLSetState,
+    setURLSet,
     setURLWhitelist,
     setWhitelist,
   },
 } = mainSlice;
-
-export const setList = <P extends Parameters<typeof setListState>[0]>(
-  name: P["name"],
-  array: P["array"]
-) => setListState({ array, name });
-
-export const setSetList = <P extends Parameters<typeof setSetListState>[0]>(
-  name: P["name"],
-  array: P["array"]
-) => setSetListState({ array, name });
-
-export const setURLSet = <P extends Parameters<typeof setURLSetState>[0]>(
-  prop: P["prop"],
-  value: P["value"]
-) => setURLSetState({ prop, value });
 
 export const selectTransition = (state: RootState) => state.main.transition;
 
