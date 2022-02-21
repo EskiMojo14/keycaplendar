@@ -192,21 +192,31 @@ export const statisticsSlice = createSlice({
     setStatisticsData: (state, { payload }: PayloadAction<StatisticsData>) => {
       state.data = payload;
     },
-    setStatisticsSettingState: <T extends keyof StatisticsType>(
-      state: StatisticsState,
-      {
-        payload: { key, value },
-      }: PayloadAction<{ key: T; value: StatisticsType[T] }>
-    ) => {
-      state.settings[key] = value;
+    setStatisticsSetting: {
+      prepare: <T extends keyof StatisticsType>(
+        key: T,
+        value: StatisticsType[T]
+      ) => ({ payload: { key, value } }),
+      reducer: <T extends keyof StatisticsType>(
+        state: StatisticsState,
+        { payload }: PayloadAction<{ key: T; value: StatisticsType[T] }>
+      ) => {
+        const { key, value } = payload;
+        state.settings[key] = value;
+      },
     },
-    setStatisticsSortState: <T extends keyof StatisticsSortType>(
-      state: StatisticsState,
-      {
-        payload: { key, value },
-      }: PayloadAction<{ key: T; value: StatisticsSortType[T] }>
-    ) => {
-      state.sort[key] = value;
+    setStatisticsSort: {
+      prepare: <T extends keyof StatisticsSortType>(
+        key: T,
+        value: StatisticsSortType[T]
+      ) => ({ payload: { key, value } }),
+      reducer: <T extends keyof StatisticsSortType>(
+        state: StatisticsState,
+        { payload }: PayloadAction<{ key: T; value: StatisticsSortType[T] }>
+      ) => {
+        const { key, value } = payload;
+        state.sort[key] = value;
+      },
     },
     setStatsTab: (state, { payload }: PayloadAction<StatsTab>) => {
       state.tab = payload;
@@ -215,24 +225,8 @@ export const statisticsSlice = createSlice({
 });
 
 export const {
-  actions: {
-    setLoading,
-    setStatisticsData,
-    setStatisticsSettingState,
-    setStatisticsSortState,
-    setStatsTab,
-  },
+  actions: { setLoading, setStatisticsData, setStatsTab },
 } = statisticsSlice;
-
-export const setStatisticsSetting = <T extends keyof StatisticsType>(
-  key: T,
-  value: StatisticsType[T]
-) => setStatisticsSettingState({ key, value });
-
-export const setStatisticsSort = <T extends keyof StatisticsSortType>(
-  key: T,
-  value: StatisticsSortType[T]
-) => setStatisticsSortState({ key, value });
 
 export const selectTab = (state: RootState) => state.statistics.tab;
 
@@ -245,3 +239,46 @@ export const selectSettings = (state: RootState) => state.statistics.settings;
 export const selectSort = (state: RootState) => state.statistics.sort;
 
 export default statisticsSlice.reducer;
+
+const {
+  actions: {
+    setStatisticsSetting: _setStatisticsSetting,
+    setStatisticsSort: _setStatisticsSort,
+  },
+} = statisticsSlice;
+
+/** wrapper for generics */
+export const setStatisticsSetting = (<T extends keyof StatisticsType>(
+  key: T,
+  value: StatisticsType[T]
+) => _setStatisticsSetting(key, value)) as Pick<
+  typeof _setStatisticsSetting,
+  "match" | "type"
+> &
+  (<K extends keyof StatisticsType>(
+    // eslint-disable-next-line no-use-before-define
+    key: K,
+    // eslint-disable-next-line no-use-before-define
+    value: StatisticsType[K]
+  ) => ReturnType<typeof _setStatisticsSetting>);
+
+// carry over type and match properties
+Object.assign(setStatisticsSetting, _setStatisticsSetting);
+
+/** wrapper for generics */
+export const setStatisticsSort = (<T extends keyof StatisticsSortType>(
+  key: T,
+  value: StatisticsSortType[T]
+) => _setStatisticsSort(key, value)) as Pick<
+  typeof _setStatisticsSort,
+  "match" | "type"
+> &
+  (<K extends keyof StatisticsSortType>(
+    // eslint-disable-next-line no-use-before-define
+    key: K,
+    // eslint-disable-next-line no-use-before-define
+    value: StatisticsSortType[K]
+  ) => ReturnType<typeof _setStatisticsSort>);
+
+// carry over type and match properties
+Object.assign(setStatisticsSort, _setStatisticsSort);
