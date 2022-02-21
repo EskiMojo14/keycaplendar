@@ -1,5 +1,5 @@
 import produce from "immer";
-import { debounce } from "lodash";
+import debounce from "lodash.debounce";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
 import { is } from "typescript-is";
