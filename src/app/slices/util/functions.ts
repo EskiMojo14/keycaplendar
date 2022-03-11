@@ -89,37 +89,35 @@ export const objectEntries = <T extends Record<string, any>>(
 export const groupBy = <
   T extends Record<any, any>,
   Accessor extends keyof T | ((obj: T) => any),
-  ValCreate extends (obj: T) => any = (obj: T) => T,
+  Val = T,
   UseMap extends boolean = false,
   UseArray extends boolean = true
 >(
   arr: T[] | readonly T[],
   accessor: Accessor,
   {
-    createVal = ((obj) => obj) as ValCreate,
+    createVal = (obj) => obj,
     map = false as UseMap,
     array = true as UseArray,
   }: {
     /** Whether to use an array for each value. If set to false, later objects will overwrite previous ones. */
     array?: UseArray;
     /** Function that receives object and returns what the value should be */
-    createVal?: ValCreate;
+    createVal?: (obj: T) => Val;
     /** Whether to use a Map instead of a plain object (allows object/array keys) */
     map?: UseMap;
   } = {}
-): ValCreate extends (obj: T) => infer Val
-  ? Accessor extends (obj: T) => infer Key
-    ? UseMap extends true
-      ? Map<Key, UseArray extends true ? Val[] : Val>
-      : Key extends keyof any
-      ? Record<Key, UseArray extends true ? Val[] : Val>
-      : never
-    : Accessor extends keyof T
-    ? UseMap extends true
-      ? Map<T[Accessor], UseArray extends true ? Val[] : Val>
-      : T[Accessor] extends keyof any
-      ? Record<T[Accessor], UseArray extends true ? Val[] : Val>
-      : never
+): Accessor extends (obj: T) => infer Key
+  ? UseMap extends true
+    ? Map<Key, UseArray extends true ? Val[] : Val>
+    : Key extends keyof any
+    ? Record<Key, UseArray extends true ? Val[] : Val>
+    : never
+  : Accessor extends keyof T
+  ? UseMap extends true
+    ? Map<T[Accessor], UseArray extends true ? Val[] : Val>
+    : T[Accessor] extends keyof any
+    ? Record<T[Accessor], UseArray extends true ? Val[] : Val>
     : never
   : never =>
   arr.reduce(

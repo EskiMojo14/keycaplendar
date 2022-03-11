@@ -60,7 +60,7 @@ export const guidesSlice = createSlice({
               : undefined
           ),
           "visibility",
-          ({ id }) => id
+          { createVal: ({ id }) => id }
         ),
       };
       state.allTags = alphabeticalSort(
