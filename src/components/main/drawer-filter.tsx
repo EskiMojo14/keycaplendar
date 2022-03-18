@@ -461,9 +461,7 @@ export const DrawerFilter = ({
             enhanced={{ fixed: true }}
             icon={
               userPresets.length > 0
-                ? userPresets.findIndex(
-                    (userPreset) => userPreset.id === preset.id
-                  ) >= 0
+                ? userPresets.find((userPreset) => userPreset.id === preset.id)
                   ? iconObject(<Person />)
                   : iconObject(<Public />)
                 : null
