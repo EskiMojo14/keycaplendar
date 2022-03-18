@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import debounce from "lodash.debounce";
 import { loadState, saveState } from "~/app/local-storage";
 import audit from "@s/audit";
@@ -13,7 +13,7 @@ import updates from "@s/updates";
 import user from "@s/user";
 import users from "@s/users";
 
-const reducer = {
+const reducers = {
   audit,
   common,
   guides,
@@ -27,7 +27,11 @@ const reducer = {
   users,
 };
 
-export const createStore = (preloadedState?: any) =>
+const reducer = combineReducers(reducers);
+
+export type RootState = ReturnType<typeof reducer>;
+
+export const createStore = (preloadedState?: Partial<RootState>) =>
   configureStore({
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
@@ -37,6 +41,10 @@ export const createStore = (preloadedState?: any) =>
     preloadedState,
     reducer,
   });
+
+export type AppStore = ReturnType<typeof createStore>;
+
+export type AppDispatch = AppStore["dispatch"];
 
 export const store = createStore(loadState());
 
@@ -57,9 +65,5 @@ store.subscribe(
     }
   }, 1000)
 );
-
-export type RootState = ReturnType<typeof store.getState>;
-
-export type AppDispatch = typeof store.dispatch;
 
 export default store;
