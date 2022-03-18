@@ -25,7 +25,7 @@ export const DialogDeleteFilterPreset = ({
     if (preset.global) {
       deleteGlobalPreset(preset);
     } else {
-      deletePreset(preset);
+      deletePreset(preset.id);
     }
     close();
   };

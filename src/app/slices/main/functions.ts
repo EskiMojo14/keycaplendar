@@ -1,3 +1,4 @@
+import type { EntityId } from "@reduxjs/toolkit";
 import produce from "immer";
 import debounce from "lodash.debounce";
 import { DateTime } from "luxon";
@@ -11,18 +12,20 @@ import { triggerTransition } from "@s/common/functions";
 import firestore from "@s/firebase/firestore";
 import type { UserId } from "@s/firebase/types";
 import {
+  addUserPreset,
+  deleteUserPreset,
+  selectAllUserPresets,
   selectBought,
   selectFavorites,
   selectHidden,
   selectUser,
-  selectUserPresets,
-  setUserPresets,
+  selectUserPresetById,
+  upsertUserPreset,
 } from "@s/user";
 import {
   alphabeticalSort,
   alphabeticalSortCurried,
   alphabeticalSortProp,
-  alphabeticalSortPropCurried,
   arrayIncludes,
   hasKey,
   normalise,
@@ -795,15 +798,12 @@ export const updatePreset = (
 };
 
 export const findPreset = (
-  prop: keyof PresetType,
-  val: string,
+  id: string,
   state = store.getState()
 ): PresetType | undefined => {
   const appPresets = selectAppPresets(state);
-  const userPresets = selectUserPresets(state);
-  const allPresets = [...appPresets, ...userPresets];
-  const index = allPresets.findIndex((preset) => preset[prop] === val);
-  return allPresets[index];
+  const index = appPresets.findIndex((preset) => preset.id === id);
+  return appPresets[index] ?? selectUserPresetById(state, id);
 };
 
 export const selectPreset = (id: string, state = store.getState()) => {
@@ -812,7 +812,7 @@ export const selectPreset = (id: string, state = store.getState()) => {
     dispatch(setCurrentPreset(defaultPreset));
     setWhitelistMerge(defaultPreset.whitelist);
   } else {
-    const preset = findPreset("id", id);
+    const preset = findPreset(id);
     if (preset) {
       dispatch(setCurrentPreset(preset));
       setWhitelistMerge(preset.whitelist);
@@ -821,58 +821,34 @@ export const selectPreset = (id: string, state = store.getState()) => {
 };
 
 export const syncPresets = (state = store.getState()) => {
-  const presets = selectUserPresets(state);
+  const presets = selectAllUserPresets(state);
   const user = selectUser(state);
-  const sortedPresets = produce(presets, (presetsDraft) => {
-    presetsDraft.sort(alphabeticalSortPropCurried("name", false, "Default"));
-    return presetsDraft.map((preset) => ({ ...preset }));
-  });
   firestore
     .collection("users")
     .doc(user.id as UserId)
-    .set({ filterPresets: sortedPresets }, { merge: true })
+    .set({ filterPresets: presets }, { merge: true })
     .catch((error) => {
       console.log(`Failed to sync presets: ${error}`);
       queue.notify({ title: `Failed to sync presets: ${error}` });
     });
 };
 
-export const newPreset = (preset: PresetType, state = store.getState()) => {
-  const userPresets = selectUserPresets(state);
-  preset.id = nanoid();
-  const presets = [...userPresets, preset];
-  alphabeticalSortProp(presets, "name", false);
-  dispatch(setCurrentPreset(preset));
-  dispatch(setUserPresets(presets));
+export const newPreset = (preset: PresetType) => {
+  const newPreset = dispatch(addUserPreset(preset));
+  dispatch(setCurrentPreset(newPreset));
   syncPresets(store.getState());
 };
 
-export const editPreset = (preset: PresetType, state = store.getState()) => {
-  const userPresets = selectUserPresets(state);
-  const savedPreset = findPreset("id", preset.id);
-  let presets: PresetType[];
-  if (savedPreset) {
-    const index = userPresets.indexOf(savedPreset);
-    presets = [...userPresets];
-    presets[index] = preset;
-  } else {
-    presets = [...userPresets, preset];
-  }
-  alphabeticalSortProp(presets, "name", false);
+export const editPreset = (preset: PresetType) => {
   dispatch(setCurrentPreset(preset));
-  dispatch(setUserPresets(presets));
+  dispatch(upsertUserPreset(preset));
   syncPresets(store.getState());
 };
 
-export const deletePreset = (preset: PresetType, state = store.getState()) => {
+export const deletePreset = (presetId: EntityId, state = store.getState()) => {
   const defaultPreset = selectDefaultPreset(state);
-  const userPresets = selectUserPresets(state);
-  const presets = userPresets.filter(
-    (filterPreset) => filterPreset.id !== preset.id
-  );
-  alphabeticalSortProp(presets, "name", false);
   dispatch(setCurrentPreset(defaultPreset));
-  dispatch(setUserPresets(presets));
+  dispatch(deleteUserPreset(presetId));
   syncPresets(store.getState());
 };
 
@@ -914,7 +890,7 @@ export const editGlobalPreset = (
   state = store.getState()
 ) => {
   const appPresets = selectAppPresets(state);
-  const savedPreset = findPreset("id", preset.id);
+  const savedPreset = findPreset(preset.id);
   let presets: PresetType[];
   if (savedPreset) {
     const index = appPresets.indexOf(savedPreset);

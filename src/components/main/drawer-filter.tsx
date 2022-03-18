@@ -36,7 +36,7 @@ import { partialPreset } from "@s/main/constructors";
 import { selectPreset, setWhitelist } from "@s/main/functions";
 import type { PresetType } from "@s/main/types";
 import { selectView } from "@s/settings";
-import { selectUser, selectUserPresets } from "@s/user";
+import { selectAllUserPresets, selectUser } from "@s/user";
 import {
   addOrRemove,
   alphabeticalSort,
@@ -76,7 +76,7 @@ export const DrawerFilter = ({
   const view = useAppSelector(selectView);
 
   const user = useAppSelector(selectUser);
-  const userPresets = useAppSelector(selectUserPresets);
+  const userPresets = useAppSelector(selectAllUserPresets);
 
   const profiles = useAppSelector(selectAllProfiles);
   const vendors = useAppSelector(selectAllVendors);
