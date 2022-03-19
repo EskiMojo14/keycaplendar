@@ -1,5 +1,6 @@
 import { createStore } from "~/app/store";
 import {
+  deleteAction,
   selectActions,
   selectFilterAction,
   selectFilterUser,
@@ -44,6 +45,15 @@ it("sets all actions array", () => {
   store.dispatch(setAllActions([blankAction]));
   const response = selectActions(store.getState());
   expect(response).toEqual([blankAction]);
+});
+
+it("deletes an action", () => {
+  store.dispatch(setAllActions([blankAction]));
+  const check = selectActions(store.getState());
+  expect(check).toEqual([blankAction]);
+  store.dispatch(deleteAction(blankAction.changelogId));
+  const response = selectActions(store.getState());
+  expect(response).toEqual([]);
 });
 
 it("sets filter action type", () => {

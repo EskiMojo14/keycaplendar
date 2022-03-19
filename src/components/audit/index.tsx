@@ -20,9 +20,9 @@ import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
 import {
   selectActions,
+  selectActionTotal,
   selectFilter,
   selectLoading,
-  selectTotal,
 } from "@s/audit";
 import { filterActions, getActions } from "@s/audit/functions";
 import { selectDevice } from "@s/common";
@@ -39,7 +39,7 @@ type ContentAuditProps = {
 };
 
 export const ContentAudit = ({ openNav }: ContentAuditProps) => {
-  const total = useAppSelector(selectTotal);
+  const total = useAppSelector(selectActionTotal);
 
   useEffect(() => {
     if (total === 0) {
@@ -91,12 +91,7 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
     <CircularProgress />
   ) : (
     withTooltip(
-      <TopAppBarActionItem
-        icon="refresh"
-        onClick={() => {
-          getActions();
-        }}
-      />,
+      <TopAppBarActionItem icon="refresh" onClick={() => getActions()} />,
       "Refresh",
       { align: bottomNav ? "top" : "bottom" }
     )

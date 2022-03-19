@@ -6,10 +6,12 @@ import {
   DialogContent,
   DialogTitle,
 } from "@rmwc/dialog";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
-import { selectById } from "@s/audit";
-import { getActions } from "@s/audit/functions";
+import {
+  deleteAction as deleteActionCreator,
+  selectActionById,
+} from "@s/audit";
 import firestore from "@s/firebase/firestore";
 import type { ChangelogId } from "@s/firebase/types";
 
@@ -24,16 +26,19 @@ export const DialogAuditDelete = ({
   deleteAction,
   open,
 }: DialogAuditDeleteProps) => {
-  const action = useAppSelector((state) => selectById(state, deleteAction));
+  const dispatch = useAppDispatch();
+  const action = useAppSelector((state) =>
+    selectActionById(state, deleteAction)
+  );
 
-  const deleteActionFn = (action: EntityId) => {
+  const deleteActionFn = () => {
     firestore
       .collection("changelog")
-      .doc(action as ChangelogId)
+      .doc(deleteAction as ChangelogId)
       .delete()
       .then(() => {
         queue.notify({ title: "Successfully deleted changelog entry." });
-        getActions();
+        dispatch(deleteActionCreator(deleteAction));
         close();
       })
       .catch((error) => {
@@ -56,9 +61,7 @@ export const DialogAuditDelete = ({
         <DialogButton
           action="accept"
           className="delete"
-          onClick={() => {
-            deleteActionFn(deleteAction);
-          }}
+          onClick={() => deleteActionFn()}
         >
           Delete
         </DialogButton>

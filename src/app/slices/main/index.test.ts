@@ -4,6 +4,7 @@ import { createStore } from "~/app/store";
 import {
   addAppPreset,
   deleteAppPreset,
+  deleteSet,
   initialState,
   mergeWhitelist,
   selectAllAppPresets,
@@ -17,6 +18,7 @@ import {
   selectLinkedFavorites,
   selectLoading,
   selectSearch,
+  selectSetById,
   selectSort,
   selectSortOrder,
   selectTransition,
@@ -32,6 +34,7 @@ import {
   setList,
   setLoading,
   setSearch,
+  setSet,
   setSetGroups,
   setSort,
   setSortOrder,
@@ -102,6 +105,21 @@ it("sets filtered sets", () => {
   store.dispatch(setFilteredSets(list));
   const response = selectFilteredSetsIds(store.getState());
   expect(response).toEqual(list);
+});
+
+it("sets a set", () => {
+  store.dispatch(setSet(blankKeyset));
+  const response = selectSetById(store.getState(), blankKeyset.id);
+  expect(response).toEqual(blankKeyset);
+});
+
+it("deletes a set", () => {
+  store.dispatch(setSet(blankKeyset));
+  const check = selectSetById(store.getState(), blankKeyset.id);
+  expect(check).toEqual(blankKeyset);
+  store.dispatch(deleteSet(blankKeyset.id));
+  const response = selectSetById(store.getState(), blankKeyset.id);
+  expect(response).toBeUndefined();
 });
 
 it("sets set groups", () => {

@@ -24,7 +24,7 @@ import isEqual from "lodash.isequal";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
 import { useAppSelector } from "~/app/hooks";
-import { selectById } from "@s/audit";
+import { selectActionById } from "@s/audit";
 import { auditProperties } from "@s/audit/constants";
 import type { KeysetDoc } from "@s/firebase/types";
 import { alphabeticalSortProp, hasKey, ordinal } from "@s/util/functions";
@@ -36,7 +36,7 @@ type AuditEntryProps = {
 };
 
 export const AuditEntry = ({ actionId, openDeleteDialog }: AuditEntryProps) => {
-  const action = useAppSelector((state) => selectById(state, actionId));
+  const action = useAppSelector((state) => selectActionById(state, actionId));
 
   if (action) {
     const timestamp = DateTime.fromISO(action.timestamp);

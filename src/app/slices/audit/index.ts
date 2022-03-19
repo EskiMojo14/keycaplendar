@@ -1,5 +1,5 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
-import type { EntityState, PayloadAction } from "@reduxjs/toolkit";
+import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
 import { alphabeticalSortPropCurried } from "@s/util/functions";
 import type { ActionType } from "./types";
@@ -32,6 +32,9 @@ export const auditSlice = createSlice({
   initialState,
   name: "audit",
   reducers: {
+    deleteAction: (state, { payload }: PayloadAction<EntityId>) => {
+      actionAdapter.removeOne(state.actions, payload);
+    },
     setAllActions: (state, { payload }: PayloadAction<ActionType[]>) => {
       actionAdapter.setAll(state.actions, payload);
     },
@@ -58,6 +61,7 @@ export const auditSlice = createSlice({
 
 export const {
   actions: {
+    deleteAction,
     setAllActions,
     setFilterAction,
     setFilterUser,
@@ -82,10 +86,10 @@ export const selectUsers = (state: RootState) => state.audit.users;
 
 export const {
   selectAll: selectActions,
-  selectById,
+  selectById: selectActionById,
   selectEntities: selectActionMap,
-  selectIds,
-  selectTotal,
+  selectIds: selectActionIds,
+  selectTotal: selectActionTotal,
 } = actionAdapter.getSelectors<RootState>((state) => state.audit.actions);
 
 export default auditSlice.reducer;

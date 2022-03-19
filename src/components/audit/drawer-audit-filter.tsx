@@ -97,12 +97,8 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
               displayMarkers
               max={250}
               min={50}
-              onChange={() => {
-                getActions();
-              }}
-              onInput={(e) => {
-                dispatch(setLength(e.detail.value));
-              }}
+              onChange={() => getActions()}
+              onInput={(e) => dispatch(setLength(e.detail.value))}
               step={50}
               value={auditLength}
             />
