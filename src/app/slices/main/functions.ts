@@ -89,6 +89,16 @@ import type {
 const { dispatch } = store;
 
 /**
+ * Finds the last day of the given month and adds it to the end.
+ * @param date YYYY-MM
+ * @returns YYYY-MM-DD
+ */
+export const addLastDate = (date: string) => {
+  const { daysInMonth: lastInMonth } = DateTime.fromISO(date);
+  return `${date}-${lastInMonth}`;
+};
+
+/**
  * Tests whether a set would be shown on each page.
  * @param set Set to be tested.
  * @param favorites Array of set IDs which are favorited.
@@ -613,18 +623,13 @@ export const getData = () => {
             ...data
           } = doc.data();
 
-          const lastInMonth = docGbLaunch
-            ? DateTime.fromISO(docGbLaunch).daysInMonth
-            : 0;
-          const gbLaunch =
-            doc.data().gbMonth && docGbLaunch && !docGbLaunch.includes("Q")
-              ? `${docGbLaunch}-${lastInMonth}`
-              : docGbLaunch;
-
           sets.push({
             id: doc.id,
             ...data,
-            gbLaunch,
+            gbLaunch:
+              data.gbMonth && docGbLaunch && !docGbLaunch.includes("Q")
+                ? addLastDate(docGbLaunch)
+                : docGbLaunch,
           });
         }
       });

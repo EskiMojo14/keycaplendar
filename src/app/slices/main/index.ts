@@ -150,6 +150,9 @@ export const mainSlice = createSlice({
     deleteAppPreset: (state, { payload }: PayloadAction<EntityId>) => {
       appPresetAdapter.removeOne(state.presets, payload);
     },
+    deleteSet: (state, { payload }: PayloadAction<EntityId>) => {
+      keysetAdapter.removeOne(state.keysets, payload);
+    },
     mergeWhitelist: (
       state,
       { payload }: PayloadAction<Partial<WhitelistType>>
@@ -209,6 +212,9 @@ export const mainSlice = createSlice({
     setSearch: (state, { payload }: PayloadAction<string>) => {
       state.search = payload;
     },
+    setSet: (state, { payload }: PayloadAction<SetType>) => {
+      keysetAdapter.setOne(state.keysets, payload);
+    },
     setSetGroups: (state, { payload }: PayloadAction<SetGroup[]>) => {
       setGroupAdapter.setAll(state.keysets.setGroups, payload);
     },
@@ -258,6 +264,7 @@ export const mainSlice = createSlice({
 export const {
   actions: {
     deleteAppPreset,
+    deleteSet,
     mergeWhitelist,
     setAllSets,
     setAppPresets,
@@ -269,6 +276,7 @@ export const {
     setList,
     setLoading,
     setSearch,
+    setSet,
     setSetGroups,
     setSetGroupsIds,
     setSort,

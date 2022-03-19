@@ -6,11 +6,12 @@ import {
   DialogContent,
   DialogTitle,
 } from "@rmwc/dialog";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import firestore from "@s/firebase/firestore";
 import type { KeysetDoc, KeysetId } from "@s/firebase/types";
-import { getData } from "@s/main/functions";
+import { deleteSet } from "@s/main";
+import { filterData } from "@s/main/functions";
 import type { SetType } from "@s/main/types";
 import { selectUser } from "@s/user";
 
@@ -27,6 +28,7 @@ export const DialogDelete = ({
   openSnackbar,
   set,
 }: DialogDeleteProps) => {
+  const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const deleteEntry = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -38,7 +40,8 @@ export const DialogDelete = ({
       } as KeysetDoc)
       .then(() => {
         openSnackbar();
-        getData();
+        dispatch(deleteSet(set.id));
+        filterData();
       })
       .catch((error) => {
         console.error("Error deleting document: ", error);

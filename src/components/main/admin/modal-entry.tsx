@@ -31,7 +31,7 @@ import type { DraggableProvided, DropResult } from "react-beautiful-dnd";
 import { is } from "typescript-is";
 import { useImmer } from "use-immer";
 import { z } from "zod";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { Autocomplete } from "@c/util/autocomplete";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
@@ -52,9 +52,10 @@ import {
   selectAllVendorRegions,
   selectAllVendors,
   selectSetById,
+  setSet,
 } from "@s/main";
 import { partialSet } from "@s/main/constructors";
-import { getData } from "@s/main/functions";
+import { addLastDate, filterData } from "@s/main/functions";
 import { gbMonthCheck, SetSchema } from "@s/main/schemas";
 import type { SetType, VendorType } from "@s/main/types";
 import { selectUser } from "@s/user";
@@ -853,6 +854,7 @@ type ModalCreateProps = {
 };
 
 export const ModalCreate = ({ onClose, open }: ModalCreateProps) => {
+  const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
 
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -863,17 +865,28 @@ export const ModalCreate = ({ onClose, open }: ModalCreateProps) => {
     const result = SetSchema.omit({ id: true }).safeParse(entry);
     if (result.success && !uploadingImage && !uploadingDoc) {
       setUploadingDoc(true);
+      const set = {
+        ...result.data,
+        alias: nanoid(10),
+        latestEditor: user.id,
+      };
       firestore
         .collection("keysets")
-        .add({
-          ...result.data,
-          alias: nanoid(10),
-          latestEditor: user.id,
-        })
+        .add(set)
         .then((docRef) => {
           console.log("Document written with ID: ", docRef.id);
           queue.notify({ title: "Entry written successfully." });
-          getData();
+          dispatch(
+            setSet({
+              ...set,
+              gbLaunch:
+                set.gbMonth && !set.gbLaunch.includes("Q")
+                  ? addLastDate(set.gbLaunch)
+                  : set.gbLaunch,
+              id: docRef.id,
+            })
+          );
+          filterData();
           onClose();
         })
         .catch((error) => {
@@ -956,6 +969,8 @@ type ModalEditProps = ModalCreateProps & {
 };
 
 export const ModalEdit = ({ onClose, open, set: setId }: ModalEditProps) => {
+  const dispatch = useAppDispatch();
+
   const user = useAppSelector(selectUser);
   const set = useAppSelector((state) => selectSetById(state, setId));
 
@@ -977,7 +992,8 @@ export const ModalEdit = ({ onClose, open, set: setId }: ModalEditProps) => {
         .then(() => {
           queue.notify({ title: "Entry edited successfully." });
           onClose();
-          getData();
+          dispatch(setSet(result.data));
+          filterData();
         })
         .catch((error) => {
           queue.notify({ title: `Error editing document: ${error}` });

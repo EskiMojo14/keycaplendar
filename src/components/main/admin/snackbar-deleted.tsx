@@ -1,10 +1,11 @@
 import type { MouseEvent } from "react";
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import firestore from "@s/firebase/firestore";
 import type { KeysetId } from "@s/firebase/types";
-import { getData } from "@s/main/functions";
+import { setSet } from "@s/main";
+import { filterData } from "@s/main/functions";
 import type { SetType } from "@s/main/types";
 import { selectUser } from "@s/user";
 import { batchStorageDelete, getStorageFolders } from "@s/util/functions";
@@ -20,6 +21,7 @@ export const SnackbarDeleted = ({
   open,
   set: { id, ...set },
 }: SnackbarDeletedProps) => {
+  const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const deleteImages = async (name: string) => {
     const folders = await getStorageFolders();
@@ -60,7 +62,8 @@ export const SnackbarDeleted = ({
       .then(() => {
         console.log("Document recreated with ID: ", id);
         queue.notify({ title: "Entry successfully recreated." });
-        getData();
+        dispatch(setSet({ id, ...set }));
+        filterData();
       })
       .catch((error) => {
         console.error("Error recreating document: ", error);
