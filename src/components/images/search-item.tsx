@@ -23,9 +23,9 @@ export type SearchItemProps = {
 export const SearchItem = ({ checked, imageId, search }: SearchItemProps) => {
   const image = useAppSelector((state) => selectImageById(state, imageId));
   return image ? (
-    <ListItem disabled>
+    <ListItem className="search-drawer-item" disabled>
       <ListItemGraphic
-        className="image"
+        className="image search-drawer-item__graphic"
         style={{ backgroundImage: `url(${image.src})` }}
       />
       {withTooltip(
@@ -39,7 +39,7 @@ export const SearchItem = ({ checked, imageId, search }: SearchItemProps) => {
         </ListItemText>,
         image.name
       )}
-      <ListItemMeta>
+      <ListItemMeta className="search-drawer-item__meta">
         <Checkbox checked={checked} disabled readOnly />
       </ListItemMeta>
     </ListItem>
