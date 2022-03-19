@@ -76,7 +76,7 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
       createSetImageList();
     }
   }, []);
-  useEffect(createSetImageList, [JSON.stringify(allSets)]);
+  useEffect(createSetImageList, [allSets]);
 
   const closeSearch = () => {
     if (device !== "desktop") {

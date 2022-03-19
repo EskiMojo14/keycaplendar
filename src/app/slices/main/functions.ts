@@ -44,6 +44,7 @@ import {
   selectPresetById,
   selectSearch,
   selectSetGroupTitles,
+  selectSetTotal,
   selectSort,
   selectSortOrder,
   selectURLWhitelist,
@@ -431,10 +432,10 @@ export const setWhitelistMerge = (
   clearUrl = true,
   state = store.getState()
 ) => {
-  const allSets = selectAllSets(state);
+  const setTotal = selectSetTotal(state);
   dispatch(mergeWhitelist(partialWhitelist));
   document.documentElement.scrollTop = 0;
-  if (allSets.length > 0) {
+  if (setTotal > 0) {
     filterData();
   }
   if (clearUrl) {
@@ -474,11 +475,11 @@ export const setWhitelist = <T extends keyof WhitelistType>(
   state = store.getState()
 ) => {
   const mainWhitelist = selectWhitelist(state);
-  const allSets = selectAllSets(state);
+  const setTotal = selectSetTotal(state);
   if (is<string[]>(mainWhitelist.edited)) {
     dispatch(mergeWhitelist({ [prop]: val }));
     document.documentElement.scrollTop = 0;
-    if (allSets.length > 0) {
+    if (setTotal > 0) {
       filterData();
     }
   }
