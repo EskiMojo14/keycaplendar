@@ -1,3 +1,4 @@
+import type { EntityId } from "@reduxjs/toolkit";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
 import { SkeletonCard } from "@c/main/views/card/skeleton-card";
@@ -10,9 +11,9 @@ import "./view-card.scss";
 
 type ViewCardProps = {
   closeDetails: () => void;
-  details: (set: SetType) => void;
-  detailSet: SetType;
-  edit: (set: SetType) => void;
+  details: (set: EntityId) => void;
+  detailSet: EntityId;
+  edit: (set: EntityId) => void;
   page: Page;
   sets: SetType[];
   user: CurrentUserType;
@@ -112,7 +113,7 @@ export const ViewCard = ({
                 : 0
             }
             image={set.image.replace("keysets", "card")}
-            selected={detailSet === set}
+            selected={detailSet === set.id}
             thisWeek={
               gbEnd
                 ? gbEnd.valueOf() - 7 * oneDay < today.valueOf() &&

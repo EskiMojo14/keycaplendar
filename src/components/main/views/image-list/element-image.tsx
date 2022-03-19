@@ -1,3 +1,4 @@
+import type { EntityId } from "@reduxjs/toolkit";
 import { Icon } from "@rmwc/icon";
 import { IconButton } from "@rmwc/icon-button";
 import {
@@ -29,7 +30,7 @@ import "./element-image.scss";
 type ElementImageProps = {
   closeDetails: () => void;
   daysLeft: number;
-  details: (set: SetType) => void;
+  details: (set: EntityId) => void;
   image: string;
   link: string;
   live: boolean;
@@ -110,7 +111,7 @@ export const ElementImage = ({
     <Ripple>
       <ImageListItem
         className={classNames("image-list-item", { selected })}
-        onClick={() => (!selected ? details(set) : closeDetails())}
+        onClick={() => (!selected ? details(set.id) : closeDetails())}
       >
         <div className="container">
           <div className="link-icon-container">

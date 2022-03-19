@@ -1,3 +1,4 @@
+import type { EntityId } from "@reduxjs/toolkit";
 import { List, ListDivider } from "@rmwc/list";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
@@ -10,8 +11,8 @@ import "./view-list.scss";
 
 type ViewListProps = {
   closeDetails: () => void;
-  details: (set: SetType) => void;
-  detailSet: SetType;
+  details: (set: EntityId) => void;
+  detailSet: EntityId;
   sets: SetType[];
   loading?: boolean;
   page?: Page;
@@ -108,7 +109,7 @@ export const ViewList = ({
                 : 0
             }
             image={set.image.replace("keysets", "list")}
-            selected={detailSet === set}
+            selected={detailSet === set.id}
             thisWeek={
               gbEnd
                 ? gbEnd.valueOf() - 7 * oneDay < today.valueOf() &&

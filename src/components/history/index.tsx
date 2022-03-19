@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import type { EntityId } from "@reduxjs/toolkit";
 import { Card } from "@rmwc/card";
 import { Chip } from "@rmwc/chip";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -32,8 +33,6 @@ import {
 import { historyTabs } from "@s/history/constants";
 import { generateSets, getData } from "@s/history/functions";
 import { selectAllSets } from "@s/main";
-import { blankKeyset } from "@s/main/constants";
-import type { SetType } from "@s/main/types";
 import { selectBottomNav } from "@s/settings";
 import {
   capitalise,
@@ -76,9 +75,9 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
   }, []);
   useEffect(generateSets, [allSets, processedActions]);
 
-  const [detailSet, setDetailSet] = useState(blankKeyset);
+  const [detailSet, setDetailSet] = useState<EntityId>("");
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const openDetails = (set: SetType) => {
+  const openDetails = (set: EntityId) => {
     openModal();
     setDetailSet(set);
     setDetailsOpen(true);
@@ -86,18 +85,18 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
   const closeDetails = () => {
     closeModal();
     setDetailsOpen(false);
-    setTimeout(() => setDetailSet(blankKeyset), 300);
+    setTimeout(() => setDetailSet(""), 300);
   };
 
-  const [salesSet, setSalesSet] = useState(blankKeyset);
+  const [salesSet, setSalesSet] = useState<EntityId>("");
   const [salesOpen, setSalesOpen] = useState(false);
-  const openSales = (set: SetType) => {
+  const openSales = (set: EntityId) => {
     setSalesSet(set);
     setSalesOpen(true);
   };
   const closeSales = () => {
     setSalesOpen(false);
-    setTimeout(() => setSalesSet(blankKeyset), 300);
+    setTimeout(() => setSalesSet(""), 300);
   };
 
   const [filterSet, setFilterSet] = useState({ id: "", title: "" });
@@ -183,7 +182,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
               filtered={recentSet === filterSet.id}
               openDetails={openDetails}
               recentSetId={recentSet}
-              selected={recentSet === detailSet.id}
+              selected={recentSet === detailSet}
             />
           ))}
         </div>

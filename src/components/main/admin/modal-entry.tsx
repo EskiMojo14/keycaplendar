@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ChangeEvent, FocusEvent } from "react";
+import type { EntityId } from "@reduxjs/toolkit";
 import { Button } from "@rmwc/button";
 import {
   Card,
@@ -50,6 +51,7 @@ import {
   selectAllProfiles,
   selectAllVendorRegions,
   selectAllVendors,
+  selectSetById,
 } from "@s/main";
 import { partialSet } from "@s/main/constructors";
 import { getData } from "@s/main/functions";
@@ -950,11 +952,12 @@ export const ModalCreate = ({ onClose, open }: ModalCreateProps) => {
 };
 
 type ModalEditProps = ModalCreateProps & {
-  set: SetType;
+  set: EntityId;
 };
 
-export const ModalEdit = ({ onClose, open, set }: ModalEditProps) => {
+export const ModalEdit = ({ onClose, open, set: setId }: ModalEditProps) => {
   const user = useAppSelector(selectUser);
+  const set = useAppSelector((state) => selectSetById(state, setId));
 
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingDoc, setUploadingDoc] = useState(false);
@@ -1023,7 +1026,7 @@ export const ModalEdit = ({ onClose, open, set }: ModalEditProps) => {
               setImageUploadProgress(0);
               editEntry({ ...entry, image: downloadURL });
               const fileNameRegex = /keysets%2F(.*)\?/;
-              const regexMatch = set.image.match(fileNameRegex);
+              const regexMatch = set?.image.match(fileNameRegex);
               if (regexMatch) {
                 const [, imageName] = regexMatch;
                 const folders = await getStorageFolders();

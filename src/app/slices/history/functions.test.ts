@@ -11,6 +11,7 @@ import type {
   PublicActionType,
   RecentSet,
 } from "@s/history/types";
+import { keysetAdapter } from "@s/main";
 import { partialSet } from "@s/main/constructors";
 
 jest.mock("~/app/store");
@@ -67,7 +68,6 @@ const keyset = partialSet({
 });
 
 const recentSet: RecentSet = {
-  currentSet: keyset,
   deleted: false,
   designer: [],
   id: "test",
@@ -98,7 +98,10 @@ describe("processActions", () => {
 describe("generateSets", () => {
   it("generates recent set entries", () => {
     const modifiedState = produce(store.getState(), (draftState) => {
-      draftState.main.allSets = [keyset];
+      Object.assign(
+        draftState.main.keysets,
+        keysetAdapter.setAll(keysetAdapter.getInitialState(), [keyset])
+      );
       draftState.history.processedActions = {
         entities: {
           [processedAction.changelogId]: processedAction,

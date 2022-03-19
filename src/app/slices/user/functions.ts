@@ -1,3 +1,4 @@
+import type { EntityId } from "@reduxjs/toolkit";
 import debounce from "lodash.debounce";
 import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
@@ -108,7 +109,7 @@ export const getUserPreferences = (id: string) => {
   }
 };
 
-export const toggleFavorite = (id: string, state = store.getState()) => {
+export const toggleFavorite = (id: EntityId, state = store.getState()) => {
   const page = selectPage(state);
   const whitelist = selectWhitelist(state);
   const user = selectUser(state);
@@ -135,7 +136,7 @@ export const toggleFavorite = (id: string, state = store.getState()) => {
   }
 };
 
-export const toggleBought = (id: string, state = store.getState()) => {
+export const toggleBought = (id: EntityId, state = store.getState()) => {
   const page = selectPage(state);
   const whitelist = selectWhitelist(state);
   const user = selectUser(state);
@@ -162,7 +163,7 @@ export const toggleBought = (id: string, state = store.getState()) => {
   }
 };
 
-export const toggleHidden = (id: string, state = store.getState()) => {
+export const toggleHidden = (id: EntityId, state = store.getState()) => {
   const page = selectPage(state);
   const user = selectUser(state);
   const userHidden = selectHidden(state);

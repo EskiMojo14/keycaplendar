@@ -1,3 +1,4 @@
+import type { EntityId } from "@reduxjs/toolkit";
 import { ImageList } from "@rmwc/image-list";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
@@ -9,8 +10,8 @@ import { SkeletonImage } from "./skeleton-image";
 
 type ViewImageListProps = {
   closeDetails: () => void;
-  details: (set: SetType) => void;
-  detailSet: SetType;
+  details: (set: EntityId) => void;
+  detailSet: EntityId;
   sets: SetType[];
   loading?: boolean;
   page?: Page;
@@ -107,7 +108,7 @@ export const ViewImageList = ({
             }
             image={set.image.replace("keysets", "image-list")}
             link={set.details}
-            selected={detailSet === set}
+            selected={detailSet === set.id}
             thisWeek={
               gbEnd
                 ? gbEnd.valueOf() - 7 * oneDay < today.valueOf() &&

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import type { ReactNode } from "react";
+import type { EntityId } from "@reduxjs/toolkit";
 import { Button } from "@rmwc/button";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
@@ -23,7 +24,7 @@ import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice, selectPage } from "@s/common";
 import { mainPages } from "@s/common/constants";
-import { selectSearch } from "@s/main";
+import { selectSearch, selectSetById } from "@s/main";
 import { setSearch } from "@s/main/functions";
 import type { SetType } from "@s/main/types";
 import { selectView } from "@s/settings";
@@ -40,9 +41,9 @@ import {
   arrayIncludes,
   clearSearchParams,
   createURL,
-  hasKey,
   iconObject,
   ordinal,
+  removeDuplicates,
 } from "@s/util/functions";
 import {
   Delete,
@@ -60,10 +61,10 @@ import "./drawer-details.scss";
 type DrawerDetailsProps = {
   close: () => void;
   open: boolean;
-  openSales: (set: SetType) => void;
-  set: SetType;
+  openSales: (set: EntityId) => void;
+  set: EntityId;
   delete?: (set: SetType) => void;
-  edit?: (set: SetType) => void;
+  edit?: (set: EntityId) => void;
 };
 
 export const DrawerDetails = ({
@@ -72,7 +73,7 @@ export const DrawerDetails = ({
   edit,
   open,
   openSales,
-  set,
+  set: setId,
 }: DrawerDetailsProps) => {
   const device = useAppSelector(selectDevice);
   const page = useAppSelector(selectPage);
@@ -86,19 +87,23 @@ export const DrawerDetails = ({
 
   const search = useAppSelector(selectSearch);
 
+  const set = useAppSelector((state) => selectSetById(state, setId));
+
   const copyLink = () => {
-    const url = createURL({ pathname: "/" }, (params) => {
-      clearSearchParams(params);
-      params.set("keysetAlias", set.alias);
-    });
-    navigator.clipboard
-      .writeText(url.href)
-      .then(() => {
-        queue.notify({ title: "Copied URL to clipboard." });
-      })
-      .catch((error) => {
-        queue.notify({ title: `Error copying to clipboard ${error}` });
+    if (set) {
+      const url = createURL({ pathname: "/" }, (params) => {
+        clearSearchParams(params);
+        params.set("keysetAlias", set.alias);
       });
+      navigator.clipboard
+        .writeText(url.href)
+        .then(() => {
+          queue.notify({ title: "Copied URL to clipboard." });
+        })
+        .catch((error) => {
+          queue.notify({ title: `Error copying to clipboard ${error}` });
+        });
+    }
   };
 
   const setScroll = () => {
@@ -136,13 +141,13 @@ export const DrawerDetails = ({
   let ic = "";
   let gb: string | null = "";
   let shippedLine: ReactNode | null = "";
-  const chips: string[] = [];
-  const chipsContent = ["profile", "colorway", "designer", "vendors"];
-  const sortedVendors = set.vendors
+  let chips: string[] = [];
+  const chipsContent = ["profile", "colorway", "designer", "vendors"] as const;
+  const sortedVendors = set?.vendors
     ? alphabeticalSortProp([...set.vendors], "region")
     : [];
 
-  if (set.icDate) {
+  if (set?.icDate) {
     gbLaunch = set.gbLaunch
       ? set.gbLaunch.includes("Q")
         ? set.gbLaunch
@@ -193,22 +198,21 @@ export const DrawerDetails = ({
           chips.push(vendor.name);
         });
       } else {
-        if (hasKey(set, prop)) {
-          const { [prop]: val } = set;
-          if (val && Array.isArray(val)) {
-            val.forEach((entry: any) => {
-              if (is<string>(entry)) {
-                chips.push(entry);
-              }
-            });
-          } else {
-            if (is<string>(val)) {
-              chips.push(val);
+        const { [prop]: val } = set;
+        if (val && Array.isArray(val)) {
+          val.forEach((entry: any) => {
+            if (is<string>(entry)) {
+              chips.push(entry);
             }
+          });
+        } else {
+          if (is<string>(val)) {
+            chips.push(val);
           }
         }
       }
     });
+    chips = removeDuplicates(chips);
     shippedLine =
       gbEnd && gbEnd <= today ? (
         set.shipped ? (
@@ -228,7 +232,7 @@ export const DrawerDetails = ({
     </Typography>
   ) : null;
   const vendorList =
-    set.vendors && set.vendors.length > 0 ? (
+    set?.vendors && set.vendors.length > 0 ? (
       <div className="details-list">
         <Typography className="subheader" tag="h4" use="caption">
           Vendors
@@ -260,7 +264,7 @@ export const DrawerDetails = ({
             }
             return (
               <ConditionalWrapper
-                key={vendor.name}
+                key={vendor.id}
                 condition={!!vendor.storeLink}
                 wrapper={(children) => (
                   <a
@@ -294,7 +298,7 @@ export const DrawerDetails = ({
   const editorButtons =
     (user.isEditor ||
       (user.isDesigner &&
-        set.designer &&
+        set?.designer &&
         set.designer.includes(user.nickname))) &&
     edit &&
     deleteSet ? (
@@ -303,7 +307,7 @@ export const DrawerDetails = ({
           className="edit"
           icon={iconObject(<Edit />)}
           label="Edit"
-          onClick={() => edit(set)}
+          onClick={() => edit(setId)}
           outlined
         />
         {user.isEditor ? (
@@ -312,47 +316,47 @@ export const DrawerDetails = ({
             danger
             icon={iconObject(<Delete />)}
             label="Delete"
-            onClick={() => deleteSet(set)}
+            onClick={set ? () => deleteSet(set) : undefined}
             outlined
           />
         ) : null}
       </div>
     ) : null;
   const lichButton =
-    set.colorway === "Lich" ? (
+    set?.colorway === "Lich" ? (
       <IconButton icon={iconObject(<Palette />)} onClick={toggleLichTheme} />
     ) : null;
   const userButtons = user.email ? (
     <>
       {withTooltip(
         <IconButton
-          checked={favorites.includes(set.id)}
+          checked={arrayIncludes(favorites, setId)}
           className="favorite"
           icon="favorite_border"
-          onClick={() => toggleFavorite(set.id)}
+          onClick={() => toggleFavorite(setId)}
           onIcon={iconObject(<Favorite />)}
         />,
-        favorites.includes(set.id) ? "Unfavorite" : "Favorite"
+        arrayIncludes(favorites, setId) ? "Unfavorite" : "Favorite"
       )}
       {withTooltip(
         <IconButton
-          checked={bought.includes(set.id)}
+          checked={arrayIncludes(bought, setId)}
           className="bought"
           icon={iconObject(<ShoppingBasketOff />)}
-          onClick={() => toggleBought(set.id)}
+          onClick={() => toggleBought(setId)}
           onIcon={iconObject(<ShoppingBasket />)}
         />,
-        bought.includes(set.id) ? "Bought" : "Not bought"
+        arrayIncludes(bought, setId) ? "Bought" : "Not bought"
       )}
       {withTooltip(
         <IconButton
-          checked={hidden.includes(set.id)}
+          checked={arrayIncludes(hidden, setId)}
           className="hide"
           icon={iconObject(<Visibility />)}
-          onClick={() => toggleHidden(set.id)}
+          onClick={() => toggleHidden(setId)}
           onIcon={iconObject(<VisibilityOff />)}
         />,
-        hidden.includes(set.id) ? "Unhide" : "Hide"
+        arrayIncludes(hidden, setId) ? "Unhide" : "Hide"
       )}
     </>
   ) : null;
@@ -362,15 +366,15 @@ export const DrawerDetails = ({
         "Close"
       )
     : null;
-  const salesButton = set.sales?.img ? (
+  const salesButton = set?.sales?.img ? (
     <Button
       icon="bar_chart"
       label="Sales"
-      onClick={() => openSales(set)}
+      onClick={() => openSales(setId)}
       outlined
     />
   ) : null;
-  const notes = set.notes ? (
+  const notes = set?.notes ? (
     <Typography className="multiline" tag="p" use="caption">
       {set.notes}
     </Typography>
@@ -418,17 +422,17 @@ export const DrawerDetails = ({
             className="details-image"
             style={{
               backgroundImage: `url(${
-                set.image?.replace("keysets", "card") ?? ""
+                set?.image?.replace("keysets", "card") ?? ""
               })`,
             }}
           ></div>
           <div className="details-text">
             <Typography tag="h3" use="overline">
-              Designed by {set.designer?.join(" + ")}
+              Designed by {set?.designer?.join(" + ")}
             </Typography>
             <Typography tag="h1" use="headline4">
               <Twemoji options={{ className: "twemoji" }}>
-                {`${set.profile ?? ""} ${set.colorway ?? ""}`}
+                {`${set?.profile ?? ""} ${set?.colorway ?? ""}`}
               </Twemoji>
             </Typography>
             {gbLine}
@@ -440,7 +444,7 @@ export const DrawerDetails = ({
           </div>
           <div className="details-button">
             <Button
-              href={set.details}
+              href={set?.details}
               icon="launch"
               label="Link"
               outlined

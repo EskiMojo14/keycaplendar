@@ -1,3 +1,4 @@
+import type { EntityId } from "@reduxjs/toolkit";
 import { Typography } from "@rmwc/typography";
 import { useAppSelector } from "~/app/hooks";
 import { ViewCard } from "@c/main/views/card/view-card";
@@ -6,7 +7,7 @@ import { ViewImageList } from "@c/main/views/image-list/view-image-list";
 import { ViewList } from "@c/main/views/list/view-list";
 import { SkeletonBlock } from "@c/util/skeleton-block";
 import { selectPage } from "@s/common";
-import { selectLoading, selectSetGroups } from "@s/main";
+import { selectAllSetGroups, selectLoading } from "@s/main";
 import type { SetType } from "@s/main/types";
 import { selectView } from "@s/settings";
 import { selectUser } from "@s/user";
@@ -14,9 +15,9 @@ import "./content-grid.scss";
 
 type ContentGridProps = {
   closeDetails: () => void;
-  details: (set: SetType) => void;
-  detailSet: SetType;
-  edit: (set: SetType) => void;
+  details: (set: EntityId) => void;
+  detailSet: EntityId;
+  edit: (set: EntityId) => void;
 };
 
 export const ContentGrid = ({
@@ -27,7 +28,7 @@ export const ContentGrid = ({
 }: ContentGridProps) => {
   const view = useAppSelector(selectView);
 
-  const setGroups = useAppSelector(selectSetGroups);
+  const setGroups = useAppSelector(selectAllSetGroups);
   const loading = useAppSelector(selectLoading);
 
   const user = useAppSelector(selectUser);

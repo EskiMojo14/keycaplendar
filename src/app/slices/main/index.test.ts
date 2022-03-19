@@ -1,3 +1,4 @@
+import type { EntityId } from "@reduxjs/toolkit";
 import produce from "immer";
 import { createStore } from "~/app/store";
 import {
@@ -7,29 +8,31 @@ import {
   mergeWhitelist,
   selectAllAppPresets,
   selectAllDesigners,
+  selectAllSetGroups,
   selectAllSets,
   selectAppPresetById,
   selectCurrentPresetId,
   selectDefaultPreset,
+  selectFilteredSetsIds,
   selectLinkedFavorites,
   selectLoading,
   selectSearch,
-  selectSetGroups,
   selectSort,
   selectSortOrder,
   selectTransition,
   selectURLSet,
   selectURLWhitelist,
   selectWhitelist,
+  setAllSets,
   setAppPresets,
   setCurrentPreset,
   setDefaultPreset,
+  setFilteredSets,
   setLinkedFavorites,
   setList,
   setLoading,
   setSearch,
   setSetGroups,
-  setSetList,
   setSort,
   setSortOrder,
   setTransition,
@@ -87,17 +90,24 @@ it("sets specified list", () => {
   expect(response).toEqual(list);
 });
 
-it("sets specified set list", () => {
+it("sets all sets", () => {
   const list: SetType[] = [blankKeyset];
-  store.dispatch(setSetList("allSets", list));
+  store.dispatch(setAllSets(list));
   const response = selectAllSets(store.getState());
+  expect(response).toEqual(list);
+});
+
+it("sets filtered sets", () => {
+  const list: EntityId[] = [blankKeyset.id];
+  store.dispatch(setFilteredSets(list));
+  const response = selectFilteredSetsIds(store.getState());
   expect(response).toEqual(list);
 });
 
 it("sets set groups", () => {
   const groups: SetGroup[] = [{ sets: [blankKeyset], title: "test" }];
   store.dispatch(setSetGroups(groups));
-  const response = selectSetGroups(store.getState());
+  const response = selectAllSetGroups(store.getState());
   expect(response).toEqual(groups);
 });
 

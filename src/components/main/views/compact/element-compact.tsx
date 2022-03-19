@@ -1,3 +1,4 @@
+import type { EntityId } from "@reduxjs/toolkit";
 import { IconButton } from "@rmwc/icon-button";
 import {
   ListItem,
@@ -19,7 +20,7 @@ import "./element-compact.scss";
 
 type ElementCompactProps = {
   closeDetails: () => void;
-  details: (set: SetType) => void;
+  details: (set: EntityId) => void;
   link: string;
   live: boolean;
   selected: boolean;
@@ -77,7 +78,7 @@ export const ElementCompact = ({
     : null;
   return (
     <ListItem
-      onClick={() => (!selected ? details(set) : closeDetails())}
+      onClick={() => (!selected ? details(set.id) : closeDetails())}
       selected={selected}
     >
       {liveIndicator}

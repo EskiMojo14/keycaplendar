@@ -14,7 +14,6 @@ import type {
   ProcessedPublicActionType,
   RecentSet,
 } from "@s/history/types";
-import { blankKeyset } from "@s/main/constants";
 
 let store = createStore();
 
@@ -33,7 +32,6 @@ const action: ProcessedPublicActionType = {
 };
 
 const recentSet: RecentSet = {
-  currentSet: blankKeyset,
   deleted: false,
   designer: [],
   id: "",

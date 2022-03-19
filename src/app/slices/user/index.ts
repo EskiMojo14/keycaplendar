@@ -30,10 +30,10 @@ export const blankCurrentUser: CurrentUserType = {
 };
 
 type UserState = {
-  bought: string[];
-  favorites: string[];
+  bought: EntityId[];
+  favorites: EntityId[];
   favoritesId: string;
-  hidden: string[];
+  hidden: EntityId[];
   shareName: string;
   user: CurrentUserType;
   userPresets: EntityState<PresetType>;
@@ -68,16 +68,16 @@ export const userSlice = createSlice({
     deleteUserPreset: (state, { payload }: PayloadAction<EntityId>) => {
       userPresetAdapter.removeOne(state.userPresets, payload);
     },
-    setBought: (state, { payload }: PayloadAction<string[]>) => {
+    setBought: (state, { payload }: PayloadAction<EntityId[]>) => {
       state.bought = payload;
     },
-    setFavorites: (state, { payload }: PayloadAction<string[]>) => {
+    setFavorites: (state, { payload }: PayloadAction<EntityId[]>) => {
       state.favorites = payload;
     },
     setFavoritesId: (state, { payload }: PayloadAction<string>) => {
       state.favoritesId = payload;
     },
-    setHidden: (state, { payload }: PayloadAction<string[]>) => {
+    setHidden: (state, { payload }: PayloadAction<EntityId[]>) => {
       state.hidden = payload;
     },
     setShareName: (state, { payload }: PayloadAction<string>) => {

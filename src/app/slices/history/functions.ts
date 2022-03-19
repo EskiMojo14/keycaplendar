@@ -4,7 +4,7 @@ import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import { auditProperties } from "@s/audit/constants";
 import firebase from "@s/firebase";
-import { getSetById } from "@s/main/functions";
+import { selectSetById } from "@s/main";
 import { alphabeticalSortProp, removeDuplicates } from "@s/util/functions";
 import {
   selectProcessedActions,
@@ -109,16 +109,14 @@ export const generateSets = (state = store.getState()) => {
       .map((action) => action.after.designer || action.before.designer)
       .filter(Boolean);
     const deleted = filteredActions[0].action === "deleted";
-    const currentSet = getSetById(id, state);
+    const currentSet = selectSetById(state, id);
     return {
-      currentSet,
       deleted,
-      designer: designer ?? currentSet?.designer ?? null,
+      designer: currentSet?.designer ?? designer ?? null,
       id,
       latestTimestamp,
       title,
     };
   });
-  alphabeticalSortProp(recentSets, "latestTimestamp", true);
   dispatch(setRecentSets(recentSets));
 };

@@ -1,5 +1,4 @@
 import type { ActionSetType } from "@s/audit/types";
-import type { SetType } from "@s/main/types";
 import type { historyTabs } from "./constants";
 
 export type HistoryTab = typeof historyTabs[number];
@@ -18,7 +17,6 @@ export type ProcessedPublicActionType = PublicActionType & {
 };
 
 export type RecentSet = {
-  currentSet: SetType | null;
   deleted: boolean;
   designer: string[] | null;
   id: string;

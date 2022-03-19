@@ -1,3 +1,4 @@
+import type { EntityId } from "@reduxjs/toolkit";
 import {
   Card,
   CardActionButton,
@@ -42,8 +43,8 @@ type ElementCardProps = {
   closeDetails: () => void;
   daysLeft: number;
   designer: string;
-  details: (set: SetType) => void;
-  edit: (set: SetType) => void;
+  details: (set: EntityId) => void;
+  edit: (set: EntityId) => void;
   image: string;
   live: boolean;
   selected: boolean;
@@ -182,7 +183,7 @@ export const ElementCard = ({
       ? withTooltip(
           <CardActionIcon
             icon={iconObject(<Edit />)}
-            onClick={() => edit(set)}
+            onClick={() => edit(set.id)}
           />,
           "Edit"
         )
@@ -194,7 +195,7 @@ export const ElementCard = ({
           className={classNames("content", {
             "mdc-card__primary-action--selected": selected,
           })}
-          onClick={() => (!selected ? details(set) : closeDetails())}
+          onClick={() => (!selected ? details(set.id) : closeDetails())}
         >
           <div className="media-container">
             <LazyLoad

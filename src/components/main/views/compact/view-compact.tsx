@@ -1,3 +1,4 @@
+import type { EntityId } from "@reduxjs/toolkit";
 import { Card } from "@rmwc/card";
 import { List } from "@rmwc/list";
 import { DateTime } from "luxon";
@@ -11,8 +12,8 @@ import "./view-compact.scss";
 
 type ViewCompactProps = {
   closeDetails: () => void;
-  details: (set: SetType) => void;
-  detailSet: SetType;
+  details: (set: EntityId) => void;
+  detailSet: EntityId;
   page: Page;
   sets: SetType[];
   loading?: boolean;
@@ -103,7 +104,7 @@ export const ViewCompact = ({
             <ElementCompact
               key={set.id}
               link={set.details}
-              selected={detailSet === set}
+              selected={detailSet === set.id}
               {...{ closeDetails, details, live, set, subtitle, title }}
             />
           );

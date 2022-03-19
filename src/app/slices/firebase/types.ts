@@ -1,3 +1,4 @@
+import type { EntityId } from "@reduxjs/toolkit";
 import type { GuideEntryType } from "@s/guides/types";
 import type { OldPresetType, PresetType, SetType } from "@s/main/types";
 import type { Settings } from "@s/settings/types";
@@ -51,11 +52,11 @@ export type UpdateId = FirestoreId<"_updateId">;
 export type UserId = FirestoreId<"_userId">;
 
 export type UserPreferencesDoc = {
-  bought?: string[];
-  favorites?: string[];
+  bought?: EntityId[];
+  favorites?: EntityId[];
   favoritesId?: string;
   filterPresets?: (OldPresetType | PresetType)[];
-  hidden?: string[];
+  hidden?: EntityId[];
   settings?: Partial<Settings>;
   shareName?: string;
   syncSettings?: boolean;

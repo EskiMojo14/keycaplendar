@@ -23,7 +23,6 @@ import {
 import {
   alphabeticalSort,
   alphabeticalSortCurried,
-  alphabeticalSortProp,
   arrayIncludes,
   hasKey,
   normalise,
@@ -44,13 +43,15 @@ import {
   selectLinkedFavorites,
   selectPresetById,
   selectSearch,
-  selectSetGroups,
+  selectSetGroupTitles,
   selectSort,
   selectSortOrder,
   selectURLWhitelist,
   selectWhitelist,
+  setAllSets,
   setCurrentPreset,
   setDefaultPreset,
+  setFilteredSets,
   setInitialLoad,
   setList,
   setLoading,
@@ -58,7 +59,7 @@ import {
   setSort as setMainSort,
   setSortOrder as setMainSortOrder,
   setSetGroups,
-  setSetList,
+  setSetGroupsIds,
   setURLWhitelist,
   upsertAppPreset,
 } from ".";
@@ -98,9 +99,9 @@ const { dispatch } = store;
 
 export const pageConditions = (
   set: SetType,
-  favorites: string[],
-  bought: string[],
-  hidden: string[],
+  favorites: EntityId[],
+  bought: EntityId[],
+  hidden: EntityId[],
   state = store.getState()
 ): Record<typeof mainPages[number], boolean> => {
   const linkedFavorites = selectLinkedFavorites(state);
@@ -132,12 +133,6 @@ export const pageConditions = (
     previous: !!(endDate && endDate <= yesterday),
     timeline: !!(set.gbLaunch && !set.gbLaunch.includes("Q")),
   };
-};
-
-export const getSetById = (id: string, state = store.getState()) => {
-  const allSets = selectAllSets(state);
-  const set = allSets.find((set) => set.id === id);
-  return set ?? null;
 };
 
 const createGroups = (transition = false, state = store.getState()) => {
@@ -412,7 +407,7 @@ export const filterData = (transition = false, state = store.getState()) => {
       hiddenBool(set) && pageBool(set) && filterBool(set) && searchBool(set)
   );
 
-  dispatch(setSetList("filteredSets", filteredSets));
+  dispatch(setFilteredSets(filteredSets.map(({ id }) => id)));
 
   createGroups(transition);
 
@@ -634,9 +629,7 @@ export const getData = () => {
         }
       });
 
-      alphabeticalSortProp(sets, "colorway");
-
-      dispatch(setSetList("allSets", sets));
+      dispatch(setAllSets(sets));
       dispatch(setInitialLoad(false));
 
       filterData(true);
@@ -708,22 +701,26 @@ export const testSets = (state = store.getState()) => {
 const sortData = (state = store.getState()) => {
   const sort = selectSort(state);
   const sortOrder = selectSortOrder(state);
-  const groups = selectSetGroups(state);
+  const groups = selectSetGroupTitles(state);
   const sortedGroups = produce(groups, (groupsDraft) => {
-    groupsDraft.sort(({ title: a }, { title: b }) => {
-      if (arrayIncludes(dateSorts, sort)) {
-        const aDate = DateTime.fromFormat(a, "MMMM yyyy", { zone: "utc" });
-        const bDate = DateTime.fromFormat(b, "MMMM yyyy", { zone: "utc" });
+    groupsDraft.sort((a, b) => {
+      if (arrayIncludes(dateSorts, sort) && is<string>(a) && is<string>(b)) {
+        const aDate = DateTime.fromFormat(a, "MMMM yyyy", {
+          zone: "utc",
+        });
+        const bDate = DateTime.fromFormat(b, "MMMM yyyy", {
+          zone: "utc",
+        });
         return alphabeticalSortCurried(sortOrder === "descending")(
           aDate,
           bDate
         );
       }
-      return alphabeticalSortCurried()(a, b);
+      return alphabeticalSortCurried(sortOrder === "descending")(a, b);
     });
   });
 
-  dispatch(setSetGroups(sortedGroups));
+  dispatch(setSetGroupsIds(sortedGroups));
 };
 
 export const setSort = (

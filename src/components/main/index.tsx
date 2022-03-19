@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { EntityId } from "@reduxjs/toolkit";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { Fab } from "@rmwc/fab";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
@@ -16,7 +17,7 @@ import { selectDevice, selectPage } from "@s/common";
 import {
   selectAllSets,
   selectLinkedFavorites,
-  selectSetGroups,
+  selectSetGroupTotal,
   selectURLSet,
   setURLSet,
 } from "@s/main";
@@ -47,13 +48,13 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
 
   const user = useAppSelector(selectUser);
 
-  const contentBool = !!useAppSelector(selectSetGroups).length;
+  const contentBool = useAppSelector((state) => !!selectSetGroupTotal(state));
   const allSets = useAppSelector(selectAllSets);
   const urlSet = useAppSelector(selectURLSet);
   const linkedFavorites = useAppSelector(selectLinkedFavorites);
 
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [detailSet, setDetailSet] = useState(blankKeyset);
+  const [detailSet, setDetailSet] = useState<EntityId>("");
   const [filterOpen, setFilterOpen] = useState(false);
   const closeFilter = () => {
     closeModal();
@@ -62,7 +63,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   const closeDetails = () => {
     closeModal();
     setDetailsOpen(false);
-    setTimeout(() => setDetailSet(blankKeyset), 300);
+    setTimeout(() => setDetailSet(""), 300);
   };
   const openFilter = () => {
     const open = () => {
@@ -82,7 +83,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
       open();
     }
   };
-  const openDetails = (set: SetType, clearUrl = true) => {
+  const openDetails = (set: EntityId, clearUrl = true) => {
     const open = () => {
       if (device !== "desktop" || view === "compact") {
         openModal();
@@ -126,20 +127,20 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
         }
       });
       if (keyset) {
-        openDetails(keyset, false);
+        openDetails(keyset.id, false);
       }
     }
   }, [allSets, urlSet]);
 
   const [salesOpen, setSalesOpen] = useState(false);
-  const [salesSet, setSalesSet] = useState(blankKeyset);
-  const openSales = (set: SetType) => {
+  const [salesSet, setSalesSet] = useState<EntityId>("");
+  const openSales = (set: EntityId) => {
     setSalesOpen(true);
     setSalesSet(set);
   };
   const closeSales = () => {
     setSalesOpen(false);
-    setTimeout(() => setSalesSet(blankKeyset), 300);
+    setTimeout(() => setSalesSet(""), 300);
   };
 
   const [createOpen, setCreateOpen] = useState(false);
@@ -153,8 +154,8 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   };
 
   const [editOpen, setEditOpen] = useState(false);
-  const [editSet, setEditSet] = useState(blankKeyset);
-  const openEdit = (set: SetType) => {
+  const [editSet, setEditSet] = useState<EntityId>("");
+  const openEdit = (set: EntityId) => {
     openModal();
     setEditOpen(true);
     setEditSet(set);
@@ -162,7 +163,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   const closeEdit = () => {
     closeModal();
     setEditOpen(false);
-    setTimeout(() => setEditSet(blankKeyset), 300);
+    setTimeout(() => setEditSet(""), 300);
   };
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);

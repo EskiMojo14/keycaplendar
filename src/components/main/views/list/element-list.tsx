@@ -1,3 +1,4 @@
+import type { EntityId } from "@reduxjs/toolkit";
 import { IconButton } from "@rmwc/icon-button";
 import {
   ListItem,
@@ -27,7 +28,7 @@ type ElementListProps = {
   closeDetails: () => void;
   daysLeft: number;
   designer: string;
-  details: (set: SetType) => void;
+  details: (set: EntityId) => void;
   image: string;
   live: boolean;
   selected: boolean;
@@ -111,7 +112,7 @@ export const ElementList = ({
       );
   return (
     <ListItem
-      onClick={() => (!selected ? details(set) : closeDetails())}
+      onClick={() => (!selected ? details(set.id) : closeDetails())}
       selected={selected}
     >
       <LazyLoad

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import type { EntityId } from "@reduxjs/toolkit";
 import { Button } from "@rmwc/button";
 import {
@@ -18,8 +18,8 @@ import { mainPages, pageIcons, pageTitle } from "@s/common/constants";
 import { setPage } from "@s/common/functions";
 import type { MainPage } from "@s/common/types";
 import { selectRecentSetById } from "@s/history";
+import { selectSetById } from "@s/main";
 import { pageConditions } from "@s/main/functions";
-import type { SetType } from "@s/main/types";
 import { selectBought, selectFavorites, selectHidden } from "@s/user";
 import {
   arrayIncludes,
@@ -33,7 +33,7 @@ import "./recent-set-card.scss";
 type RecentSetCardProps = {
   filterChangelog: (set: { id: string; title: string }) => void;
   filtered: boolean;
-  openDetails: (set: SetType) => void;
+  openDetails: (set: EntityId) => void;
   recentSetId: EntityId;
   selected: boolean;
 };
@@ -53,14 +53,14 @@ export const RecentSetCard = ({
     return null;
   }
 
-  const { currentSet: set, deleted } = recentSet;
+  const { deleted, id } = recentSet;
+  const currentSet = useAppSelector((state) => selectSetById(state, id));
   const favorites = useAppSelector(selectFavorites);
   const bought = useAppSelector(selectBought);
   const hidden = useAppSelector(selectHidden);
-  const [pages, setPages] = useState<string[]>([]);
 
-  useEffect(() => {
-    if (recentSet.currentSet) {
+  const pages = useMemo(() => {
+    if (currentSet) {
       const falsePages: Record<MainPage, boolean> = {
         archive: false,
         bought: false,
@@ -72,13 +72,14 @@ export const RecentSetCard = ({
         previous: false,
         timeline: false,
       };
-      const pageBools: Record<MainPage, boolean> = set
-        ? pageConditions(set, favorites, bought, hidden)
+      const pageBools: Record<MainPage, boolean> = currentSet
+        ? pageConditions(currentSet, favorites, bought, hidden)
         : falsePages;
       const keysetPages = objectKeys(pageBools).filter((key) => pageBools[key]);
-      setPages(keysetPages);
+      return keysetPages;
     }
-  }, [recentSet.currentSet]);
+    return [];
+  }, [currentSet]);
 
   return (
     <Card
@@ -88,13 +89,13 @@ export const RecentSetCard = ({
       })}
     >
       <ConditionalWrapper
-        condition={!!set}
+        condition={!!currentSet}
         wrapper={(children) => (
           <CardPrimaryAction
             className={classNames({
               "mdc-card__primary-action--selected": selected,
             })}
-            onClick={set ? () => openDetails(set) : undefined}
+            onClick={currentSet ? () => openDetails(id) : undefined}
           >
             {children}
           </CardPrimaryAction>
@@ -104,9 +105,9 @@ export const RecentSetCard = ({
           <CardMedia
             sixteenByNine
             style={
-              !deleted && set
+              !deleted && currentSet
                 ? {
-                    backgroundImage: `url(${set.image.replace(
+                    backgroundImage: `url(${currentSet.image.replace(
                       "keysets",
                       "thumbs"
                     )})`,
@@ -114,7 +115,7 @@ export const RecentSetCard = ({
                 : undefined
             }
           >
-            {!set ? (
+            {!currentSet ? (
               <CardMediaContent>
                 <Icon
                   icon={iconObject(<ImageNotSupported />, { size: "xlarge" })}
@@ -135,11 +136,14 @@ export const RecentSetCard = ({
         <div className="info-container">
           <div className="overline">
             <Typography tag="h3" use="overline">
-              {set?.designer.join(" + ") ?? recentSet.designer?.join(" + ")}
+              {currentSet?.designer.join(" + ") ??
+                recentSet.designer?.join(" + ")}
             </Typography>
           </div>
           <Typography tag="h2" use="headline5">
-            {set ? `${set.profile} ${set.colorway}` : recentSet.title}
+            {currentSet
+              ? `${currentSet.profile} ${currentSet.colorway}`
+              : recentSet.title}
           </Typography>
           <Typography tag="p" use="subtitle2">
             Last updated:{" "}
