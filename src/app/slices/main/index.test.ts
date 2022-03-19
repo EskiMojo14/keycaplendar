@@ -1,11 +1,15 @@
+import produce from "immer";
 import { createStore } from "~/app/store";
 import {
+  addAppPreset,
+  deleteAppPreset,
   initialState,
   mergeWhitelist,
+  selectAllAppPresets,
   selectAllDesigners,
   selectAllSets,
-  selectAppPresets,
-  selectCurrentPreset,
+  selectAppPresetById,
+  selectCurrentPresetId,
   selectDefaultPreset,
   selectLinkedFavorites,
   selectLoading,
@@ -32,6 +36,7 @@ import {
   setURLSet,
   setURLWhitelist,
   setWhitelist,
+  upsertAppPreset,
 } from "@s/main";
 import { blankKeyset } from "@s/main/constants";
 import { partialPreset, partialWhitelist } from "@s/main/constructors";
@@ -139,9 +144,9 @@ it("sets URL whitelist", () => {
 const preset = partialPreset({ name: "Test" });
 
 it("sets current preset", () => {
-  store.dispatch(setCurrentPreset(preset));
-  const response = selectCurrentPreset(store.getState());
-  expect(response).toEqual(preset);
+  store.dispatch(setCurrentPreset(preset.id));
+  const response = selectCurrentPresetId(store.getState());
+  expect(response).toEqual(preset.id);
 });
 
 it("sets default preset", () => {
@@ -152,8 +157,36 @@ it("sets default preset", () => {
 
 it("sets app presets", () => {
   store.dispatch(setAppPresets([preset]));
-  const response = selectAppPresets(store.getState());
+  const response = selectAllAppPresets(store.getState());
   expect(response).toEqual([preset]);
+});
+
+it("adds a user preset", () => {
+  const newPreset = store.dispatch(addAppPreset(partialPreset({ name: "hi" })));
+  const response = selectAppPresetById(store.getState(), newPreset.id);
+  expect(response).toEqual(newPreset);
+});
+
+it("upserts a user preset", () => {
+  const newPreset = store.dispatch(addAppPreset(partialPreset({ name: "hi" })));
+  const editedPreset = produce(newPreset, (draft) => {
+    draft.name = "bye";
+  });
+  store.dispatch(upsertAppPreset(editedPreset));
+  const response = selectAppPresetById(store.getState(), newPreset.id);
+  expect(response).toEqual(editedPreset);
+});
+
+it("deletes a user preset", () => {
+  const newPreset = store.dispatch(addAppPreset(partialPreset({ name: "hi" })));
+
+  const check = selectAppPresetById(store.getState(), newPreset.id);
+  expect(check).toEqual(newPreset);
+
+  store.dispatch(deleteAppPreset(newPreset.id));
+
+  const response = selectAppPresetById(store.getState(), newPreset.id);
+  expect(response).toBeUndefined();
 });
 
 it("sets linked favourites", () => {

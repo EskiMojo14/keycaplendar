@@ -11,6 +11,7 @@ import { nanoid } from "nanoid";
 import type { RootState } from "~/app/store";
 import type { PresetType } from "@s/main/types";
 import { alphabeticalSortPropCurried } from "@s/util/functions";
+import type { Overwrite } from "@s/util/types";
 import type { CurrentUserType } from "./types";
 
 export const userPresetAdapter = createEntityAdapter<PresetType>({
@@ -138,12 +139,12 @@ const {
 
 export const addUserPreset =
   (
-    userPreset: PresetType
+    userPreset: Overwrite<PresetType, { id?: string }>
   ): ThunkAction<PresetType, RootState, unknown, AnyAction> =>
   (dispatch) => {
     const preset = produce(userPreset, (draftPreset) => {
-      draftPreset.id = nanoid();
-    });
+      draftPreset.id ??= nanoid();
+    }) as PresetType;
     dispatch(_addUserPreset(preset));
     return preset;
   };

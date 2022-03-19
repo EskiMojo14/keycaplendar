@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import type { ChangeEvent } from "react";
 import { Button } from "@rmwc/button";
 import { Chip, ChipSet } from "@rmwc/chip";
@@ -20,10 +20,10 @@ import {
 } from "@c/util/segmented-button";
 import { selectDevice, selectPage } from "@s/common";
 import {
+  selectAllAppPresets,
   selectAllProfiles,
   selectAllRegions,
   selectAllVendors,
-  selectAppPresets,
   selectCurrentPreset,
   selectWhitelist,
 } from "@s/main";
@@ -57,6 +57,18 @@ import {
 } from "@i";
 import "./drawer-filter.scss";
 
+const sortInternalArrays = <S extends Record<any, any>>(obj: S): S =>
+  Object.fromEntries(
+    Object.entries(obj).map(([key, val]) => [
+      key,
+      typeof val === "object" && val !== null
+        ? Array.isArray(val)
+          ? [...val].sort()
+          : sortInternalArrays(val)
+        : val,
+    ])
+  ) as S;
+
 type DrawerFilterProps = {
   close: () => void;
   deletePreset: (preset: PresetType) => void;
@@ -84,25 +96,25 @@ export const DrawerFilter = ({
   const lists = { profiles, regions, vendors };
 
   const preset = useAppSelector(selectCurrentPreset);
-  const appPresets = useAppSelector(selectAppPresets);
+  const appPresets = useAppSelector(selectAllAppPresets);
   const mainWhitelist = useAppSelector(selectWhitelist);
 
-  const [modified, setModified] = useState(false);
-
-  useEffect(() => {
+  const modified = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { edited, ...whitelist } = mainWhitelist;
     const {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       whitelist: { edited: presetEdited, ...presetWhitelist },
     } = preset;
-    const equal = isEqual(presetWhitelist, whitelist);
-    setModified(!equal);
+    const equal = isEqual(
+      sortInternalArrays(presetWhitelist),
+      sortInternalArrays(whitelist)
+    );
+    return !equal;
   }, [preset.whitelist, mainWhitelist]);
 
-  const selectPresetFn = (e: ChangeEvent<HTMLSelectElement>) => {
+  const selectPresetFn = (e: ChangeEvent<HTMLSelectElement>) =>
     selectPreset(e.target.value);
-  };
 
   const newPreset = (global = false) => {
     const {

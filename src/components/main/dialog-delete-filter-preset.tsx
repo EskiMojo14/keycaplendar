@@ -23,7 +23,7 @@ export const DialogDeleteFilterPreset = ({
   const deleteFn = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (preset.global) {
-      deleteGlobalPreset(preset);
+      deleteGlobalPreset(preset.id);
     } else {
       deletePreset(preset.id);
     }

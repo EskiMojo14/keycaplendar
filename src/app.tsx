@@ -112,7 +112,7 @@ export const App = () => {
         dispatch(setHidden([]));
         dispatch(setShareName(""));
         if (defaultPreset.name) {
-          dispatch(setCurrentPreset(defaultPreset));
+          dispatch(setCurrentPreset("default"));
         }
       }
     });

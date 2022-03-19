@@ -220,7 +220,7 @@ export const getURLQuery = (state = store.getState()) => {
     if (index === array.length - 1 && Object.keys(whitelistObj).length > 0) {
       const defaultPreset = selectDefaultPreset(state);
       dispatch(setURLWhitelist(whitelistObj));
-      dispatch(setCurrentPreset(defaultPreset));
+      dispatch(setCurrentPreset("default"));
       setWhitelistMerge({ ...defaultPreset.whitelist, ...whitelistObj }, false);
     }
   });

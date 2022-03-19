@@ -2,7 +2,6 @@ import type { EntityId } from "@reduxjs/toolkit";
 import produce from "immer";
 import debounce from "lodash.debounce";
 import { DateTime } from "luxon";
-import { nanoid } from "nanoid";
 import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
@@ -19,7 +18,6 @@ import {
   selectFavorites,
   selectHidden,
   selectUser,
-  selectUserPresetById,
   upsertUserPreset,
 } from "@s/user";
 import {
@@ -34,22 +32,23 @@ import {
   replaceFunction,
 } from "@s/util/functions";
 import {
+  addAppPreset,
+  deleteAppPreset,
   mergeWhitelist,
+  selectAllAppPresets,
   selectAllRegions,
   selectAllSets,
-  selectAppPresets,
   selectCurrentPreset,
-  selectDefaultPreset,
   selectFilteredSets,
   selectInitialLoad,
   selectLinkedFavorites,
+  selectPresetById,
   selectSearch,
   selectSetGroups,
   selectSort,
   selectSortOrder,
   selectURLWhitelist,
   selectWhitelist,
-  setAppPresets,
   setCurrentPreset,
   setDefaultPreset,
   setInitialLoad,
@@ -61,6 +60,7 @@ import {
   setSetGroups,
   setSetList,
   setURLWhitelist,
+  upsertAppPreset,
 } from ".";
 import {
   allSorts,
@@ -585,10 +585,10 @@ const generateLists = (state = store.getState()) => {
     ...Object.keys(urlWhitelist),
   ];
   if (!currentPreset.name && noUrlParams) {
-    dispatch(setCurrentPreset(defaultPreset));
+    dispatch(setCurrentPreset("default"));
     setWhitelistMerge(defaultPreset.whitelist);
   } else if (!currentPreset.name && !noUrlParams) {
-    dispatch(setCurrentPreset(defaultPreset));
+    dispatch(setCurrentPreset("default"));
     const partialWhitelist: Partial<WhitelistType> = {};
     const defaultParams = ["profiles", "regions"] as const;
     defaultParams.forEach((param) => {
@@ -797,26 +797,11 @@ export const updatePreset = (
   return updatedPreset;
 };
 
-export const findPreset = (
-  id: string,
-  state = store.getState()
-): PresetType | undefined => {
-  const appPresets = selectAppPresets(state);
-  const index = appPresets.findIndex((preset) => preset.id === id);
-  return appPresets[index] ?? selectUserPresetById(state, id);
-};
-
 export const selectPreset = (id: string, state = store.getState()) => {
-  const defaultPreset = selectDefaultPreset(state);
-  if (id === "default") {
-    dispatch(setCurrentPreset(defaultPreset));
-    setWhitelistMerge(defaultPreset.whitelist);
-  } else {
-    const preset = findPreset(id);
-    if (preset) {
-      dispatch(setCurrentPreset(preset));
-      setWhitelistMerge(preset.whitelist);
-    }
+  const preset = selectPresetById(state, id);
+  if (preset) {
+    dispatch(setCurrentPreset(preset.id));
+    setWhitelistMerge(preset.whitelist);
   }
 };
 
@@ -835,87 +820,48 @@ export const syncPresets = (state = store.getState()) => {
 
 export const newPreset = (preset: PresetType) => {
   const newPreset = dispatch(addUserPreset(preset));
-  dispatch(setCurrentPreset(newPreset));
+  dispatch(setCurrentPreset(newPreset.id));
   syncPresets(store.getState());
 };
 
 export const editPreset = (preset: PresetType) => {
-  dispatch(setCurrentPreset(preset));
+  dispatch(setCurrentPreset(preset.id));
   dispatch(upsertUserPreset(preset));
   syncPresets(store.getState());
 };
 
-export const deletePreset = (presetId: EntityId, state = store.getState()) => {
-  const defaultPreset = selectDefaultPreset(state);
-  dispatch(setCurrentPreset(defaultPreset));
+export const deletePreset = (presetId: EntityId) => {
+  dispatch(setCurrentPreset("default"));
   dispatch(deleteUserPreset(presetId));
   syncPresets(store.getState());
 };
 
 export const syncGlobalPresets = (state = store.getState()) => {
-  const presets = selectAppPresets(state);
-  const filteredPresets = presets.filter((preset) => preset.id !== "default");
-  const sortedPresets = alphabeticalSortProp(
-    filteredPresets,
-    "name",
-    false
-  ).map((preset) => ({
-    ...preset,
-  }));
+  const presets = selectAllAppPresets(state);
   firestore
     .collection("app")
     .doc("globals")
-    .set({ filterPresets: sortedPresets }, { merge: true })
+    .set({ filterPresets: presets }, { merge: true })
     .catch((error) => {
       console.log(`Failed to sync presets: ${error}`);
       queue.notify({ title: `Failed to sync presets: ${error}` });
     });
 };
 
-export const newGlobalPreset = (
-  preset: PresetType,
-  state = store.getState()
-) => {
-  const appPresets = selectAppPresets(state);
-  preset.id = nanoid();
-  const presets = [...appPresets, preset];
-  alphabeticalSortProp(presets, "name", false, "Default");
-  dispatch(setCurrentPreset(preset));
-  dispatch(setAppPresets(presets));
+export const newGlobalPreset = (preset: PresetType) => {
+  const newPreset = dispatch(addAppPreset(preset));
+  dispatch(setCurrentPreset(newPreset.id));
   syncGlobalPresets(store.getState());
 };
 
-export const editGlobalPreset = (
-  preset: PresetType,
-  state = store.getState()
-) => {
-  const appPresets = selectAppPresets(state);
-  const savedPreset = findPreset(preset.id);
-  let presets: PresetType[];
-  if (savedPreset) {
-    const index = appPresets.indexOf(savedPreset);
-    presets = [...appPresets];
-    presets[index] = preset;
-  } else {
-    presets = [...appPresets, preset];
-  }
-  alphabeticalSortProp(presets, "name", false, "Default");
-  dispatch(setCurrentPreset(preset));
-  dispatch(setAppPresets(presets));
+export const editGlobalPreset = (preset: PresetType) => {
+  dispatch(upsertAppPreset(preset));
+  dispatch(setCurrentPreset(preset.id));
   syncGlobalPresets(store.getState());
 };
 
-export const deleteGlobalPreset = (
-  preset: PresetType,
-  state = store.getState()
-) => {
-  const appPresets = selectAppPresets(state);
-  const defaultPreset = selectDefaultPreset(state);
-  const presets = appPresets.filter(
-    (filterPreset) => filterPreset.id !== preset.id
-  );
-  alphabeticalSortProp(presets, "name", false, "Default");
-  dispatch(setCurrentPreset(defaultPreset));
-  dispatch(setAppPresets(presets));
+export const deleteGlobalPreset = (presetId: EntityId) => {
+  dispatch(setCurrentPreset("default"));
+  dispatch(deleteAppPreset(presetId));
   syncGlobalPresets(store.getState());
 };

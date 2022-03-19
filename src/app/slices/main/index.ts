@@ -1,12 +1,28 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
+import {
+  createEntityAdapter,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
+import type {
+  AnyAction,
+  EntityId,
+  EntityState,
+  PayloadAction,
+  ThunkAction,
+} from "@reduxjs/toolkit";
+import produce from "immer";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
 import type { RootState } from "~/app/store";
 import { blankPreset } from "@s/main/constants";
 import { partialSet } from "@s/main/constructors";
-import { randomInt, removeDuplicates } from "@s/util/functions";
-import type { KeysMatching } from "@s/util/types";
+import { selectUserPresetMap } from "@s/user";
+import {
+  alphabeticalSortPropCurried,
+  randomInt,
+  removeDuplicates,
+} from "@s/util/functions";
+import type { KeysMatching, Overwrite } from "@s/util/types";
 import type {
   PresetType,
   SetGroup,
@@ -39,6 +55,10 @@ export const generateRandomSetGroups = (): SetGroup[] =>
     title: nanoid(randomInt(8, 14)),
   }));
 
+export const appPresetAdapter = createEntityAdapter<PresetType>({
+  sortComparer: alphabeticalSortPropCurried("name", false, "Default"),
+});
+
 export type MainState = {
   allDesigners: string[];
   allProfiles: string[];
@@ -46,14 +66,15 @@ export type MainState = {
   allSets: SetType[];
   allVendorRegions: string[];
   allVendors: string[];
-  appPresets: PresetType[];
   content: boolean;
-  currentPreset: PresetType;
-  defaultPreset: PresetType;
   filteredSets: SetType[];
   initialLoad: boolean;
   linkedFavorites: { array: string[]; displayName: string };
   loading: boolean;
+  presets: EntityState<PresetType> & {
+    currentPreset: EntityId;
+    defaultPreset: PresetType;
+  };
   search: string;
   setGroups: SetGroup[];
   sort: SortType;
@@ -74,14 +95,15 @@ export const initialState: MainState = {
   allSets: [],
   allVendorRegions: [],
   allVendors: [],
-  appPresets: [],
   content: true,
-  currentPreset: blankPreset,
-  defaultPreset: blankPreset,
   filteredSets: [],
   initialLoad: true,
   linkedFavorites: { array: [], displayName: "" },
   loading: true,
+  presets: appPresetAdapter.getInitialState({
+    currentPreset: "default",
+    defaultPreset: blankPreset,
+  }),
   search: "",
   setGroups: generateRandomSetGroups(),
   sort: "gbLaunch",
@@ -109,6 +131,12 @@ export const mainSlice = createSlice({
   initialState,
   name: "main",
   reducers: {
+    addAppPreset: (state, { payload }: PayloadAction<PresetType>) => {
+      appPresetAdapter.setOne(state.presets, payload);
+    },
+    deleteAppPreset: (state, { payload }: PayloadAction<EntityId>) => {
+      appPresetAdapter.removeOne(state.presets, payload);
+    },
     mergeWhitelist: (
       state,
       { payload }: PayloadAction<Partial<WhitelistType>>
@@ -120,13 +148,16 @@ export const mainSlice = createSlice({
       state.whitelist = { ...state.whitelist, ...payload, edited };
     },
     setAppPresets: (state, { payload }: PayloadAction<PresetType[]>) => {
-      state.appPresets = payload;
+      appPresetAdapter.setAll(state.presets, payload);
     },
-    setCurrentPreset: (state, { payload }: PayloadAction<PresetType>) => {
-      state.currentPreset = payload;
+    setCurrentPreset: (
+      state,
+      { payload }: PayloadAction<"default" | (EntityId & Record<never, never>)>
+    ) => {
+      state.presets.currentPreset = payload;
     },
     setDefaultPreset: (state, { payload }: PayloadAction<PresetType>) => {
-      state.defaultPreset = payload;
+      state.presets.defaultPreset = payload;
     },
     setInitialLoad: (state, { payload }: PayloadAction<boolean>) => {
       state.initialLoad = payload;
@@ -215,11 +246,15 @@ export const mainSlice = createSlice({
     setWhitelist: (state, { payload }: PayloadAction<WhitelistType>) => {
       state.whitelist = { ...payload, edited: Object.keys(payload) };
     },
+    upsertAppPreset: (state, { payload }: PayloadAction<PresetType>) => {
+      appPresetAdapter.upsertOne(state.presets, payload);
+    },
   },
 });
 
 export const {
   actions: {
+    deleteAppPreset,
     mergeWhitelist,
     setAppPresets,
     setCurrentPreset,
@@ -237,6 +272,7 @@ export const {
     setURLSet,
     setURLWhitelist,
     setWhitelist,
+    upsertAppPreset,
   },
 } = mainSlice;
 
@@ -273,19 +309,63 @@ export const selectURLSet = (state: RootState) => state.main.urlSet;
 
 export const selectSearch = (state: RootState) => state.main.search;
 
-export const selectWhitelist = (state: RootState) => state.main.whitelist;
-
-export const selectCurrentPreset = (state: RootState) =>
-  state.main.currentPreset;
-
-export const selectDefaultPreset = (state: RootState) =>
-  state.main.defaultPreset;
-
-export const selectAppPresets = (state: RootState) => state.main.appPresets;
-
 export const selectLinkedFavorites = (state: RootState) =>
   state.main.linkedFavorites;
 
 export const selectURLWhitelist = (state: RootState) => state.main.urlWhitelist;
 
+export const selectWhitelist = (state: RootState) => state.main.whitelist;
+
+export const selectCurrentPresetId = (state: RootState) =>
+  state.main.presets.currentPreset;
+
+export const selectDefaultPreset = (state: RootState) =>
+  state.main.presets.defaultPreset;
+
+export const {
+  selectAll: selectAllAppPresets,
+  selectById: selectAppPresetById,
+  selectEntities: selectAppPresetMap,
+  selectIds: selectAppPresetIds,
+  selectTotal: selectAppPresetTotal,
+} = appPresetAdapter.getSelectors((state: RootState) => state.main.presets);
+
+export const selectCurrentPreset = createSelector(
+  selectAppPresetMap,
+  selectUserPresetMap,
+  selectDefaultPreset,
+  selectCurrentPresetId,
+  (appPresets, userPresets, defaultPreset, currentId) =>
+    currentId === "default"
+      ? defaultPreset
+      : appPresets[currentId] ?? userPresets[currentId] ?? defaultPreset
+);
+
+export const selectPresetById = createSelector(
+  selectAppPresetMap,
+  selectUserPresetMap,
+  selectDefaultPreset,
+  (state: RootState, id: "default" | (EntityId & Record<never, never>)) => id,
+  (appPresets, userPresets, defaultPreset, presetId) =>
+    presetId === "default"
+      ? defaultPreset
+      : appPresets[presetId] ?? userPresets[presetId]
+);
+
 export default mainSlice.reducer;
+
+const {
+  actions: { addAppPreset: _addAppPreset },
+} = mainSlice;
+
+export const addAppPreset =
+  (
+    userPreset: Overwrite<PresetType, { id?: string }>
+  ): ThunkAction<PresetType, RootState, unknown, AnyAction> =>
+  (dispatch) => {
+    const preset = produce(userPreset, (draftPreset) => {
+      draftPreset.id ??= nanoid();
+    }) as PresetType;
+    dispatch(_addAppPreset(preset));
+    return preset;
+  };
