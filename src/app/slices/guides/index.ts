@@ -87,10 +87,10 @@ export const selectLoading = (state: RootState) => state.guides.loading;
 
 export const {
   selectAll: selectEntries,
-  selectById,
+  selectById: selectEntryById,
   selectEntities: selectEntryMap,
-  selectIds,
-  selectTotal,
+  selectIds: selectEntryIds,
+  selectTotal: selectEntryTotal,
 } = guideEntryAdapter.getSelectors<RootState>((state) => state.guides.entries);
 
 export const selectURLEntry = (state: RootState) =>

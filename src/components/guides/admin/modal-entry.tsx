@@ -27,7 +27,7 @@ import { CustomReactMarkdown, CustomReactMde } from "@c/util/react-markdown";
 import { selectDevice } from "@s/common";
 import firestore from "@s/firebase/firestore";
 import type { GuideId } from "@s/firebase/types";
-import { selectById } from "@s/guides";
+import { selectEntryById } from "@s/guides";
 import {
   formattedVisibility,
   visibilityIcons,
@@ -313,7 +313,7 @@ export const ModalEdit = ({
 }: ModalEditProps) => {
   const { nickname: name } = useAppSelector(selectUser);
 
-  const entry = useAppSelector((state) => selectById(state, entryId));
+  const entry = useAppSelector((state) => selectEntryById(state, entryId));
 
   const saveEntry = (entry: GuideEntryType) => {
     const result = GuideEntrySchema.safeParse(entry);

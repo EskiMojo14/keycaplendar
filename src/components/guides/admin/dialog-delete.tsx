@@ -10,7 +10,7 @@ import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import firestore from "@s/firebase/firestore";
 import type { GuideId } from "@s/firebase/types";
-import { selectById } from "@s/guides";
+import { selectEntryById } from "@s/guides";
 
 type DialogDeleteProps = {
   entryId: EntityId;
@@ -25,7 +25,7 @@ export const DialogDelete = ({
   onClose,
   open,
 }: DialogDeleteProps) => {
-  const entry = useAppSelector((state) => selectById(state, entryId));
+  const entry = useAppSelector((state) => selectEntryById(state, entryId));
   const deleteEntry = () => {
     firestore
       .collection("guides")

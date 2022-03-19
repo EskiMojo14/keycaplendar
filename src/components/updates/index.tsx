@@ -19,7 +19,7 @@ import { AppBarIndent } from "@c/util/app-bar-indent";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { selectBottomNav } from "@s/settings";
-import { selectIds, selectLoading, selectURLEntry } from "@s/updates";
+import { selectEntryIds, selectLoading, selectURLEntry } from "@s/updates";
 import { getEntries, pinEntry } from "@s/updates/functions";
 import { selectUser } from "@s/user";
 import { closeModal, openModal } from "@s/util/functions";
@@ -38,7 +38,7 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
   const user = useAppSelector(selectUser);
 
   const loading = useAppSelector(selectLoading);
-  const entries = useAppSelector(selectIds);
+  const entries = useAppSelector(selectEntryIds);
   const urlEntry = useAppSelector(selectURLEntry);
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
         }, 1000);
       }
     }
-  }, [JSON.stringify(entries)]);
+  }, [entries]);
   const [createOpen, setCreateOpen] = useState(false);
   const openCreate = () => {
     setCreateOpen(true);

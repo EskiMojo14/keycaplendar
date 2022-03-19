@@ -21,7 +21,7 @@ import {
 import { withTooltip } from "@c/util/hocs";
 import { CustomReactMarkdown } from "@c/util/react-markdown";
 import { selectDevice } from "@s/common";
-import { selectById, selectFilteredTag, setFilteredTag } from "@s/guides";
+import { selectEntryById, selectFilteredTag, setFilteredTag } from "@s/guides";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
 import { selectUser } from "@s/user";
 import { clearSearchParams, createURL, iconObject } from "@s/util/functions";
@@ -49,7 +49,7 @@ export const ModalDetail = ({
 
   const user = useAppSelector(selectUser);
 
-  const entry = useAppSelector((state) => selectById(state, entryId));
+  const entry = useAppSelector((state) => selectEntryById(state, entryId));
   const filteredTag = useAppSelector(selectFilteredTag);
 
   const useDrawer = device !== "mobile";

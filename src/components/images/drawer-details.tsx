@@ -16,7 +16,7 @@ import { queue } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice } from "@s/common";
 import firebase from "@s/firebase";
-import { selectById } from "@s/images";
+import { selectImageById } from "@s/images";
 import { formatBytes, objectKeys, ordinal } from "@s/util/functions";
 import "./drawer-details.scss";
 
@@ -33,7 +33,7 @@ type DrawerDetailsProps = {
 export const DrawerDetails = ({ close, imageId, open }: DrawerDetailsProps) => {
   const device = useAppSelector(selectDevice);
 
-  const image = useAppSelector((state) => selectById(state, imageId));
+  const image = useAppSelector((state) => selectImageById(state, imageId));
 
   const [metadata, setMetadata] = useState<Record<string, any>>({});
 

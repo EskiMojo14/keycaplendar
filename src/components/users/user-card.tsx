@@ -36,7 +36,7 @@ import { selectDevice } from "@s/common";
 import firebase from "@s/firebase";
 import { selectAllDesigners } from "@s/main";
 import { selectUser } from "@s/user";
-import { selectById } from "@s/users";
+import { selectUserById } from "@s/users";
 import { userRoleIcons } from "@s/users/constants";
 import { partialUser } from "@s/users/constructors";
 import type { UserType } from "@s/users/types";
@@ -59,7 +59,7 @@ export const UserCard = ({
   const device = useAppSelector(selectDevice);
 
   const currentUser = useAppSelector(selectUser);
-  const propsUser = useAppSelector((state) => selectById(state, userId));
+  const propsUser = useAppSelector((state) => selectUserById(state, userId));
 
   const allDesigners = useAppSelector(selectAllDesigners);
   const [user, updateUser] = useImmer<UserType>(partialUser());

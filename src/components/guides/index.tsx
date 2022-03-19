@@ -24,8 +24,8 @@ import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import {
   selectEntries,
+  selectEntryTotal,
   selectLoading,
-  selectTotal,
   selectURLEntry,
   setURLEntry,
 } from "@s/guides";
@@ -53,7 +53,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   const user = useAppSelector(selectUser);
 
   const loading = useAppSelector(selectLoading);
-  const total = useAppSelector(selectTotal);
+  const total = useAppSelector(selectEntryTotal);
   const entries = useAppSelector(selectEntries);
   const urlEntry = useAppSelector(selectURLEntry);
 

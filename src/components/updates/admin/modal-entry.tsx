@@ -28,7 +28,7 @@ import { CustomReactMarkdown, CustomReactMde } from "@c/util/react-markdown";
 import { selectDevice } from "@s/common";
 import firestore from "@s/firebase/firestore";
 import type { UpdateId } from "@s/firebase/types";
-import { selectById } from "@s/updates";
+import { selectEntryById } from "@s/updates";
 import { partialUpdate } from "@s/updates/constructors";
 import { UpdateEntrySchema } from "@s/updates/schemas";
 import type { UpdateEntryType } from "@s/updates/types";
@@ -265,7 +265,7 @@ export const ModalEdit = ({
   open,
 }: ModalEditProps) => {
   const { nickname: name } = useAppSelector(selectUser);
-  const entry = useAppSelector((state) => selectById(state, entryId));
+  const entry = useAppSelector((state) => selectEntryById(state, entryId));
   const saveEntry = (entry: UpdateEntryType) => {
     const result = UpdateEntrySchema.safeParse(entry);
     if (result.success) {

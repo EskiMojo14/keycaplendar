@@ -129,10 +129,10 @@ export const {
 
 export const {
   selectAll: selectUsers,
-  selectById,
+  selectById: selectUserById,
   selectEntities: selectUserMap,
-  selectIds,
-  selectTotal,
+  selectIds: selectUserIds,
+  selectTotal: selectUserTotal,
 } = userAdapter.getSelectors<RootState>((state) => state.users.users);
 
 export const selectView = (state: RootState) => state.users.view;

@@ -9,7 +9,7 @@ import {
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import firebase from "@s/firebase";
-import { selectById, setLoading } from "@s/users";
+import { selectUserById, setLoading } from "@s/users";
 import { getUsers } from "@s/users/functions";
 
 export type DialogDeleteProps = {
@@ -20,7 +20,7 @@ export type DialogDeleteProps = {
 
 export const DialogDelete = ({ onClose, open, userId }: DialogDeleteProps) => {
   const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => selectById(state, userId));
+  const user = useAppSelector((state) => selectUserById(state, userId));
   const deleteUser = () => {
     onClose();
     dispatch(setLoading(true));

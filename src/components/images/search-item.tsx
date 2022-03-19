@@ -11,7 +11,7 @@ import {
 import reactStringReplace from "react-string-replace";
 import { useAppSelector } from "~/app/hooks";
 import { withTooltip } from "@c/util/hocs";
-import { selectById } from "@s/images";
+import { selectImageById } from "@s/images";
 import "./search-item.scss";
 
 export type SearchItemProps = {
@@ -21,7 +21,7 @@ export type SearchItemProps = {
 };
 
 export const SearchItem = ({ checked, imageId, search }: SearchItemProps) => {
-  const image = useAppSelector((state) => selectById(state, imageId));
+  const image = useAppSelector((state) => selectImageById(state, imageId));
   return image ? (
     <ListItem disabled>
       <ListItemGraphic

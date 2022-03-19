@@ -3,7 +3,7 @@ import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import firestore from "@s/firebase/firestore";
 import type { UpdateId } from "@s/firebase/types";
-import { selectById, setEntries, setLoading } from ".";
+import { selectEntryById, setEntries, setLoading } from ".";
 import type { UpdateEntryType } from "./types";
 
 const { dispatch } = store;
@@ -35,7 +35,7 @@ export const getEntries = () => {
 };
 
 export const pinEntry = (entryId: EntityId, state = store.getState()) => {
-  const entry = selectById(state, entryId);
+  const entry = selectEntryById(state, entryId);
   firestore
     .collection("updates")
     .doc(entryId as UpdateId)

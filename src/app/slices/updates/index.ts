@@ -54,10 +54,10 @@ export const selectLoading = (state: RootState) => state.updates.loading;
 
 export const {
   selectAll: selectEntries,
-  selectById,
+  selectById: selectEntryById,
   selectEntities: selectEntryMap,
-  selectIds,
-  selectTotal,
+  selectIds: selectEntryIds,
+  selectTotal: selectEntryTotal,
 } = updateEntryAdapter.getSelectors<RootState>(
   (state) => state.updates.entries
 );

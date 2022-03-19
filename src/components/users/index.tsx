@@ -40,14 +40,14 @@ import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { selectBottomNav } from "@s/settings";
 import {
-  selectIds,
   selectLoading,
   selectNextPageToken,
   selectPage,
   selectReverseSort,
   selectRowsPerPage,
   selectSort,
-  selectTotal,
+  selectUserIds,
+  selectUserTotal,
   selectView,
 } from "@s/users";
 import {
@@ -88,8 +88,8 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
   const userSort = useAppSelector(selectSort);
   const reverseUserSort = useAppSelector(selectReverseSort);
 
-  const total = useAppSelector(selectTotal);
-  const ids = useAppSelector(selectIds);
+  const total = useAppSelector(selectUserTotal);
+  const ids = useAppSelector(selectUserIds);
 
   const nextPageToken = useAppSelector(selectNextPageToken);
   const rowsPerPage = useAppSelector(selectRowsPerPage);

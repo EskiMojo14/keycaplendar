@@ -88,10 +88,10 @@ export const selectDuplicateSetImages = (state: RootState) =>
 
 export const {
   selectAll: selectImages,
-  selectById,
+  selectById: selectImageById,
   selectEntities: selectImageMap,
-  selectIds,
-  selectTotal,
+  selectIds: selectImageIds,
+  selectTotal: selectImageTotal,
 } = imageAdapter.getSelectors<RootState>((state) => state.images.images);
 
 export default imagesSlice.reducer;

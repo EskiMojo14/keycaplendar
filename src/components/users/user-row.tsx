@@ -16,7 +16,7 @@ import { Autocomplete } from "@c/util/autocomplete";
 import firebase from "@s/firebase";
 import { selectAllDesigners } from "@s/main";
 import { selectUser } from "@s/user";
-import { selectById } from "@s/users";
+import { selectUserById } from "@s/users";
 import { partialUser } from "@s/users/constructors";
 import type { UserType } from "@s/users/types";
 import {
@@ -42,7 +42,7 @@ export const UserRow = ({
   userId,
 }: UserRowProps) => {
   const currentUser = useAppSelector(selectUser);
-  const propsUser = useAppSelector((state) => selectById(state, userId));
+  const propsUser = useAppSelector((state) => selectUserById(state, userId));
 
   const allDesigners = useAppSelector(selectAllDesigners);
 

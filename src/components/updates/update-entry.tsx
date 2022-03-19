@@ -15,7 +15,7 @@ import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import { CustomReactMarkdown } from "@c/util/react-markdown";
-import { selectById, selectURLEntry } from "@s/updates";
+import { selectEntryById, selectURLEntry } from "@s/updates";
 import { selectUser } from "@s/user";
 import {
   clearSearchParams,
@@ -41,7 +41,7 @@ export const UpdateEntry = ({
 }: UpdateEntryProps) => {
   const user = useAppSelector(selectUser);
 
-  const entry = useAppSelector((state) => selectById(state, entryId));
+  const entry = useAppSelector((state) => selectEntryById(state, entryId));
 
   const urlEntry = useAppSelector(selectURLEntry);
 
