@@ -5,33 +5,33 @@ const {
   compilerOptions: { paths },
 } = tsconfig;
 
-const pathGroupsOverrides = [
-  {
-    group: "external",
-    pattern: "react",
-    position: "before",
-  },
-  {
-    group: "internal",
-    pattern: "~/app/*",
-    position: "before",
-  },
-  {
-    group: "internal",
-    pattern: "@i",
-    position: "after",
-  },
-  {
-    group: "object",
-    pattern: "@m/*",
-    position: "after",
-  },
-  {
+const pathGroupsOverrides = {
+  "./*.scss": {
     group: "object",
     pattern: "./*.scss",
     position: "after",
   },
-];
+  "@i": {
+    group: "internal",
+    pattern: "@i",
+    position: "after",
+  },
+  "@m/*": {
+    group: "object",
+    pattern: "@m/*",
+    position: "after",
+  },
+  "~/app/*": {
+    group: "internal",
+    pattern: "~/app/*",
+    position: "before",
+  },
+  react: {
+    group: "external",
+    pattern: "react",
+    position: "before",
+  },
+};
 
 module.exports = {
   // Specifies the ESLint parser
@@ -114,21 +114,14 @@ module.exports = {
         ],
         pathGroups: [
           ...Object.keys(paths)
-            .filter(
-              (path) =>
-                !pathGroupsOverrides.find(
-                  (pathGroup) => pathGroup.pattern === path
-                )
-            )
+            .filter((path) => !pathGroupsOverrides[path])
             .map((path) => ({
               group: "internal",
               pattern: path,
             })),
-          ...pathGroupsOverrides,
+          ...Object.values(pathGroupsOverrides),
         ],
-        pathGroupsExcludedImportTypes: [
-          ...pathGroupsOverrides.map((pathGroup) => pathGroup.pattern),
-        ],
+        pathGroupsExcludedImportTypes: [...Object.keys(pathGroupsOverrides)],
         warnOnUnassignedImports: true,
       },
     ],
