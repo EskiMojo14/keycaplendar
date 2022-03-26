@@ -90,10 +90,12 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   };
 
   useEffect(() => {
-    if (device === "desktop") {
-      setDetailEntry(urlEntry || "Di1F9XkWTG2M9qbP2ZcN");
+    if (urlEntry) {
+      openDetail(urlEntry);
+    } else if (device === "desktop") {
+      openDetail("Di1F9XkWTG2M9qbP2ZcN");
     }
-  }, [entries]);
+  }, [entries, urlEntry]);
 
   const [createOpen, setCreateOpen] = useState(false);
   const openCreate = () => {
