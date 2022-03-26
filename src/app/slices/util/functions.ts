@@ -5,7 +5,7 @@ import { is } from "typescript-is";
 import { replaceChars } from "@s/common/constants";
 import firebase from "@s/firebase";
 import type { DateSortKeys, SetType } from "@s/main/types";
-import type { KeysMatching, WritableKeys } from "./types";
+import type { WritableKeys } from "./types";
 
 const storage = firebase.storage();
 
@@ -639,17 +639,11 @@ export const createURL = (
   {
     href = window.location.href,
     ...opts
-  }: Partial<
-    Pick<URL, KeysMatching<Pick<URL, WritableKeys<URL>>, string>>
-  > = {},
+  }: Partial<Pick<URL, WritableKeys<URL>>> = {},
   paramsMod?: (params: URLSearchParams) => void
 ) => {
   const url = new URL(href);
-  objectEntries(opts).forEach(([key, val]) => {
-    if (typeof val === "string" && hasKey(url, key)) {
-      url[key] = val;
-    }
-  });
+  Object.assign(url, opts);
   paramsMod?.(url.searchParams);
   return url;
 };

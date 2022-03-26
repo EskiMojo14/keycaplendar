@@ -25,7 +25,7 @@ import { blankKeyset, blankPreset } from "@s/main/constants";
 import type { PresetType, SetType } from "@s/main/types";
 import { selectBottomNav, selectView } from "@s/settings";
 import { selectUser } from "@s/user";
-import { closeModal, openModal } from "@s/util/functions";
+import { closeModal, createURL, openModal } from "@s/util/functions";
 import { DialogDeleteFilterPreset } from "./dialog-delete-filter-preset";
 import { DialogSales } from "./dialog-sales";
 import { DialogShareFavorites } from "./dialog-share-favorites";
@@ -96,16 +96,12 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
           dispatch(setURLSet("id", ""));
         }
         const params = new URLSearchParams(window.location.search);
-        if (
-          params.has("keysetId") ||
-          params.has("keysetAlias") ||
-          params.has("keysetName")
-        ) {
-          params.delete("keysetId");
-          params.delete("keysetAlias");
-          params.delete("keysetName");
-          const questionParam = params.has("page") ? `?${params}` : "/";
-          window.history.pushState({}, "KeycapLendar", questionParam);
+        const keysetParams = ["keysetId", "keysetAlias", "keysetName"];
+        if (keysetParams.some((param) => params.has(param))) {
+          const newUrl = createURL({}, (params) => {
+            keysetParams.forEach((param) => params.delete(param));
+          });
+          window.history.pushState({}, "KeycapLendar", newUrl);
         }
       }
     };

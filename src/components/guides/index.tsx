@@ -32,7 +32,7 @@ import {
 import { getEntries } from "@s/guides/functions";
 import { selectBottomNav } from "@s/settings";
 import { selectUser } from "@s/user";
-import { closeModal, openModal } from "@s/util/functions";
+import { closeModal, createURL, openModal } from "@s/util/functions";
 import { EntriesList } from "./entries-list";
 import { GuideEntry } from "./guide-entry";
 import { ModalDetail } from "./modal-detail";
@@ -76,9 +76,10 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
     }
     const params = new URLSearchParams(window.location.search);
     if (params.has("guideId")) {
-      params.delete("guideId");
-      const questionParam = params.has("page") ? `?${params}` : "/";
-      window.history.pushState({}, "KeycapLendar", questionParam);
+      const newUrl = createURL({}, (params) => {
+        params.delete("guideId");
+      });
+      window.history.pushState({}, "KeycapLendar", newUrl);
     }
   };
   const closeDetail = () => {

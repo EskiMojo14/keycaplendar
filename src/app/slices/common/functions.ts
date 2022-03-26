@@ -46,7 +46,7 @@ import {
   setURLEntry as setURLUpdate,
 } from "@s/updates";
 import { getLinkedFavorites } from "@s/user/functions";
-import { arrayIncludes, camelise, hasKey } from "@s/util/functions";
+import { arrayIncludes, camelise, createURL, hasKey } from "@s/util/functions";
 import themesMap from "~/_themes.module.scss";
 import {
   selectPage,
@@ -316,21 +316,6 @@ export const setPage = (page: Page, state = store.getState()) => {
       document.documentElement.scrollTop = 0;
     }, 90);
     document.title = `KeycapLendar: ${pageTitle[page]}`;
-    const params = new URLSearchParams(window.location.search);
-    params.delete("page");
-    const pageParams = [
-      "keysetId",
-      "keysetAlias",
-      "keysetName",
-      "guideId",
-      "updateId",
-      "favoritesId",
-    ];
-    pageParams.forEach((param) => {
-      if (params.has(param)) {
-        params.delete(param);
-      }
-    });
     if (urlSet.value) {
       dispatch(setURLSet("id", ""));
     }
@@ -343,13 +328,28 @@ export const setPage = (page: Page, state = store.getState()) => {
     if (linkedFavorites.array.length > 0) {
       dispatch(setLinkedFavorites({ array: [], displayName: "" }));
     }
-    const urlParams = params.toString() ? `?${params}` : "";
+    const newUrl = createURL({ pathname: `/${page}` }, (params) => {
+      params.delete("page");
+      const pageParams = [
+        "keysetId",
+        "keysetAlias",
+        "keysetName",
+        "guideId",
+        "updateId",
+        "favoritesId",
+      ];
+      pageParams.forEach((param) => {
+        if (params.has(param)) {
+          params.delete(param);
+        }
+      });
+    });
     window.history.pushState(
       {
         page,
       },
       `KeycapLendar: ${pageTitle[page]}`,
-      `/${page}${urlParams}`
+      newUrl
     );
   }
 };

@@ -6,7 +6,7 @@ import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import { selectPage } from "@s/common";
-import { allPages, mainPages, pageTitle } from "@s/common/constants";
+import { mainPages } from "@s/common/constants";
 import { triggerTransition } from "@s/common/functions";
 import firestore from "@s/firebase/firestore";
 import type { UserId } from "@s/firebase/types";
@@ -24,6 +24,7 @@ import {
   alphabeticalSort,
   alphabeticalSortCurried,
   arrayIncludes,
+  createURL,
   hasKey,
   normalise,
   objectKeys,
@@ -442,28 +443,10 @@ export const setWhitelistMerge = (
     dispatch(setURLWhitelist({}));
     const params = new URLSearchParams(window.location.search);
     if (whitelistParams.some((param) => params.has(param))) {
-      whitelistParams.forEach((param, index, array) => {
-        if (params.has(param)) {
-          params.delete(param);
-        }
-        if (index === array.length - 1) {
-          if (params.has("page")) {
-            const page = params.get("page");
-            if (page && arrayIncludes(allPages, page)) {
-              window.history.pushState(
-                {
-                  page,
-                },
-                `KeycapLendar: ${pageTitle[page]}`,
-                `?${params}`
-              );
-            }
-          } else {
-            const questionParam = params.has("page") ? `?${params}` : "/";
-            window.history.pushState({}, "KeycapLendar", questionParam);
-          }
-        }
+      const newUrl = createURL({}, (params) => {
+        whitelistParams.forEach((param) => params.delete(param));
       });
+      window.history.pushState({}, "KeycapLendar", newUrl);
     }
   }
 };
@@ -487,28 +470,10 @@ export const setWhitelist = <T extends keyof WhitelistType>(
     dispatch(setURLWhitelist({}));
     const params = new URLSearchParams(window.location.search);
     if (whitelistParams.some((param) => params.has(param))) {
-      whitelistParams.forEach((param, index, array) => {
-        if (params.has(param)) {
-          params.delete(param);
-        }
-        if (index === array.length - 1) {
-          if (params.has("page")) {
-            const page = params.get("page");
-            if (page && arrayIncludes(allPages, page)) {
-              window.history.pushState(
-                {
-                  page,
-                },
-                `KeycapLendar: ${pageTitle[page]}`,
-                `?${params}`
-              );
-            }
-          } else {
-            const questionParam = params.has("page") ? `?${params}` : "/";
-            window.history.pushState({}, "KeycapLendar", questionParam);
-          }
-        }
+      const newUrl = createURL({}, (params) => {
+        whitelistParams.forEach((param) => params.delete(param));
       });
+      window.history.pushState({}, "KeycapLendar", newUrl);
     }
   }
 };
@@ -748,9 +713,10 @@ export const setSort = (
   if (clearUrl) {
     const params = new URLSearchParams(window.location.search);
     if (params.has("sort")) {
-      params.delete("sort");
-      const questionParam = params.has("page") ? `?${params}` : "/";
-      window.history.pushState({}, "KeycapLendar", questionParam);
+      const newUrl = createURL({}, (params) => {
+        params.delete("sort");
+      });
+      window.history.pushState({}, "KeycapLendar", newUrl);
     }
   }
 };
@@ -762,9 +728,10 @@ export const setSortOrder = (sortOrder: SortOrderType, clearUrl = true) => {
   if (clearUrl) {
     const params = new URLSearchParams(window.location.search);
     if (params.has("sortOrder")) {
-      params.delete("sortOrder");
-      const questionParam = params.has("page") ? `?${params}` : "/";
-      window.history.pushState({}, "KeycapLendar", questionParam);
+      const newUrl = createURL({}, (params) => {
+        params.delete("sortOrder");
+      });
+      window.history.pushState({}, "KeycapLendar", newUrl);
     }
   }
 };

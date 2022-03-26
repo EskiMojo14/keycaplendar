@@ -5,6 +5,7 @@ import store from "~/app/store";
 import firebase from "@s/firebase";
 import {
   alphabeticalSortPropCurried,
+  createURL,
   hasKey,
   ordinal,
 } from "@s/util/functions";
@@ -138,9 +139,10 @@ export const setStatisticsTab = (
   if (clearUrl) {
     const params = new URLSearchParams(window.location.search);
     if (params.has("statisticsTab")) {
-      params.delete("statisticsTab");
-      const questionParam = params.has("page") ? `?${params}` : "/";
-      window.history.pushState({}, "KeycapLendar", questionParam);
+      const newUrl = createURL({}, (params) => {
+        params.delete("statisticsTab");
+      });
+      window.history.pushState({}, "KeycapLendar", newUrl);
     }
   }
 };
