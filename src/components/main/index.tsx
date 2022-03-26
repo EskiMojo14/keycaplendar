@@ -15,10 +15,9 @@ import { ContentGrid } from "@c/main/content/content-grid";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { selectDevice, selectPage } from "@s/common";
 import {
-  selectAllSets,
   selectLinkedFavorites,
   selectSetGroupTotal,
-  selectURLSet,
+  selectURLKeyset,
   setURLSet,
 } from "@s/main";
 import { blankKeyset, blankPreset } from "@s/main/constants";
@@ -49,8 +48,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   const user = useAppSelector(selectUser);
 
   const contentBool = useAppSelector((state) => !!selectSetGroupTotal(state));
-  const allSets = useAppSelector(selectAllSets);
-  const urlSet = useAppSelector(selectURLSet);
+  const urlSet = useAppSelector(selectURLKeyset);
   const linkedFavorites = useAppSelector(selectLinkedFavorites);
 
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -114,19 +112,10 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   };
 
   useEffect(() => {
-    if (urlSet.value) {
-      const keyset = allSets.find((set) => {
-        if (urlSet.prop === "name") {
-          return urlSet.value === `${set.profile} ${set.colorway}`;
-        } else {
-          return set[urlSet.prop] === urlSet.value;
-        }
-      });
-      if (keyset) {
-        openDetails(keyset.id, false);
-      }
+    if (urlSet) {
+      openDetails(urlSet.id, false);
     }
-  }, [allSets, urlSet]);
+  }, [urlSet]);
 
   const [salesOpen, setSalesOpen] = useState(false);
   const [salesSet, setSalesSet] = useState<EntityId>("");

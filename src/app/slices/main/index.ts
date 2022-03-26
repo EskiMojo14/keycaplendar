@@ -336,6 +336,23 @@ export const {
   selectTotal: selectSetTotal,
 } = keysetAdapter.getSelectors((state: RootState) => state.main.keysets);
 
+export const selectURLKeyset = createSelector(
+  selectAllSets,
+  selectSetMap,
+  selectURLSet,
+  (allSets, setMap, { prop, value }) => {
+    if (!value) {
+      return undefined;
+    } else if (prop === "id") {
+      return setMap[value];
+    } else if (prop === "name") {
+      return allSets.find((set) => value === `${set.profile} ${set.colorway}`);
+    } else {
+      return allSets.find((set) => set[prop] === value);
+    }
+  }
+);
+
 export const selectFilteredSetsIds = (state: RootState) =>
   state.main.keysets.filteredSets;
 
