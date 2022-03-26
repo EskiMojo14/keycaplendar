@@ -6,7 +6,6 @@ import type {
   PayloadAction,
   ThunkAction,
 } from "@reduxjs/toolkit";
-import produce from "immer";
 import { nanoid } from "nanoid";
 import type { RootState } from "~/app/store";
 import type { PresetType } from "@s/main/types";
@@ -142,9 +141,7 @@ export const addUserPreset =
     userPreset: Overwrite<PresetType, { id?: string }>
   ): ThunkAction<PresetType, RootState, unknown, AnyAction> =>
   (dispatch) => {
-    const preset = produce(userPreset, (draftPreset) => {
-      draftPreset.id ??= nanoid();
-    }) as PresetType;
+    const preset: PresetType = { ...userPreset, id: userPreset.id ?? nanoid() };
     dispatch(_addUserPreset(preset));
     return preset;
   };

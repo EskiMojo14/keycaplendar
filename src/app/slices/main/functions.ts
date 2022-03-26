@@ -196,13 +196,9 @@ const createGroups = (transition = false, state = store.getState()) => {
           const { [sort]: val } = set;
           const setDate = DateTime.fromISO(val, { zone: "utc" });
           const setMonth = setDate.toFormat("MMMM yyyy");
-          return setMonth && setMonth === group;
+          return !!setMonth && setMonth === group;
         } else if (sort === "vendor") {
-          if (set.vendors) {
-            return set.vendors.map((vendor) => vendor.name).includes(group);
-          } else {
-            return false;
-          }
+          return !!set.vendors?.some((vendor) => vendor.name === group);
         } else if (sort === "designer") {
           return set.designer.includes(group);
         } else {
