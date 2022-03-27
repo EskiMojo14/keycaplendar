@@ -9,8 +9,6 @@ import { objectEntries, objectFromEntries } from "@s/util/functions";
 import type { ObjectEntries } from "@s/util/types";
 import type { AppStartListening } from "~/app/middleware/listener";
 
-const initialStates: Partial<RootState> = { common, main };
-
 type WhitelistDef = {
   [K in keyof RootState]?:
     | true
@@ -23,6 +21,19 @@ type WhitelistedState<Whitelist extends WhitelistDef> = {
     : never]: Whitelist[Key] extends (keyof RootState[Key])[]
     ? Pick<RootState[Key], Whitelist[Key][number]>
     : RootState[Key];
+};
+
+/** Make sure that initial state is provided if only part of the state is whitelisted */
+type InitialStates<Whitelist extends WhitelistDef> = {
+  [Key in keyof RootState as Whitelist[Key] extends (keyof RootState[Key])[]
+    ? Key
+    : never]: RootState[Key];
+} & {
+  [Key in keyof RootState as Whitelist[Key] extends true
+    ? Key
+    : Whitelist[Key] extends (keyof RootState[Key])[]
+    ? never
+    : Key]?: RootState[Key];
 };
 
 const idWhitelist = <W extends WhitelistDef>(whitelist: W) => whitelist;
@@ -45,6 +56,8 @@ const persistWhitelist = idWhitelist({
 });
 
 type PersistWhitelist = typeof persistWhitelist;
+
+const initialStates: InitialStates<PersistWhitelist> = { common, main };
 
 export const hydrateState = (state: WhitelistedState<PersistWhitelist>) =>
   objectFromEntries(
