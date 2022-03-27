@@ -25,9 +25,9 @@ type WhitelistedState<Whitelist extends WhitelistDef> = {
     : RootState[Key];
 };
 
-const idPersistWhitelist = <W extends WhitelistDef>(whitelist: W) => whitelist;
+const idWhitelist = <W extends WhitelistDef>(whitelist: W) => whitelist;
 
-const persistWhitelist = idPersistWhitelist({
+const persistWhitelist = idWhitelist({
   common: ["theme", "themeMaps"],
   main: [
     "allDesigners",
