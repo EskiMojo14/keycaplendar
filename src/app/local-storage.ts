@@ -85,6 +85,7 @@ export const saveState = (state: RootState) => {
       localStorage.setItem("state", serializedState);
     }
   } catch (err) {
+    console.error(err);
     throw new Error("Can't save changes in local storage");
   }
 };
