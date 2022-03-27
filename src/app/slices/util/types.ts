@@ -2,6 +2,11 @@
 
 export type Obj<T> = Record<string, T>;
 
+/** An array of [key, value] tuples */
+export type ObjectEntries<Obj extends Record<string, any>> = {
+  [Key in keyof Obj]: [Key, Obj[Key]];
+}[keyof Obj][];
+
 /** Makes specified keys optional. */
 
 export type Optional<T, K extends keyof T> = Omit<T, K> & Pick<Partial<T>, K>;

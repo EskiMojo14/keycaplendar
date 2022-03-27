@@ -1,28 +1,58 @@
 import pick from "lodash.pick";
 import type { RootState } from "~/app/store";
 import { initialState as common } from "@s/common";
-import type { CommonState } from "@s/common";
 import { initialState as main } from "@s/main";
-import type { MainState } from "@s/main";
 import { selectCookies } from "@s/settings";
+import { hasKey, objectEntries, objectFromEntries } from "@s/util/functions";
+import type { ObjectEntries } from "@s/util/types";
+import type { AppStartListening } from "~/app/middleware/listener";
 
-export const hydrateState = (state: any) => {
-  const hydrateCommonSlice = (
-    partialCommon: Partial<CommonState>
-  ): CommonState => ({
-    ...common,
-    ...partialCommon,
-  });
-  const hydrateMainSlice = (partialMain: Partial<MainState>): MainState => ({
-    ...main,
-    ...partialMain,
-  });
-  return {
-    ...state,
-    common: hydrateCommonSlice(state.common),
-    main: hydrateMainSlice(state.main),
-  };
+const initialStates: Partial<RootState> = { common, main };
+
+const idPersistWhitelist = <
+  Whitelist extends {
+    [K in keyof RootState]?:
+      | true
+      | [keyof RootState[K], ...(keyof RootState[K])[]];
+  }
+>(
+  whitelist: Whitelist
+) => whitelist;
+
+const persistWhitelist = idPersistWhitelist({
+  common: ["theme", "themeMaps"],
+  main: [
+    "allDesigners",
+    "allProfiles",
+    "allRegions",
+    "allVendorRegions",
+    "allVendors",
+    "presets",
+    "sort",
+    "sortOrder",
+    "whitelist",
+  ],
+  settings: true,
+  user: true,
+});
+
+type PersistWhitelist = typeof persistWhitelist;
+
+type WhitelistedState = {
+  [Key in keyof PersistWhitelist]: PersistWhitelist[Key] extends (keyof RootState[Key])[]
+    ? Pick<RootState[Key], PersistWhitelist[Key][number]>
+    : RootState[Key];
 };
+
+export const hydrateState = (state: WhitelistedState) =>
+  objectFromEntries(
+    objectEntries(persistWhitelist).map(([key, whitelist]) => [
+      key,
+      (Array.isArray(whitelist)
+        ? { ...initialStates[key], ...state[key] }
+        : state[key]) as RootState[typeof key],
+    ]) as ObjectEntries<{ [Key in keyof PersistWhitelist]: RootState[Key] }>
+  );
 
 export const loadState = () => {
   try {
@@ -37,36 +67,13 @@ export const loadState = () => {
   }
 };
 
-export const sanitiseState = (
-  state: RootState
-): Partial<{
-  [key in keyof RootState]: Partial<RootState[key]>;
-}> => {
-  const { common, main, settings, user } = state;
-  const sanitiseCommonSlice = (
-    commonSlice: CommonState
-  ): Partial<CommonState> => pick(commonSlice, "theme", "themeMaps");
-  const sanitiseMainSlice = (mainSlice: MainState): Partial<MainState> =>
-    pick(
-      mainSlice,
-      "allDesigners",
-      "allProfiles",
-      "allRegions",
-      "allVendorRegions",
-      "allVendors",
-      "appPresets",
-      "currentPreset",
-      "sort",
-      "sortOrder",
-      "whitelist"
-    );
-  return {
-    common: sanitiseCommonSlice(common),
-    main: sanitiseMainSlice(main),
-    settings,
-    user,
-  };
-};
+export const sanitiseState = (state: RootState) =>
+  objectFromEntries(
+    objectEntries(persistWhitelist).map(([key, whitelist]) => [
+      key,
+      Array.isArray(whitelist) ? pick(state[key], ...whitelist) : state[key],
+    ]) as ObjectEntries<{ [Key in keyof RootState]?: Partial<RootState[Key]> }>
+  );
 
 export const saveState = (state: RootState) => {
   try {
@@ -79,3 +86,24 @@ export const saveState = (state: RootState) => {
     throw new Error("Can't save changes in local storage");
   }
 };
+
+export const setupPersistListener = (startListening: AppStartListening) =>
+  startListening({
+    effect: async (action, { cancelActiveListeners, delay, getState }) => {
+      // debounce
+      cancelActiveListeners();
+      await delay(1000);
+
+      saveState(getState());
+    },
+    predicate: (action, currentState, originalState) =>
+      objectEntries(persistWhitelist).some(([key, whitelist]) =>
+        Array.isArray(whitelist)
+          ? whitelist.some(
+              (innerKey) =>
+                hasKey(currentState[key], innerKey) &&
+                currentState[key][innerKey] !== originalState[key][innerKey]
+            )
+          : currentState[key] !== originalState[key]
+      ),
+  });

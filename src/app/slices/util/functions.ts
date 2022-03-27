@@ -5,7 +5,7 @@ import { is } from "typescript-is";
 import { replaceChars } from "@s/common/constants";
 import firebase from "@s/firebase";
 import type { DateSortKeys, SetType } from "@s/main/types";
-import type { WritableKeys } from "./types";
+import type { ObjectEntries, WritableKeys } from "./types";
 
 const storage = firebase.storage();
 
@@ -76,7 +76,15 @@ export const objectKeys = <T extends Record<string, any>>(
 
 export const objectEntries = <T extends Record<string, any>>(
   obj: T
-): [keyof T, T[keyof T]][] => Object.entries(obj);
+): ObjectEntries<T> => Object.entries(obj);
+
+/**
+ * Creates an object from tuples. Use to assert a
+ */
+
+export const objectFromEntries = <T extends Record<string, any>>(
+  entries: ObjectEntries<T>
+): T => Object.fromEntries(entries) as T;
 
 /**
  * Group objects by a specified key or accessor function result
