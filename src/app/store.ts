@@ -38,7 +38,7 @@ export const createStore = (preloadedState?: Partial<RootState>) =>
       getDefaultMiddleware({
         immutableCheck: false,
         serializableCheck: false,
-      }).concat(listenerMiddleware),
+      }).prepend(listenerMiddleware),
     preloadedState,
     reducer,
   });
