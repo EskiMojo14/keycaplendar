@@ -3,16 +3,10 @@ import {
   createSelector,
   createSlice,
 } from "@reduxjs/toolkit";
-import type {
-  AnyAction,
-  EntityId,
-  EntityState,
-  PayloadAction,
-  ThunkAction,
-} from "@reduxjs/toolkit";
+import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
-import type { RootState } from "~/app/store";
+import type { AppThunk, RootState } from "~/app/store";
 import { blankPreset } from "@s/main/constants";
 import { partialSet } from "@s/main/constructors";
 import { selectUserPresetMap } from "@s/user";
@@ -410,9 +404,7 @@ const {
 } = mainSlice;
 
 export const addAppPreset =
-  (
-    userPreset: Overwrite<PresetType, { id?: string }>
-  ): ThunkAction<PresetType, RootState, unknown, AnyAction> =>
+  (userPreset: Overwrite<PresetType, { id?: string }>): AppThunk<PresetType> =>
   (dispatch) => {
     const preset: PresetType = { ...userPreset, id: userPreset.id ?? nanoid() };
     dispatch(_addAppPreset(preset));

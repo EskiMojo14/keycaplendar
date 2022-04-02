@@ -1,13 +1,7 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
-import type {
-  AnyAction,
-  EntityId,
-  EntityState,
-  PayloadAction,
-  ThunkAction,
-} from "@reduxjs/toolkit";
+import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import { nanoid } from "nanoid";
-import type { RootState } from "~/app/store";
+import type { AppThunk, RootState } from "~/app/store";
 import type { PresetType } from "@s/main/types";
 import { alphabeticalSortPropCurried } from "@s/util/functions";
 import type { Overwrite } from "@s/util/types";
@@ -137,9 +131,7 @@ const {
 } = userSlice;
 
 export const addUserPreset =
-  (
-    userPreset: Overwrite<PresetType, { id?: string }>
-  ): ThunkAction<PresetType, RootState, unknown, AnyAction> =>
+  (userPreset: Overwrite<PresetType, { id?: string }>): AppThunk<PresetType> =>
   (dispatch) => {
     const preset: PresetType = { ...userPreset, id: userPreset.id ?? nanoid() };
     dispatch(_addUserPreset(preset));

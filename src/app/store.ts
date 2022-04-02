@@ -1,4 +1,5 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import type { AnyAction, ThunkAction } from "@reduxjs/toolkit";
 import { loadState } from "~/app/local-storage";
 import audit from "@s/audit";
 import common from "@s/common";
@@ -45,6 +46,13 @@ export const createStore = (preloadedState?: Partial<RootState>) =>
 export type AppStore = ReturnType<typeof createStore>;
 
 export type AppDispatch = AppStore["dispatch"];
+
+export type AppThunk<ReturnType> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  AnyAction
+>;
 
 export const store = createStore(loadState());
 
