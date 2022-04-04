@@ -2,7 +2,7 @@
 
 A web app documenting current, future and past keycap GBs, hosted at https://keycaplendar.firebaseapp.com/.
 
-KeycapLendar is built using React Typescript and SCSS for the frontend, and Firebase for the backend. It uses RMWC as a UI framework.
+KeycapLendar is built using Typescript and SCSS for the frontend, and Firebase for the backend. It uses React for UI, Redux for global state management, and RMWC as a UI framework.
 
 Appreciate what I do and want to support me? Check out my [Ko-fi](https://ko-fi.com/eskimojo)!
 
