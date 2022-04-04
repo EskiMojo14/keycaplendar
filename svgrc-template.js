@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { produce } = require("immer");
+
 const memoImportAST = {
   source: { type: "StringLiteral", value: "react" },
   specifiers: [
@@ -45,25 +48,20 @@ function template(
     imports.push(memoImportAST);
   }
 
-  exports = (exports || []).map((exportAST) =>
-    exportAST.type === "VariableDeclaration"
-      ? {
-          ...exportAST,
-          declarations: exportAST.declarations.map((declaration) => {
-            if (
-              declaration.init.callee.object.name === "React" &&
-              declaration.init.callee.property.name === "memo"
-            ) {
-              return {
-                ...declaration,
-                init: { ...declaration.init, ...memoCallAST },
-              };
-            }
-            return declaration;
-          }),
-        }
-      : exportAST
-  );
+  exports = produce(exports ?? [], (draftExports) => {
+    draftExports.forEach((exportAST) => {
+      if (exportAST.type === "VariableDeclaration") {
+        exportAST.declarations.forEach((declaration) => {
+          if (
+            declaration.init.callee.object.name === "React" &&
+            declaration.init.callee.property.name === "memo"
+          ) {
+            Object.assign(declaration.init, memoCallAST);
+          }
+        });
+      }
+    });
+  });
 
   const templatedComponent = templatingEngine.ast`${imports}
 
