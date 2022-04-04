@@ -57,23 +57,25 @@ const _createStore = (preloadedState?: Partial<RootState>) =>
     reducer,
   });
 
-type BatchTuple = [AnyAction | AppThunk<any>, ...(AnyAction | AppThunk<any>)[]];
+export type BatchTuple = [
+  AnyAction | AppThunk<any>,
+  ...(AnyAction | AppThunk<any>)[]
+];
 
-type DispatchActionReturn<DispatchedAction> = DispatchedAction extends AppThunk<
-  infer ThunkReturn
->
-  ? ThunkReturn
-  : DispatchedAction extends Action<"listenerMiddleware/add">
-  ? UnsubscribeListener
-  : DispatchedAction;
+export type DispatchActionReturn<DispatchedAction> =
+  DispatchedAction extends AppThunk<infer ThunkReturn>
+    ? ThunkReturn
+    : DispatchedAction extends Action<"listenerMiddleware/add">
+    ? UnsubscribeListener
+    : DispatchedAction;
 
-type MapTupleToDispatchReturn<Actions extends BatchTuple> = {
+export type MapTupleToDispatchReturn<Actions extends BatchTuple> = {
   [Index in keyof Actions]: DispatchActionReturn<Actions[Index]>;
 } & { length: Actions["length"] };
 
-const createStore: (...params: Parameters<typeof _createStore>) => ReturnType<
-  typeof _createStore
-> & {
+export const createStore: (
+  ...params: Parameters<typeof _createStore>
+) => ReturnType<typeof _createStore> & {
   dispatch: {
     <Actions extends BatchTuple>(
       actions: Actions
