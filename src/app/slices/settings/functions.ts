@@ -109,14 +109,16 @@ export const setView = (
   const { settings } = state;
   const loading = selectLoading(state);
   if (view !== settings.view && !loading) {
-    dispatch(setTransition(true));
-    setTimeout(() => {
-      document.documentElement.scrollTop = 0;
-      dispatch(setSetting("view", view));
-    }, 90);
-    setTimeout(() => {
+    dispatch((dispatch) => {
       dispatch(setTransition(true));
-    }, 300);
+      setTimeout(() => {
+        document.documentElement.scrollTop = 0;
+        dispatch(setSetting("view", view));
+      }, 90);
+      setTimeout(() => {
+        dispatch(setTransition(true));
+      }, 300);
+    });
   } else {
     dispatch(setSetting("view", view));
   }

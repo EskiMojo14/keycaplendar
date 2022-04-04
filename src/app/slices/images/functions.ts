@@ -41,8 +41,10 @@ export const createSetImageList = (state = store.getState()) => {
   );
   const findDuplicates = (arr: string[]) =>
     arr.filter((item, index) => arr.indexOf(item) !== index);
-  dispatch(setSetImages(setImages));
-  dispatch(setDuplicateSetImages(findDuplicates(setImages)));
+  dispatch([
+    setSetImages(setImages),
+    setDuplicateSetImages(findDuplicates(setImages)),
+  ]);
 };
 
 const processItems = (items: firebase.storage.Reference[]) =>

@@ -61,6 +61,7 @@ export const userSlice = createSlice({
     deleteUserPreset: (state, { payload }: PayloadAction<EntityId>) => {
       userPresetAdapter.removeOne(state.userPresets, payload);
     },
+    resetUser: () => initialState,
     setBought: (state, { payload }: PayloadAction<EntityId[]>) => {
       state.bought = payload;
     },
@@ -91,6 +92,7 @@ export const userSlice = createSlice({
 export const {
   actions: {
     deleteUserPreset,
+    resetUser,
     setBought,
     setFavorites,
     setFavoritesId,

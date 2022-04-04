@@ -31,30 +31,23 @@ export const getData = async () => {
   dispatch(setLoading(true));
   fileRef
     .getDownloadURL()
-    .then((url) => {
-      fetch(url)
-        .then((response) => {
-          response.json().then((data) => {
-            const { timestamp, ...statisticsData } = data;
-            const luxonTimetamp = DateTime.fromISO(timestamp, { zone: "utc" });
-            const timestampOrdinal = ordinal(luxonTimetamp.day);
-            const formattedTimestamp = luxonTimetamp.toFormat(
-              `HH:mm d'${timestampOrdinal}' MMM yyyy 'UTC'`
-            );
-            queue.notify({
-              timeout: 4000,
-              title: `Last updated: ${formattedTimestamp}`,
-            });
-            dispatch(setStatisticsData(statisticsData));
-            dispatch(setLoading(false));
+    .then((url) =>
+      fetch(url).then((response) =>
+        response.json().then((data) => {
+          const { timestamp, ...statisticsData } = data;
+          const luxonTimetamp = DateTime.fromISO(timestamp, { zone: "utc" });
+          const timestampOrdinal = ordinal(luxonTimetamp.day);
+          const formattedTimestamp = luxonTimetamp.toFormat(
+            `HH:mm d'${timestampOrdinal}' MMM yyyy 'UTC'`
+          );
+          queue.notify({
+            timeout: 4000,
+            title: `Last updated: ${formattedTimestamp}`,
           });
+          dispatch([setStatisticsData(statisticsData), setLoading(false)]);
         })
-        .catch((error) => {
-          console.log(error);
-          dispatch(setLoading(false));
-          queue.notify({ title: `Failed to fetch statistics data: ${error}` });
-        });
-    })
+      )
+    )
     .catch((error) => {
       console.log(error);
       dispatch(setLoading(false));
@@ -121,8 +114,7 @@ export const sortData = (state = store.getState()) => {
         });
       }
     });
-    dispatch(setStatisticsData(sortedData));
-    dispatch(setLoading(false));
+    dispatch([setStatisticsData(sortedData), setLoading(false)]);
   }
 };
 

@@ -85,9 +85,7 @@ export const getActions = (state = store.getState()) => {
 
       alphabeticalSortProp(actions, "timestamp", true);
 
-      dispatch(setUsers(users));
-
-      dispatch(setAllActions(processActions(actions)));
+      dispatch([setUsers(users), setAllActions(processActions(actions))]);
     })
     .catch((error) => {
       queue.notify({ title: `Error getting data: ${error}` });

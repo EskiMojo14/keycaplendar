@@ -24,8 +24,7 @@ export const getEntries = () => {
           pinned: data.pinned ?? false,
         });
       });
-      dispatch(setEntries(entries));
-      dispatch(setLoading(false));
+      dispatch([setEntries(entries), setLoading(false)]);
     })
     .catch((error) => {
       dispatch(setLoading(false));

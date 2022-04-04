@@ -40,12 +40,11 @@ export const getUsers = (append = false, state = store.getState()) => {
         queue.notify({ title: result.data.error });
         dispatch(setLoading(false));
       } else {
-        dispatch(setLoading(false));
-        const action = append
-          ? appendUsers(result.data.users)
-          : setUsers(result.data.users);
-        dispatch(action);
-        dispatch(setNextPageToken(result.data.nextPageToken ?? ""));
+        dispatch([
+          setLoading(false),
+          append ? appendUsers(result.data.users) : setUsers(result.data.users),
+          setNextPageToken(result.data.nextPageToken ?? ""),
+        ]);
       }
     })
     .catch((error) => {

@@ -86,8 +86,10 @@ export const getData = () => {
   dispatch(setLoading(true));
   cloudFn({ num: 25 })
     .then(({ data: actions }) => {
-      dispatch(setProcessedActions(processActions(actions)));
-      dispatch(setLoading(false));
+      dispatch([
+        setProcessedActions(processActions(actions)),
+        setLoading(false),
+      ]);
     })
     .catch((error) => {
       console.log(error);

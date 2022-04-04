@@ -33,13 +33,7 @@ import {
   checkTheme,
   clearCookies,
 } from "@s/settings/functions";
-import {
-  setFavorites,
-  setHidden,
-  setShareName,
-  setUser,
-  setUserPresets,
-} from "@s/user";
+import { resetUser, setUser } from "@s/user";
 import { getUserPreferences } from "@s/user/functions";
 import "./app.scss";
 
@@ -106,11 +100,7 @@ export const App = () => {
           });
         getUserPreferences(user.uid);
       } else {
-        dispatch(setUser({}));
-        dispatch(setUserPresets([]));
-        dispatch(setFavorites([]));
-        dispatch(setHidden([]));
-        dispatch(setShareName(""));
+        dispatch(resetUser());
         if (defaultPreset.name) {
           dispatch(setCurrentPreset("default"));
         }

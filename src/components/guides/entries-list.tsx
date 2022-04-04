@@ -59,13 +59,8 @@ export const EntriesList = ({ detailEntry, openEntry }: EntriesDrawerProps) => {
   };
   useEffect(setScroll, [filteredTag]);
 
-  const setFilter = (tag: string) => {
-    if (filteredTag === tag) {
-      dispatch(setFilteredTag(""));
-    } else {
-      dispatch(setFilteredTag(tag));
-    }
-  };
+  const setFilter = (tag: string) =>
+    dispatch(setFilteredTag(filteredTag === tag ? "" : tag));
 
   const filterChips = (
     <div className="filter-chips-container">

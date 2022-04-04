@@ -38,13 +38,8 @@ export const GuideEntry = ({
   const entry = useAppSelector((state) => selectEntryById(state, entryId));
   const filteredTag = useAppSelector(selectFilteredTag);
 
-  const setFilter = (tag: string) => {
-    if (filteredTag === tag) {
-      dispatch(setFilteredTag(""));
-    } else {
-      dispatch(setFilteredTag(tag));
-    }
-  };
+  const setFilter = (tag: string) =>
+    dispatch(setFilteredTag(filteredTag === tag ? "" : tag));
 
   const copyLink = () => {
     const url = createURL({ pathname: "/guides" }, (params) => {

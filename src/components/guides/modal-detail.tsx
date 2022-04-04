@@ -54,14 +54,8 @@ export const ModalDetail = ({
 
   const useDrawer = device !== "mobile";
 
-  const setFilter = (tag: string) => {
-    if (filteredTag === tag) {
-      dispatch(setFilteredTag(""));
-    } else {
-      dispatch(setFilteredTag(tag));
-    }
-    onClose();
-  };
+  const setFilter = (tag: string) =>
+    dispatch(setFilteredTag(filteredTag === tag ? "" : tag));
 
   const copyLink = () => {
     const url = createURL({ pathname: "/guides" }, (params) => {

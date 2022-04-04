@@ -64,3 +64,24 @@ export type RemoveFirstFromTuple<T extends any[]> = T["length"] extends 0
   : ((...b: T) => void) extends (a: any, ...b: infer I) => void
   ? I
   : [];
+
+export type UnionToIntersection<U> = (
+  U extends never ? never : (arg: U) => never
+) extends (arg: infer I) => void
+  ? I
+  : never;
+
+export type UnionToTuple<T> = UnionToIntersection<
+  T extends never ? never : (t: T) => T
+> extends (_: never) => infer W
+  ? [...UnionToTuple<Exclude<T, W>>, W]
+  : [];
+
+type _TupleOf<T, N extends number, R extends unknown[]> = R["length"] extends N
+  ? R
+  : _TupleOf<T, N, [T, ...R]>;
+export type Tuple<T, N extends number> = N extends N
+  ? number extends N
+    ? T[]
+    : _TupleOf<T, N, []>
+  : never;

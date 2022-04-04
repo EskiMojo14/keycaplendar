@@ -27,10 +27,11 @@ import {
   createURL,
   hasKey,
   normalise,
-  objectKeys,
+  objectEntries,
   removeDuplicates,
   replaceFunction,
 } from "@s/util/functions";
+import type { Tuple, UnionToTuple } from "@s/util/types";
 import {
   addAppPreset,
   deleteAppPreset,
@@ -276,7 +277,7 @@ const createGroups = (transition = false, state = store.getState()) => {
   dispatch(setSetGroups(setGroups));
 
   if (transition) {
-    triggerTransition();
+    dispatch(triggerTransition());
   }
 
   if (sortHiddenCheck[sort].includes(page)) {
@@ -529,8 +530,6 @@ const generateLists = (state = store.getState()) => {
     },
   });
 
-  dispatch(setDefaultPreset(defaultPreset));
-
   const lists = {
     allDesigners,
     allProfiles,
@@ -539,9 +538,13 @@ const generateLists = (state = store.getState()) => {
     allVendors,
   } as const;
 
-  objectKeys(lists).forEach((key) => {
-    dispatch(setList(key, lists[key]));
-  });
+  dispatch([
+    setDefaultPreset(defaultPreset),
+    ...(objectEntries(lists).map(([key, val]) => setList(key, val)) as Tuple<
+      ReturnType<typeof setList>,
+      UnionToTuple<keyof typeof lists>["length"]
+    >),
+  ]);
 
   const params = new URLSearchParams(window.location.search);
   const noUrlParams =
@@ -596,8 +599,7 @@ export const getData = () => {
         }
       });
 
-      dispatch(setAllSets(sets));
-      dispatch(setInitialLoad(false));
+      dispatch([setAllSets(sets), setInitialLoad(false)]);
 
       filterData(true);
       generateLists(store.getState());
@@ -605,8 +607,7 @@ export const getData = () => {
     .catch((error) => {
       console.log(`Error getting data: ${error}`);
       queue.notify({ title: `Error getting data: ${error}` });
-      dispatch(setLoading(false));
-      dispatch(setSetGroups([]));
+      dispatch([setLoading(false), setSetGroups([])]);
     });
 };
 
@@ -702,8 +703,7 @@ export const setSort = (
     sortOrder = "descending";
   }
   if (arrayIncludes(allSorts, sort)) {
-    dispatch(setMainSort(sort));
-    dispatch(setMainSortOrder(sortOrder));
+    dispatch([setMainSort(sort), setMainSortOrder(sortOrder)]);
     createGroups();
   }
   if (clearUrl) {
@@ -791,14 +791,12 @@ export const newPreset = (preset: PresetType) => {
 };
 
 export const editPreset = (preset: PresetType) => {
-  dispatch(setCurrentPreset(preset.id));
-  dispatch(upsertUserPreset(preset));
+  dispatch([setCurrentPreset(preset.id), upsertUserPreset(preset)]);
   syncPresets(store.getState());
 };
 
 export const deletePreset = (presetId: EntityId) => {
-  dispatch(setCurrentPreset("default"));
-  dispatch(deleteUserPreset(presetId));
+  dispatch([setCurrentPreset("default"), deleteUserPreset(presetId)]);
   syncPresets(store.getState());
 };
 
@@ -821,13 +819,11 @@ export const newGlobalPreset = (preset: PresetType) => {
 };
 
 export const editGlobalPreset = (preset: PresetType) => {
-  dispatch(upsertAppPreset(preset));
-  dispatch(setCurrentPreset(preset.id));
+  dispatch([upsertAppPreset(preset), setCurrentPreset(preset.id)]);
   syncGlobalPresets(store.getState());
 };
 
 export const deleteGlobalPreset = (presetId: EntityId) => {
-  dispatch(setCurrentPreset("default"));
-  dispatch(deleteAppPreset(presetId));
+  dispatch([setCurrentPreset("default"), deleteAppPreset(presetId)]);
   syncGlobalPresets(store.getState());
 };

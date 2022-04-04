@@ -1,8 +1,9 @@
-import type { EntityId } from "@reduxjs/toolkit";
+import type { AnyAction, EntityId } from "@reduxjs/toolkit";
 import debounce from "lodash.debounce";
 import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
+import type { BatchTuple } from "~/app/store";
 import { selectPage } from "@s/common";
 import firebase from "@s/firebase";
 import firestore from "@s/firebase/firestore";
@@ -49,29 +50,31 @@ export const getUserPreferences = (id: string) => {
               syncSettings,
             } = data;
 
+            const actions: AnyAction[] = [];
+
             if (shareName) {
-              dispatch(setShareName(shareName));
+              actions.push(setShareName(shareName));
             }
 
             if (favoritesId) {
-              dispatch(setFavoritesId(favoritesId));
+              actions.push(setFavoritesId(favoritesId));
             }
 
             if (is<string[]>(favorites)) {
-              dispatch(setFavorites(favorites));
+              actions.push(setFavorites(favorites));
             }
             if (is<string[]>(bought)) {
-              dispatch(setBought(bought));
+              actions.push(setBought(bought));
             }
             if (is<string[]>(hidden)) {
-              dispatch(setHidden(hidden));
+              actions.push(setHidden(hidden));
             }
 
             if (filterPresets) {
               const updatedPresets = filterPresets.map((preset) =>
                 updatePreset(preset)
               );
-              dispatch(setUserPresets(updatedPresets));
+              actions.push(setUserPresets(updatedPresets));
             }
 
             if (is<boolean>(syncSettings)) {
@@ -97,6 +100,8 @@ export const getUserPreferences = (id: string) => {
                 });
               }
             }
+
+            dispatch(actions as unknown as BatchTuple);
 
             filterData();
           }

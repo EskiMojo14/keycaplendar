@@ -2,6 +2,7 @@ import throttle from "lodash.throttle";
 import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
+import type { AppThunk } from "~/app/store";
 import firestore from "@s/firebase/firestore";
 import {
   selectURLEntry as selectURLGuide,
@@ -60,12 +61,14 @@ import type { Page, ThemeMap } from "./types";
 
 const { dispatch } = store;
 
-export const triggerTransition = (delay = 300) => {
-  dispatch(setTransition(true));
-  setTimeout(() => {
-    dispatch(setTransition(false));
-  }, delay);
-};
+export const triggerTransition =
+  (delay = 300): AppThunk<void> =>
+  (dispatch) => {
+    setTransition(true);
+    setTimeout(() => {
+      dispatch(setTransition(false));
+    }, delay);
+  };
 
 export const saveTheme = () => {
   const interpolatedThemeMap = Object.entries(themesMap).reduce<
@@ -146,43 +149,47 @@ export const getURLQuery = (state = store.getState()) => {
     ) {
       if (arrayIncludes(mainPages, pageQuery)) {
         if (pageQuery === "calendar") {
-          dispatch(setAppPage(pageQuery));
-          dispatch(setMainSort(pageSort[pageQuery]));
-          dispatch(setMainSortOrder(pageSortOrder[pageQuery]));
+          dispatch([
+            setAppPage(pageQuery),
+            setMainSort(pageSort[pageQuery]),
+            setMainSortOrder(pageSortOrder[pageQuery]),
+          ]);
         } else {
           const sortQuery = params.get("sort");
           const sortOrderQuery = params.get("sortOrder");
-          dispatch(setAppPage(pageQuery));
-          dispatch(
+          dispatch([
+            setAppPage(pageQuery),
             setMainSort(
               arrayIncludes(allSorts, sortQuery) &&
                 !arrayIncludes(sortBlacklist[sortQuery], pageQuery)
                 ? sortQuery
                 : pageSort[pageQuery]
-            )
-          );
-          dispatch(
+            ),
             setMainSortOrder(
               sortOrderQuery &&
                 (sortOrderQuery === "ascending" ||
                   sortOrderQuery === "descending")
                 ? sortOrderQuery
                 : pageSortOrder[pageQuery]
-            )
-          );
+            ),
+          ]);
         }
       } else {
         dispatch(setAppPage(pageQuery));
       }
     } else {
-      dispatch(setAppPage("calendar"));
-      dispatch(setMainSort(pageSort.calendar));
-      dispatch(setMainSortOrder(pageSortOrder.calendar));
+      dispatch([
+        setAppPage("calendar"),
+        setMainSort(pageSort.calendar),
+        setMainSortOrder(pageSortOrder.calendar),
+      ]);
     }
   } else {
-    dispatch(setAppPage("calendar"));
-    dispatch(setMainSort(pageSort.calendar));
-    dispatch(setMainSortOrder(pageSortOrder.calendar));
+    dispatch([
+      setAppPage("calendar"),
+      setMainSort(pageSort.calendar),
+      setMainSortOrder(pageSortOrder.calendar),
+    ]);
   }
   const whitelistObj: Partial<WhitelistType> = {};
   whitelistParams.forEach((param, index, array) => {
@@ -219,8 +226,7 @@ export const getURLQuery = (state = store.getState()) => {
     }
     if (index === array.length - 1 && Object.keys(whitelistObj).length > 0) {
       const defaultPreset = selectDefaultPreset(state);
-      dispatch(setURLWhitelist(whitelistObj));
-      dispatch(setCurrentPreset("default"));
+      dispatch([setURLWhitelist(whitelistObj), setCurrentPreset("default")]);
       setWhitelistMerge({ ...defaultPreset.whitelist, ...whitelistObj }, false);
     }
   });
@@ -304,13 +310,14 @@ export const setPage = (page: Page, state = store.getState()) => {
   const urlGuide = selectURLGuide(state);
   const urlUpdate = selectURLUpdate(state);
   if (page !== appPage && !loading && is<Page>(page)) {
-    triggerTransition();
+    dispatch(triggerTransition());
     setTimeout(() => {
-      dispatch(setMainSearch(""));
-      dispatch(setAppPage(page));
+      dispatch([setMainSearch(""), setAppPage(page)]);
       if (arrayIncludes(mainPages, page)) {
-        dispatch(setMainSort(pageSort[page]));
-        dispatch(setMainSortOrder(pageSortOrder[page]));
+        dispatch([
+          setMainSort(pageSort[page]),
+          setMainSortOrder(pageSortOrder[page]),
+        ]);
         filterData();
       }
       document.documentElement.scrollTop = 0;
