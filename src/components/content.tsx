@@ -70,11 +70,11 @@ export const Content = ({ className, ...props }: ContentProps) => {
       case "images":
         return user.isAdmin && <ContentImages openNav={openNav} />;
       case "guides":
-        return user.isAdmin && <ContentGuides openNav={openNav} />;
+        return <ContentGuides openNav={openNav} />;
       case "updates":
-        return user.isAdmin && <ContentUpdates openNav={openNav} />;
+        return <ContentUpdates openNav={openNav} />;
       case "settings":
-        return user.isAdmin && <ContentSettings openNav={openNav} />;
+        return <ContentSettings openNav={openNav} />;
       default:
         return null;
     }
