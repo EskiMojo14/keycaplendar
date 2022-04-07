@@ -626,23 +626,24 @@ export const testSets = (state = store.getState()) => {
         console.log(
           `${set.profile} ${set.colorway} - ${key}: ${value
             .replace(endSpace, "<space>")
-            .replace(startSpace, "<space>")}`
+            .replace(startSpace, "<space>")
+            .replace(commaNoSpace, ",<no space>")}}`
         );
       }
     }
   };
-  sets.forEach((set) => {
-    Object.keys(set).forEach((key) => {
+  for (const set of sets) {
+    for (const key of Object.keys(set)) {
       if (hasKey(set, key)) {
         const { [key]: value } = set;
         if (is<string>(value)) {
           testValue(set, key, value);
         } else if (is<any[]>(value)) {
-          value.forEach((item: VendorType | string) => {
+          for (const item of value) {
             if (is<string>(item)) {
               testValue(set, key, item);
             } else if (is<VendorType>(item)) {
-              Object.keys(item).forEach((itemKey) => {
+              for (const itemKey of Object.keys(item)) {
                 if (hasKey(item, itemKey)) {
                   if (itemKey === "region") {
                     item[itemKey].split(", ").forEach((region) => {
@@ -657,13 +658,13 @@ export const testSets = (state = store.getState()) => {
                     testValue(set, `${key} ${itemKey}`, item[itemKey]);
                   }
                 }
-              });
+              }
             }
-          });
+          }
         }
       }
-    });
-  });
+    }
+  }
 };
 
 const sortData = (state = store.getState()) => {
