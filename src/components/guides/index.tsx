@@ -155,27 +155,26 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   };
 
   const refreshButton =
-    user.isAdmin || user.isEditor || user.isDesigner ? (
-      loading ? (
-        <CircularProgress />
-      ) : (
-        withTooltip(
-          <TopAppBarActionItem icon="refresh" onClick={() => getEntries()} />,
-          "Refresh"
-        )
+    (user.isAdmin || user.isEditor || user.isDesigner) &&
+    (loading ? (
+      <CircularProgress />
+    ) : (
+      withTooltip(
+        <TopAppBarActionItem icon="refresh" onClick={() => getEntries()} />,
+        "Refresh"
       )
-    ) : null;
+    ));
 
   const buttons = <>{refreshButton}</>;
 
-  const indent = user.isAdmin && bottomNav ? <AppBarIndent /> : null;
+  const indent = user.isAdmin && bottomNav && <AppBarIndent />;
 
-  const editorElements = user.isAdmin ? (
+  const editorElements = user.isAdmin && (
     <>
       <Fab
         className={classNames("create-fab", { middle: bottomNav })}
         icon="add"
-        label={device === "desktop" ? "Create" : null}
+        label={device === "desktop" && "Create"}
         onClick={openCreate}
       />
       <ModalCreate
@@ -196,16 +195,16 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
         open={deleteOpen}
       />
     </>
-  ) : null;
+  );
 
   const leftButtons = !indent ? (
     <TopAppBarTitle>{pageTitle.guides}</TopAppBarTitle>
   ) : (
     buttons
   );
-  const rightButtons = !indent ? (
+  const rightButtons = !indent && (
     <TopAppBarSection alignEnd>{buttons}</TopAppBarSection>
-  ) : null;
+  );
 
   const content =
     device === "desktop" ? (

@@ -224,12 +224,13 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
     setShareOpen(false);
   };
 
-  const shareDialog =
-    page === "favorites" && user.email && linkedFavorites.array.length === 0 ? (
+  const shareDialog = page === "favorites" &&
+    user.email &&
+    linkedFavorites.array.length === 0 && (
       <DialogShareFavorites close={closeShare} open={shareOpen} />
-    ) : null;
+    );
 
-  const filterPresetElements = user.email ? (
+  const filterPresetElements = user.email && (
     <>
       <ModalFilterPreset
         close={closeFilterPreset}
@@ -242,9 +243,9 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
         preset={deleteFilterPreset}
       />
     </>
-  ) : null;
+  );
 
-  const deleteElements = user.isEditor ? (
+  const deleteElements = user.isEditor && (
     <>
       <DialogDelete
         close={closeDeleteDialog}
@@ -258,27 +259,24 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
         set={deleteSet}
       />
     </>
-  ) : null;
+  );
 
-  const editorElements =
-    user.isEditor || user.isDesigner ? (
-      <ConditionalWrapper
-        condition={device === "desktop"}
-        wrapper={(children) => (
-          <div className="editor-elements">{children}</div>
-        )}
-      >
-        <Fab
-          className={classNames("create-fab", { middle: bottomNav })}
-          icon="add"
-          label={device === "desktop" ? "Create" : null}
-          onClick={openCreate}
-        />
-        <ModalCreate onClose={closeCreate} open={createOpen} />
-        <ModalEdit onClose={closeEdit} open={editOpen} set={editSet} />
-        {deleteElements}
-      </ConditionalWrapper>
-    ) : null;
+  const editorElements = (user.isEditor || user.isDesigner) && (
+    <ConditionalWrapper
+      condition={device === "desktop"}
+      wrapper={(children) => <div className="editor-elements">{children}</div>}
+    >
+      <Fab
+        className={classNames("create-fab", { middle: bottomNav })}
+        icon="add"
+        label={device === "desktop" && "Create"}
+        onClick={openCreate}
+      />
+      <ModalCreate onClose={closeCreate} open={createOpen} />
+      <ModalEdit onClose={closeEdit} open={editOpen} set={editSet} />
+      {deleteElements}
+    </ConditionalWrapper>
+  );
 
   const content = contentBool ? (
     <ContentGrid
@@ -304,7 +302,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
         openNav={openNav}
         openShare={openShare}
       />
-      {bottomNav ? null : <TopAppBarFixedAdjust />}
+      {!bottomNav && <TopAppBarFixedAdjust />}
       <div className="content-container">
         <DrawerFilter
           close={closeFilter}
@@ -339,7 +337,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
         {filterPresetElements}
         {editorElements}
       </div>
-      {bottomNav ? <TopAppBarFixedAdjust /> : null}
+      {bottomNav && <TopAppBarFixedAdjust />}
     </>
   );
 };

@@ -72,8 +72,9 @@ export const ModalDetail = ({
       });
   };
 
-  const actions = user.isAdmin ? (
-    useDrawer ? (
+  const actions =
+    user.isAdmin &&
+    (useDrawer ? (
       <>
         {withTooltip(
           <IconButton icon={iconObject(<Share />)} onClick={copyLink} />,
@@ -118,8 +119,7 @@ export const ModalDetail = ({
           "Delete"
         )}
       </>
-    )
-  ) : null;
+    ));
 
   return (
     <BoolWrapper
@@ -181,7 +181,7 @@ export const ModalDetail = ({
         )}
         trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
       >
-        {entry ? (
+        {entry && (
           <>
             <div className="title">
               <Typography tag="h3" use="overline">
@@ -216,7 +216,7 @@ export const ModalDetail = ({
               <CustomReactMarkdown>{entry.body}</CustomReactMarkdown>
             </div>
           </>
-        ) : null}
+        )}
       </BoolWrapper>
     </BoolWrapper>
   );

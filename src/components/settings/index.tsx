@@ -141,13 +141,12 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
           size: "xsmall",
         } as IconOptions)
       : permissionIcon;
-  const userBadge =
-    user.isAdmin || user.isEditor || user.isDesigner ? (
-      <Badge
-        className="user-icon material-icons"
-        label={<Icon icon={sizedIcon} />}
-      />
-    ) : null;
+  const userBadge = (user.isAdmin || user.isEditor || user.isDesigner) && (
+    <Badge
+      className="user-icon material-icons"
+      label={<Icon icon={sizedIcon} />}
+    />
+  );
   const userDisplay = user.email ? (
     <div className="settings-group">
       <div className="subheader">
@@ -180,9 +179,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
           )}
           {user.name ? (
             <ListItemText>
-              {user.nickname ? (
-                <div className="overline">{user.nickname}</div>
-              ) : null}
+              {user.nickname && <div className="overline">{user.nickname}</div>}
               <ListItemPrimaryText>{user.name}</ListItemPrimaryText>
               <ListItemSecondaryText>{user.email}</ListItemSecondaryText>
             </ListItemText>
@@ -256,30 +253,29 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
       </Card>
     </div>
   );
-  const deleteUserDialog = user.email ? (
+  const deleteUserDialog = user.email && (
     <DialogDelete
       close={closeDeleteDialog}
       open={deleteDialogOpen}
       signOut={signOut}
     />
-  ) : null;
-  const bottomNavOptions =
-    device === "mobile" ? (
-      <div className="settings-group">
-        <div className="subheader">
-          <Typography use="caption">UI</Typography>
-        </div>
-        <Card>
-          <div className="switch-container">
-            <Switch
-              checked={bottomNav}
-              label="Bottom navigation"
-              onChange={(evt) => setBottomNav(evt.currentTarget.checked)}
-            />
-          </div>
-        </Card>
+  );
+  const bottomNavOptions = device === "mobile" && (
+    <div className="settings-group">
+      <div className="subheader">
+        <Typography use="caption">UI</Typography>
       </div>
-    ) : null;
+      <Card>
+        <div className="switch-container">
+          <Switch
+            checked={bottomNav}
+            label="Bottom navigation"
+            onChange={(evt) => setBottomNav(evt.currentTarget.checked)}
+          />
+        </div>
+      </Card>
+    </div>
+  );
   const themeOptions =
     applyTheme === "system" ? null : applyTheme === "timed" ? (
       <div className="theme-form-field--flex">
@@ -326,39 +322,38 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
         </div>
       </FormField>
     );
-  const densityOptions =
-    device === "desktop" ? (
-      <div className="settings-group">
-        <div className="subheader">
-          <Typography use="caption">Density</Typography>
-        </div>
-        <Card className="density-card">
-          <SegmentedButton className="density-toggle" toggle>
-            <SegmentedButtonSegment
-              label="Default"
-              onClick={() => {
-                setDensity("default");
-              }}
-              selected={density === "default"}
-            />
-            <SegmentedButtonSegment
-              label="Comfortable"
-              onClick={() => {
-                setDensity("comfortable");
-              }}
-              selected={density === "comfortable"}
-            />
-            <SegmentedButtonSegment
-              label="Compact"
-              onClick={() => {
-                setDensity("compact");
-              }}
-              selected={density === "compact"}
-            />
-          </SegmentedButton>
-        </Card>
+  const densityOptions = device === "desktop" && (
+    <div className="settings-group">
+      <div className="subheader">
+        <Typography use="caption">Density</Typography>
       </div>
-    ) : null;
+      <Card className="density-card">
+        <SegmentedButton className="density-toggle" toggle>
+          <SegmentedButtonSegment
+            label="Default"
+            onClick={() => {
+              setDensity("default");
+            }}
+            selected={density === "default"}
+          />
+          <SegmentedButtonSegment
+            label="Comfortable"
+            onClick={() => {
+              setDensity("comfortable");
+            }}
+            selected={density === "comfortable"}
+          />
+          <SegmentedButtonSegment
+            label="Compact"
+            onClick={() => {
+              setDensity("compact");
+            }}
+            selected={density === "compact"}
+          />
+        </SegmentedButton>
+      </Card>
+    </div>
+  );
   return (
     <>
       <TopAppBar
@@ -372,7 +367,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
           </TopAppBarSection>
         </TopAppBarRow>
       </TopAppBar>
-      {bottomNavSetting ? null : <TopAppBarFixedAdjust />}
+      {!bottomNavSetting && <TopAppBarFixedAdjust />}
       <div className="admin-main">
         <div className="settings-container">
           <div className="settings">
@@ -509,7 +504,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
         </div>
       </div>
       <Footer />
-      {bottomNavSetting ? <TopAppBarFixedAdjust /> : null}
+      {bottomNavSetting && <TopAppBarFixedAdjust />}
       {deleteUserDialog}
     </>
   );

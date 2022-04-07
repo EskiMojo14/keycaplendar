@@ -138,7 +138,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
     </TopAppBarRow>
   );
 
-  const clearFilterButton = filterSet.id ? (
+  const clearFilterButton = filterSet.id && (
     <TopAppBarSection alignEnd>
       <div className="clear-filter">
         <Chip
@@ -149,7 +149,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
         />
       </div>
     </TopAppBarSection>
-  ) : null;
+  );
 
   const handleChangeIndex = (index: number) =>
     dispatch(setTab(historyTabs[index]));
@@ -193,7 +193,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
   return (
     <>
       <TopAppBar className={classNames({ "bottom-app-bar": bottomNav })} fixed>
-        {bottomNav ? tabRow : null}
+        {bottomNav && tabRow}
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
@@ -201,10 +201,10 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
           </TopAppBarSection>
           {clearFilterButton}
         </TopAppBarRow>
-        {bottomNav ? null : tabRow}
+        {!bottomNav && tabRow}
         <LinearProgress closed={allSets.length > 0 && !loading} />
       </TopAppBar>
-      {bottomNav ? null : <TopAppBarFixedAdjust />}
+      {!bottomNav && <TopAppBarFixedAdjust />}
       <div className="content-container">
         <div
           className={classNames("main", {
@@ -236,7 +236,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
         </div>
       </div>
       <Footer />
-      {bottomNav ? <TopAppBarFixedAdjust /> : null}
+      {bottomNav && <TopAppBarFixedAdjust />}
     </>
   );
 };

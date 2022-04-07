@@ -58,24 +58,24 @@ export const ElementCompact = ({
       });
   };
 
-  const liveIndicator = live
-    ? withTooltip(
-        <ListItemGraphic
-          className="live-indicator"
-          icon={iconObject(<NewReleases />)}
-        />,
-        "Live"
-      )
-    : null;
-  const shipIndicator = set.shipped
-    ? withTooltip(
-        <ListItemGraphic
-          className="ship-indicator"
-          icon={iconObject(<CheckCircle />)}
-        />,
-        "Shipped"
-      )
-    : null;
+  const liveIndicator =
+    live &&
+    withTooltip(
+      <ListItemGraphic
+        className="live-indicator"
+        icon={iconObject(<NewReleases />)}
+      />,
+      "Live"
+    );
+  const shipIndicator =
+    set.shipped &&
+    withTooltip(
+      <ListItemGraphic
+        className="ship-indicator"
+        icon={iconObject(<CheckCircle />)}
+      />,
+      "Shipped"
+    );
   return (
     <ListItem
       onClick={() => (!selected ? details(set.id) : closeDetails())}

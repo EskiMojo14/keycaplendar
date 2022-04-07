@@ -114,7 +114,7 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
           </TopAppBarSection>
         </TopAppBarRow>
       </TopAppBar>
-      {bottomNav ? null : <TopAppBarFixedAdjust />}
+      {!bottomNav && <TopAppBarFixedAdjust />}
       <div
         className={classNames("content-container", {
           "drawer-open": filterOpen && device === "desktop",
@@ -156,7 +156,7 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
         </div>
       </div>
       <Footer />
-      {bottomNav ? <TopAppBarFixedAdjust /> : null}
+      {bottomNav && <TopAppBarFixedAdjust />}
     </>
   );
 };

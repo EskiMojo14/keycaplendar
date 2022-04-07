@@ -61,18 +61,17 @@ export const UpdateEntry = ({
         });
     };
 
-    const linkedIndicator =
-      entryId === urlEntry ? (
-        <div className="linked-indicator">
-          {withTooltip(<Icon icon="link" />, "Linked")}
-        </div>
-      ) : null;
+    const linkedIndicator = entryId === urlEntry && (
+      <div className="linked-indicator">
+        {withTooltip(<Icon icon="link" />, "Linked")}
+      </div>
+    );
 
-    const pinIndicator = entry.pinned ? (
+    const pinIndicator = entry.pinned && (
       <div className="pin-indicator">
         {withTooltip(<Icon icon={iconObject(<PushPin />)} />, "Pinned")}
       </div>
-    ) : null;
+    );
     const buttons = user.isAdmin ? (
       <CardActions>
         <CardActionButtons>

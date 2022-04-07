@@ -117,7 +117,7 @@ export const DialogShareFavorites = ({
               onChange={handleSwitchChange}
             />
           </div>
-          {shareable ? (
+          {shareable && (
             <>
               <Typography use="caption">
                 Note that switching this off and back on will generate a new ID,
@@ -138,7 +138,7 @@ export const DialogShareFavorites = ({
                 value={url.href}
               />
             </>
-          ) : null}
+          )}
         </div>
       </DialogContent>
     </Dialog>

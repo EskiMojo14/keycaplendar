@@ -202,7 +202,7 @@ export const DatePicker = ({
         views={views}
         {...pickerProps}
       />
-      {showNowButton ? (
+      {showNowButton && (
         <div className={bemClasses("buttons")}>
           <Button
             label={month ? "This month" : "Today"}
@@ -210,7 +210,7 @@ export const DatePicker = ({
             type="button"
           />
         </div>
-      ) : null}
+      )}
     </MenuSurface>
   ) : (
     <Dialog
@@ -238,14 +238,14 @@ export const DatePicker = ({
         )}
       >
         <DialogActions>
-          {showNowButton ? (
+          {showNowButton && (
             <Button
               className={bemClasses("show-now-button")}
               label={month ? "This month" : "Today"}
               onClick={setNow}
               type="button"
             />
-          ) : null}
+          )}
           <DialogButton isDefaultAction label="Cancel" onClick={closeDialog} />
           <DialogButton label="Confirm" onClick={confirmDialog} />
         </DialogActions>

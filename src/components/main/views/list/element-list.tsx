@@ -70,29 +70,29 @@ export const ElementList = ({
 
   const useLink = device === "desktop";
 
-  const liveIndicator = live
-    ? withTooltip(
-        <ListItemMeta
-          className="live-indicator"
-          icon={iconObject(<NewReleases />)}
-        />,
-        "Live"
-      )
-    : null;
-  const shipIndicator = set?.shipped
-    ? withTooltip(
-        <ListItemMeta
-          className="ship-indicator"
-          icon={iconObject(<CheckCircle />)}
-        />,
-        "Shipped"
-      )
-    : null;
-  const timeIndicator = thisWeek ? (
+  const liveIndicator =
+    live &&
+    withTooltip(
+      <ListItemMeta
+        className="live-indicator"
+        icon={iconObject(<NewReleases />)}
+      />,
+      "Live"
+    );
+  const shipIndicator =
+    set?.shipped &&
+    withTooltip(
+      <ListItemMeta
+        className="ship-indicator"
+        icon={iconObject(<CheckCircle />)}
+      />,
+      "Shipped"
+    );
+  const timeIndicator = thisWeek && (
     <Typography className="time-indicator" use="overline">
       {pluralise`${daysLeft} ${[daysLeft, "day"]}`}
     </Typography>
-  ) : null;
+  );
   const shareIcon = useLink
     ? withTooltip(
         <IconButton

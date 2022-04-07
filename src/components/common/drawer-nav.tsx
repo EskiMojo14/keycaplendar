@@ -94,32 +94,31 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
 
   useEffect(checkForUpdates, []);
 
-  const newUpdateIcon = newUpdate ? (
+  const newUpdateIcon = newUpdate && (
     <ListItemMeta icon={iconObject(<FiberNew />)} />
-  ) : null;
+  );
 
-  const linkedFavorite =
-    !user.email && linkedFavorites.array.length > 0 ? (
-      <>
-        <ListDivider />
-        <ListItem
-          activated={appPage === "favorites"}
-          onClick={() => setPage("favorites")}
-        >
-          <ListItemGraphic
-            icon={
-              appPage === "favorites" && linkedFavorites.array.length > 0
-                ? "link"
-                : pageIcons.favorites
-            }
-          />
-          {pageTitle.favorites}
-          <ListItemMeta>{quantities.favorites}</ListItemMeta>
-        </ListItem>
-      </>
-    ) : null;
+  const linkedFavorite = !user.email && linkedFavorites.array.length > 0 && (
+    <>
+      <ListDivider />
+      <ListItem
+        activated={appPage === "favorites"}
+        onClick={() => setPage("favorites")}
+      >
+        <ListItemGraphic
+          icon={
+            appPage === "favorites" && linkedFavorites.array.length > 0
+              ? "link"
+              : pageIcons.favorites
+          }
+        />
+        {pageTitle.favorites}
+        <ListItemMeta>{quantities.favorites}</ListItemMeta>
+      </ListItem>
+    </>
+  );
 
-  const userOptions = user.email ? (
+  const userOptions = user.email && (
     <>
       <ListDivider />
       <CollapsibleList
@@ -162,9 +161,9 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
         ))}
       </CollapsibleList>
     </>
-  ) : null;
+  );
 
-  const adminOptions = user.isAdmin ? (
+  const adminOptions = user.isAdmin && (
     <>
       <ListDivider />
       <CollapsibleList
@@ -195,16 +194,15 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
         ))}
       </CollapsibleList>
     </>
-  ) : null;
+  );
 
-  const closeIcon =
-    dismissible || bottomNav ? (
-      <IconButton
-        className={classNames({ "rtl-flip": !bottomNav })}
-        icon={bottomNav ? "close" : "chevron_left"}
-        onClick={close}
-      />
-    ) : null;
+  const closeIcon = (dismissible || bottomNav) && (
+    <IconButton
+      className={classNames({ "rtl-flip": !bottomNav })}
+      icon={bottomNav ? "close" : "chevron_left"}
+      onClick={close}
+    />
+  );
 
   return (
     <Drawer

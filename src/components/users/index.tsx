@@ -129,48 +129,46 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
     }, 75);
   };
 
-  const sortMenu =
-    view === "card" || device !== "desktop" ? (
-      <MenuSurfaceAnchor>
-        <Menu
-          anchorCorner="bottomLeft"
-          onClose={closeSortMenu}
-          onSelect={(e) => setSortIndex(e.detail.index)}
-          open={sortMenuOpen}
-        >
-          {sortProps.map((prop) => (
-            <MenuItem key={prop} selected={userSort === prop}>
-              {sortLabels[prop]}
-            </MenuItem>
-          ))}
-        </Menu>
-        {withTooltip(
-          <TopAppBarActionItem icon="sort" onClick={openSortMenu} />,
-          "Sort"
-        )}
-      </MenuSurfaceAnchor>
-    ) : null;
-  const viewMenu =
-    device === "desktop" ? (
-      <MenuSurfaceAnchor>
-        <Menu
-          anchorCorner="bottomLeft"
-          onClose={closeViewMenu}
-          onSelect={(e) => setViewIndex(e.detail.index)}
-          open={viewMenuOpen}
-        >
-          {views.map((viewType) => (
-            <MenuItem key={viewType} selected={view === viewType}>
-              {viewLabels[viewType]}
-            </MenuItem>
-          ))}
-        </Menu>
-        {withTooltip(
-          <TopAppBarActionItem icon={viewIcons[view]} onClick={openViewMenu} />,
-          "View"
-        )}
-      </MenuSurfaceAnchor>
-    ) : null;
+  const sortMenu = (view === "card" || device !== "desktop") && (
+    <MenuSurfaceAnchor>
+      <Menu
+        anchorCorner="bottomLeft"
+        onClose={closeSortMenu}
+        onSelect={(e) => setSortIndex(e.detail.index)}
+        open={sortMenuOpen}
+      >
+        {sortProps.map((prop) => (
+          <MenuItem key={prop} selected={userSort === prop}>
+            {sortLabels[prop]}
+          </MenuItem>
+        ))}
+      </Menu>
+      {withTooltip(
+        <TopAppBarActionItem icon="sort" onClick={openSortMenu} />,
+        "Sort"
+      )}
+    </MenuSurfaceAnchor>
+  );
+  const viewMenu = device === "desktop" && (
+    <MenuSurfaceAnchor>
+      <Menu
+        anchorCorner="bottomLeft"
+        onClose={closeViewMenu}
+        onSelect={(e) => setViewIndex(e.detail.index)}
+        open={viewMenuOpen}
+      >
+        {views.map((viewType) => (
+          <MenuItem key={viewType} selected={view === viewType}>
+            {viewLabels[viewType]}
+          </MenuItem>
+        ))}
+      </Menu>
+      {withTooltip(
+        <TopAppBarActionItem icon={viewIcons[view]} onClick={openViewMenu} />,
+        "View"
+      )}
+    </MenuSurfaceAnchor>
+  );
   return (
     <>
       <TopAppBar className={classNames({ "bottom-app-bar": bottomNav })} fixed>
@@ -185,7 +183,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
           </TopAppBarSection>
         </TopAppBarRow>
       </TopAppBar>
-      {bottomNav ? null : <TopAppBarFixedAdjust />}
+      {!bottomNav && <TopAppBarFixedAdjust />}
       <div className="main">
         <div className="admin-main">
           <div className="users-container-container">
@@ -431,7 +429,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
         </div>
         <Footer />
       </div>
-      {bottomNav ? <TopAppBarFixedAdjust /> : null}
+      {bottomNav && <TopAppBarFixedAdjust />}
     </>
   );
 };

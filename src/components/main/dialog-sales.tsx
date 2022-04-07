@@ -27,7 +27,7 @@ export const DialogSales = ({ close, open, set: setId }: DialogSalesProps) => {
         <div className="sales-image">
           <img alt="Sales graph" src={set?.sales?.img ?? ""} />
         </div>
-        {set?.sales && !set.sales.thirdParty ? "Created by dvorcol." : null}
+        {set?.sales && !set.sales.thirdParty && "Created by dvorcol."}
       </DialogContent>
       <DialogActions>
         <DialogButton

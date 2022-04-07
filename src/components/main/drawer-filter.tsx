@@ -301,13 +301,12 @@ export const DrawerFilter = ({
 
   const dismissible = device === "desktop" && view !== "compact";
 
-  const closeIcon = dismissible
-    ? withTooltip(
-        <IconButton className="close-icon" icon="close" onClick={close} />,
-        "Close"
-      )
-    : null;
-
+  const closeIcon =
+    dismissible &&
+    withTooltip(
+      <IconButton className="close-icon" icon="close" onClick={close} />,
+      "Close"
+    );
   const newPresetButton = user.isAdmin ? (
     <div className="preset-buttons">
       <Button
@@ -340,7 +339,7 @@ export const DrawerFilter = ({
     </div>
   );
 
-  const userPresetOptions = user.email ? (
+  const userPresetOptions = user.email && (
     <>
       {newPresetButton}
       <div className="preset-buttons">
@@ -369,11 +368,11 @@ export const DrawerFilter = ({
         />
       </div>
     </>
-  ) : null;
+  );
 
   const disableHiddenButtons = showAllPages.includes(page) || page === "hidden";
 
-  const userFilterOptions = user.email ? (
+  const userFilterOptions = user.email && (
     <div className="group">
       <CollapsibleList
         className="group-collapsible"
@@ -440,7 +439,7 @@ export const DrawerFilter = ({
         </div>
       </CollapsibleList>
     </div>
-  ) : null;
+  );
 
   return (
     <Drawer
@@ -472,11 +471,10 @@ export const DrawerFilter = ({
             disabled={[...appPresets, ...userPresets].length === 1}
             enhanced={{ fixed: true }}
             icon={
-              userPresets.length > 0
-                ? userPresets.find((userPreset) => userPreset.id === preset.id)
-                  ? iconObject(<Person />)
-                  : iconObject(<Public />)
-                : null
+              userPresets.length > 0 &&
+              userPresets.find((userPreset) => userPreset.id === preset.id)
+                ? iconObject(<Person />)
+                : iconObject(<Public />)
             }
             onChange={selectPresetFn}
             options={

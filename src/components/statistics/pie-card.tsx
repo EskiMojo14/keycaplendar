@@ -52,25 +52,24 @@ export const StatusCard = ({
     showLabel: false,
   };
   const sideways = summary && device === "desktop";
-  const selectChips =
-    summary && breakdownData ? (
-      <div className="pie-chips-container">
-        <ChipSet choice>
-          {[...breakdownData]
-            .sort(alphabeticalSortPropCurried("name"))
-            .map((obj, index) => (
-              <Chip
-                key={obj.name}
-                label={obj.name}
-                onInteraction={() => {
-                  setSelectedIndex(index === selectedIndex ? -1 : index);
-                }}
-                selected={index === selectedIndex}
-              />
-            ))}
-        </ChipSet>
-      </div>
-    ) : null;
+  const selectChips = summary && breakdownData && (
+    <div className="pie-chips-container">
+      <ChipSet choice>
+        {[...breakdownData]
+          .sort(alphabeticalSortPropCurried("name"))
+          .map((obj, index) => (
+            <Chip
+              key={obj.name}
+              label={obj.name}
+              onInteraction={() => {
+                setSelectedIndex(index === selectedIndex ? -1 : index);
+              }}
+              selected={index === selectedIndex}
+            />
+          ))}
+      </ChipSet>
+    </div>
+  );
   return (
     <Card
       className={classNames("pie-card", {
@@ -79,11 +78,11 @@ export const StatusCard = ({
       })}
     >
       <div className="title-container">
-        {overline ? (
+        {overline && (
           <Typography tag="h3" use="overline">
             {overline}
           </Typography>
-        ) : null}
+        )}
         <Typography tag="h1" use="headline5">
           {data.name}
         </Typography>
@@ -157,11 +156,11 @@ export const StatusCard = ({
         </div>
       </div>
       {selectChips}
-      {note ? (
+      {note && (
         <Typography className="note" tag="p" use="caption">
           {note}
         </Typography>
-      ) : null}
+      )}
     </Card>
   );
 };

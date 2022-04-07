@@ -176,7 +176,7 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
         checkedImages={checkedImages.length}
         {...{ clearChecked, openDelete, openNav, openSearch }}
       />
-      {bottomNav ? null : <TopAppBarFixedAdjust />}
+      {!bottomNav && <TopAppBarFixedAdjust />}
       <div
         className={classNames("content-container", {
           "drawer-open": device === "desktop" && detailOpen,
@@ -213,38 +213,39 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
                   : 1,
               }}
             >
-              {display.map((obj) =>
-                obj.array.length > 0 ? (
-                  <div key={obj.title} className="display-container">
-                    <div className="subheader">
-                      <Typography use="caption">{`${obj.title} (${obj.array.length})`}</Typography>
-                      <Button
-                        className="subheader-button"
-                        label="Select all"
-                        onClick={() => toggleImageCheckedArray(obj.array)}
-                      />
-                    </div>
-                    <ImageList withTextProtection>
-                      {obj.array.map((image) => (
-                        <ImageItem
-                          key={image}
-                          checked={checkedImages.includes(image)}
-                          imageId={image}
-                          openDetails={openDetails}
-                          selected={image === detailImage}
-                          toggleChecked={toggleImageChecked}
+              {display.map(
+                (obj) =>
+                  obj.array.length > 0 && (
+                    <div key={obj.title} className="display-container">
+                      <div className="subheader">
+                        <Typography use="caption">{`${obj.title} (${obj.array.length})`}</Typography>
+                        <Button
+                          className="subheader-button"
+                          label="Select all"
+                          onClick={() => toggleImageCheckedArray(obj.array)}
                         />
-                      ))}
-                    </ImageList>
-                  </div>
-                ) : null
+                      </div>
+                      <ImageList withTextProtection>
+                        {obj.array.map((image) => (
+                          <ImageItem
+                            key={image}
+                            checked={checkedImages.includes(image)}
+                            imageId={image}
+                            openDetails={openDetails}
+                            selected={image === detailImage}
+                            toggleChecked={toggleImageChecked}
+                          />
+                        ))}
+                      </ImageList>
+                    </div>
+                  )
               )}
             </div>
             <Footer />
           </ConditionalWrapper>
         </div>
       </div>
-      {bottomNav ? <TopAppBarFixedAdjust /> : null}
+      {bottomNav && <TopAppBarFixedAdjust />}
     </>
   );
 };

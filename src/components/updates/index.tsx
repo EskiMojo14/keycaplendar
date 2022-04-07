@@ -101,14 +101,14 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
     closeModal();
   };
 
-  const indent = user.isAdmin && bottomNav ? <AppBarIndent /> : null;
+  const indent = user.isAdmin && bottomNav && <AppBarIndent />;
 
-  const editorElements = user.isAdmin ? (
+  const editorElements = user.isAdmin && (
     <>
       <Fab
         className={classNames("create-fab", { middle: bottomNav })}
         icon="add"
-        label={device === "desktop" ? "Create" : null}
+        label={device === "desktop" && "Create"}
         onClick={openCreate}
       />
       <ModalCreate
@@ -129,7 +129,7 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
         open={deleteOpen}
       />
     </>
-  ) : null;
+  );
   return (
     <>
       <TopAppBar
@@ -148,7 +148,7 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
         </TopAppBarRow>
         <LinearProgress closed={!loading} />
       </TopAppBar>
-      {bottomNav ? null : <TopAppBarFixedAdjust />}
+      {!bottomNav && <TopAppBarFixedAdjust />}
       <div className="content-container">
         <div className="main extended-app-bar">
           <div className="update-container">
@@ -166,7 +166,7 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
         {editorElements}
       </div>
       <Footer />
-      {bottomNav ? <TopAppBarFixedAdjust /> : null}
+      {bottomNav && <TopAppBarFixedAdjust />}
     </>
   );
 };

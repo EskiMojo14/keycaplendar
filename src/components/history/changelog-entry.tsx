@@ -155,7 +155,7 @@ export const ChangelogEntry = ({ actionId }: ChangelogEntryProps) => {
                     <br />
                     <span className="highlight">Region: {vendor.region}</span>
                     <br />
-                    {vendor.storeLink ? (
+                    {vendor.storeLink && (
                       <>
                         <span className="highlight">
                           Link:{" "}
@@ -169,15 +169,15 @@ export const ChangelogEntry = ({ actionId }: ChangelogEntryProps) => {
                         </span>
                         <br />
                       </>
-                    ) : null}
-                    {vendor.endDate ? (
+                    )}
+                    {vendor.endDate && (
                       <>
                         <span className="highlight">
                           End date: {vendor.endDate}
                         </span>
                         <br />
                       </>
-                    ) : null}
+                    )}
                   </div>
                 );
               });
@@ -244,13 +244,12 @@ export const ChangelogEntry = ({ actionId }: ChangelogEntryProps) => {
                       {beforeDomain}
                     </a>
                   ) : arrayIncludes(dateProps, prop) ? (
-                    beforeData ? (
-                      DateTime.fromISO(beforeData, { zone: "utc" }).toFormat(
-                        `d'${ordinal(
-                          DateTime.fromISO(beforeData, { zone: "utc" }).day
-                        )}' MMM yyyy`
-                      )
-                    ) : null
+                    beforeData &&
+                    DateTime.fromISO(beforeData, { zone: "utc" }).toFormat(
+                      `d'${ordinal(
+                        DateTime.fromISO(beforeData, { zone: "utc" }).day
+                      )}' MMM yyyy`
+                    )
                   ) : prop === "image" ? (
                     "<link>"
                   ) : (
@@ -358,7 +357,7 @@ export const ChangelogEntry = ({ actionId }: ChangelogEntryProps) => {
                   <br />
                   <span className="highlight">Region: {vendor.region}</span>
                   <br />
-                  {vendor.storeLink ? (
+                  {vendor.storeLink && (
                     <>
                       <span className="highlight">
                         Link:{" "}
@@ -372,15 +371,15 @@ export const ChangelogEntry = ({ actionId }: ChangelogEntryProps) => {
                       </span>
                       <br />
                     </>
-                  ) : null}
-                  {vendor.endDate ? (
+                  )}
+                  {vendor.endDate && (
                     <>
                       <span className="highlight">
                         End date: {vendor.endDate}
                       </span>
                       <br />
                     </>
-                  ) : null}
+                  )}
                 </div>
               );
             };
@@ -442,9 +441,9 @@ export const ChangelogEntry = ({ actionId }: ChangelogEntryProps) => {
               <DataTableHeadCell>
                 {action.action === "updated" ? "Before" : "Data"}
               </DataTableHeadCell>
-              {action.action === "updated" ? (
+              {action.action === "updated" && (
                 <DataTableHeadCell>After</DataTableHeadCell>
-              ) : null}
+              )}
             </DataTableRow>
           </DataTableHead>
           <DataTableBody>{constructRows()}</DataTableBody>

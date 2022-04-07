@@ -154,75 +154,72 @@ export const ShippedCard = ({
           selectedIndex
         ]
       : data;
-  const barChart =
-    graphType === "bar" ? (
-      <ChartistGraph
-        className={
-          device === "desktop" || summary
-            ? "ct-double-octave"
-            : "ct-major-twelfth"
-        }
-        data={{
-          labels: months.map((label) => label.split(" ").join("\n")),
-          series: [
-            chartData.timeline.shipped,
-            chartData.timeline.unshipped,
-          ] as IChartistData["series"],
-        }}
-        options={chartOptions("Month (GB end)")}
-        responsiveOptions={responsiveOptions}
-        type={"Bar"}
-      />
-    ) : null;
-  const lineChart =
-    graphType === "line" ? (
-      <ChartistGraph
-        className={
-          device === "desktop" || summary
-            ? "ct-double-octave"
-            : "ct-major-twelfth"
-        }
-        data={{
-          labels: months.map((label) => label.split(" ").join("\n")),
-          series: [
-            chartData.timeline.shipped,
-            chartData.timeline.unshipped,
-          ] as IChartistData["series"],
-        }}
-        listener={listener}
-        options={chartOptions("Month (GB end)")}
-        responsiveOptions={responsiveOptions}
-        type={"Line"}
-      />
-    ) : null;
-  const selectChips =
-    summary && breakdownData ? (
-      <div className="timeline-chips-container">
-        <ChipSet choice>
-          {[...breakdownData]
-            .sort(alphabeticalSortPropCurried("name"))
-            .map((obj, index) => (
-              <Chip
-                key={obj.name}
-                label={obj.name}
-                onInteraction={() => {
-                  setSelectedIndex(index === selectedIndex ? -1 : index);
-                }}
-                selected={index === selectedIndex}
-              />
-            ))}
-        </ChipSet>
-      </div>
-    ) : null;
+  const barChart = graphType === "bar" && (
+    <ChartistGraph
+      className={
+        device === "desktop" || summary
+          ? "ct-double-octave"
+          : "ct-major-twelfth"
+      }
+      data={{
+        labels: months.map((label) => label.split(" ").join("\n")),
+        series: [
+          chartData.timeline.shipped,
+          chartData.timeline.unshipped,
+        ] as IChartistData["series"],
+      }}
+      options={chartOptions("Month (GB end)")}
+      responsiveOptions={responsiveOptions}
+      type={"Bar"}
+    />
+  );
+  const lineChart = graphType === "line" && (
+    <ChartistGraph
+      className={
+        device === "desktop" || summary
+          ? "ct-double-octave"
+          : "ct-major-twelfth"
+      }
+      data={{
+        labels: months.map((label) => label.split(" ").join("\n")),
+        series: [
+          chartData.timeline.shipped,
+          chartData.timeline.unshipped,
+        ] as IChartistData["series"],
+      }}
+      listener={listener}
+      options={chartOptions("Month (GB end)")}
+      responsiveOptions={responsiveOptions}
+      type={"Line"}
+    />
+  );
+  const selectChips = summary && breakdownData && (
+    <div className="timeline-chips-container">
+      <ChipSet choice>
+        {[...breakdownData]
+          .sort(alphabeticalSortPropCurried("name"))
+          .map((obj, index) => (
+            <Chip
+              key={obj.name}
+              label={obj.name}
+              onInteraction={() => {
+                setSelectedIndex(index === selectedIndex ? -1 : index);
+              }}
+              selected={index === selectedIndex}
+            />
+          ))}
+      </ChipSet>
+    </div>
+  );
   return (
     <Card className="timeline-card full-span">
       <div className="title-container">
         <div className="text-container">
-          {overline ? (
+          {overline && (
             <Typography tag="h3" use="overline">
               {overline}
             </Typography>
-          ) : null}
+          )}
           <Typography tag="h1" use="headline5">
             {data.name}
           </Typography>
@@ -287,11 +284,11 @@ export const ShippedCard = ({
           </DataTable>
         </div>
         {selectChips}
-        {note ? (
+        {note && (
           <Typography className="note" tag="p" use="caption">
             {note}
           </Typography>
-        ) : null}
+        )}
       </div>
     </Card>
   );
@@ -376,123 +373,118 @@ export const TimelinesCard = ({
           focused.includes(series.index)
         )
       : chartData.timeline.series;
-  const barChart =
-    graphType === "bar" ? (
-      <ChartistGraph
-        className="ct-double-octave"
-        data={{
-          labels: months.map((label) => label.split(" ").join("\n")),
-          series: chartSeries,
-        }}
-        options={chartOptions("Month")}
-        responsiveOptions={responsiveOptions}
-        type={"Bar"}
-      />
-    ) : null;
-  const lineChart =
-    graphType === "line" ? (
-      <ChartistGraph
-        className="ct-double-octave"
-        data={{
-          labels: months.map((label) => label.split(" ").join("\n")),
-          series: chartSeries,
-        }}
-        listener={listener}
-        options={chartOptions("Month")}
-        responsiveOptions={responsiveOptions}
-        type={"Line"}
-      />
-    ) : null;
-  const selectChips =
-    summary && breakdownData ? (
-      <div className="timeline-chips-container">
-        <ChipSet choice>
-          {[...breakdownData]
-            .sort(alphabeticalSortPropCurried("name"))
-            .map((obj, index) => (
+  const barChart = graphType === "bar" && (
+    <ChartistGraph
+      className="ct-double-octave"
+      data={{
+        labels: months.map((label) => label.split(" ").join("\n")),
+        series: chartSeries,
+      }}
+      options={chartOptions("Month")}
+      responsiveOptions={responsiveOptions}
+      type={"Bar"}
+    />
+  );
+  const lineChart = graphType === "line" && (
+    <ChartistGraph
+      className="ct-double-octave"
+      data={{
+        labels: months.map((label) => label.split(" ").join("\n")),
+        series: chartSeries,
+      }}
+      listener={listener}
+      options={chartOptions("Month")}
+      responsiveOptions={responsiveOptions}
+      type={"Line"}
+    />
+  );
+  const selectChips = summary && breakdownData && (
+    <div className="timeline-chips-container">
+      <ChipSet choice>
+        {[...breakdownData]
+          .sort(alphabeticalSortPropCurried("name"))
+          .map((obj, index) => (
+            <Chip
+              key={obj.name}
+              label={obj.name}
+              onInteraction={() => {
+                setSelectedIndex(index === selectedIndex ? -1 : index);
+              }}
+              selected={index === selectedIndex}
+            />
+          ))}
+      </ChipSet>
+    </div>
+  );
+  const focusButtons = focusable && allProfiles && (
+    <>
+      {withTooltip(
+        <IconButton
+          disabled={focused.length === chartData.timeline.series.length}
+          icon={iconObject(<EyeCheck />)}
+          onClick={focusAll}
+        />,
+        "Focus all series"
+      )}
+      {withTooltip(
+        <IconButton
+          disabled={focused.length === 0}
+          icon={iconObject(<EyeRemove />)}
+          onClick={clearFocus}
+        />,
+        "Clear focus"
+      )}
+      {withTooltip(
+        <IconButton
+          checked={onlyFocused}
+          className="primary-on"
+          icon={iconObject(<FilterAltOff />)}
+          onClick={() => setOnlyFocused((prev) => !prev)}
+          onIcon={iconObject(<FilterAlt />)}
+        />,
+        "Filter to focused items"
+      )}
+    </>
+  );
+  const focusChips = focusable && allProfiles && (
+    <div className="timeline-chips-container focus-chips">
+      <ChipSet choice>
+        {allProfiles.map((profile, index) => {
+          if (
+            chartData.timeline.profiles.includes(profile) ||
+            chartData.timeline.profiles.length === 0
+          ) {
+            return (
               <Chip
-                key={obj.name}
-                label={obj.name}
+                key={profile}
+                className={`focus-chip focus-chip-index-${index}`}
+                icon={
+                  focused.length && !focused.includes(index)
+                    ? iconObject(<Circle />)
+                    : "circle"
+                }
+                label={profile}
                 onInteraction={() => {
-                  setSelectedIndex(index === selectedIndex ? -1 : index);
+                  setFocus(index);
                 }}
-                selected={index === selectedIndex}
+                selected={focused.includes(index)}
               />
-            ))}
-        </ChipSet>
-      </div>
-    ) : null;
-  const focusButtons =
-    focusable && allProfiles ? (
-      <>
-        {withTooltip(
-          <IconButton
-            disabled={focused.length === chartData.timeline.series.length}
-            icon={iconObject(<EyeCheck />)}
-            onClick={focusAll}
-          />,
-          "Focus all series"
-        )}
-        {withTooltip(
-          <IconButton
-            disabled={focused.length === 0}
-            icon={iconObject(<EyeRemove />)}
-            onClick={clearFocus}
-          />,
-          "Clear focus"
-        )}
-        {withTooltip(
-          <IconButton
-            checked={onlyFocused}
-            className="primary-on"
-            icon={iconObject(<FilterAltOff />)}
-            onClick={() => setOnlyFocused((prev) => !prev)}
-            onIcon={iconObject(<FilterAlt />)}
-          />,
-          "Filter to focused items"
-        )}
-      </>
-    ) : null;
-  const focusChips =
-    focusable && allProfiles ? (
-      <div className="timeline-chips-container focus-chips">
-        <ChipSet choice>
-          {allProfiles.map((profile, index) => {
-            if (
-              chartData.timeline.profiles.includes(profile) ||
-              chartData.timeline.profiles.length === 0
-            ) {
-              return (
-                <Chip
-                  key={profile}
-                  className={`focus-chip focus-chip-index-${index}`}
-                  icon={
-                    focused.length && !focused.includes(index)
-                      ? iconObject(<Circle />)
-                      : "circle"
-                  }
-                  label={profile}
-                  onInteraction={() => {
-                    setFocus(index);
-                  }}
-                  selected={focused.includes(index)}
-                />
-              );
-            }
-            return null;
-          })}
-        </ChipSet>
-      </div>
-    ) : null;
+            );
+          }
+          return null;
+        })}
+      </ChipSet>
+    </div>
+  );
   return (
     <Card className="timeline-card full-span">
       <div className="title-container">
         <div className="text-container">
-          {overline ? (
+          {overline && (
             <Typography tag="h3" use="overline">
               {overline}
             </Typography>
-          ) : null}
+          )}
           <Typography tag="h1" use="headline5">
             {data.name}
           </Typography>
@@ -543,11 +535,11 @@ export const TimelinesCard = ({
         </div>
         {selectChips}
         {focusChips}
-        {note ? (
+        {note && (
           <Typography className="note" tag="p" use="caption">
             {note}
           </Typography>
-        ) : null}
+        )}
       </div>
     </Card>
   );

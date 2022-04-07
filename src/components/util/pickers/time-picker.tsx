@@ -152,11 +152,11 @@ export const TimePicker = ({
         variant="static"
         {...pickerProps}
       />
-      {showNowButton ? (
+      {showNowButton && (
         <div className={bemClasses("buttons")}>
           <Button label="Now" onClick={setNow} type="button" />
         </div>
-      ) : null}
+      )}
     </MenuSurface>
   ) : (
     <Dialog
@@ -186,14 +186,14 @@ export const TimePicker = ({
         )}
       >
         <DialogActions>
-          {showNowButton ? (
+          {showNowButton && (
             <Button
               className={bemClasses("show-now-button")}
               label="Now"
               onClick={setNow}
               type="button"
             />
-          ) : null}
+          )}
           <DialogButton isDefaultAction label="Cancel" onClick={closeDialog} />
           <DialogButton label="Confirm" onClick={confirmDialog} />
         </DialogActions>

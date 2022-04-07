@@ -56,12 +56,12 @@ export const DrawerDetails = ({ close, imageId, open }: DrawerDetailsProps) => {
   }, [image?.fullPath]);
 
   const dismissible = device === "desktop";
-  const closeIcon = dismissible
-    ? withTooltip(
-        <IconButton className="close-icon" icon="close" onClick={close} />,
-        "Close"
-      )
-    : null;
+  const closeIcon =
+    dismissible &&
+    withTooltip(
+      <IconButton className="close-icon" icon="close" onClick={close} />,
+      "Close"
+    );
   const imageProps = {
     fullPath: "Path",
     name: "File name",

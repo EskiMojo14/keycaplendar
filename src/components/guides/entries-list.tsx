@@ -131,11 +131,11 @@ export const EntriesList = ({ detailEntry, openEntry }: EntriesDrawerProps) => {
                             <ListItemPrimaryText>
                               {entry?.title}
                             </ListItemPrimaryText>
-                            {entry?.description ? (
+                            {entry?.description && (
                               <ListItemSecondaryText>
                                 {entry.description}
                               </ListItemSecondaryText>
-                            ) : null}
+                            )}
                           </ListItemText>
                         </ListItem>
                       )

@@ -78,21 +78,22 @@ export const AppBar = ({
   const tooltipAlign = bottomNav ? "top" : "bottom";
 
   const shareButton =
-    page === "favorites" && user.email && linkedFavorites.array.length === 0
-      ? withTooltip(
-          <TopAppBarActionItem
-            icon={iconObject(<Share />)}
-            onClick={openShare}
-            style={{ "--animation-delay": 4 }}
-          />,
-          "Share",
-          { align: tooltipAlign }
-        )
-      : null;
+    page === "favorites" &&
+    user.email &&
+    linkedFavorites.array.length === 0 &&
+    withTooltip(
+      <TopAppBarActionItem
+        icon={iconObject(<Share />)}
+        onClick={openShare}
+        style={{ "--animation-delay": 4 }}
+      />,
+      "Share",
+      { align: tooltipAlign }
+    );
 
-  const indentEl = indent && bottomNav ? <AppBarIndent /> : null;
+  const indentEl = indent && bottomNav && <AppBarIndent />;
 
-  const searchBar = indentEl ? (
+  const searchBar = indentEl && (
     <SearchAppBar
       close={closeSearch}
       open={searchOpen}
@@ -100,12 +101,12 @@ export const AppBar = ({
       search={search}
       setSearch={setSearch}
     />
-  ) : null;
+  );
   const buttons = (
     <>
-      {device === "desktop" ? (
+      {device === "desktop" && (
         <SearchBarPersistent search={search} setSearch={setSearch} />
-      ) : null}
+      )}
       <MenuSurfaceAnchor
         className={classNames({ hidden: page === "calendar" })}
       >
@@ -148,8 +149,8 @@ export const AppBar = ({
           }
         )}
       </MenuSurfaceAnchor>
-      {device === "desktop" ? shareButton : null}
-      {device !== "desktop" && !indentEl ? (
+      {device === "desktop" && shareButton}
+      {device !== "desktop" && !indentEl && (
         <div>
           <SearchBarModal
             close={closeSearch}
@@ -186,9 +187,9 @@ export const AppBar = ({
             )
           )}
         </div>
-      ) : null}
-      {indentEl ? (
-        page === "favorites" &&
+      )}
+      {indentEl &&
+        (page === "favorites" &&
         user.email &&
         linkedFavorites.array.length === 0 ? (
           <MenuSurfaceAnchor>
@@ -211,8 +212,7 @@ export const AppBar = ({
             />,
             "Search"
           )
-        )
-      ) : null}
+        ))}
     </>
   );
   const leftButtons = !indentEl ? (
@@ -225,9 +225,9 @@ export const AppBar = ({
   ) : (
     buttons
   );
-  const rightButtons = !indentEl ? (
+  const rightButtons = !indentEl && (
     <TopAppBarSection alignEnd>{buttons}</TopAppBarSection>
-  ) : null;
+  );
   return (
     <>
       {searchBar}

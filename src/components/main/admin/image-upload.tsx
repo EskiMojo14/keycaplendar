@@ -151,7 +151,7 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
     setImageFromURL(false);
     setImageLink("");
   };
-  const imageTextField = imageFromURL ? (
+  const imageTextField = imageFromURL && (
     <TextField
       autoComplete="off"
       helpText={{
@@ -167,34 +167,43 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
       pattern="https?://.+\.(?:jpg|jpeg|png)"
       value={imageLink}
     />
-  ) : null;
-  const areaInner = hasImage ? (
-    <div
-      className="image-display-image"
-      style={{
-        backgroundImage: `url(${imageBase64.replace(
-          "/keysets%2F",
-          "/thumbs%2F"
-        )})`,
-      }}
-    />
-  ) : loading ? null : desktop && !imageFromURL ? (
-    <div className="drag-label">
-      <Icon icon={iconObject(<AddPhotoAlternate />, { size: "medium" })} />
-      <Typography className="caption" tag="p" use="body2">
-        Drag image here
-      </Typography>
-    </div>
-  ) : (
-    <div className="drag-label">
-      <Icon icon={iconObject(<AddPhotoAlternate />, { size: "medium" })} />
-    </div>
   );
-  const loadingIndicator = loading ? (
+  const areaInner = () => {
+    if (hasImage) {
+      return (
+        <div
+          className="image-display-image"
+          style={{
+            backgroundImage: `url(${imageBase64.replace(
+              "/keysets%2F",
+              "/thumbs%2F"
+            )})`,
+          }}
+        />
+      );
+    } else if (loading) {
+      return null;
+    } else if (desktop && !imageFromURL) {
+      return (
+        <div className="drag-label">
+          <Icon icon={iconObject(<AddPhotoAlternate />, { size: "medium" })} />
+          <Typography className="caption" tag="p" use="body2">
+            Drag image here
+          </Typography>
+        </div>
+      );
+    }
+    return (
+      <div className="drag-label">
+        <Icon icon={iconObject(<AddPhotoAlternate />, { size: "medium" })} />
+      </div>
+    );
+  };
+  const loadingIndicator = loading && (
     <div className={classNames("loading-indicator", { image: hasImage })}>
       <CircularProgress size="large" />
     </div>
-  ) : null;
+  );
   const actions = !imageFromURL ? (
     <CardActions>
       <CardActionButtons>
@@ -234,7 +243,7 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
           onDrop={handleDrop}
         >
           {loadingIndicator}
-          {areaInner}
+          {areaInner()}
         </div>
         {imageTextField}
       </div>

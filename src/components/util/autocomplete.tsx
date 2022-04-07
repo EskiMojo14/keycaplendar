@@ -51,8 +51,8 @@ export const Autocomplete = ({
       }}
       open={open && useQuery.length >= minChars && matchingItems.length > 0}
     >
-      {useQuery.length >= minChars
-        ? open
+      {useQuery.length >= minChars &&
+        (open
           ? matchingItems.map((item) => (
               <MenuItem key={item}>
                 {useQuery.length > 0
@@ -74,8 +74,7 @@ export const Autocomplete = ({
                     ))
                   : item}
               </MenuItem>
-            ))
-        : null}
+            )))}
     </Menu>
   );
 };
@@ -105,19 +104,18 @@ export const AutocompleteMobile = ({
       className={bemClasses({ extra: className, modifiers: { open } })}
     >
       <List>
-        {useQuery.length >= minChars
-          ? matchingItems.map((item) => (
-              <ListItem key={item} onClick={() => select(prop, item)}>
-                {useQuery.length > 0
-                  ? reactStringReplace(item, useQuery, (match, i) => (
-                      <span key={match + i} className="highlight">
-                        {match}
-                      </span>
-                    ))
-                  : item}
-              </ListItem>
-            ))
-          : null}
+        {useQuery.length >= minChars &&
+          matchingItems.map((item) => (
+            <ListItem key={item} onClick={() => select(prop, item)}>
+              {useQuery.length > 0
+                ? reactStringReplace(item, useQuery, (match, i) => (
+                    <span key={match + i} className="highlight">
+                      {match}
+                    </span>
+                  ))
+                : item}
+            </ListItem>
+          ))}
       </List>
     </div>
   );

@@ -131,54 +131,51 @@ export const TableCard = ({
     ],
     showArea: true,
   };
-  const barChart =
-    graphType === "bar" ? (
-      <ChartistGraph
-        className="ct-double-octave"
-        data={{ ...chartData.chartData }}
-        listener={listener}
-        options={chartOptions}
-        type="Bar"
-      />
-    ) : null;
-  const lineChart =
-    graphType === "line" ? (
-      <ChartistGraph
-        className="ct-double-octave"
-        data={{ ...chartData.chartData }}
-        listener={listener}
-        options={chartOptions}
-        type="Line"
-      />
-    ) : null;
-  const selectChips =
-    summary && breakdownData ? (
-      <div className="table-chips-container">
-        <ChipSet choice>
-          {[...breakdownData]
-            .sort(alphabeticalSortPropCurried("name"))
-            .map((obj, index) => (
-              <Chip
-                key={obj.name}
-                label={obj.name}
-                onInteraction={() => {
-                  setSelectedIndex(index === selectedIndex ? -1 : index);
-                }}
-                selected={index === selectedIndex}
-              />
-            ))}
-        </ChipSet>
-      </div>
-    ) : null;
+  const barChart = graphType === "bar" && (
+    <ChartistGraph
+      className="ct-double-octave"
+      data={{ ...chartData.chartData }}
+      listener={listener}
+      options={chartOptions}
+      type="Bar"
+    />
+  );
+  const lineChart = graphType === "line" && (
+    <ChartistGraph
+      className="ct-double-octave"
+      data={{ ...chartData.chartData }}
+      listener={listener}
+      options={chartOptions}
+      type="Line"
+    />
+  );
+  const selectChips = summary && breakdownData && (
+    <div className="table-chips-container">
+      <ChipSet choice>
+        {[...breakdownData]
+          .sort(alphabeticalSortPropCurried("name"))
+          .map((obj, index) => (
+            <Chip
+              key={obj.name}
+              label={obj.name}
+              onInteraction={() => {
+                setSelectedIndex(index === selectedIndex ? -1 : index);
+              }}
+              selected={index === selectedIndex}
+            />
+          ))}
+      </ChipSet>
+    </div>
+  );
   return (
     <Card className={classNames("table-card", { "full-span": summary })}>
       <div className="title-container">
         <div className="text-container">
-          {overline ? (
+          {overline && (
             <Typography tag="h3" use="overline">
               {overline}
             </Typography>
-          ) : null}
+          )}
           <Typography tag="h1" use="headline5">
             {data.name}
           </Typography>
@@ -257,11 +254,11 @@ export const TableCard = ({
           </DataTable>
         </div>
         {selectChips}
-        {note ? (
+        {note && (
           <Typography className="note" tag="p" use="caption">
             {note}
           </Typography>
-        ) : null}
+        )}
       </div>
     </Card>
   );

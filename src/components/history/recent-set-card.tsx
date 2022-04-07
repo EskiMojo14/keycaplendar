@@ -115,12 +115,12 @@ export const RecentSetCard = ({
                 : undefined
             }
           >
-            {!currentSet ? (
+            {!currentSet && (
               <CardMediaContent>
                 <Icon
                   icon={iconObject(<ImageNotSupported />, { size: "xlarge" })}
                 />
-                {deleted ? (
+                {deleted && (
                   <Typography
                     className="deleted-indicator"
                     tag="div"
@@ -128,9 +128,9 @@ export const RecentSetCard = ({
                   >
                     Deleted
                   </Typography>
-                ) : null}
+                )}
               </CardMediaContent>
-            ) : null}
+            )}
           </CardMedia>
         </LazyLoad>
         <div className="info-container">
@@ -167,7 +167,7 @@ export const RecentSetCard = ({
           outlined
         />
       </div>
-      {pages.length > 0 ? (
+      {pages.length > 0 && (
         <div className="page-list">
           <Typography className="caption" use="caption">
             Pages
@@ -190,7 +190,7 @@ export const RecentSetCard = ({
             })}
           </div>
         </div>
-      ) : null}
+      )}
     </Card>
   );
 };

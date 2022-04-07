@@ -60,12 +60,11 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
   };
 
   const closeButton =
-    device === "desktop"
-      ? withTooltip(
-          <IconButton className="close-icon" icon="close" onClick={close} />,
-          "Close"
-        )
-      : null;
+    device === "desktop" &&
+    withTooltip(
+      <IconButton className="close-icon" icon="close" onClick={close} />,
+      "Close"
+    );
   const handleLengthChange = (e: ChangeEvent<HTMLInputElement>) => {
     const length = parseInt(e.target.value);
     dispatch(setLength(length));

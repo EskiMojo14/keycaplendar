@@ -643,20 +643,19 @@ export const ModalEntry = ({
                   {...provided.droppableProps}
                 >
                   {keyset.vendors.map((vendor, index) => {
-                    const endDateField =
-                      typeof vendor.endDate === "string" ? (
-                        <DatePicker
-                          autoComplete="off"
-                          icon={iconObject(<CalendarToday />)}
-                          label="End date"
-                          name={`endDate${index}`}
-                          onChange={handleNamedChangeVendor("endDate", index)}
-                          outlined
-                          required
-                          showNowButton
-                          value={vendor.endDate}
-                        />
-                      ) : null;
+                    const endDateField = typeof vendor.endDate === "string" && (
+                      <DatePicker
+                        autoComplete="off"
+                        icon={iconObject(<CalendarToday />)}
+                        label="End date"
+                        name={`endDate${index}`}
+                        onChange={handleNamedChangeVendor("endDate", index)}
+                        outlined
+                        required
+                        showNowButton
+                        value={vendor.endDate}
+                      />
+                    );
                     return (
                       <Draggable
                         key={vendor.id}

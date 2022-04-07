@@ -91,25 +91,26 @@ export const ElementCard = ({
 
   const useLink = device === "desktop";
 
-  const liveIndicator = live
-    ? withTooltip(
-        <Icon className="live-indicator" icon={iconObject(<NewReleases />)} />,
-        "Live"
-      )
-    : null;
-  const shipIndicator = set?.shipped
-    ? withTooltip(
-        <Icon className="ship-indicator" icon={iconObject(<CheckCircle />)} />,
-        "Shipped"
-      )
-    : null;
-  const timeIndicator = thisWeek ? (
+  const liveIndicator =
+    live &&
+    withTooltip(
+      <Icon className="live-indicator" icon={iconObject(<NewReleases />)} />,
+      "Live"
+    );
+  const shipIndicator =
+    set?.shipped &&
+    withTooltip(
+      <Icon className="ship-indicator" icon={iconObject(<CheckCircle />)} />,
+      "Shipped"
+    );
+  const timeIndicator = thisWeek && (
     <Typography className="time-indicator" tag="h4" use="overline">
       {pluralise`${daysLeft} ${[daysLeft, "day"]}`}
     </Typography>
-  ) : null;
-  const userButtons = user.email ? (
-    useLink ? (
+  );
+  const userButtons =
+    user.email &&
+    (useLink ? (
       <CardActionButtons>
         <CardActionButton
           href={set.details}
@@ -123,71 +124,70 @@ export const ElementCard = ({
       <CardActionButtons>
         <CardActionButton label="Share" onClick={copyShareLink} />
       </CardActionButtons>
-    )
-  ) : null;
-  const linkIcon = !user.email
-    ? withTooltip(
-        <CardActionIcon
-          href={set.details}
-          icon="open_in_new"
-          label={`Link to ${title}`}
-          rel="noopener noreferrer"
-          tag="a"
-          target="_blank"
-        />,
-        "Link"
-      )
-    : null;
-  const shareIcon = !user.email
-    ? withTooltip(
-        <CardActionIcon
-          icon={iconObject(<Share />)}
-          label={`Copy link to ${title}`}
-          onClick={copyShareLink}
-        />,
-        "Share"
-      )
-    : null;
-  const favoriteIcon = user.email
-    ? withTooltip(
-        <CardActionIcon
-          checked={favorites.includes(set.id)}
-          className="favorite"
-          icon="favorite_border"
-          onClick={() => toggleFavorite(set.id)}
-          onIcon={iconObject(<Favorite />)}
-        />,
-        favorites.includes(set.id) ? "Unfavorite" : "Favorite"
-      )
-    : null;
+    ));
+  const linkIcon =
+    !user.email &&
+    withTooltip(
+      <CardActionIcon
+        href={set.details}
+        icon="open_in_new"
+        label={`Link to ${title}`}
+        rel="noopener noreferrer"
+        tag="a"
+        target="_blank"
+      />,
+      "Link"
+    );
+  const shareIcon =
+    !user.email &&
+    withTooltip(
+      <CardActionIcon
+        icon={iconObject(<Share />)}
+        label={`Copy link to ${title}`}
+        onClick={copyShareLink}
+      />,
+      "Share"
+    );
+  const favoriteIcon =
+    user.email &&
+    withTooltip(
+      <CardActionIcon
+        checked={favorites.includes(set.id)}
+        className="favorite"
+        icon="favorite_border"
+        onClick={() => toggleFavorite(set.id)}
+        onIcon={iconObject(<Favorite />)}
+      />,
+      favorites.includes(set.id) ? "Unfavorite" : "Favorite"
+    );
   const hiddenIcon =
     user.email &&
     !(
       user.isEditor ||
       (user.isDesigner && set.designer && set.designer.includes(user.nickname))
-    )
-      ? withTooltip(
-          <CardActionIcon
-            checked={hidden.includes(set.id)}
-            className="hide"
-            icon={iconObject(<Visibility />)}
-            onClick={() => toggleHidden(set.id)}
-            onIcon={iconObject(<VisibilityOff />)}
-          />,
-          hidden.includes(set.id) ? "Unhide" : "Hide"
-        )
-      : null;
+    ) &&
+    withTooltip(
+      <CardActionIcon
+        checked={hidden.includes(set.id)}
+        className="hide"
+        icon={iconObject(<Visibility />)}
+        onClick={() => toggleHidden(set.id)}
+        onIcon={iconObject(<VisibilityOff />)}
+      />,
+      hidden.includes(set.id) ? "Unhide" : "Hide"
+    );
   const editButton =
     user.isEditor ||
-    (user.isDesigner && set.designer && set.designer.includes(user.nickname))
-      ? withTooltip(
-          <CardActionIcon
-            icon={iconObject(<Edit />)}
-            onClick={() => edit(set.id)}
-          />,
-          "Edit"
-        )
-      : null;
+    (user.isDesigner &&
+      set.designer &&
+      set.designer.includes(user.nickname) &&
+      withTooltip(
+        <CardActionIcon
+          icon={iconObject(<Edit />)}
+          onClick={() => edit(set.id)}
+        />,
+        "Edit"
+      ));
   return (
     <div className="card-container">
       <Card className={classNames({ "mdc-card--selected": selected })}>

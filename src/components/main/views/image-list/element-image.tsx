@@ -73,40 +73,40 @@ export const ElementImage = ({
 
   const useLink = device === "desktop";
 
-  const liveIndicator = live
-    ? withTooltip(
-        <Icon className="live-indicator" icon={iconObject(<NewReleases />)} />,
-        "Live"
-      )
-    : null;
-  const shipIndicator = set?.shipped
-    ? withTooltip(
-        <Icon className="ship-indicator" icon={iconObject(<CheckCircle />)} />,
-        "Shipped"
-      )
-    : null;
-  const timeIndicator = thisWeek ? (
+  const liveIndicator =
+    live &&
+    withTooltip(
+      <Icon className="live-indicator" icon={iconObject(<NewReleases />)} />,
+      "Live"
+    );
+  const shipIndicator =
+    set?.shipped &&
+    withTooltip(
+      <Icon className="ship-indicator" icon={iconObject(<CheckCircle />)} />,
+      "Shipped"
+    );
+  const timeIndicator = thisWeek && (
     <div className="time-indicator">
       <Typography className="live-indicator-text" use="overline">
         {pluralise`${daysLeft} ${[daysLeft, "day"]}`}
       </Typography>
     </div>
-  ) : null;
+  );
 
-  const linkIcon = useLink
-    ? withTooltip(
-        <IconButton
-          className="link-icon"
-          href={link}
-          icon="open_in_new"
-          label={`Link to ${title}`}
-          rel="noopener noreferrer"
-          tag="a"
-          target="_blank"
-        />,
-        "Link"
-      )
-    : null;
+  const linkIcon =
+    useLink &&
+    withTooltip(
+      <IconButton
+        className="link-icon"
+        href={link}
+        icon="open_in_new"
+        label={`Link to ${title}`}
+        rel="noopener noreferrer"
+        tag="a"
+        target="_blank"
+      />,
+      "Link"
+    );
   return (
     <Ripple>
       <ImageListItem

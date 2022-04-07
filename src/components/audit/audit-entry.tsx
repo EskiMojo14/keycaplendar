@@ -56,14 +56,14 @@ export const AuditEntry = ({ actionId, openDeleteDialog }: AuditEntryProps) => {
         </DataTableCell>
       </DataTableRow>
     );
-    const emailRow = action.user.email ? (
+    const emailRow = action.user.email && (
       <DataTableRow>
         <DataTableCell>userEmail</DataTableCell>
         <DataTableCell colSpan={action.action === "created" ? 1 : 2}>
           {action.user.email}
         </DataTableCell>
       </DataTableRow>
-    ) : null;
+    );
     const arrayProps: string[] = ["designer"];
     const urlProps: string[] = ["image", "details"];
     const boolProps: string[] = ["gbMonth", "shipped"];
@@ -102,9 +102,9 @@ export const AuditEntry = ({ actionId, openDeleteDialog }: AuditEntryProps) => {
                 <DataTableHeadCell>
                   {action.action === "updated" ? "Before" : "Data"}
                 </DataTableHeadCell>
-                {action.action === "updated" ? (
+                {action.action === "updated" && (
                   <DataTableHeadCell>After</DataTableHeadCell>
-                ) : null}
+                )}
               </DataTableRow>
             </DataTableHead>
             <DataTableBody>
@@ -238,13 +238,11 @@ export const AuditEntry = ({ actionId, openDeleteDialog }: AuditEntryProps) => {
                                     rel="noopener noreferrer"
                                     target="_blank"
                                   >
-                                    {beforeVendor.storeLink
-                                      ? beforeVendor.storeLink.match(domain)
-                                      : null}
+                                    {beforeVendor.storeLink?.match(domain)}
                                   </a>
                                 </span>
                               </div>
-                              {beforeVendor.endDate ? (
+                              {beforeVendor.endDate && (
                                 <div>
                                   <span
                                     className={classNames({
@@ -256,7 +254,7 @@ export const AuditEntry = ({ actionId, openDeleteDialog }: AuditEntryProps) => {
                                     End date: {beforeVendor.endDate}
                                   </span>
                                 </div>
-                              ) : null}
+                              )}
                             </DataTableCell>
                             <DataTableCell className="after">
                               <div>
@@ -304,13 +302,11 @@ export const AuditEntry = ({ actionId, openDeleteDialog }: AuditEntryProps) => {
                                     rel="noopener noreferrer"
                                     target="_blank"
                                   >
-                                    {afterVendor.storeLink
-                                      ? afterVendor.storeLink.match(domain)
-                                      : null}
+                                    {afterVendor.storeLink?.match(domain)}
                                   </a>
                                 </span>
                               </div>
-                              {afterVendor.endDate ? (
+                              {afterVendor.endDate && (
                                 <div>
                                   <span
                                     className={classNames({
@@ -322,7 +318,7 @@ export const AuditEntry = ({ actionId, openDeleteDialog }: AuditEntryProps) => {
                                     End date: {afterVendor.endDate}
                                   </span>
                                 </div>
-                              ) : null}
+                              )}
                             </DataTableCell>
                           </DataTableRow>
                         );
@@ -404,7 +400,7 @@ export const AuditEntry = ({ actionId, openDeleteDialog }: AuditEntryProps) => {
                               </a>
                             </span>
                           </div>
-                          {!is<string>(beforeProp) ? (
+                          {!is<string>(beforeProp) && (
                             <div className="list-checkbox">
                               Third party:{" "}
                               <Checkbox
@@ -412,7 +408,7 @@ export const AuditEntry = ({ actionId, openDeleteDialog }: AuditEntryProps) => {
                                 disabled
                               />
                             </div>
-                          ) : null}
+                          )}
                         </DataTableCell>
                         <DataTableCell className="after">
                           <div>
@@ -431,7 +427,7 @@ export const AuditEntry = ({ actionId, openDeleteDialog }: AuditEntryProps) => {
                               </a>
                             </span>
                           </div>
-                          {!is<string>(afterProp) ? (
+                          {!is<string>(afterProp) && (
                             <div className="list-checkbox">
                               Third party:{" "}
                               <Checkbox
@@ -439,7 +435,7 @@ export const AuditEntry = ({ actionId, openDeleteDialog }: AuditEntryProps) => {
                                 disabled
                               />
                             </div>
-                          ) : null}
+                          )}
                         </DataTableCell>
                       </DataTableRow>
                     );
@@ -511,7 +507,7 @@ export const AuditEntry = ({ actionId, openDeleteDialog }: AuditEntryProps) => {
                           <div>
                             <span className="highlight">
                               Link:{" "}
-                              {vendor.storeLink ? (
+                              {vendor.storeLink && (
                                 <a
                                   href={vendor.storeLink}
                                   rel="noopener noreferrer"
@@ -519,16 +515,16 @@ export const AuditEntry = ({ actionId, openDeleteDialog }: AuditEntryProps) => {
                                 >
                                   {vendor.storeLink.match(domain)}
                                 </a>
-                              ) : null}
+                              )}
                             </span>
                           </div>
-                          {vendor.endDate ? (
+                          {vendor.endDate && (
                             <div>
                               <span className="highlight">
                                 End date: {vendor.endDate}
                               </span>
                             </div>
-                          ) : null}
+                          )}
                         </DataTableCell>
                       </DataTableRow>
                     ));
@@ -594,12 +590,12 @@ export const AuditEntry = ({ actionId, openDeleteDialog }: AuditEntryProps) => {
                               </a>
                             </span>
                           </div>
-                          {!is<string>(prop) ? (
+                          {!is<string>(prop) && (
                             <div className="list-checkbox">
                               Third party:{" "}
                               <Checkbox checked={prop.thirdParty} disabled />
                             </div>
-                          ) : null}
+                          )}
                         </DataTableCell>
                       </DataTableRow>
                     );

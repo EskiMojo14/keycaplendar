@@ -135,7 +135,7 @@ export const DrawerDetails = ({
     arrayIncludes(mainPages, page);
   const today = DateTime.utc();
   let gbLaunch: DateTime | string = "";
-  let gbEnd: DateTime | null = null;
+  let gbEnd: DateTime | "" = "";
   let icDate: DateTime;
   let verb = "";
   let ic = "";
@@ -156,7 +156,7 @@ export const DrawerDetails = ({
     const gbLaunchOrdinal =
       gbLaunch instanceof DateTime ? ordinal(gbLaunch.day) : "";
 
-    gbEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }) : null;
+    gbEnd = set.gbEnd && DateTime.fromISO(set.gbEnd, { zone: "utc" });
     const gbEndOrdinal = gbEnd instanceof DateTime ? ordinal(gbEnd.day) : "";
 
     icDate = DateTime.fromISO(set.icDate, { zone: "utc" });
@@ -214,94 +214,90 @@ export const DrawerDetails = ({
     });
     chips = removeDuplicates(chips);
     shippedLine =
-      gbEnd && gbEnd <= today ? (
-        set.shipped ? (
-          <Typography tag="p" use="body2">
-            This set has shipped.
-          </Typography>
-        ) : (
-          <Typography tag="p" use="body2">
-            This set has not shipped.
-          </Typography>
-        )
-      ) : null;
+      gbEnd &&
+      gbEnd <= today &&
+      (set.shipped ? (
+        <Typography tag="p" use="body2">
+          This set has shipped.
+        </Typography>
+      ) : (
+        <Typography tag="p" use="body2">
+          This set has not shipped.
+        </Typography>
+      ));
   }
-  const gbLine = gb ? (
+  const gbLine = gb && (
     <Typography tag="p" use="body2">
       {gb}
     </Typography>
-  ) : null;
-  const vendorList =
-    set?.vendors && set.vendors.length > 0 ? (
-      <div className="details-list">
-        <Typography className="subheader" tag="h4" use="caption">
-          Vendors
-        </Typography>
-        <List twoLine>
-          {sortedVendors.map((vendor) => {
-            let differentDate;
-            if (vendor.endDate) {
-              const dateObject = DateTime.fromISO(vendor.endDate, {
-                zone: "utc",
-              });
-              const dateOrdinal = ordinal(dateObject.day);
-              const todayObject = DateTime.utc();
-              const yesterdayObject = todayObject.minus({ days: 1 });
-              const dateVerb = yesterdayObject > dateObject ? "Ended" : "Ends";
-              differentDate = (
-                <div className="caption">
-                  <Typography use="caption">
-                    {`${dateVerb} ${dateObject.toFormat(
-                      `d'${dateOrdinal}' MMMM`
-                    )} ${
-                      dateObject.year !== todayObject.year
-                        ? dateObject.toFormat(" yyyy")
-                        : ""
-                    }`}
-                  </Typography>
-                </div>
-              );
-            }
-            return (
-              <ConditionalWrapper
-                key={vendor.id}
-                condition={!!vendor.storeLink}
-                wrapper={(children) => (
-                  <a
-                    href={vendor.storeLink}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    {children}
-                  </a>
-                )}
-              >
-                <ListItem
-                  className={classNames({ "three-line": !!differentDate })}
-                  disabled={!vendor.storeLink}
-                >
-                  <ListItemText>
-                    <ListItemPrimaryText>{vendor.name}</ListItemPrimaryText>
-                    <ListItemSecondaryText>
-                      {vendor.region}
-                    </ListItemSecondaryText>
-                    {differentDate}
-                  </ListItemText>
-                  {vendor.storeLink ? <ListItemMeta icon="launch" /> : null}
-                </ListItem>
-              </ConditionalWrapper>
+  );
+  const vendorList = set?.vendors && set.vendors.length > 0 && (
+    <div className="details-list">
+      <Typography className="subheader" tag="h4" use="caption">
+        Vendors
+      </Typography>
+      <List twoLine>
+        {sortedVendors.map((vendor) => {
+          let differentDate;
+          if (vendor.endDate) {
+            const dateObject = DateTime.fromISO(vendor.endDate, {
+              zone: "utc",
+            });
+            const dateOrdinal = ordinal(dateObject.day);
+            const todayObject = DateTime.utc();
+            const yesterdayObject = todayObject.minus({ days: 1 });
+            const dateVerb = yesterdayObject > dateObject ? "Ended" : "Ends";
+            differentDate = (
+              <div className="caption">
+                <Typography use="caption">
+                  {`${dateVerb} ${dateObject.toFormat(
+                    `d'${dateOrdinal}' MMMM`
+                  )} ${
+                    dateObject.year !== todayObject.year
+                      ? dateObject.toFormat(" yyyy")
+                      : ""
+                  }`}
+                </Typography>
+              </div>
             );
-          })}
-        </List>
-      </div>
-    ) : null;
-  const editorButtons =
-    (user.isEditor ||
-      (user.isDesigner &&
-        set?.designer &&
-        set.designer.includes(user.nickname))) &&
+          }
+          return (
+            <ConditionalWrapper
+              key={vendor.id}
+              condition={!!vendor.storeLink}
+              wrapper={(children) => (
+                <a
+                  href={vendor.storeLink}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  {children}
+                </a>
+              )}
+            >
+              <ListItem
+                className={classNames({ "three-line": !!differentDate })}
+                disabled={!vendor.storeLink}
+              >
+                <ListItemText>
+                  <ListItemPrimaryText>{vendor.name}</ListItemPrimaryText>
+                  <ListItemSecondaryText>{vendor.region}</ListItemSecondaryText>
+                  {differentDate}
+                </ListItemText>
+                {vendor.storeLink && <ListItemMeta icon="launch" />}
+              </ListItem>
+            </ConditionalWrapper>
+          );
+        })}
+      </List>
+    </div>
+  );
+  const editorButtons = (user.isEditor ||
+    (user.isDesigner &&
+      set?.designer &&
+      set.designer.includes(user.nickname))) &&
     edit &&
-    deleteSet ? (
+    deleteSet && (
       <div className="editor-buttons">
         <Button
           className="edit"
@@ -310,7 +306,7 @@ export const DrawerDetails = ({
           onClick={() => edit(setId)}
           outlined
         />
-        {user.isEditor ? (
+        {user.isEditor && (
           <Button
             className="delete"
             danger
@@ -319,14 +315,13 @@ export const DrawerDetails = ({
             onClick={set ? () => deleteSet(set) : undefined}
             outlined
           />
-        ) : null}
+        )}
       </div>
-    ) : null;
-  const lichButton =
-    set?.colorway === "Lich" ? (
-      <IconButton icon={iconObject(<Palette />)} onClick={toggleLichTheme} />
-    ) : null;
-  const userButtons = user.email ? (
+    );
+  const lichButton = set?.colorway === "Lich" && (
+    <IconButton icon={iconObject(<Palette />)} onClick={toggleLichTheme} />
+  );
+  const userButtons = user.email && (
     <>
       {withTooltip(
         <IconButton
@@ -359,27 +354,27 @@ export const DrawerDetails = ({
         arrayIncludes(hidden, setId) ? "Unhide" : "Hide"
       )}
     </>
-  ) : null;
-  const closeIcon = dismissible
-    ? withTooltip(
-        <IconButton className="close-icon" icon="close" onClick={close} />,
-        "Close"
-      )
-    : null;
-  const salesButton = set?.sales?.img ? (
+  );
+  const closeIcon =
+    dismissible &&
+    withTooltip(
+      <IconButton className="close-icon" icon="close" onClick={close} />,
+      "Close"
+    );
+  const salesButton = set?.sales?.img && (
     <Button
       icon="bar_chart"
       label="Sales"
       onClick={() => openSales(setId)}
       outlined
     />
-  ) : null;
-  const notes = set?.notes ? (
+  );
+  const notes = set?.notes && (
     <Typography className="multiline" tag="p" use="caption">
       {set.notes}
     </Typography>
-  ) : null;
-  const searchChips = arrayIncludes(mainPages, page) ? (
+  );
+  const searchChips = arrayIncludes(mainPages, page) && (
     <div className="search-chips-container">
       <div className="search-chips">
         <ChipSet choice id="search-chip-set">
@@ -401,7 +396,7 @@ export const DrawerDetails = ({
         </ChipSet>
       </div>
     </div>
-  ) : null;
+  );
   return (
     <Drawer
       className="details-drawer drawer-right"

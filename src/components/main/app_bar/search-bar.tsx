@@ -95,7 +95,7 @@ export const SearchBarPersistent = ({
           outlined
           placeholder="Search"
           trailingIcon={
-            expanded ? <IconButton icon="clear" onClick={clearInput} /> : null
+            expanded && <IconButton icon="clear" onClick={clearInput} />
           }
           value={search}
         />

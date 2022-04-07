@@ -36,28 +36,26 @@ export const ViewCard = ({
   return (
     <div className="group-container">
       {sets.map((set) => {
-        const gbLaunch = set.gbLaunch
-          ? set.gbLaunch.includes("Q") || !set.gbLaunch
+        const gbLaunch =
+          set.gbLaunch?.includes("Q") || !set.gbLaunch
             ? set.gbLaunch
-            : DateTime.fromISO(set.gbLaunch, { zone: "utc" })
-          : null;
+            : DateTime.fromISO(set.gbLaunch, { zone: "utc" });
         const gbLaunchOrdinal =
           gbLaunch instanceof DateTime ? ordinal(gbLaunch.day) : "";
 
-        const gbEnd = set.gbEnd
-          ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({
-              hour: 23,
-              millisecond: 999,
-              minute: 59,
-              second: 59,
-            })
-          : null;
+        const gbEnd =
+          set.gbEnd &&
+          DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({
+            hour: 23,
+            millisecond: 999,
+            minute: 59,
+            second: 59,
+          });
         const gbEndOrdinal =
           gbEnd instanceof DateTime ? ordinal(gbEnd.day) : "";
 
-        const icDate = set.icDate
-          ? DateTime.fromISO(set.icDate, { zone: "utc" })
-          : null;
+        const icDate =
+          set.icDate && DateTime.fromISO(set.icDate, { zone: "utc" });
         const icDateOrdinal =
           icDate instanceof DateTime ? ordinal(icDate.day) : "";
         let subtitle = "";

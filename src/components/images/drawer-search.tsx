@@ -27,13 +27,12 @@ export const DrawerSearch = ({
 }: DrawerSearchProps) => {
   const device = useAppSelector(selectDevice);
   const dismissible = device === "desktop";
-  const closeIcon = dismissible
-    ? withTooltip(
-        <IconButton className="close-icon" icon="close" onClick={close} />,
-        "Close"
-      )
-    : null;
-
+  const closeIcon =
+    dismissible &&
+    withTooltip(
+      <IconButton className="close-icon" icon="close" onClick={close} />,
+      "Close"
+    );
   const [search, setSearch] = useState("");
   const [regexSearch, setRegexSearch] = useState(false);
 

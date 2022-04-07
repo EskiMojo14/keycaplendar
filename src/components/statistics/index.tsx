@@ -164,7 +164,7 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
           { align: tooltipAlign }
         )}
       </SegmentedButton>
-      {hasKey(settings, statisticsTab) ? categoryButtons(statisticsTab) : null}
+      {hasKey(settings, statisticsTab) && categoryButtons(statisticsTab)}
     </>
   );
 
@@ -295,13 +295,13 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
     vendors: genericButtons,
   };
 
-  const categoryDialog =
-    statisticsTab !== "summary" && device !== "desktop" ? (
+  const categoryDialog = statisticsTab !== "summary" &&
+    device !== "desktop" && (
       <DialogStatistics
         onClose={closeCategoryDialog}
         open={categoryDialogOpen}
       />
-    ) : null;
+    );
 
   const tabRow = (
     <TopAppBarRow className="tab-row">
@@ -444,28 +444,28 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
         </div>
       ),
     };
-    return hasKey(tabs, tab) && tabs[tab] ? tabs[tab] : <div key={key} />;
+    return tabs[tab] ?? <div key={key} />;
   };
 
   return (
     <>
       <TopAppBar className={classNames({ "bottom-app-bar": bottomNav })} fixed>
-        {bottomNav ? tabRow : null}
+        {bottomNav && tabRow}
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
             <TopAppBarTitle>
-              {device !== "mobile" ? pageTitle.statistics : null}
+              {device !== "mobile" && pageTitle.statistics}
             </TopAppBarTitle>
           </TopAppBarSection>
           <TopAppBarSection alignEnd>
-            {hasKey(buttons, statisticsTab) ? buttons[statisticsTab] : null}
+            {hasKey(buttons, statisticsTab) && buttons[statisticsTab]}
           </TopAppBarSection>
         </TopAppBarRow>
-        {bottomNav ? null : tabRow}
+        {!bottomNav && tabRow}
         <LinearProgress closed={!loading} />
       </TopAppBar>
-      {bottomNav ? null : <TopAppBarFixedAdjust />}
+      {!bottomNav && <TopAppBarFixedAdjust />}
       <div className="main extended-app-bar">
         {categoryDialog}
         <VirtualizeSwipeableViews
@@ -482,7 +482,7 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
         />
         <Footer />
       </div>
-      {bottomNav ? <TopAppBarFixedAdjust /> : null}
+      {bottomNav && <TopAppBarFixedAdjust />}
     </>
   );
 };
