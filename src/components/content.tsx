@@ -54,31 +54,31 @@ export const Content = ({ className, ...props }: ContentProps) => {
     }
   }, [device, navEdited]);
 
-  const contentMain = arrayIncludes(mainPages, page) ? (
-    <ContentMain openNav={openNav} />
-  ) : null;
-  const contentStatistics =
-    page === "statistics" ? <ContentStatistics openNav={openNav} /> : null;
-  const contentChangelog =
-    page === "history" ? <ContentHistory openNav={openNav} /> : null;
-  const contentAudit =
-    page === "audit" && user.isAdmin ? (
-      <ContentAudit openNav={openNav} />
-    ) : null;
-  const contentUsers =
-    page === "users" && user.isAdmin ? (
-      <ContentUsers openNav={openNav} />
-    ) : null;
-  const contentImages =
-    page === "images" && user.isAdmin ? (
-      <ContentImages openNav={openNav} />
-    ) : null;
-  const contentGuides =
-    page === "guides" ? <ContentGuides openNav={openNav} /> : null;
-  const contentUpdates =
-    page === "updates" ? <ContentUpdates openNav={openNav} /> : null;
-  const contentSettings =
-    page === "settings" ? <ContentSettings openNav={openNav} /> : null;
+  const content = () => {
+    if (arrayIncludes(mainPages, page)) {
+      return <ContentMain openNav={openNav} />;
+    }
+    switch (page) {
+      case "statistics":
+        return <ContentStatistics openNav={openNav} />;
+      case "history":
+        return <ContentHistory openNav={openNav} />;
+      case "audit":
+        return user.isAdmin && <ContentAudit openNav={openNav} />;
+      case "users":
+        return user.isAdmin && <ContentUsers openNav={openNav} />;
+      case "images":
+        return user.isAdmin && <ContentImages openNav={openNav} />;
+      case "guides":
+        return user.isAdmin && <ContentGuides openNav={openNav} />;
+      case "updates":
+        return user.isAdmin && <ContentUpdates openNav={openNav} />;
+      case "settings":
+        return user.isAdmin && <ContentSettings openNav={openNav} />;
+      default:
+        return null;
+    }
+  };
   return (
     <div
       className={classNames(className, page, "app-container", {
@@ -91,17 +91,7 @@ export const Content = ({ className, ...props }: ContentProps) => {
       {...props}
     >
       <DrawerNav close={closeNav} open={navOpen} />
-      <DrawerAppContent>
-        {contentMain}
-        {contentStatistics}
-        {contentChangelog}
-        {contentAudit}
-        {contentUsers}
-        {contentImages}
-        {contentGuides}
-        {contentUpdates}
-        {contentSettings}
-      </DrawerAppContent>
+      <DrawerAppContent>{content()}</DrawerAppContent>
     </div>
   );
 };
