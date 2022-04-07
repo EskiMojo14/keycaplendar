@@ -35,9 +35,7 @@ export const DialogStatistics = ({ onClose, open }: DialogStatisticsProps) => {
           : statisticsTab === "timelines"
           ? "timelinesGroup"
           : statisticsTab;
-      if (hasKey(settings, key)) {
-        setStatistics(settings[key]);
-      }
+      setStatistics(settings[key]);
     }
   }, [open]);
 

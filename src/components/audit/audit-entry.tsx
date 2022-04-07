@@ -451,10 +451,7 @@ export const AuditEntry = ({ actionId, openDeleteDialog }: AuditEntryProps) => {
                 ) {
                   const docData =
                     action.action === "created" ? action.after : action.before;
-                  const prop =
-                    hasKey(docData, property) && docData[property]
-                      ? docData[property]
-                      : "";
+                  const prop = docData[property] ?? "";
                   if (
                     !arrayProps.includes(property) &&
                     property !== "vendors" &&

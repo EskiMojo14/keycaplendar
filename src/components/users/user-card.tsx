@@ -227,9 +227,11 @@ export const UserCard = ({
             open={focused === "nickname"}
             prop="nickname"
             query={user.nickname}
-            select={(prop, item) =>
-              hasKey(user, prop) && selectValue(prop, item)
-            }
+            select={(prop, item) => {
+              if (hasKey(user, prop)) {
+                selectValue(prop, item);
+              }
+            }}
           />
         </MenuSurfaceAnchor>
       </div>
@@ -244,16 +246,12 @@ export const UserCard = ({
                     user.email === "ben.j.durrant@gmail.com") &&
                   role !== "designer"
                 }
-                icon={
-                  device === "desktop" && hasKey(userRoleIcons, role)
-                    ? userRoleIcons[role]
-                    : null
-                }
+                icon={device === "desktop" && userRoleIcons[role]}
                 label={role}
                 onClick={() => {
                   toggleRole(role);
                 }}
-                selected={hasKey(user, role) && !!user[role]}
+                selected={!!user[role]}
               />
             ))}
           </SegmentedButton>

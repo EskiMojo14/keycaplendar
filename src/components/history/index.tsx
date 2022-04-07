@@ -37,7 +37,6 @@ import { selectBottomNav } from "@s/settings";
 import {
   capitalise,
   closeModal,
-  hasKey,
   iconObject,
   openModal,
   truncate,
@@ -188,7 +187,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
         </div>
       ),
     };
-    return hasKey(tabs, tab) && tabs[tab] ? tabs[tab] : <div key={key} />;
+    return tabs[tab] ?? <div key={key} />;
   };
 
   return (

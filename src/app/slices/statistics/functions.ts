@@ -6,7 +6,6 @@ import firebase from "@s/firebase";
 import {
   alphabeticalSortPropCurried,
   createURL,
-  hasKey,
   ordinal,
 } from "@s/util/functions";
 import {
@@ -102,14 +101,11 @@ export const sortData = (state = store.getState()) => {
       } else {
         properties.forEach((properties) => {
           statisticsDataDraft[tab].breakdown[properties].sort((a, b) => {
-            if (hasKey(sort, tab)) {
-              const key = sort[tab] === "total" ? "total" : "name";
-              return (
-                alphabeticalSortPropCurried(key, sort[tab] === "total")(a, b) ||
-                alphabeticalSortPropCurried(key)(a, b)
-              );
-            }
-            return 0;
+            const key = sort[tab] === "total" ? "total" : "name";
+            return (
+              alphabeticalSortPropCurried(key, sort[tab] === "total")(a, b) ||
+              alphabeticalSortPropCurried(key)(a, b)
+            );
           });
         });
       }

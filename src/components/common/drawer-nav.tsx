@@ -155,9 +155,9 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
               }
             />
             {pageTitle[page]}
-            {hasKey(quantities, page) ? (
+            {hasKey(quantities, page) && (
               <ListItemMeta>{quantities[page]}</ListItemMeta>
-            ) : null}
+            )}
           </ListItem>
         ))}
       </CollapsibleList>

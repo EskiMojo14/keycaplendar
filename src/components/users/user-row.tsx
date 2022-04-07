@@ -176,9 +176,11 @@ export const UserRow = ({
             open={focused === "nickname"}
             prop="nickname"
             query={user.nickname}
-            select={(prop, item) =>
-              hasKey(user, prop) && selectValue(prop, item)
-            }
+            select={(prop, item) => {
+              if (hasKey(user, prop)) {
+                selectValue(prop, item);
+              }
+            }}
           />
         </MenuSurfaceAnchor>
       </DataTableCell>

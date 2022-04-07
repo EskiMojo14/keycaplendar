@@ -174,9 +174,7 @@ const createGroups = (transition = false, state = store.getState()) => {
         .map((set) => set.vendors?.map((vendor) => vendor.name) ?? [])
         .flat();
     } else {
-      return sets
-        .map((set) => (hasKey(set, sort) ? `${set[sort]}` : ""))
-        .filter(Boolean);
+      return sets.map((set) => `${set[sort]}`).filter(Boolean);
     }
   };
   const groups = removeDuplicates(createSetGroups(sets));
@@ -633,30 +631,28 @@ export const testSets = (state = store.getState()) => {
     }
   };
   for (const set of sets) {
-    for (const key of Object.keys(set)) {
-      if (hasKey(set, key)) {
-        const { [key]: value } = set;
-        if (is<string>(value)) {
-          testValue(set, key, value);
-        } else if (is<any[]>(value)) {
-          for (const item of value) {
-            if (is<string>(item)) {
-              testValue(set, key, item);
-            } else if (is<VendorType>(item)) {
-              for (const itemKey of Object.keys(item)) {
-                if (hasKey(item, itemKey)) {
-                  if (itemKey === "region") {
-                    item[itemKey].split(", ").forEach((region) => {
-                      if (!region) {
-                        console.log(
-                          `${set.profile} ${set.colorway}: ${item.name} <empty region>`
-                        );
-                      }
-                      testValue(set, `${key} ${itemKey}`, region);
-                    });
-                  } else if (is<string>(item[itemKey])) {
-                    testValue(set, `${key} ${itemKey}`, item[itemKey]);
-                  }
+    for (const [key, value] of objectEntries(set)) {
+      if (is<string>(value)) {
+        testValue(set, key, value);
+      } else if (is<any[]>(value)) {
+        for (const item of value) {
+          if (is<string>(item)) {
+            testValue(set, key, item);
+          } else if (is<VendorType>(item)) {
+            for (const itemEntries of objectEntries(item)) {
+              if (itemEntries) {
+                const [itemKey, itemVal] = itemEntries;
+                if (itemKey === "region") {
+                  itemVal?.split(", ").forEach((region) => {
+                    if (!region) {
+                      console.log(
+                        `${set.profile} ${set.colorway}: ${item.name} <empty region>`
+                      );
+                    }
+                    testValue(set, `${key} ${itemKey}`, region);
+                  });
+                } else if (is<string>(itemVal)) {
+                  testValue(set, `${key} ${itemKey}`, itemVal);
                 }
               }
             }
@@ -744,14 +740,8 @@ export const updatePreset = (
   state = store.getState()
 ): PresetType => {
   const allRegions = selectAllRegions(state);
-  const regions =
-    hasKey(preset.whitelist, "regions") &&
-    is<string[]>(preset.whitelist.regions)
-      ? preset.whitelist.regions
-      : allRegions;
-  const bought = hasKey(preset.whitelist, "bought")
-    ? !!preset.whitelist.bought
-    : false;
+  const regions = preset.whitelist.regions ?? allRegions;
+  const bought = !!preset.whitelist.bought ?? false;
   const hidden = is<boolean>(preset.whitelist.hidden)
     ? preset.whitelist.hidden
       ? "hidden"
