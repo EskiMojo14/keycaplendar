@@ -8,12 +8,10 @@ import {
   initialState,
   mergeWhitelist,
   selectAllAppPresets,
-  selectAllDesigners,
   selectAllSetGroups,
   selectAllSets,
   selectAppPresetById,
   selectCurrentPresetId,
-  selectDefaultPreset,
   selectFilteredSetsIds,
   selectLinkedFavorites,
   selectLoading,
@@ -28,10 +26,8 @@ import {
   setAllSets,
   setAppPresets,
   setCurrentPreset,
-  setDefaultPreset,
   setFilteredSets,
   setLinkedFavorites,
-  setList,
   setLoading,
   setSearch,
   setSet,
@@ -84,13 +80,6 @@ it("sets sort order", () => {
   store.dispatch(setSortOrder(sortOrder));
   const response = selectSortOrder(store.getState());
   expect(response).toBe(sortOrder);
-});
-
-it("sets specified list", () => {
-  const list = ["test"];
-  store.dispatch(setList("allDesigners", list));
-  const response = selectAllDesigners(store.getState());
-  expect(response).toEqual(list);
 });
 
 it("sets all sets", () => {
@@ -176,13 +165,6 @@ it("sets current preset", () => {
   const response = selectCurrentPresetId(store.getState());
   expect(response).toEqual(preset.id);
 });
-
-it("sets default preset", () => {
-  store.dispatch(setDefaultPreset(preset));
-  const response = selectDefaultPreset(store.getState());
-  expect(response).toEqual(preset);
-});
-
 it("sets app presets", () => {
   store.dispatch(setAppPresets([preset]));
   const response = selectAllAppPresets(store.getState());

@@ -5,6 +5,7 @@ import { DateTime } from "luxon";
 import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
+import type { AppThunk } from "~/app/store";
 import { selectPage } from "@s/common";
 import { mainPages } from "@s/common/constants";
 import { triggerTransition } from "@s/common/functions";
@@ -21,7 +22,6 @@ import {
   upsertUserPreset,
 } from "@s/user";
 import {
-  alphabeticalSort,
   alphabeticalSortCurried,
   arrayIncludes,
   createURL,
@@ -31,7 +31,6 @@ import {
   removeDuplicates,
   replaceFunction,
 } from "@s/util/functions";
-import type { Tuple, UnionToTuple } from "@s/util/types";
 import {
   addAppPreset,
   deleteAppPreset,
@@ -40,6 +39,7 @@ import {
   selectAllRegions,
   selectAllSets,
   selectCurrentPreset,
+  selectDefaultPreset,
   selectFilteredSets,
   selectInitialLoad,
   selectLinkedFavorites,
@@ -53,10 +53,8 @@ import {
   selectWhitelist,
   setAllSets,
   setCurrentPreset,
-  setDefaultPreset,
   setFilteredSets,
   setInitialLoad,
-  setList,
   setLoading,
   setSearch as setMainSearch,
   setSort as setMainSort,
@@ -77,7 +75,6 @@ import {
   sortHiddenCheck,
   whitelistParams,
 } from "./constants";
-import { partialPreset } from "./constructors";
 import type {
   OldPresetType,
   PresetType,
@@ -473,89 +470,24 @@ export const setWhitelist = <T extends keyof WhitelistType>(
   }
 };
 
-const generateLists = (state = store.getState()) => {
-  const sets = selectAllSets(state);
+const applyInitialPreset = (): AppThunk<void> => (dispatch, getState) => {
+  const state = getState();
+  const defaultPreset = selectDefaultPreset(state);
   const currentPreset = selectCurrentPreset(state);
   const urlWhitelist = selectURLWhitelist(state);
-
-  const allVendors = alphabeticalSort(
-    removeDuplicates(
-      sets.map((set) => set.vendors?.map((vendor) => vendor.name) ?? []).flat()
-    )
-  );
-
-  const allVendorRegions = alphabeticalSort(
-    removeDuplicates([
-      ...sets
-        .map((set) => set.vendors?.map((vendor) => vendor.region) ?? [])
-        .flat(),
-      ...sets
-        .map(
-          (set) => set.vendors?.map((vendor) => vendor.region.split(", ")) ?? []
-        )
-        .flat(2),
-    ])
-  );
-
-  const allRegions = alphabeticalSort(
-    removeDuplicates(
-      sets
-        .map((set) =>
-          set.vendors
-            ? set.vendors.map((vendor) => vendor.region.split(", "))
-            : []
-        )
-        .flat(2)
-    )
-  );
-
-  const allDesigners = alphabeticalSort(
-    removeDuplicates(sets.map((set) => set.designer ?? []).flat())
-  );
-
-  const allProfiles = alphabeticalSort(
-    removeDuplicates(sets.map((set) => set.profile))
-  );
-
-  // create default preset
-
-  const defaultPreset = partialPreset({
-    id: "default",
-    name: "Default",
-    whitelist: {
-      profiles: allProfiles,
-      regions: allRegions,
-    },
-  });
-
-  const lists = {
-    allDesigners,
-    allProfiles,
-    allRegions,
-    allVendorRegions,
-    allVendors,
-  } as const;
-
-  dispatch([
-    setDefaultPreset(defaultPreset),
-    ...(objectEntries(lists).map(([key, val]) => setList(key, val)) as Tuple<
-      ReturnType<typeof setList>,
-      UnionToTuple<keyof typeof lists>["length"]
-    >),
-  ]);
 
   const params = new URLSearchParams(window.location.search);
   const noUrlParams =
     !whitelistParams.some((param) => params.has(param)) &&
     Object.keys(urlWhitelist).length === 0;
-  const urlParams = [
-    ...whitelistParams.filter((param) => params.has(param)),
-    ...Object.keys(urlWhitelist),
-  ];
   if (!currentPreset.name && noUrlParams) {
     dispatch(setCurrentPreset("default"));
     setWhitelistMerge(defaultPreset.whitelist);
   } else if (!currentPreset.name && !noUrlParams) {
+    const urlParams = [
+      ...whitelistParams.filter((param) => params.has(param)),
+      ...Object.keys(urlWhitelist),
+    ];
     dispatch(setCurrentPreset("default"));
     const partialWhitelist: Partial<WhitelistType> = {};
     const defaultParams = ["profiles", "regions"] as const;
@@ -600,7 +532,7 @@ export const getData = () => {
       dispatch([setAllSets(sets), setInitialLoad(false)]);
 
       filterData(true);
-      generateLists(store.getState());
+      dispatch(applyInitialPreset());
     })
     .catch((error) => {
       console.log(`Error getting data: ${error}`);

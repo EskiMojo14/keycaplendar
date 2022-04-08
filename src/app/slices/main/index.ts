@@ -7,15 +7,15 @@ import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
 import type { AppThunk, RootState } from "~/app/store";
-import { blankPreset } from "@s/main/constants";
-import { partialSet } from "@s/main/constructors";
+import { partialPreset, partialSet } from "@s/main/constructors";
 import { selectUserPresetMap } from "@s/user";
 import {
+  alphabeticalSort,
   alphabeticalSortPropCurried,
   randomInt,
   removeDuplicates,
 } from "@s/util/functions";
-import type { KeysMatching, Overwrite } from "@s/util/types";
+import type { Overwrite } from "@s/util/types";
 import type {
   PresetType,
   SetGroup,
@@ -61,11 +61,6 @@ export const setGroupAdapter = createEntityAdapter<SetGroup>({
 });
 
 export type MainState = {
-  allDesigners: string[];
-  allProfiles: string[];
-  allRegions: string[];
-  allVendorRegions: string[];
-  allVendors: string[];
   content: boolean;
   initialLoad: boolean;
   keysets: EntityState<SetType> & {
@@ -76,7 +71,6 @@ export type MainState = {
   loading: boolean;
   presets: EntityState<PresetType> & {
     currentPreset: EntityId;
-    defaultPreset: PresetType;
   };
   search: string;
   sort: SortType;
@@ -91,11 +85,6 @@ export type MainState = {
 };
 
 export const initialState: MainState = {
-  allDesigners: [],
-  allProfiles: [],
-  allRegions: [],
-  allVendorRegions: [],
-  allVendors: [],
   content: true,
   initialLoad: true,
   keysets: keysetAdapter.getInitialState({
@@ -109,7 +98,6 @@ export const initialState: MainState = {
   loading: true,
   presets: appPresetAdapter.getInitialState({
     currentPreset: "default",
-    defaultPreset: blankPreset,
   }),
   search: "",
   sort: "gbLaunch",
@@ -168,9 +156,6 @@ export const mainSlice = createSlice({
     ) => {
       state.presets.currentPreset = payload;
     },
-    setDefaultPreset: (state, { payload }: PayloadAction<PresetType>) => {
-      state.presets.defaultPreset = payload;
-    },
     setFilteredSets: (state, { payload }: PayloadAction<EntityId[]>) => {
       state.keysets.filteredSets = payload;
     },
@@ -182,22 +167,6 @@ export const mainSlice = createSlice({
       { payload }: PayloadAction<{ array: string[]; displayName: string }>
     ) => {
       state.linkedFavorites = payload;
-    },
-    setList: {
-      prepare: (name: KeysMatching<MainState, string[]>, array: string[]) => ({
-        payload: { array, name },
-      }),
-      reducer: (
-        state,
-        {
-          payload: { array, name },
-        }: PayloadAction<{
-          array: string[];
-          name: KeysMatching<MainState, string[]>;
-        }>
-      ) => {
-        state[name] = array;
-      },
     },
     setLoading: (state, { payload }: PayloadAction<boolean>) => {
       state.loading = payload;
@@ -262,11 +231,9 @@ export const {
     setAllSets,
     setAppPresets,
     setCurrentPreset,
-    setDefaultPreset,
     setFilteredSets,
     setInitialLoad,
     setLinkedFavorites,
-    setList,
     setLoading,
     setSearch,
     setSet,
@@ -294,17 +261,6 @@ export const selectSort = (state: RootState) => state.main.sort;
 
 export const selectSortOrder = (state: RootState) => state.main.sortOrder;
 
-export const selectAllDesigners = (state: RootState) => state.main.allDesigners;
-
-export const selectAllProfiles = (state: RootState) => state.main.allProfiles;
-
-export const selectAllRegions = (state: RootState) => state.main.allRegions;
-
-export const selectAllVendors = (state: RootState) => state.main.allVendors;
-
-export const selectAllVendorRegions = (state: RootState) =>
-  state.main.allVendorRegions;
-
 export const selectURLSet = (state: RootState) => state.main.urlSet;
 
 export const selectSearch = (state: RootState) => state.main.search;
@@ -318,9 +274,6 @@ export const selectWhitelist = (state: RootState) => state.main.whitelist;
 
 export const selectCurrentPresetId = (state: RootState) =>
   state.main.presets.currentPreset;
-
-export const selectDefaultPreset = (state: RootState) =>
-  state.main.presets.defaultPreset;
 
 export const {
   selectAll: selectAllSets,
@@ -365,6 +318,68 @@ export const {
   selectTotal: selectSetGroupTotal,
 } = setGroupAdapter.getSelectors(
   (state: RootState) => state.main.keysets.setGroups
+);
+
+export const selectAllDesigners = createSelector(selectAllSets, (sets) =>
+  alphabeticalSort(
+    removeDuplicates(sets.map((set) => set.designer ?? []).flat())
+  )
+);
+
+export const selectAllProfiles = createSelector(selectAllSets, (sets) =>
+  alphabeticalSort(removeDuplicates(sets.map((set) => set.profile)))
+);
+
+export const selectAllRegions = createSelector(selectAllSets, (sets) =>
+  alphabeticalSort(
+    removeDuplicates(
+      sets
+        .map((set) =>
+          set.vendors
+            ? set.vendors.map((vendor) => vendor.region.split(", "))
+            : []
+        )
+        .flat(2)
+    )
+  )
+);
+
+export const selectAllVendors = createSelector(selectAllSets, (sets) =>
+  alphabeticalSort(
+    removeDuplicates(
+      sets.map((set) => set.vendors?.map((vendor) => vendor.name) ?? []).flat()
+    )
+  )
+);
+
+export const selectAllVendorRegions = createSelector(selectAllSets, (sets) =>
+  alphabeticalSort(
+    removeDuplicates(
+      sets
+        .map(
+          (set) =>
+            set.vendors?.map((vendor) => [
+              vendor.region,
+              ...vendor.region.split(", "),
+            ]) ?? []
+        )
+        .flat(2)
+    )
+  )
+);
+
+export const selectDefaultPreset = createSelector(
+  selectAllProfiles,
+  selectAllRegions,
+  (profiles, regions) =>
+    partialPreset({
+      id: "default",
+      name: "Default",
+      whitelist: {
+        profiles,
+        regions,
+      },
+    })
 );
 
 export const {
