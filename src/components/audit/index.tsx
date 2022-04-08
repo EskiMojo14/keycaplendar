@@ -19,12 +19,13 @@ import { Footer } from "@c/common/footer";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
 import {
+  getActions,
   selectActions,
   selectActionTotal,
   selectFilter,
   selectLoading,
 } from "@s/audit";
-import { filterActions, getActions } from "@s/audit/functions";
+import { filterActions } from "@s/audit/functions";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { selectBottomNav } from "@s/settings";

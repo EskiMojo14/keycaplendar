@@ -1,7 +1,9 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import type { EntityState, PayloadAction } from "@reduxjs/toolkit";
 import { is } from "typescript-is";
-import type { RootState } from "~/app/store";
+import { queue } from "~/app/snackbar-queue";
+import type { AppThunk, RootState } from "~/app/store";
+import firebase from "@s/firebase";
 import type { sortProps } from "@s/users/constants";
 import {
   alphabeticalSortCurried,
@@ -150,3 +152,29 @@ export const selectRowsPerPage = (state: RootState) => state.users.rowsPerPage;
 export const selectPage = (state: RootState) => state.users.page;
 
 export default usersSlice.reducer;
+
+const length = 1000;
+
+export const getUsers =
+  (append = false): AppThunk<Promise<void>> =>
+  async (dispatch, getState) => {
+    const nextPageToken = selectNextPageToken(getState());
+    dispatch(setLoading(true));
+    const listUsersFn = firebase.functions().httpsCallable("listUsers");
+    try {
+      const result = await listUsersFn({ length, nextPageToken });
+      if (result.data.error) {
+        queue.notify({ title: result.data.error });
+        dispatch(setLoading(false));
+      } else {
+        dispatch([
+          setLoading(false),
+          append ? appendUsers(result.data.users) : setUsers(result.data.users),
+          setNextPageToken(result.data.nextPageToken ?? ""),
+        ]);
+      }
+    } catch (error) {
+      queue.notify({ title: `Error listing users: ${error}` });
+      dispatch(setLoading(false));
+    }
+  };

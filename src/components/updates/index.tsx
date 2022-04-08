@@ -19,8 +19,12 @@ import { AppBarIndent } from "@c/util/app-bar-indent";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { selectBottomNav } from "@s/settings";
-import { selectEntryIds, selectLoading, selectURLEntry } from "@s/updates";
-import { getEntries as getEntriesThunk } from "@s/updates/functions";
+import {
+  getEntries as getEntriesThunk,
+  selectEntryIds,
+  selectLoading,
+  selectURLEntry,
+} from "@s/updates";
 import { selectUser } from "@s/user";
 import { closeModal, openModal } from "@s/util/functions";
 import { UpdateEntry } from "./update-entry";

@@ -4,12 +4,17 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
-import type { RootState } from "~/app/store";
+import isEqual from "lodash.isequal";
+import { queue } from "~/app/snackbar-queue";
+import type { AppThunk, RootState } from "~/app/store";
+import firestore from "@s/firebase/firestore";
 import {
   alphabeticalSort,
+  alphabeticalSortProp,
   alphabeticalSortPropCurried,
   removeDuplicates,
 } from "@s/util/functions";
+import { auditProperties } from "./constants";
 import type { ActionType } from "./types";
 
 const actionAdapter = createEntityAdapter<ActionType>({
@@ -17,7 +22,7 @@ const actionAdapter = createEntityAdapter<ActionType>({
   sortComparer: alphabeticalSortPropCurried("timestamp", true),
 });
 
-type AuditState = {
+export type AuditState = {
   actions: EntityState<ActionType>;
   filter: {
     action: "created" | "deleted" | "none" | "updated";
@@ -101,3 +106,64 @@ export const selectUsers = createSelector(selectActions, (actions) =>
 );
 
 export default auditSlice.reducer;
+
+const processAction = ({
+  after,
+  before,
+  ...restAction
+}: ActionType): ActionType => {
+  if (before && after) {
+    auditProperties.forEach((prop) => {
+      const { [prop]: beforeProp } = before;
+      const { [prop]: afterProp } = after;
+      if (
+        isEqual(beforeProp, afterProp) &&
+        prop !== "profile" &&
+        prop !== "colorway"
+      ) {
+        delete before[prop];
+        delete after[prop];
+      }
+    });
+  }
+  return {
+    ...restAction,
+    after,
+    before,
+  };
+};
+
+export const getActions =
+  (length?: number): AppThunk<Promise<void>> =>
+  async (dispatch, getState) => {
+    dispatch(setLoading(true));
+    try {
+      const querySnapshot = await firestore
+        .collection("changelog")
+        .orderBy("timestamp", "desc")
+        .limit(length ?? selectLength(getState()))
+        .get();
+
+      const actions: ActionType[] = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const action = data.before?.profile
+          ? data.after?.profile
+            ? "updated"
+            : "deleted"
+          : "created";
+        actions.push({
+          ...data,
+          action,
+          changelogId: doc.id,
+        });
+      });
+
+      alphabeticalSortProp(actions, "timestamp", true);
+
+      dispatch([setAllActions(actions.map(processAction)), setLoading(false)]);
+    } catch (error) {
+      queue.notify({ title: `Error getting data: ${error}` });
+      dispatch(setLoading(false));
+    }
+  };

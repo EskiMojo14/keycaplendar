@@ -9,8 +9,7 @@ import {
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import firebase from "@s/firebase";
-import { selectUserById, setLoading } from "@s/users";
-import { getUsers } from "@s/users/functions";
+import { getUsers, selectUserById, setLoading } from "@s/users";
 
 export type DialogDeleteProps = {
   onClose: () => void;

@@ -40,6 +40,7 @@ import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { selectBottomNav } from "@s/settings";
 import {
+  getUsers,
   selectLoading,
   selectNextPageToken,
   selectPage,
@@ -61,7 +62,7 @@ import {
   viewLabels,
   views,
 } from "@s/users/constants";
-import { getUsers, paginateUsers } from "@s/users/functions";
+import { paginateUsers } from "@s/users/functions";
 import { useBoolStates } from "@s/util/functions";
 import { UserCard } from "./user-card";
 import { UserRow } from "./user-row";

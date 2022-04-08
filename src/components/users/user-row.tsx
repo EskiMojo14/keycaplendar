@@ -16,9 +16,8 @@ import { Autocomplete } from "@c/util/autocomplete";
 import firebase from "@s/firebase";
 import { selectAllDesigners } from "@s/main";
 import { selectUser } from "@s/user";
-import { selectUserById } from "@s/users";
+import { getUsers, selectUserById } from "@s/users";
 import { partialUser } from "@s/users/constructors";
-import { getUsers } from "@s/users/functions";
 import type { UserType } from "@s/users/types";
 import {
   arrayIncludes,

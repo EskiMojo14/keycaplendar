@@ -15,8 +15,7 @@ import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import { CustomReactMarkdown } from "@c/util/react-markdown";
-import { selectEntryById, selectURLEntry } from "@s/updates";
-import { pinEntry } from "@s/updates/functions";
+import { pinEntry, selectEntryById, selectURLEntry } from "@s/updates";
 import { selectUser } from "@s/user";
 import {
   clearSearchParams,

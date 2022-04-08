@@ -9,6 +9,7 @@ import { Typography } from "@rmwc/typography";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { withTooltip } from "@c/util/hocs";
 import {
+  getActions,
   selectFilterAction,
   selectFilterUser,
   selectLength,
@@ -17,7 +18,6 @@ import {
   setFilterUser,
   setLength,
 } from "@s/audit";
-import { getActions } from "@s/audit/functions";
 import { selectDevice } from "@s/common";
 import { arrayIncludes } from "@s/util/functions";
 import "./drawer-audit-filter.scss";
