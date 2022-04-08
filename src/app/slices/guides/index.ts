@@ -1,4 +1,8 @@
-import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import {
+  createEntityAdapter,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
 import { visibilityVals } from "@s/guides/constants";
@@ -6,6 +10,8 @@ import {
   alphabeticalSort,
   alphabeticalSortPropCurried,
   groupBy,
+  objectEntries,
+  objectFromEntries,
   removeDuplicates,
 } from "@s/util/functions";
 import type { GuideEntryType, Visibility } from "./types";
@@ -26,17 +32,14 @@ const guideEntryAdapter = createEntityAdapter<GuideEntryType>({
 });
 
 type GuidesState = {
-  allTags: string[];
   entries: EntityState<GuideEntryType> & {
     urlEntry: EntityId;
-    visibilityMap: Record<Visibility, EntityId[]>;
   };
   filteredTag: string;
   loading: boolean;
 };
 
 export const initialState: GuidesState = {
-  allTags: [],
   entries: guideEntryAdapter.getInitialState({
     urlEntry: "",
     visibilityMap: blankVisibilityMap,
@@ -51,21 +54,6 @@ export const guidesSlice = createSlice({
   reducers: {
     setEntries: (state, { payload }: PayloadAction<GuideEntryType[]>) => {
       guideEntryAdapter.setAll(state.entries, payload);
-      state.entries.visibilityMap = {
-        ...blankVisibilityMap,
-        ...groupBy(
-          [...payload].sort(
-            typeof guideEntryAdapter.sortComparer === "function"
-              ? guideEntryAdapter.sortComparer
-              : undefined
-          ),
-          "visibility",
-          { createVal: ({ id }) => id }
-        ),
-      };
-      state.allTags = alphabeticalSort(
-        removeDuplicates(payload.map((entry) => entry.tags).flat(1))
-      );
     },
     setFilteredTag: (state, { payload }: PayloadAction<string>) => {
       state.filteredTag = payload;
@@ -93,14 +81,41 @@ export const {
   selectTotal: selectEntryTotal,
 } = guideEntryAdapter.getSelectors<RootState>((state) => state.guides.entries);
 
+export const selectFilteredTag = (state: RootState) => state.guides.filteredTag;
+
 export const selectURLEntry = (state: RootState) =>
   state.guides.entries.urlEntry;
 
-export const selectAllTags = (state: RootState) => state.guides.allTags;
+export const selectAllTags = createSelector(selectEntries, (entries) =>
+  alphabeticalSort(removeDuplicates(entries.map((entry) => entry.tags).flat(1)))
+);
 
-export const selectFilteredTag = (state: RootState) => state.guides.filteredTag;
+export const selectVisibilityMap = createSelector(selectEntries, (entries) => ({
+  ...blankVisibilityMap,
+  ...groupBy(
+    [...entries].sort(
+      typeof guideEntryAdapter.sortComparer === "function"
+        ? guideEntryAdapter.sortComparer
+        : undefined
+    ),
+    "visibility",
+    { createVal: ({ id }) => id }
+  ),
+}));
 
-export const selectVisibilityMap = (state: RootState) =>
-  state.guides.entries.visibilityMap;
+export const selectFilteredVisibilityMap = createSelector(
+  selectFilteredTag,
+  selectEntryMap,
+  selectVisibilityMap,
+  (filteredTag, entryMap, visibilityMap) =>
+    objectFromEntries<typeof visibilityMap>(
+      objectEntries(visibilityMap).map(([key, ids]) => [
+        key,
+        ids.filter(
+          (id) => filteredTag === "" || entryMap[id]?.tags.includes(filteredTag)
+        ),
+      ])
+    )
+);
 
 export default guidesSlice.reducer;

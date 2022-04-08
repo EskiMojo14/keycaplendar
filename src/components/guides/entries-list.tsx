@@ -21,7 +21,7 @@ import {
   selectAllTags,
   selectEntryMap,
   selectFilteredTag,
-  selectVisibilityMap,
+  selectFilteredVisibilityMap,
   setFilteredTag,
 } from "@s/guides";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
@@ -40,9 +40,9 @@ export const EntriesList = ({ detailEntry, openEntry }: EntriesDrawerProps) => {
   const device = useAppSelector(selectDevice);
 
   const entriesMap = useAppSelector(selectEntryMap);
-  const visibilityMap = useAppSelector(selectVisibilityMap);
   const allTags = useAppSelector(selectAllTags);
   const filteredTag = useAppSelector(selectFilteredTag);
+  const filteredVisibilityMap = useAppSelector(selectFilteredVisibilityMap);
 
   const setScroll = () => {
     const chipSet = document.getElementById("filter-chip-set");
@@ -99,14 +99,9 @@ export const EntriesList = ({ detailEntry, openEntry }: EntriesDrawerProps) => {
       )}
     >
       <List className="entries-list three-line" twoLine>
-        {objectEntries(visibilityMap).map(([visibility, entryIds]) => {
-          const entries = entryIds
-            .map((id) => entriesMap[id])
-            .filter(
-              (entry) => filteredTag === "" || entry?.tags.includes(filteredTag)
-            );
+        {objectEntries(filteredVisibilityMap).map(([visibility, entryIds]) => {
           const { [visibility]: icon } = visibilityIcons;
-          if (entries.length > 0) {
+          if (entryIds.length > 0) {
             return (
               <Fragment key={visibility}>
                 <ListGroup>
@@ -118,22 +113,22 @@ export const EntriesList = ({ detailEntry, openEntry }: EntriesDrawerProps) => {
                     )}
                     {formattedVisibility[visibility]}
                   </ListGroupSubheader>
-                  {entries.map(
-                    (entry) =>
-                      entry && (
+                  {entryIds.map(
+                    (entryId) =>
+                      entriesMap[entryId] && (
                         <ListItem
-                          key={entry.id}
-                          onClick={() => openEntry(entry.id)}
-                          selected={detailEntry === entry.id}
+                          key={entryId}
+                          onClick={() => openEntry(entryId)}
+                          selected={detailEntry === entryId}
                         >
                           <ListItemGraphic icon={iconObject(<Article />)} />
                           <ListItemText>
                             <ListItemPrimaryText>
-                              {entry?.title}
+                              {entriesMap[entryId]?.title}
                             </ListItemPrimaryText>
-                            {entry?.description && (
+                            {entriesMap[entryId]?.description && (
                               <ListItemSecondaryText>
-                                {entry.description}
+                                {entriesMap[entryId]?.description}
                               </ListItemSecondaryText>
                             )}
                           </ListItemText>
