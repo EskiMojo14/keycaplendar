@@ -29,7 +29,7 @@ import {
   selectURLEntry,
   setURLEntry,
 } from "@s/guides";
-import { getEntries } from "@s/guides/functions";
+import { getEntries as getEntriesThunk } from "@s/guides/functions";
 import { selectBottomNav } from "@s/settings";
 import { selectUser } from "@s/user";
 import { closeModal, createURL, openModal } from "@s/util/functions";
@@ -45,6 +45,8 @@ type ContentGuidesProps = {
 
 export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   const dispatch = useAppDispatch();
+
+  const getEntries = () => dispatch(getEntriesThunk());
 
   const device = useAppSelector(selectDevice);
 
