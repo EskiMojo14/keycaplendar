@@ -69,7 +69,7 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
     const length = parseInt(e.target.value);
     dispatch(setLength(length));
     if (length >= 50 && length % 50 === 0 && length <= 250) {
-      getActions();
+      dispatch(getActions(length));
     }
   };
 
@@ -96,7 +96,7 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
               displayMarkers
               max={250}
               min={50}
-              onChange={() => getActions()}
+              onChange={() => dispatch(getActions())}
               onInput={(e) => dispatch(setLength(e.detail.value))}
               step={50}
               value={auditLength}

@@ -6,13 +6,11 @@ import {
   selectFilterUser,
   selectLength,
   selectLoading,
-  selectUsers,
   setAllActions,
   setFilterAction,
   setFilterUser,
   setLength,
   setLoading,
-  setUsers,
 } from "@s/audit";
 import type { ActionType } from "@s/audit/types";
 
@@ -75,11 +73,4 @@ it("sets audit log length", () => {
   store.dispatch(setLength(length));
   const response = selectLength(store.getState());
   expect(response).toBe(length);
-});
-
-it("sets user list", () => {
-  const users = ["eskimojo", "dvorcol"];
-  store.dispatch(setUsers(users));
-  const response = selectUsers(store.getState());
-  expect(response).toEqual(users);
 });

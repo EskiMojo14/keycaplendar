@@ -14,7 +14,7 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
@@ -39,11 +39,12 @@ type ContentAuditProps = {
 };
 
 export const ContentAudit = ({ openNav }: ContentAuditProps) => {
+  const dispatch = useAppDispatch();
   const total = useAppSelector(selectActionTotal);
 
   useEffect(() => {
     if (total === 0) {
-      getActions();
+      dispatch(getActions());
     }
   }, []);
 
@@ -91,7 +92,10 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
     <CircularProgress />
   ) : (
     withTooltip(
-      <TopAppBarActionItem icon="refresh" onClick={() => getActions()} />,
+      <TopAppBarActionItem
+        icon="refresh"
+        onClick={() => dispatch(getActions())}
+      />,
       "Refresh",
       { align: bottomNav ? "top" : "bottom" }
     )

@@ -1,7 +1,15 @@
-import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import {
+  createEntityAdapter,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { alphabeticalSortPropCurried } from "@s/util/functions";
+import {
+  alphabeticalSort,
+  alphabeticalSortPropCurried,
+  removeDuplicates,
+} from "@s/util/functions";
 import type { ActionType } from "./types";
 
 const actionAdapter = createEntityAdapter<ActionType>({
@@ -17,7 +25,6 @@ type AuditState = {
   };
   length: number;
   loading: boolean;
-  users: string[];
 };
 
 export const initialState: AuditState = {
@@ -25,7 +32,6 @@ export const initialState: AuditState = {
   filter: { action: "none", user: "all" },
   length: 50,
   loading: false,
-  users: [],
 };
 
 export const auditSlice = createSlice({
@@ -53,9 +59,6 @@ export const auditSlice = createSlice({
     setLoading: (state, { payload }: PayloadAction<boolean>) => {
       state.loading = payload;
     },
-    setUsers: (state, { payload }: PayloadAction<string[]>) => {
-      state.users = payload;
-    },
   },
 });
 
@@ -67,7 +70,6 @@ export const {
     setFilterUser,
     setLength,
     setLoading,
-    setUsers,
   },
 } = auditSlice;
 
@@ -82,8 +84,6 @@ export const selectFilterUser = (state: RootState) => state.audit.filter.user;
 
 export const selectLength = (state: RootState) => state.audit.length;
 
-export const selectUsers = (state: RootState) => state.audit.users;
-
 export const {
   selectAll: selectActions,
   selectById: selectActionById,
@@ -91,5 +91,13 @@ export const {
   selectIds: selectActionIds,
   selectTotal: selectActionTotal,
 } = actionAdapter.getSelectors<RootState>((state) => state.audit.actions);
+
+export const selectUsers = createSelector(selectActions, (actions) =>
+  alphabeticalSort(
+    removeDuplicates(actions.map(({ user: { nickname } }) => nickname)).filter(
+      (str): str is string => !!str
+    )
+  )
+);
 
 export default auditSlice.reducer;
