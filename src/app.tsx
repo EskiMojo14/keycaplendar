@@ -84,7 +84,7 @@ export const App = () => {
               })
             );
             if (result.data.admin) {
-              testSets();
+              dispatch(testSets());
             }
           })
           .catch((error) => {

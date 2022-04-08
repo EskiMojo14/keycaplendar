@@ -5,7 +5,7 @@ import { DateTime } from "luxon";
 import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
-import type { AppThunk } from "~/app/store";
+import type { AppDispatch, AppThunk } from "~/app/store";
 import { selectPage } from "@s/common";
 import { mainPages } from "@s/common/constants";
 import { triggerTransition } from "@s/common/functions";
@@ -502,7 +502,7 @@ const applyInitialPreset = (): AppThunk<void> => (dispatch, getState) => {
   }
 };
 
-export const getData = () => {
+export const getData = () => (dispatch: AppDispatch) => {
   dispatch(setLoading(true));
   firestore
     .collection("keysets")
@@ -541,8 +541,8 @@ export const getData = () => {
     });
 };
 
-export const testSets = (state = store.getState()) => {
-  const sets = selectAllSets(state);
+export const testSets = (): AppThunk<void> => (dispatch, getState) => {
+  const sets = selectAllSets(getState());
   const testValue = (set: SetType, key: string, value?: string) => {
     if (value) {
       const endSpace = /\s+$/m;
@@ -595,7 +595,8 @@ export const testSets = (state = store.getState()) => {
   }
 };
 
-const sortData = (state = store.getState()) => {
+const sortData = (): AppThunk<void> => (dispatch, getState) => {
+  const state = getState();
   const sort = selectSort(state);
   const sortOrder = selectSortOrder(state);
   const groups = selectSetGroupTitles(state);
@@ -649,7 +650,7 @@ export const setSort = (
 export const setSortOrder = (sortOrder: SortOrderType, clearUrl = true) => {
   document.documentElement.scrollTop = 0;
   dispatch(setMainSortOrder(sortOrder));
-  sortData(store.getState());
+  dispatch(sortData());
   if (clearUrl) {
     const params = new URLSearchParams(window.location.search);
     if (params.has("sortOrder")) {

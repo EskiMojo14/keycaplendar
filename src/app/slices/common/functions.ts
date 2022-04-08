@@ -276,7 +276,7 @@ export const getURLQuery = (state = store.getState()) => {
       getLinkedFavorites(favoritesId);
     }
   }
-  getData();
+  dispatch(getData());
 };
 
 export const getGlobals = () => {
