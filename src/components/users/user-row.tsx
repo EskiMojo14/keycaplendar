@@ -10,7 +10,7 @@ import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
 import { DateTime } from "luxon";
 import { useImmer } from "use-immer";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { Autocomplete } from "@c/util/autocomplete";
 import firebase from "@s/firebase";
@@ -18,6 +18,7 @@ import { selectAllDesigners } from "@s/main";
 import { selectUser } from "@s/user";
 import { selectUserById } from "@s/users";
 import { partialUser } from "@s/users/constructors";
+import { getUsers } from "@s/users/functions";
 import type { UserType } from "@s/users/types";
 import {
   arrayIncludes,
@@ -30,17 +31,14 @@ import { Delete, Save } from "@i";
 
 type UserRowProps = {
   delete: (user: EntityId) => void;
-  getUsers: () => void;
   userId: EntityId;
 };
 
 const roles = ["designer", "editor", "admin"] as const;
 
-export const UserRow = ({
-  delete: deleteFn,
-  getUsers,
-  userId,
-}: UserRowProps) => {
+export const UserRow = ({ delete: deleteFn, userId }: UserRowProps) => {
+  const dispatch = useAppDispatch();
+
   const currentUser = useAppSelector(selectUser);
   const propsUser = useAppSelector((state) => selectUserById(state, userId));
 
@@ -104,7 +102,7 @@ export const UserRow = ({
         result.data.admin === user.admin
       ) {
         queue.notify({ title: "Successfully edited user permissions." });
-        getUsers();
+        dispatch(getUsers());
       } else if (result.data.error) {
         queue.notify({
           title: `Failed to edit user permissions: ${result.data.error}`,

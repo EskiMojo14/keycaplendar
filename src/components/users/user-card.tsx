@@ -25,7 +25,7 @@ import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
 import { DateTime } from "luxon";
 import { useImmer } from "use-immer";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { Autocomplete } from "@c/util/autocomplete";
 import {
@@ -39,23 +39,21 @@ import { selectUser } from "@s/user";
 import { selectUserById } from "@s/users";
 import { userRoleIcons } from "@s/users/constants";
 import { partialUser } from "@s/users/constructors";
+import { getUsers } from "@s/users/functions";
 import type { UserType } from "@s/users/types";
 import { hasKey, iconObject, ordinal } from "@s/util/functions";
 import { Delete, Save } from "@i";
 
 type UserCardProps = {
   delete: (user: EntityId) => void;
-  getUsers: () => void;
   userId: EntityId;
 };
 
 const roles = ["designer", "editor", "admin"] as const;
 
-export const UserCard = ({
-  delete: deleteFn,
-  getUsers,
-  userId,
-}: UserCardProps) => {
+export const UserCard = ({ delete: deleteFn, userId }: UserCardProps) => {
+  const dispatch = useAppDispatch();
+
   const device = useAppSelector(selectDevice);
 
   const currentUser = useAppSelector(selectUser);
@@ -118,7 +116,7 @@ export const UserCard = ({
         result.data.admin === user.admin
       ) {
         queue.notify({ title: "Successfully edited user permissions." });
-        getUsers();
+        dispatch(getUsers());
       } else if (result.data.error) {
         queue.notify({
           title: `Failed to edit user permissions: ${result.data.error}`,

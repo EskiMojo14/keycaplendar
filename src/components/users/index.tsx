@@ -22,7 +22,7 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
 import { DialogDelete } from "@c/users/dialog-delete";
 import {
@@ -49,6 +49,10 @@ import {
   selectUserIds,
   selectUserTotal,
   selectView,
+  setPage,
+  setRowsPerPage,
+  setSort,
+  setView,
 } from "@s/users";
 import {
   sortLabels,
@@ -57,15 +61,7 @@ import {
   viewLabels,
   views,
 } from "@s/users/constants";
-import {
-  getUsers,
-  paginateUsers,
-  setPage,
-  setRowsPerPage,
-  setSort,
-  setSortIndex,
-  setViewIndex,
-} from "@s/users/functions";
+import { getUsers, paginateUsers } from "@s/users/functions";
 import { useBoolStates } from "@s/util/functions";
 import { UserCard } from "./user-card";
 import { UserRow } from "./user-row";
@@ -79,6 +75,8 @@ type ContentUsersProps = {
 };
 
 export const ContentUsers = ({ openNav }: ContentUsersProps) => {
+  const dispatch = useAppDispatch();
+
   const device = useAppSelector(selectDevice);
   const bottomNav = useAppSelector(selectBottomNav);
 
@@ -114,7 +112,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
 
   useEffect(() => {
     if (total === 0) {
-      getUsers();
+      dispatch(getUsers());
     }
   }, []);
 
@@ -134,7 +132,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
       <Menu
         anchorCorner="bottomLeft"
         onClose={closeSortMenu}
-        onSelect={(e) => setSortIndex(e.detail.index)}
+        onSelect={(e) => dispatch(setSort(sortProps[e.detail.index]))}
         open={sortMenuOpen}
       >
         {sortProps.map((prop) => (
@@ -154,7 +152,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
       <Menu
         anchorCorner="bottomLeft"
         onClose={closeViewMenu}
-        onSelect={(e) => setViewIndex(e.detail.index)}
+        onSelect={(e) => dispatch(setView(views[e.detail.index]))}
         open={viewMenuOpen}
       >
         {views.map((viewType) => (
@@ -196,9 +194,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                         <DataTableRow>
                           <DataTableHeadCell></DataTableHeadCell>
                           <DataTableHeadCell
-                            onClick={() => {
-                              setSort("displayName");
-                            }}
+                            onClick={() => dispatch(setSort("displayName"))}
                             sort={
                               userSort === "displayName"
                                 ? reverseUserSort
@@ -210,9 +206,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             User
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            onClick={() => {
-                              setSort("email");
-                            }}
+                            onClick={() => dispatch(setSort("email"))}
                             sort={
                               userSort === "email"
                                 ? reverseUserSort
@@ -224,9 +218,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Email
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            onClick={() => {
-                              setSort("dateCreated");
-                            }}
+                            onClick={() => dispatch(setSort("dateCreated"))}
                             sort={
                               userSort === "dateCreated"
                                 ? reverseUserSort
@@ -238,9 +230,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Date created
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            onClick={() => {
-                              setSort("lastSignIn");
-                            }}
+                            onClick={() => dispatch(setSort("lastSignIn"))}
                             sort={
                               userSort === "lastSignIn"
                                 ? reverseUserSort
@@ -252,9 +242,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Last sign in
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            onClick={() => {
-                              setSort("lastActive");
-                            }}
+                            onClick={() => dispatch(setSort("lastActive"))}
                             sort={
                               userSort === "lastActive"
                                 ? reverseUserSort
@@ -266,9 +254,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Last active
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            onClick={() => {
-                              setSort("nickname");
-                            }}
+                            onClick={() => dispatch(setSort("nickname"))}
                             sort={
                               userSort === "nickname"
                                 ? reverseUserSort
@@ -280,9 +266,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Nickname
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            onClick={() => {
-                              setSort("designer");
-                            }}
+                            onClick={() => dispatch(setSort("designer"))}
                             sort={
                               userSort === "designer"
                                 ? reverseUserSort
@@ -294,9 +278,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Designer
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            onClick={() => {
-                              setSort("editor");
-                            }}
+                            onClick={() => dispatch(setSort("editor"))}
                             sort={
                               userSort === "editor"
                                 ? reverseUserSort
@@ -308,9 +290,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Editor
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            onClick={() => {
-                              setSort("admin");
-                            }}
+                            onClick={() => dispatch(setSort("admin"))}
                             sort={
                               userSort === "admin"
                                 ? reverseUserSort
@@ -337,7 +317,6 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                           <UserRow
                             key={user}
                             delete={openDeleteDialog}
-                            getUsers={getUsers}
                             userId={user}
                           />
                         ))}
@@ -349,7 +328,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                           disabled={!nextPageToken}
                           label={`Next ${length}`}
                           onClick={() => {
-                            getUsers(true);
+                            dispatch(getUsers(true));
                           }}
                           outlined
                         />
@@ -362,7 +341,9 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                           <DataTablePaginationRowsPerPageSelect
                             enhanced
                             onChange={(e) =>
-                              setRowsPerPage(parseInt(e.currentTarget.value))
+                              dispatch(
+                                setRowsPerPage(parseInt(e.currentTarget.value))
+                              )
                             }
                             options={Array(3)
                               .fill(rows)
@@ -380,26 +361,26 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             className="rtl-flip"
                             disabled={first === 0}
                             icon="first_page"
-                            onClick={() => setPage(1)}
+                            onClick={() => dispatch(setPage(1))}
                           />
                           <DataTablePaginationButton
                             className="rtl-flip"
                             disabled={first === 0}
                             icon="chevron_left"
-                            onClick={() => setPage(page - 1)}
+                            onClick={() => dispatch(setPage(page - 1))}
                           />
                           <DataTablePaginationButton
                             className="rtl-flip"
                             disabled={last === total - 1}
                             icon="chevron_right"
-                            onClick={() => setPage(page + 1)}
+                            onClick={() => dispatch(setPage(page + 1))}
                           />
                           <DataTablePaginationButton
                             className="rtl-flip"
                             disabled={last === total - 1}
                             icon="last_page"
                             onClick={() =>
-                              setPage(Math.ceil(total / rowsPerPage))
+                              dispatch(setPage(Math.ceil(total / rowsPerPage)))
                             }
                           />
                         </DataTablePaginationNavigation>
@@ -413,7 +394,6 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                     <UserCard
                       key={user}
                       delete={openDeleteDialog}
-                      getUsers={getUsers}
                       userId={user}
                     />
                   ))}

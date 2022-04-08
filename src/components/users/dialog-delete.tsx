@@ -34,7 +34,7 @@ export const DialogDelete = ({ onClose, open, userId }: DialogDeleteProps) => {
           queue.notify({
             title: `User ${user?.displayName} successfully deleted.`,
           });
-          getUsers();
+          dispatch(getUsers());
         }
       })
       .catch((error) => {

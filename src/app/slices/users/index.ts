@@ -3,7 +3,6 @@ import type { EntityState, PayloadAction } from "@reduxjs/toolkit";
 import { is } from "typescript-is";
 import type { RootState } from "~/app/store";
 import type { sortProps } from "@s/users/constants";
-import { partialUser } from "@s/users/constructors";
 import {
   alphabeticalSortCurried,
   alphabeticalSortPropCurried,
@@ -63,7 +62,7 @@ const sortUsers = (state: UserState) => {
       }
       return 0;
     })
-    .map((user) => userAdapter.selectId(user ?? partialUser()));
+    .map((user) => userAdapter.selectId(user!));
 };
 
 export const initialState: UserState = {
