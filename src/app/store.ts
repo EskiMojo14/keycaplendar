@@ -1,11 +1,6 @@
 import { reduxBatch } from "@manaflair/redux-batch";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import type {
-  Action,
-  AnyAction,
-  ThunkAction,
-  UnsubscribeListener,
-} from "@reduxjs/toolkit";
+import type { Action, AnyAction, UnsubscribeListener } from "@reduxjs/toolkit";
 import { loadState } from "~/app/local-storage";
 import audit from "@s/audit";
 import common from "@s/common";
@@ -38,12 +33,12 @@ const reducer = combineReducers(reducers);
 
 export type RootState = ReturnType<typeof reducer>;
 
-export type AppThunk<ReturnType> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  AnyAction
->;
+export type AppThunk<ReturnType> = (
+  // eslint-disable-next-line no-use-before-define
+  dispatch: AppDispatch,
+  getState: () => RootState,
+  extraArgument: unknown
+) => ReturnType;
 
 const _createStore = (preloadedState?: Partial<RootState>) =>
   configureStore({

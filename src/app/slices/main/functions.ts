@@ -5,7 +5,7 @@ import { DateTime } from "luxon";
 import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
-import type { AppDispatch, AppThunk } from "~/app/store";
+import type { AppThunk } from "~/app/store";
 import { selectPage } from "@s/common";
 import { mainPages } from "@s/common/constants";
 import { triggerTransition } from "@s/common/functions";
@@ -502,7 +502,7 @@ const applyInitialPreset = (): AppThunk<void> => (dispatch, getState) => {
   }
 };
 
-export const getData = () => (dispatch: AppDispatch) => {
+export const getData = (): AppThunk<void> => (dispatch) => {
   dispatch(setLoading(true));
   firestore
     .collection("keysets")
