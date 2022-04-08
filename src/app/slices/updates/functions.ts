@@ -43,7 +43,7 @@ export const pinEntry =
       queue.notify({
         title: `Entry ${entry?.pinned ? "unpinned" : "pinned"}.`,
       });
-      getEntries();
+      await dispatch(getEntries());
     } catch (error) {
       console.log(
         `Failed to ${entry?.pinned ? "unpin" : "pin"} entry: ${error}`
