@@ -11,7 +11,7 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
 import { DialogDelete } from "@c/updates/admin/dialog-delete";
 import { ModalCreate, ModalEdit } from "@c/updates/admin/modal-entry";
@@ -20,7 +20,7 @@ import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { selectBottomNav } from "@s/settings";
 import { selectEntryIds, selectLoading, selectURLEntry } from "@s/updates";
-import { getEntries, pinEntry } from "@s/updates/functions";
+import { getEntries as getEntriesThunk } from "@s/updates/functions";
 import { selectUser } from "@s/user";
 import { closeModal, openModal } from "@s/util/functions";
 import { UpdateEntry } from "./update-entry";
@@ -31,6 +31,10 @@ type ContentUpdatesProps = {
 };
 
 export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
+  const dispatch = useAppDispatch();
+
+  const getEntries = () => dispatch(getEntriesThunk());
+
   const device = useAppSelector(selectDevice);
 
   const bottomNav = useAppSelector(selectBottomNav);
@@ -158,7 +162,6 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
                 delete={openDelete}
                 edit={openEdit}
                 entryId={entryId}
-                pin={pinEntry}
               />
             ))}
           </div>

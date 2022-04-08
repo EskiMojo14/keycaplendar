@@ -24,28 +24,25 @@ export const paginateUsers = (
 };
 
 export const getUsers =
-  (append = false): AppThunk<void> =>
-  (dispatch, getState) => {
+  (append = false): AppThunk<Promise<void>> =>
+  async (dispatch, getState) => {
     const nextPageToken = selectNextPageToken(getState());
     dispatch(setLoading(true));
     const listUsersFn = firebase.functions().httpsCallable("listUsers");
-    listUsersFn({ length, nextPageToken })
-      .then((result) => {
-        if (result.data.error) {
-          queue.notify({ title: result.data.error });
-          dispatch(setLoading(false));
-        } else {
-          dispatch([
-            setLoading(false),
-            append
-              ? appendUsers(result.data.users)
-              : setUsers(result.data.users),
-            setNextPageToken(result.data.nextPageToken ?? ""),
-          ]);
-        }
-      })
-      .catch((error) => {
-        queue.notify({ title: `Error listing users: ${error}` });
+    try {
+      const result = await listUsersFn({ length, nextPageToken });
+      if (result.data.error) {
+        queue.notify({ title: result.data.error });
         dispatch(setLoading(false));
-      });
+      } else {
+        dispatch([
+          setLoading(false),
+          append ? appendUsers(result.data.users) : setUsers(result.data.users),
+          setNextPageToken(result.data.nextPageToken ?? ""),
+        ]);
+      }
+    } catch (error) {
+      queue.notify({ title: `Error listing users: ${error}` });
+      dispatch(setLoading(false));
+    }
   };

@@ -56,38 +56,36 @@ const processAction = ({
 };
 
 export const getActions =
-  (length?: number): AppThunk<void> =>
-  (dispatch, getState) => {
+  (length?: number): AppThunk<Promise<void>> =>
+  async (dispatch, getState) => {
     dispatch(setLoading(true));
-    firestore
-      .collection("changelog")
-      .orderBy("timestamp", "desc")
-      .limit(length ?? selectLength(getState()))
-      .get()
-      .then((querySnapshot) => {
-        const actions: ActionType[] = [];
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          const action = data.before?.profile
-            ? data.after?.profile
-              ? "updated"
-              : "deleted"
-            : "created";
-          actions.push({
-            ...data,
-            action,
-            changelogId: doc.id,
-          });
+    try {
+      const querySnapshot = await firestore
+        .collection("changelog")
+        .orderBy("timestamp", "desc")
+        .limit(length ?? selectLength(getState()))
+        .get();
+
+      const actions: ActionType[] = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const action = data.before?.profile
+          ? data.after?.profile
+            ? "updated"
+            : "deleted"
+          : "created";
+        actions.push({
+          ...data,
+          action,
+          changelogId: doc.id,
         });
-
-        alphabeticalSortProp(actions, "timestamp", true);
-
-        dispatch(setAllActions(actions.map(processAction)));
-      })
-      .catch((error) => {
-        queue.notify({ title: `Error getting data: ${error}` });
-      })
-      .finally(() => {
-        dispatch(setLoading(false));
       });
+
+      alphabeticalSortProp(actions, "timestamp", true);
+
+      dispatch([setAllActions(actions.map(processAction)), setLoading(false)]);
+    } catch (error) {
+      queue.notify({ title: `Error getting data: ${error}` });
+      dispatch(setLoading(false));
+    }
   };

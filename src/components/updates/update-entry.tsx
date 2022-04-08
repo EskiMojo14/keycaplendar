@@ -11,11 +11,12 @@ import { Icon } from "@rmwc/icon";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { DateTime } from "luxon";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import { CustomReactMarkdown } from "@c/util/react-markdown";
 import { selectEntryById, selectURLEntry } from "@s/updates";
+import { pinEntry } from "@s/updates/functions";
 import { selectUser } from "@s/user";
 import {
   clearSearchParams,
@@ -30,15 +31,15 @@ type UpdateEntryProps = {
   delete: (entry: EntityId) => void;
   edit: (entry: EntityId) => void;
   entryId: EntityId;
-  pin: (entry: EntityId) => void;
 };
 
 export const UpdateEntry = ({
   delete: deleteFn,
   edit,
   entryId,
-  pin,
 }: UpdateEntryProps) => {
+  const dispatch = useAppDispatch();
+
   const user = useAppSelector(selectUser);
 
   const entry = useAppSelector((state) => selectEntryById(state, entryId));
@@ -79,7 +80,7 @@ export const UpdateEntry = ({
             className={classNames({ secondary: entry.pinned })}
             icon={iconObject(<PushPin />)}
             label={entry.pinned ? "Unpin" : "Pin"}
-            onClick={() => pin(entryId)}
+            onClick={() => dispatch(pinEntry(entryId))}
           />
           <CardActionButton
             icon={iconObject(<Share />)}
