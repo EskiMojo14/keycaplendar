@@ -116,7 +116,7 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
       <Fab
         className={classNames("create-fab", { middle: bottomNav })}
         icon="add"
-        label={device === "desktop" && "Create"}
+        label={device === "desktop" ? "Create" : undefined}
         onClick={openCreate}
       />
       <ModalCreate
