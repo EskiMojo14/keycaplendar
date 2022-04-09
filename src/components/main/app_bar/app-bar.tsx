@@ -15,8 +15,7 @@ import { AppBarIndent } from "@c/util/app-bar-indent";
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice, selectPage } from "@s/common";
 import { pageTitle } from "@s/common/constants";
-import { selectLinkedFavorites, selectLoading, selectSearch } from "@s/main";
-import { setSearch } from "@s/main/functions";
+import { selectLinkedFavorites, selectLoading } from "@s/main";
 import { selectBottomNav, selectView } from "@s/settings";
 import { viewIcons } from "@s/settings/constants";
 import { selectUser } from "@s/user";
@@ -54,7 +53,6 @@ export const AppBar = ({
 
   const loading = useAppSelector(selectLoading);
 
-  const search = useAppSelector(selectSearch);
   const linkedFavorites = useAppSelector(selectLinkedFavorites);
 
   const [sortOpen, setSortOpen] = useState(false);
@@ -94,19 +92,11 @@ export const AppBar = ({
   const indentEl = indent && bottomNav && <AppBarIndent />;
 
   const searchBar = indentEl && (
-    <SearchAppBar
-      close={closeSearch}
-      open={searchOpen}
-      openBar={openSearch}
-      search={search}
-      setSearch={setSearch}
-    />
+    <SearchAppBar close={closeSearch} open={searchOpen} openBar={openSearch} />
   );
   const buttons = (
     <>
-      {device === "desktop" && (
-        <SearchBarPersistent search={search} setSearch={setSearch} />
-      )}
+      {device === "desktop" && <SearchBarPersistent />}
       <MenuSurfaceAnchor
         className={classNames({ hidden: page === "calendar" })}
       >
@@ -152,12 +142,7 @@ export const AppBar = ({
       {device === "desktop" && shareButton}
       {device !== "desktop" && !indentEl && (
         <div>
-          <SearchBarModal
-            close={closeSearch}
-            open={searchOpen}
-            search={search}
-            setSearch={setSearch}
-          />
+          <SearchBarModal close={closeSearch} open={searchOpen} />
           {page === "favorites" &&
           user.email &&
           linkedFavorites.array.length === 0 ? (

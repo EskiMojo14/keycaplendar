@@ -12,20 +12,14 @@ import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { Autocomplete, AutocompleteMobile } from "@c/util/autocomplete";
 import BEMHelper from "@s/common/bem-helper";
-import { selectSearchTerms } from "@s/main";
+import { selectSearch, selectSearchTerms } from "@s/main";
+import { setSearch } from "@s/main/functions";
 import "./search-bar.scss";
 
 const bemClasses = new BEMHelper("search-bar");
 
-type SearchBarPersistentProps = {
-  search: string;
-  setSearch: (search: string) => void;
-};
-
-export const SearchBarPersistent = ({
-  search,
-  setSearch,
-}: SearchBarPersistentProps) => {
+export const SearchBarPersistent = () => {
+  const search = useAppSelector(selectSearch);
   const searchTerms = useAppSelector(selectSearchTerms);
 
   const [expanded, setExpanded] = useState(false);
@@ -96,16 +90,13 @@ export const SearchBarPersistent = ({
 type SearchBarModalProps = {
   close: () => void;
   open: boolean;
-  search: string;
-  setSearch: (search: string) => void;
 };
 
 export const SearchBarModal = ({
   close,
   open: propsOpen,
-  search,
-  setSearch,
 }: SearchBarModalProps) => {
+  const search = useAppSelector(selectSearch);
   const searchTerms = useAppSelector(selectSearchTerms);
 
   const [opening, setOpening] = useState(false);
@@ -224,17 +215,10 @@ type SearchAppBarProps = {
   close: () => void;
   open: boolean;
   openBar: () => void;
-  search: string;
-  setSearch: (search: string) => void;
 };
 
-export const SearchAppBar = ({
-  close,
-  open,
-  openBar,
-  search,
-  setSearch,
-}: SearchAppBarProps) => {
+export const SearchAppBar = ({ close, open, openBar }: SearchAppBarProps) => {
+  const search = useAppSelector(selectSearch);
   const searchTerms = useAppSelector(selectSearchTerms);
 
   const [focused, setFocused] = useState(false);
