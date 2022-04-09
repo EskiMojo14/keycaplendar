@@ -23,6 +23,7 @@ import { DialogSales } from "@c/main/dialog-sales";
 import { DrawerDetails } from "@c/main/drawer-details";
 import { pageTitle } from "@s/common/constants";
 import {
+  getData,
   processedActionsAdapter,
   selectLoading,
   selectProcessedActions,
@@ -31,7 +32,6 @@ import {
   setTab,
 } from "@s/history";
 import { historyTabs } from "@s/history/constants";
-import { generateSets, getData } from "@s/history/functions";
 import { selectAllSets } from "@s/main";
 import { selectBottomNav } from "@s/settings";
 import {
@@ -69,10 +69,9 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
 
   useEffect(() => {
     if (processedActions.length === 0) {
-      getData();
+      dispatch(getData());
     }
   }, []);
-  useEffect(generateSets, [allSets, processedActions]);
 
   const [detailSet, setDetailSet] = useState<EntityId>("");
   const [detailsOpen, setDetailsOpen] = useState(false);

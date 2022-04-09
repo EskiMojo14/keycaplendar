@@ -37,7 +37,7 @@ export type AppThunk<ReturnType> = (
   // eslint-disable-next-line no-use-before-define
   dispatch: AppDispatch,
   getState: () => RootState,
-  extraArgument: unknown
+  extraArgument?: never
 ) => ReturnType;
 
 const _createStore = (preloadedState?: Partial<RootState>) =>

@@ -8,7 +8,7 @@ import {
   selectURLEntry as selectURLGuide,
   setURLEntry as setURLGuide,
 } from "@s/guides";
-import { setHistoryTab } from "@s/history/functions";
+import { setHistoryTab } from "@s/history";
 import type { HistoryTab } from "@s/history/types";
 import {
   selectDefaultPreset,
@@ -255,7 +255,7 @@ export const getURLQuery = (state = store.getState()) => {
   if (params.has("historyTab")) {
     const urlTab = params.get("historyTab");
     if (urlTab && is<HistoryTab>(urlTab)) {
-      setHistoryTab(urlTab);
+      dispatch(setHistoryTab(urlTab));
     }
   }
   if (params.has("guideId")) {

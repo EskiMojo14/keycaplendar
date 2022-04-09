@@ -1,8 +1,28 @@
-import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import {
+  createEntityAdapter,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
 import type { EntityState, PayloadAction } from "@reduxjs/toolkit";
-import type { RootState } from "~/app/store";
-import { alphabeticalSortPropCurried } from "@s/util/functions";
-import type { HistoryTab, ProcessedPublicActionType, RecentSet } from "./types";
+import isEqual from "lodash.isequal";
+import { is } from "typescript-is";
+import { queue } from "~/app/snackbar-queue";
+import type { AppThunk, RootState } from "~/app/store";
+import { auditProperties } from "@s/audit/constants";
+import firebase from "@s/firebase";
+import { selectSetMap } from "@s/main";
+import {
+  alphabeticalSortProp,
+  alphabeticalSortPropCurried,
+  createURL,
+  removeDuplicates,
+} from "@s/util/functions";
+import type {
+  HistoryTab,
+  ProcessedPublicActionType,
+  PublicActionType,
+  RecentSet,
+} from "./types";
 
 export const processedActionsAdapter =
   createEntityAdapter<ProcessedPublicActionType>({
@@ -18,14 +38,12 @@ export const recentSetsAdapter = createEntityAdapter<RecentSet>({
 type HistoryState = {
   loading: boolean;
   processedActions: EntityState<ProcessedPublicActionType>;
-  recentSets: EntityState<RecentSet>;
   tab: HistoryTab;
 };
 
 export const initialState: HistoryState = {
   loading: false,
   processedActions: processedActionsAdapter.getInitialState(),
-  recentSets: recentSetsAdapter.getInitialState(),
   tab: "recent",
 };
 
@@ -42,9 +60,6 @@ export const historySlice = createSlice({
     ) => {
       processedActionsAdapter.setAll(state.processedActions, payload);
     },
-    setRecentSets: (state, { payload }: PayloadAction<RecentSet[]>) => {
-      recentSetsAdapter.setAll(state.recentSets, payload);
-    },
     setTab: (state, { payload }: PayloadAction<HistoryTab>) => {
       state.tab = payload;
     },
@@ -52,7 +67,7 @@ export const historySlice = createSlice({
 });
 
 export const {
-  actions: { setLoading, setProcessedActions, setRecentSets, setTab },
+  actions: { setLoading, setProcessedActions, setTab },
 } = historySlice;
 
 export const selectLoading = (state: RootState) => state.history.loading;
@@ -69,14 +84,117 @@ export const {
   (state) => state.history.processedActions
 );
 
+export const selectRecentSets = createSelector(
+  selectProcessedActions,
+  selectSetMap,
+  (processedActions, setMap) => {
+    const ids = removeDuplicates(
+      processedActions.map((action) => action.documentId)
+    );
+    return recentSetsAdapter.setAll(
+      recentSetsAdapter.getInitialState(),
+      ids.map<RecentSet>((id) => {
+        const filteredActions = alphabeticalSortProp(
+          processedActions.filter((action) => action.documentId === id),
+          "timestamp",
+          true
+        );
+        const [latestTimestamp] = filteredActions
+          .map((action) => action.timestamp)
+          .filter(Boolean);
+        const [title] = filteredActions
+          .map((action) => action.title)
+          .filter(Boolean);
+        const [designer] = filteredActions
+          .map((action) => action.after.designer || action.before.designer)
+          .filter(Boolean);
+        const deleted = filteredActions[0].action === "deleted";
+        const { [id]: currentSet } = setMap;
+        return {
+          deleted,
+          designer: currentSet?.designer ?? designer ?? null,
+          id,
+          latestTimestamp,
+          title,
+        };
+      })
+    );
+  }
+);
+
 export const {
-  selectAll: selectRecentSets,
+  selectAll: selectAllRecentSets,
   selectById: selectRecentSetById,
   selectEntities: selectRecentSetsMap,
   selectIds: selectRecentSetsIds,
   selectTotal: selectRecentSetsTotal,
-} = recentSetsAdapter.getSelectors<RootState>(
-  (state) => state.history.recentSets
-);
+} = recentSetsAdapter.getSelectors<RootState>(selectRecentSets);
 
 export default historySlice.reducer;
+
+export const setHistoryTab =
+  (tab: HistoryTab, clearUrl = true): AppThunk<void> =>
+  (dispatch, getState) => {
+    const historyTab = selectTab(getState());
+    console.log(tab, historyTab);
+    if (historyTab !== tab) {
+      document.documentElement.scrollTop = 0;
+      dispatch(setTab(tab));
+    }
+    if (clearUrl) {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has("historyTab")) {
+        const newUrl = createURL({}, (params) => {
+          params.delete("historyTab");
+        });
+        window.history.pushState({}, "KeycapLendar", newUrl);
+      }
+    }
+  };
+
+export const processAction = (
+  action: PublicActionType
+): ProcessedPublicActionType => {
+  const { after, before, ...restAction } = action;
+  const title =
+    action.action !== "deleted"
+      ? `${action.after.profile} ${action.after.colorway}`
+      : `${action.before.profile} ${action.before.colorway}`;
+  if (before && after) {
+    auditProperties.forEach((prop) => {
+      const { [prop]: beforeProp } = before;
+      const { [prop]: afterProp } = after;
+      if (
+        isEqual(beforeProp, afterProp) ||
+        (!is<boolean>(beforeProp) &&
+          !beforeProp &&
+          !is<boolean>(afterProp) &&
+          !afterProp)
+      ) {
+        delete before[prop];
+        delete after[prop];
+      }
+    });
+  }
+  return {
+    ...restAction,
+    after,
+    before,
+    title,
+  };
+};
+
+export const getData = (): AppThunk<Promise<void>> => async (dispatch) => {
+  const cloudFn = firebase.functions().httpsCallable("getPublicAudit");
+  try {
+    dispatch(setLoading(true));
+    const { data: actions } = await cloudFn({ num: 25 });
+    dispatch([
+      setProcessedActions(actions.map(processAction)),
+      setLoading(false),
+    ]);
+  } catch (error) {
+    console.log(error);
+    queue.notify({ title: `Failed to get changelog: ${error}` });
+  }
+};
