@@ -1,5 +1,4 @@
 import type { EntityId } from "@reduxjs/toolkit";
-import produce from "immer";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
@@ -7,7 +6,6 @@ import store from "~/app/store";
 import type { AppThunk } from "~/app/store";
 import { selectPage } from "@s/common";
 import { mainPages } from "@s/common/constants";
-import { triggerTransition } from "@s/common/functions";
 import firestore from "@s/firebase/firestore";
 import type { UserId } from "@s/firebase/types";
 import {
@@ -21,13 +19,10 @@ import {
   upsertUserPreset,
 } from "@s/user";
 import {
-  alphabeticalSortCurried,
   arrayIncludes,
   createURL,
-  hasKey,
   normalise,
   objectEntries,
-  removeDuplicates,
   replaceFunction,
 } from "@s/util/functions";
 import {
@@ -39,15 +34,11 @@ import {
   selectAllSets,
   selectCurrentPreset,
   selectDefaultPreset,
-  selectFilteredSets,
   selectInitialLoad,
   selectLinkedFavorites,
   selectPresetById,
   selectSearch,
-  selectSetGroupTitles,
   selectSetTotal,
-  selectSort,
-  selectSortOrder,
   selectURLWhitelist,
   selectWhitelist,
   setAllSets,
@@ -58,26 +49,19 @@ import {
   setSearch as setMainSearch,
   setSort as setMainSort,
   setSortOrder as setMainSortOrder,
-  setSetGroups,
-  setSetGroupsIds,
   setURLWhitelist,
   upsertAppPreset,
 } from ".";
 import {
   allSorts,
-  arraySorts,
   dateSorts,
-  pageSort,
-  pageSortOrder,
   reverseSortDatePages,
   showAllPages,
-  sortHiddenCheck,
   whitelistParams,
 } from "./constants";
 import type {
   OldPresetType,
   PresetType,
-  SetGroup,
   SetType,
   SortOrderType,
   SortType,
@@ -144,150 +128,7 @@ export const pageConditions = (
   };
 };
 
-const createGroups = (transition = false, state = store.getState()) => {
-  const page = selectPage(state);
-  const sort = selectSort(state);
-  const sortOrder = selectSortOrder(state);
-  const sets = selectFilteredSets(state);
-  const createSetGroups = (sets: SetType[]): string[] => {
-    if (arrayIncludes(dateSorts, sort)) {
-      return sets
-        .map((set) => {
-          if (set[sort]) {
-            const setDate = DateTime.fromISO(set[sort], {
-              zone: "utc",
-            });
-            const setMonth = setDate.toFormat("MMMM yyyy");
-            return setMonth;
-          }
-          return "";
-        })
-        .filter(Boolean);
-    } else if (arrayIncludes(arraySorts, sort)) {
-      return sets.map((set) => set[sort]).flat();
-    } else if (sort === "vendor") {
-      return sets
-        .map((set) => set.vendors?.map((vendor) => vendor.name) ?? [])
-        .flat();
-    } else {
-      return sets.map((set) => `${set[sort]}`).filter(Boolean);
-    }
-  };
-  const groups = removeDuplicates(createSetGroups(sets));
-
-  groups.sort((a, b) => {
-    if (arrayIncludes(dateSorts, sort)) {
-      const aDate = DateTime.fromFormat(a, "MMMM yyyy", { zone: "utc" });
-      const bDate = DateTime.fromFormat(b, "MMMM yyyy", { zone: "utc" });
-      return alphabeticalSortCurried(sortOrder === "descending")(aDate, bDate);
-    }
-    return alphabeticalSortCurried()(a, b);
-  });
-
-  const filterSets = (sets: SetType[], group: string, sort: SortType) => {
-    const filteredSets = sets.filter((set) => {
-      if (hasKey(set, sort) || sort === "vendor") {
-        if (arrayIncludes(dateSorts, sort)) {
-          const { [sort]: val } = set;
-          const setDate = DateTime.fromISO(val, { zone: "utc" });
-          const setMonth = setDate.toFormat("MMMM yyyy");
-          return !!setMonth && setMonth === group;
-        } else if (sort === "vendor") {
-          return !!set.vendors?.some((vendor) => vendor.name === group);
-        } else if (sort === "designer") {
-          return set.designer.includes(group);
-        } else {
-          return set[sort] === group;
-        }
-      } else {
-        return false;
-      }
-    });
-    const defaultSort = arrayIncludes(mainPages, page)
-      ? pageSort[page]
-      : "icDate";
-    const defaultSortOrder = arrayIncludes(mainPages, page)
-      ? pageSortOrder[page]
-      : "descending";
-    const dateSort = (
-      a: SetType,
-      b: SetType,
-      prop = sort,
-      order = sortOrder
-    ) => {
-      const aName = `${a.profile.toLowerCase()} ${a.colorway.toLowerCase()}`;
-      const bName = `${b.profile.toLowerCase()} ${b.colorway.toLowerCase()}`;
-      const nameSort = alphabeticalSortCurried()(aName, bName);
-      if (arrayIncludes(dateSorts, prop)) {
-        const { [prop]: aProp } = a;
-        const aDate =
-          aProp && !aProp.includes("Q")
-            ? DateTime.fromISO(aProp, { zone: "utc" })
-            : null;
-        const { [prop]: bProp } = b;
-        const bDate =
-          bProp && !bProp.includes("Q")
-            ? DateTime.fromISO(bProp, { zone: "utc" })
-            : null;
-        const returnVal = order === "ascending" ? 1 : -1;
-        if (aDate && bDate) {
-          if (aDate > bDate) {
-            return returnVal;
-          } else if (aDate < bDate) {
-            return -returnVal;
-          }
-          return nameSort;
-        }
-        return nameSort;
-      }
-      return nameSort;
-    };
-    filteredSets.sort((a, b) => {
-      const aName = `${a.profile.toLowerCase()} ${a.colorway.toLowerCase()}`;
-      const bName = `${b.profile.toLowerCase()} ${b.colorway.toLowerCase()}`;
-      const nameSort = alphabeticalSortCurried()(aName, bName);
-      if (arrayIncludes(dateSorts, sort)) {
-        if (sort === "gbLaunch" && (a.gbMonth || b.gbMonth)) {
-          if (a.gbMonth && b.gbMonth) {
-            return nameSort;
-          } else {
-            return a.gbMonth ? 1 : -1;
-          }
-        }
-        return dateSort(a, b, sort, sortOrder);
-      } else if (arrayIncludes(dateSorts, defaultSort)) {
-        return dateSort(a, b, defaultSort, defaultSortOrder);
-      }
-      return nameSort;
-    });
-    return filteredSets;
-  };
-
-  const setGroups: SetGroup[] = groups.map((group) => ({
-    sets: filterSets(sets, group, sort),
-    title: group,
-  }));
-
-  dispatch(setSetGroups(setGroups));
-
-  if (transition) {
-    dispatch(triggerTransition());
-  }
-
-  if (sortHiddenCheck[sort].includes(page)) {
-    const allGroupedSets = removeDuplicates(
-      setGroups.map((group) => group.sets.map((set) => set.id)).flat()
-    );
-
-    const diff = sets.length - allGroupedSets.length;
-
-    if (diff > 0) {
-      queue.notify({ title: `${diff} sets hidden due to sort setting.` });
-    }
-  }
-};
-
-export const filterData = (transition = false, state = store.getState()) => {
+export const filterData = (state = store.getState()) => {
   const page = selectPage(state);
   const sets = selectAllSets(state);
   const search = selectSearch(state);
@@ -412,8 +253,6 @@ export const filterData = (transition = false, state = store.getState()) => {
 
   dispatch(setFilteredSets(filteredSets.map(({ id }) => id)));
 
-  createGroups(transition);
-
   dispatch(setLoading(false));
 };
 
@@ -528,13 +367,13 @@ export const getData = (): AppThunk<void> => (dispatch) => {
 
       dispatch([setAllSets(sets), setInitialLoad(false)]);
 
-      filterData(true);
+      filterData();
       dispatch(applyInitialPreset());
     })
     .catch((error) => {
       console.log(`Error getting data: ${error}`);
       queue.notify({ title: `Error getting data: ${error}` });
-      dispatch([setLoading(false), setSetGroups([])]);
+      dispatch(setLoading(false));
     });
 };
 
@@ -592,32 +431,6 @@ export const testSets = (): AppThunk<void> => (dispatch, getState) => {
   }
 };
 
-const sortData = (): AppThunk<void> => (dispatch, getState) => {
-  const state = getState();
-  const sort = selectSort(state);
-  const sortOrder = selectSortOrder(state);
-  const groups = selectSetGroupTitles(state);
-  const sortedGroups = produce(groups, (groupsDraft) => {
-    groupsDraft.sort((a, b) => {
-      if (arrayIncludes(dateSorts, sort) && is<string>(a) && is<string>(b)) {
-        const aDate = DateTime.fromFormat(a, "MMMM yyyy", {
-          zone: "utc",
-        });
-        const bDate = DateTime.fromFormat(b, "MMMM yyyy", {
-          zone: "utc",
-        });
-        return alphabeticalSortCurried(sortOrder === "descending")(
-          aDate,
-          bDate
-        );
-      }
-      return alphabeticalSortCurried(sortOrder === "descending")(a, b);
-    });
-  });
-
-  dispatch(setSetGroupsIds(sortedGroups));
-};
-
 export const setSort = (
   sort: SortType,
   clearUrl = true,
@@ -631,7 +444,6 @@ export const setSort = (
   }
   if (arrayIncludes(allSorts, sort)) {
     dispatch([setMainSort(sort), setMainSortOrder(sortOrder)]);
-    createGroups();
   }
   if (clearUrl) {
     const params = new URLSearchParams(window.location.search);
@@ -647,7 +459,6 @@ export const setSort = (
 export const setSortOrder = (sortOrder: SortOrderType, clearUrl = true) => {
   document.documentElement.scrollTop = 0;
   dispatch(setMainSortOrder(sortOrder));
-  dispatch(sortData());
   if (clearUrl) {
     const params = new URLSearchParams(window.location.search);
     if (params.has("sortOrder")) {

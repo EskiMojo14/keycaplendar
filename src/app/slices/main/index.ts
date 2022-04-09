@@ -6,13 +6,26 @@ import {
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
+import { shallowEqual } from "react-redux";
+import { queue } from "~/app/snackbar-queue";
 import type { AppThunk, RootState } from "~/app/store";
-import { partialPreset, partialSet } from "@s/main/constructors";
+import { selectPage } from "@s/common";
+import { mainPages } from "@s/common/constants";
+import {
+  arraySorts,
+  dateSorts,
+  pageSort,
+  pageSortOrder,
+  sortHiddenCheck,
+} from "@s/main/constants";
+import { partialPreset } from "@s/main/constructors";
 import { selectUserPresetMap } from "@s/user";
 import {
   alphabeticalSort,
+  alphabeticalSortCurried,
   alphabeticalSortPropCurried,
-  randomInt,
+  arrayIncludes,
+  hasKey,
   removeDuplicates,
 } from "@s/util/functions";
 import type { Overwrite } from "@s/util/types";
@@ -24,29 +37,7 @@ import type {
   SortType,
   WhitelistType,
 } from "./types";
-
-export const generateRandomSet = (): SetType =>
-  partialSet({
-    colorway: nanoid(randomInt(5, 14)),
-    designer: [...Array(randomInt(1, 3))].map(() => nanoid(randomInt(5, 7))),
-    gbEnd: DateTime.now()
-      .minus({ days: randomInt(1, 100) })
-      .toISODate(),
-    gbLaunch: DateTime.now()
-      .minus({ days: randomInt(0, 100) })
-      .toISODate(),
-    icDate: DateTime.now()
-      .minus({ days: randomInt(0, 100) })
-      .toISODate(),
-    id: nanoid(),
-    profile: nanoid(randomInt(3, 4)),
-  });
-
-export const generateRandomSetGroups = (): SetGroup[] =>
-  [...Array(randomInt(2, 8))].map<SetGroup>(() => ({
-    sets: [...Array(randomInt(2, 16))].map<SetType>(() => generateRandomSet()),
-    title: nanoid(randomInt(8, 14)),
-  }));
+import type { AppStartListening } from "~/app/middleware/listener";
 
 export const keysetAdapter = createEntityAdapter<SetType>({
   sortComparer: alphabeticalSortPropCurried("colorway"),
@@ -65,7 +56,6 @@ export type MainState = {
   initialLoad: boolean;
   keysets: EntityState<SetType> & {
     filteredSets: EntityId[];
-    setGroups: EntityState<SetGroup>;
   };
   linkedFavorites: { array: string[]; displayName: string };
   loading: boolean;
@@ -89,10 +79,6 @@ export const initialState: MainState = {
   initialLoad: true,
   keysets: keysetAdapter.getInitialState({
     filteredSets: [],
-    setGroups: setGroupAdapter.setAll(
-      setGroupAdapter.getInitialState(),
-      generateRandomSetGroups()
-    ),
   }),
   linkedFavorites: { array: [], displayName: "" },
   loading: true,
@@ -177,12 +163,6 @@ export const mainSlice = createSlice({
     setSet: (state, { payload }: PayloadAction<SetType>) => {
       keysetAdapter.setOne(state.keysets, payload);
     },
-    setSetGroups: (state, { payload }: PayloadAction<SetGroup[]>) => {
-      setGroupAdapter.setAll(state.keysets.setGroups, payload);
-    },
-    setSetGroupsIds: (state, { payload }: PayloadAction<EntityId[]>) => {
-      state.keysets.setGroups.ids = payload;
-    },
     setSort: (state, { payload }: PayloadAction<SortType>) => {
       state.sort = payload;
     },
@@ -237,8 +217,6 @@ export const {
     setLoading,
     setSearch,
     setSet,
-    setSetGroups,
-    setSetGroupsIds,
     setSort,
     setSortOrder,
     setTransition,
@@ -310,15 +288,174 @@ export const selectFilteredSets = createSelector(
   (entities, ids) => ids.map((id) => entities[id]!)
 );
 
+export const selectSetGroups = createSelector(
+  selectFilteredSets,
+  selectPage,
+  selectSort,
+  selectSortOrder,
+  (sets, page, sort, sortOrder) => {
+    const createSetGroups = (sets: SetType[]): string[] => {
+      if (arrayIncludes(dateSorts, sort)) {
+        return sets
+          .map((set) => {
+            if (set[sort]) {
+              const setDate = DateTime.fromISO(set[sort], {
+                zone: "utc",
+              });
+              const setMonth = setDate.toFormat("MMMM yyyy");
+              return setMonth;
+            }
+            return "";
+          })
+          .filter(Boolean);
+      } else if (arrayIncludes(arraySorts, sort)) {
+        return sets.map((set) => set[sort]).flat();
+      } else if (sort === "vendor") {
+        return sets
+          .map((set) => set.vendors?.map((vendor) => vendor.name) ?? [])
+          .flat();
+      } else {
+        return sets.map((set) => `${set[sort]}`).filter(Boolean);
+      }
+    };
+    const groupTitles = removeDuplicates(createSetGroups(sets)).sort((a, b) => {
+      if (arrayIncludes(dateSorts, sort)) {
+        const aDate = DateTime.fromFormat(a, "MMMM yyyy", { zone: "utc" });
+        const bDate = DateTime.fromFormat(b, "MMMM yyyy", { zone: "utc" });
+        return alphabeticalSortCurried(sortOrder === "descending")(
+          aDate,
+          bDate
+        );
+      }
+      return alphabeticalSortCurried()(a, b);
+    });
+
+    const filterSets = (sets: SetType[], group: string, sort: SortType) => {
+      const filteredSets = sets.filter((set) => {
+        if (hasKey(set, sort) || sort === "vendor") {
+          if (arrayIncludes(dateSorts, sort)) {
+            const { [sort]: val } = set;
+            const setDate = DateTime.fromISO(val, { zone: "utc" });
+            const setMonth = setDate.toFormat("MMMM yyyy");
+            return !!setMonth && setMonth === group;
+          } else if (sort === "vendor") {
+            return !!set.vendors?.some((vendor) => vendor.name === group);
+          } else if (sort === "designer") {
+            return set.designer.includes(group);
+          } else {
+            return set[sort] === group;
+          }
+        } else {
+          return false;
+        }
+      });
+      const defaultSort = arrayIncludes(mainPages, page)
+        ? pageSort[page]
+        : "icDate";
+      const defaultSortOrder = arrayIncludes(mainPages, page)
+        ? pageSortOrder[page]
+        : "descending";
+      const dateSort = (
+        a: SetType,
+        b: SetType,
+        prop = sort,
+        order = sortOrder
+      ) => {
+        const aName = `${a.profile.toLowerCase()} ${a.colorway.toLowerCase()}`;
+        const bName = `${b.profile.toLowerCase()} ${b.colorway.toLowerCase()}`;
+        const nameSort = alphabeticalSortCurried()(aName, bName);
+        if (arrayIncludes(dateSorts, prop)) {
+          const { [prop]: aProp } = a;
+          const aDate =
+            aProp && !aProp.includes("Q")
+              ? DateTime.fromISO(aProp, { zone: "utc" })
+              : null;
+          const { [prop]: bProp } = b;
+          const bDate =
+            bProp && !bProp.includes("Q")
+              ? DateTime.fromISO(bProp, { zone: "utc" })
+              : null;
+          const returnVal = order === "ascending" ? 1 : -1;
+          if (aDate && bDate) {
+            if (aDate > bDate) {
+              return returnVal;
+            } else if (aDate < bDate) {
+              return -returnVal;
+            }
+            return nameSort;
+          }
+          return nameSort;
+        }
+        return nameSort;
+      };
+      filteredSets.sort((a, b) => {
+        const aName = `${a.profile.toLowerCase()} ${a.colorway.toLowerCase()}`;
+        const bName = `${b.profile.toLowerCase()} ${b.colorway.toLowerCase()}`;
+        const nameSort = alphabeticalSortCurried()(aName, bName);
+        if (arrayIncludes(dateSorts, sort)) {
+          if (sort === "gbLaunch" && (a.gbMonth || b.gbMonth)) {
+            if (a.gbMonth && b.gbMonth) {
+              return nameSort;
+            } else {
+              return a.gbMonth ? 1 : -1;
+            }
+          }
+          return dateSort(a, b, sort, sortOrder);
+        } else if (arrayIncludes(dateSorts, defaultSort)) {
+          return dateSort(a, b, defaultSort, defaultSortOrder);
+        }
+        return nameSort;
+      });
+      return filteredSets.map(keysetAdapter.selectId);
+    };
+
+    return setGroupAdapter.setAll(
+      setGroupAdapter.getInitialState(),
+      groupTitles.map<SetGroup>((group) => ({
+        sets: filterSets(sets, group, sort),
+        title: group,
+      }))
+    );
+  }
+);
+
 export const {
   selectAll: selectAllSetGroups,
   selectById: selectSetGroupByTitle,
   selectEntities: selectSetGroupMap,
   selectIds: selectSetGroupTitles,
   selectTotal: selectSetGroupTotal,
-} = setGroupAdapter.getSelectors(
-  (state: RootState) => state.main.keysets.setGroups
+} = setGroupAdapter.getSelectors(selectSetGroups);
+
+export const selectSortHiddenSets = createSelector(
+  selectAllSetGroups,
+  selectAllSets,
+  (setGroups, sets) => {
+    const allGroupedSets = removeDuplicates(
+      setGroups.map((group) => group.sets).flat()
+    );
+
+    return sets.length - allGroupedSets.length;
+  }
 );
+
+export const setupHiddenSetsListener = (startListening: AppStartListening) =>
+  startListening({
+    effect: (action, { getState }) => {
+      queue.notify({
+        title: `${selectSortHiddenSets(
+          getState()
+        )} sets hidden due to sort setting.`,
+      });
+    },
+    predicate: (action, state, originalState) =>
+      sortHiddenCheck[selectSort(state)].includes(selectPage(state)) &&
+      !shallowEqual(
+        selectFilteredSets(state),
+        selectFilteredSets(originalState)
+      ) &&
+      selectSortHiddenSets(state) > 0,
+  });
 
 export const selectAllDesigners = createSelector(selectAllSets, (sets) =>
   alphabeticalSort(

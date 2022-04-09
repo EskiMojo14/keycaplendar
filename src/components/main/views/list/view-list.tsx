@@ -2,8 +2,9 @@ import type { EntityId } from "@reduxjs/toolkit";
 import { List, ListDivider } from "@rmwc/list";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
+import { useAppSelector } from "~/app/hooks";
 import type { Page } from "@s/common/types";
-import type { SetType } from "@s/main/types";
+import { selectSetMap } from "@s/main";
 import { ordinal } from "@s/util/functions";
 import { ElementList } from "./element-list";
 import { SkeletonList } from "./skeleton-list";
@@ -13,7 +14,7 @@ type ViewListProps = {
   closeDetails: () => void;
   details: (set: EntityId) => void;
   detailSet: EntityId;
-  sets: SetType[];
+  sets: EntityId[];
   loading?: boolean;
   page?: Page;
 };
@@ -26,12 +27,17 @@ export const ViewList = ({
   page,
   sets,
 }: ViewListProps) => {
+  const setMap = useAppSelector(selectSetMap);
   const today = DateTime.utc();
   const yesterday = today.minus({ days: 1 });
   const oneDay = 24 * 60 * 60 * 1000;
   return (
     <List className="view-list three-line" nonInteractive={loading} twoLine>
-      {sets.map((set) => {
+      {sets.map((setId) => {
+        const { [setId]: set } = setMap;
+        if (!set) {
+          return null;
+        }
         const gbLaunch =
           set.gbLaunch?.includes("Q") || !set.gbLaunch
             ? set.gbLaunch

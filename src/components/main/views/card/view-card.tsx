@@ -1,9 +1,10 @@
 import type { EntityId } from "@reduxjs/toolkit";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
+import { useAppSelector } from "~/app/hooks";
 import { SkeletonCard } from "@c/main/views/card/skeleton-card";
 import type { Page } from "@s/common/types";
-import type { SetType } from "@s/main/types";
+import { selectSetMap } from "@s/main";
 import type { CurrentUserType } from "@s/user/types";
 import { ordinal } from "@s/util/functions";
 import { ElementCard } from "./element-card";
@@ -15,7 +16,7 @@ type ViewCardProps = {
   detailSet: EntityId;
   edit: (set: EntityId) => void;
   page: Page;
-  sets: SetType[];
+  sets: EntityId[];
   user: CurrentUserType;
   loading?: boolean;
 };
@@ -30,12 +31,17 @@ export const ViewCard = ({
   sets,
   user,
 }: ViewCardProps) => {
+  const setMap = useAppSelector(selectSetMap);
   const today = DateTime.utc();
   const yesterday = today.minus({ days: 1 });
   const oneDay = 24 * 60 * 60 * 1000;
   return (
     <div className="group-container">
-      {sets.map((set) => {
+      {sets.map((setId) => {
+        const { [setId]: set } = setMap;
+        if (!set) {
+          return null;
+        }
         const gbLaunch =
           set.gbLaunch?.includes("Q") || !set.gbLaunch
             ? set.gbLaunch

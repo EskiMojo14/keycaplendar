@@ -8,7 +8,6 @@ import { ViewList } from "@c/main/views/list/view-list";
 import { SkeletonBlock } from "@c/util/skeleton-block";
 import { selectPage } from "@s/common";
 import { selectAllSetGroups, selectLoading } from "@s/main";
-import type { SetType } from "@s/main/types";
 import { selectView } from "@s/settings";
 import { selectUser } from "@s/user";
 import "./content-grid.scss";
@@ -34,7 +33,7 @@ export const ContentGrid = ({
   const user = useAppSelector(selectUser);
   const page = useAppSelector(selectPage);
 
-  const createGroup = (sets: SetType[]) => {
+  const createGroup = (sets: EntityId[]) => {
     switch (view) {
       case "card": {
         return (

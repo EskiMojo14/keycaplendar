@@ -1,3 +1,4 @@
+import type { EntityId } from "@reduxjs/toolkit";
 import type { Overwrite } from "@s/util/types";
 import type { allSorts } from "./constants";
 
@@ -48,7 +49,7 @@ export type SetType = {
   vendors: VendorType[];
 };
 
-export type SetGroup = { sets: SetType[]; title: string };
+export type SetGroup = { sets: EntityId[]; title: string };
 
 export type WhitelistType = {
   /** Whether to filter to only bought sets. */

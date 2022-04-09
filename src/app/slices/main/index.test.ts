@@ -8,7 +8,6 @@ import {
   initialState,
   mergeWhitelist,
   selectAllAppPresets,
-  selectAllSetGroups,
   selectAllSets,
   selectAppPresetById,
   selectCurrentPresetId,
@@ -31,7 +30,6 @@ import {
   setLoading,
   setSearch,
   setSet,
-  setSetGroups,
   setSort,
   setSortOrder,
   setTransition,
@@ -43,7 +41,6 @@ import {
 import { blankKeyset } from "@s/main/constants";
 import { partialPreset, partialWhitelist } from "@s/main/constructors";
 import type {
-  SetGroup,
   SetType,
   SortOrderType,
   SortType,
@@ -109,13 +106,6 @@ it("deletes a set", () => {
   store.dispatch(deleteSet(blankKeyset.id));
   const response = selectSetById(store.getState(), blankKeyset.id);
   expect(response).toBeUndefined();
-});
-
-it("sets set groups", () => {
-  const groups: SetGroup[] = [{ sets: [blankKeyset], title: "test" }];
-  store.dispatch(setSetGroups(groups));
-  const response = selectAllSetGroups(store.getState());
-  expect(response).toEqual(groups);
 });
 
 it("sets URL set", () => {

@@ -3,8 +3,9 @@ import { Card } from "@rmwc/card";
 import { List } from "@rmwc/list";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
+import { useAppSelector } from "~/app/hooks";
 import type { Page } from "@s/common/types";
-import type { SetType } from "@s/main/types";
+import { selectSetMap } from "@s/main";
 import { ordinal } from "@s/util/functions";
 import { ElementCompact } from "./element-compact";
 import { SkeletonCompact } from "./skeleton-compact";
@@ -15,7 +16,7 @@ type ViewCompactProps = {
   details: (set: EntityId) => void;
   detailSet: EntityId;
   page: Page;
-  sets: SetType[];
+  sets: EntityId[];
   loading?: boolean;
 };
 
@@ -27,12 +28,17 @@ export const ViewCompact = ({
   page,
   sets,
 }: ViewCompactProps) => {
+  const setMap = useAppSelector(selectSetMap);
   const today = DateTime.utc();
   const yesterday = today.minus({ days: 1 });
   return (
     <Card>
       <List nonInteractive={loading} twoLine>
-        {sets.map((set) => {
+        {sets.map((setId) => {
+          const { [setId]: set } = setMap;
+          if (!set) {
+            return null;
+          }
           const gbLaunch =
             set.gbLaunch?.includes("Q") || !set.gbLaunch
               ? set.gbLaunch
