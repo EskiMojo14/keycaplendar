@@ -1,6 +1,5 @@
 import type { EntityId } from "@reduxjs/toolkit";
 import produce from "immer";
-import debounce from "lodash.debounce";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
@@ -418,8 +417,6 @@ export const filterData = (transition = false, state = store.getState()) => {
   dispatch(setLoading(false));
 };
 
-const debouncedFilterData = debounce(filterData, 350, { trailing: true });
-
 export const setWhitelistMerge = (
   partialWhitelist: Partial<WhitelistType>,
   clearUrl = true,
@@ -662,11 +659,12 @@ export const setSortOrder = (sortOrder: SortOrderType, clearUrl = true) => {
   }
 };
 
-export const setSearch = (query: string) => {
-  dispatch(setMainSearch(query));
-  document.documentElement.scrollTop = 0;
-  debouncedFilterData();
-};
+export const setSearch =
+  (query: string): AppThunk<void> =>
+  (dispatch) => {
+    dispatch(setMainSearch(query));
+    filterData();
+  };
 
 export const updatePreset = (
   preset: OldPresetType | PresetType,

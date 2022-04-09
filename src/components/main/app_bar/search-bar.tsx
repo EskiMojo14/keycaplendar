@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { ChangeEvent } from "react";
 import { IconButton } from "@rmwc/icon-button";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
@@ -9,29 +9,36 @@ import {
   TopAppBarRow,
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
-import { useAppSelector } from "~/app/hooks";
+import debounce from "lodash.debounce";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { Autocomplete, AutocompleteMobile } from "@c/util/autocomplete";
 import BEMHelper from "@s/common/bem-helper";
 import { selectSearch, selectSearchTerms } from "@s/main";
-import { setSearch } from "@s/main/functions";
+import { setSearch as setSearchInState } from "@s/main/functions";
 import "./search-bar.scss";
 
 const bemClasses = new BEMHelper("search-bar");
 
 export const SearchBarPersistent = () => {
-  const search = useAppSelector(selectSearch);
+  const dispatch = useAppDispatch();
+  const debouncedSetSearchInState = useCallback(
+    debounce((query) => dispatch(setSearchInState(query)), 350, {
+      trailing: true,
+    }),
+    []
+  );
+
+  const searchFromState = useAppSelector(selectSearch);
   const searchTerms = useAppSelector(selectSearchTerms);
 
-  const [expanded, setExpanded] = useState(false);
+  const [search, setSearch] = useState(searchFromState);
+
   const [focused, setFocused] = useState(false);
 
-  useEffect(() => {
-    setExpanded(search.length !== 0);
-  }, [search]);
-
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setExpanded(e.target.value.length !== 0);
+    document.documentElement.scrollTop = 0;
     setSearch(e.target.value);
+    debouncedSetSearchInState(e.target.value);
   };
   const handleFocus = () => {
     setFocused(true);
@@ -44,15 +51,16 @@ export const SearchBarPersistent = () => {
     setFocused(false);
   };
   const clearInput = () => {
-    setExpanded(false);
+    document.documentElement.scrollTop = 0;
     setSearch("");
+    debouncedSetSearchInState("");
   };
   return (
     <MenuSurfaceAnchor className={bemClasses("anchor")}>
       <div
         className={bemClasses({
           modifiers: {
-            expanded,
+            expanded: search.length !== 0,
             persistent: true,
           },
         })}
@@ -68,7 +76,9 @@ export const SearchBarPersistent = () => {
           outlined
           placeholder="Search"
           trailingIcon={
-            expanded && <IconButton icon="clear" onClick={clearInput} />
+            search.length !== 0 && (
+              <IconButton icon="clear" onClick={clearInput} />
+            )
           }
           value={search}
         />
@@ -96,8 +106,18 @@ export const SearchBarModal = ({
   close,
   open: propsOpen,
 }: SearchBarModalProps) => {
-  const search = useAppSelector(selectSearch);
+  const dispatch = useAppDispatch();
+  const debouncedSetSearchInState = useCallback(
+    debounce((query) => dispatch(setSearchInState(query)), 350, {
+      trailing: true,
+    }),
+    []
+  );
+
+  const searchFromState = useAppSelector(selectSearch);
   const searchTerms = useAppSelector(selectSearchTerms);
+
+  const [search, setSearch] = useState(searchFromState);
 
   const [opening, setOpening] = useState(false);
   const [closing, setClosing] = useState(false);
@@ -127,6 +147,7 @@ export const SearchBarModal = ({
       setOpen(false);
       setClosing(false);
       setSearch("");
+      debouncedSetSearchInState("");
     }, 200);
   };
 
@@ -148,6 +169,7 @@ export const SearchBarModal = ({
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
+    debouncedSetSearchInState(e.target.value);
   };
   const handleFocus = () => {
     setFocused(true);
@@ -162,6 +184,7 @@ export const SearchBarModal = ({
   };
   const clearInput = () => {
     setSearch("");
+    debouncedSetSearchInState("");
   };
   return (
     <div
@@ -218,8 +241,18 @@ type SearchAppBarProps = {
 };
 
 export const SearchAppBar = ({ close, open, openBar }: SearchAppBarProps) => {
-  const search = useAppSelector(selectSearch);
+  const dispatch = useAppDispatch();
+  const debouncedSetSearchInState = useCallback(
+    debounce((query) => dispatch(setSearchInState(query)), 350, {
+      trailing: true,
+    }),
+    []
+  );
+
+  const searchFromState = useAppSelector(selectSearch);
   const searchTerms = useAppSelector(selectSearchTerms);
+
+  const [search, setSearch] = useState(searchFromState);
 
   const [focused, setFocused] = useState(false);
 
@@ -232,6 +265,7 @@ export const SearchAppBar = ({ close, open, openBar }: SearchAppBarProps) => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
+    debouncedSetSearchInState(e.target.value);
   };
   const handleFocus = () => {
     setFocused(true);
@@ -246,6 +280,7 @@ export const SearchAppBar = ({ close, open, openBar }: SearchAppBarProps) => {
   };
   const clearInput = () => {
     setSearch("");
+    debouncedSetSearchInState("");
   };
   return (
     <>
