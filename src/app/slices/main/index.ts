@@ -412,6 +412,25 @@ export const selectPresetById = createSelector(
       : appPresets[presetId] ?? userPresets[presetId]
 );
 
+export const selectSearchTerms = createSelector(
+  selectFilteredSets,
+  (filteredSets) =>
+    alphabeticalSort([
+      ...filteredSets.reduce<Set<string>>((searchTerms, set) => {
+        searchTerms.add(set.profile);
+        searchTerms.add(set.colorway);
+        set.designer.forEach((designer) => {
+          searchTerms.add(designer);
+        });
+        set.vendors?.forEach((vendor) => {
+          searchTerms.add(vendor.name);
+        });
+
+        return searchTerms;
+      }, new Set()),
+    ])
+);
+
 export default mainSlice.reducer;
 
 const {

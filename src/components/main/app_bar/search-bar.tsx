@@ -12,8 +12,7 @@ import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { Autocomplete, AutocompleteMobile } from "@c/util/autocomplete";
 import BEMHelper from "@s/common/bem-helper";
-import { selectFilteredSets } from "@s/main";
-import { alphabeticalSort } from "@s/util/functions";
+import { selectSearchTerms } from "@s/main";
 import "./search-bar.scss";
 
 const bemClasses = new BEMHelper("search-bar");
@@ -27,33 +26,13 @@ export const SearchBarPersistent = ({
   search,
   setSearch,
 }: SearchBarPersistentProps) => {
-  const filteredSets = useAppSelector(selectFilteredSets);
+  const searchTerms = useAppSelector(selectSearchTerms);
 
   const [expanded, setExpanded] = useState(false);
   const [focused, setFocused] = useState(false);
-  const [searchTerms, setSearchTerms] = useState<string[]>([]);
-  const createSearchTerms = () => {
-    const searchTerms: Set<string> = new Set();
-    if (filteredSets && filteredSets.length > 0) {
-      filteredSets.forEach((set) => {
-        searchTerms.add(set.profile);
-        searchTerms.add(set.colorway);
-        set.designer.forEach((designer) => {
-          searchTerms.add(designer);
-        });
-        if (set.vendors) {
-          set.vendors.forEach((vendor) => {
-            searchTerms.add(vendor.name);
-          });
-        }
-      });
-    }
-    setSearchTerms(alphabeticalSort([...searchTerms]));
-  };
 
   useEffect(() => {
     setExpanded(search.length !== 0);
-    createSearchTerms();
   }, [search]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -127,14 +106,13 @@ export const SearchBarModal = ({
   search,
   setSearch,
 }: SearchBarModalProps) => {
-  const filteredSets = useAppSelector(selectFilteredSets);
+  const searchTerms = useAppSelector(selectSearchTerms);
 
   const [opening, setOpening] = useState(false);
   const [closing, setClosing] = useState(false);
   const [animate, setAnimate] = useState(false);
   const [open, setOpen] = useState(false);
   const [focused, setFocused] = useState(false);
-  const [searchTerms, setSearchTerms] = useState<string[]>([]);
 
   const openBar = () => {
     setOpen(true);
@@ -161,31 +139,6 @@ export const SearchBarModal = ({
     }, 200);
   };
 
-  const createSearchTerms = () => {
-    const searchTerms: string[] = [];
-    const addSearchTerm = (term: string) => {
-      if (!searchTerms.includes(term)) {
-        searchTerms.push(term);
-      }
-    };
-    if (filteredSets && filteredSets.length > 0) {
-      filteredSets.forEach((set) => {
-        addSearchTerm(set.profile);
-        addSearchTerm(set.colorway);
-        set.designer.forEach((designer) => {
-          addSearchTerm(designer);
-        });
-        if (set.vendors) {
-          set.vendors.forEach((vendor) => {
-            addSearchTerm(vendor.name);
-          });
-        }
-      });
-    }
-    alphabeticalSort(searchTerms);
-    setSearchTerms(searchTerms);
-  };
-
   useEffect(() => {
     setOpen(propsOpen);
   }, []);
@@ -200,7 +153,6 @@ export const SearchBarModal = ({
     if (!open && search.length > 0) {
       openBar();
     }
-    createSearchTerms();
   }, [search]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -283,36 +235,15 @@ export const SearchAppBar = ({
   search,
   setSearch,
 }: SearchAppBarProps) => {
-  const filteredSets = useAppSelector(selectFilteredSets);
+  const searchTerms = useAppSelector(selectSearchTerms);
 
   const [focused, setFocused] = useState(false);
-  const [searchTerms, setSearchTerms] = useState<string[]>([]);
-
-  const createSearchTerms = () => {
-    const searchTerms: Set<string> = new Set();
-    if (filteredSets && filteredSets.length > 0) {
-      filteredSets.forEach((set) => {
-        searchTerms.add(set.profile);
-        searchTerms.add(set.colorway);
-        set.designer.forEach((designer) => {
-          searchTerms.add(designer);
-        });
-        if (set.vendors) {
-          set.vendors.forEach((vendor) => {
-            searchTerms.add(vendor.name);
-          });
-        }
-      });
-    }
-    setSearchTerms(alphabeticalSort([...searchTerms]));
-  };
 
   useEffect(() => {
     if (search.length > 0) {
       openBar();
       setTimeout(() => scrollTop(), 300);
     }
-    createSearchTerms();
   }, [search]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
