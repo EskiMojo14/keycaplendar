@@ -18,13 +18,6 @@ import {
 } from "@s/util/functions";
 import type { GuideEntryType, Visibility } from "./types";
 
-const blankVisibilityMap = visibilityVals.reduce<
-  Record<Visibility, EntityId[]>
->((acc, vis) => {
-  acc[vis] ??= [];
-  return acc;
-}, {} as Record<Visibility, EntityId[]>);
-
 const guideEntryAdapter = createEntityAdapter<GuideEntryType>({
   sortComparer: alphabeticalSortPropCurried<GuideEntryType, "title">(
     "title",
@@ -44,7 +37,6 @@ type GuidesState = {
 export const initialState: GuidesState = {
   entries: guideEntryAdapter.getInitialState({
     urlEntry: "",
-    visibilityMap: blankVisibilityMap,
   }),
   filteredTag: "",
   loading: false,
@@ -91,6 +83,13 @@ export const selectURLEntry = (state: RootState) =>
 export const selectAllTags = createSelector(selectEntries, (entries) =>
   alphabeticalSort(removeDuplicates(entries.map((entry) => entry.tags).flat(1)))
 );
+
+const blankVisibilityMap = visibilityVals.reduce<
+  Record<Visibility, EntityId[]>
+>((acc, vis) => {
+  acc[vis] ??= [];
+  return acc;
+}, {} as Record<Visibility, EntityId[]>);
 
 export const selectVisibilityMap = createSelector(selectEntries, (entries) => ({
   ...blankVisibilityMap,
