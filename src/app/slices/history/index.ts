@@ -11,6 +11,7 @@ import type { AppThunk, RootState } from "~/app/store";
 import { auditProperties } from "@s/audit/constants";
 import firebase from "@s/firebase";
 import { selectSetMap } from "@s/main";
+import type { SetType } from "@s/main/types";
 import {
   alphabeticalSortProp,
   alphabeticalSortPropCurried,
@@ -87,39 +88,48 @@ export const {
 export const selectRecentSets = createSelector(
   selectProcessedActions,
   selectSetMap,
-  (processedActions, setMap) => {
-    const ids = removeDuplicates(
-      processedActions.map((action) => action.documentId)
-    );
-    return recentSetsAdapter.setAll(
+  (processedActions, setMap) =>
+    recentSetsAdapter.setAll(
       recentSetsAdapter.getInitialState(),
-      ids.map<RecentSet>((id) => {
+      removeDuplicates(
+        processedActions.map((action) => action.documentId)
+      ).map<RecentSet>((id) => {
         const filteredActions = alphabeticalSortProp(
           processedActions.filter((action) => action.documentId === id),
           "timestamp",
           true
         );
-        const [latestTimestamp] = filteredActions
-          .map((action) => action.timestamp)
-          .filter(Boolean);
-        const [title] = filteredActions
-          .map((action) => action.title)
-          .filter(Boolean);
-        const [designer] = filteredActions
-          .map((action) => action.after.designer || action.before.designer)
-          .filter(Boolean);
+        const {
+          designer,
+          latestTimestamp = "",
+          title = "",
+        } = filteredActions.reduce<{
+          designer?: SetType["designer"];
+          latestTimestamp?: ProcessedPublicActionType["timestamp"];
+          title?: ProcessedPublicActionType["title"];
+        }>((acc, action) => {
+          if (action.timestamp) {
+            acc.latestTimestamp ??= action.timestamp;
+          }
+          if (action.title) {
+            acc.title ??= action.title;
+          }
+          if (action.after.designer || action.before.designer) {
+            acc.designer ??= action.after.designer || action.before.designer;
+          }
+          return acc;
+        }, {});
         const deleted = filteredActions[0].action === "deleted";
         const { [id]: currentSet } = setMap;
         return {
           deleted,
-          designer: currentSet?.designer ?? designer ?? null,
+          designer: currentSet?.designer ?? designer,
           id,
           latestTimestamp,
           title,
         };
       })
-    );
-  }
+    )
 );
 
 export const {
