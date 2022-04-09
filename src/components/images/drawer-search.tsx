@@ -5,11 +5,11 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import { List } from "@rmwc/list";
 import { TextField } from "@rmwc/textfield";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { SearchItem } from "@c/images/search-item";
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice } from "@s/common";
-import { searchImages } from "@s/images/functions";
+import { searchImages } from "@s/images";
 import { iconObject } from "@s/util/functions";
 import { Regex, RegexOff } from "@i";
 import "./drawer-search.scss";
@@ -25,6 +25,7 @@ export const DrawerSearch = ({
   open,
   unusedImages,
 }: DrawerSearchProps) => {
+  const dispatch = useAppDispatch();
   const device = useAppSelector(selectDevice);
   const dismissible = device === "desktop";
   const closeIcon =
@@ -45,7 +46,7 @@ export const DrawerSearch = ({
   };
 
   const searchedImages = useMemo(
-    () => searchImages(search, regexSearch),
+    () => dispatch(searchImages(search, regexSearch)),
     [search, regexSearch]
   );
 

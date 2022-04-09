@@ -10,7 +10,7 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { withTooltip } from "@c/util/hocs";
 import {
   SegmentedButton,
@@ -18,8 +18,12 @@ import {
 } from "@c/util/segmented-button";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
-import { selectCurrentFolder, selectFolders, selectLoading } from "@s/images";
-import { setFolder } from "@s/images/functions";
+import {
+  selectCurrentFolder,
+  selectFolders,
+  selectLoading,
+  setFolder,
+} from "@s/images";
 import { selectBottomNav } from "@s/settings";
 import { iconObject, useBoolStates } from "@s/util/functions";
 import { Delete, PermMedia } from "@i";
@@ -39,6 +43,8 @@ export const ImageAppBar = ({
   openNav,
   openSearch,
 }: ImageAppBarProps) => {
+  const dispatch = useAppDispatch();
+
   const device = useAppSelector(selectDevice);
 
   const bottomNav = useAppSelector(selectBottomNav);
@@ -115,7 +121,7 @@ export const ImageAppBar = ({
                     {folders.map((folder) => (
                       <MenuItem
                         key={folder}
-                        onClick={() => setFolder(folder)}
+                        onClick={() => dispatch(setFolder(folder))}
                         selected={currentFolder === folder}
                       >
                         {`${folder}/`}
@@ -129,7 +135,7 @@ export const ImageAppBar = ({
                     <SegmentedButtonSegment
                       key={folder}
                       label={folder}
-                      onClick={() => setFolder(folder)}
+                      onClick={() => dispatch(setFolder(folder))}
                       selected={currentFolder === folder}
                     />
                   ))}

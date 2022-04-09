@@ -7,21 +7,20 @@ import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { useImmer } from "use-immer";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
 import ImageAppBar from "@c/images/app-bar";
 import ImageItem from "@c/images/image-item";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { selectDevice } from "@s/common";
 import {
-  imageAdapter,
+  getFolders,
+  listAll,
   selectCurrentFolder,
-  selectDuplicateSetImages,
+  selectDuplicateImages,
   selectImages,
-  selectSetImages,
+  selectImagesByUsage,
 } from "@s/images";
-import { createSetImageList, getFolders, listAll } from "@s/images/functions";
-import { selectAllSets } from "@s/main";
 import { selectBottomNav } from "@s/settings";
 import {
   addOrRemove,
@@ -48,17 +47,17 @@ type ContentImagesProps = {
 };
 
 export const ContentImages = ({ openNav }: ContentImagesProps) => {
+  const dispatch = useAppDispatch();
   const device = useAppSelector(selectDevice);
 
   const bottomNav = useAppSelector(selectBottomNav);
 
-  const allSets = useAppSelector(selectAllSets);
-
   const currentFolder = useAppSelector(selectCurrentFolder);
 
   const images = useAppSelector(selectImages);
-  const keysetImages = useAppSelector(selectSetImages);
-  const duplicateSetImages = useAppSelector(selectDuplicateSetImages);
+  const { unused: unusedImages, used: usedImages } =
+    useAppSelector(selectImagesByUsage);
+  const duplicateImages = useAppSelector(selectDuplicateImages);
 
   const [checkedImages, setCheckedImages] = useImmer<EntityId[]>([]);
 
@@ -71,12 +70,10 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
 
   useEffect(() => {
     if (images.length === 0) {
-      getFolders();
-      listAll();
-      createSetImageList();
+      dispatch(getFolders());
+      dispatch(listAll());
     }
   }, []);
-  useEffect(createSetImageList, [allSets]);
 
   const closeSearch = () => {
     if (device !== "desktop") {
@@ -135,24 +132,6 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
       append ? removeDuplicates(images.concat(array)) : array
     );
   const clearChecked = () => setCheckedImages([]);
-  const unusedImages = useMemo(
-    () =>
-      images
-        .filter((image) => !keysetImages.includes(image.name))
-        .map(imageAdapter.selectId),
-    [images, keysetImages]
-  );
-  const usedImages = useMemo(
-    () =>
-      images
-        .filter((image) => keysetImages.includes(image.name))
-        .map(imageAdapter.selectId),
-    [images, keysetImages]
-  );
-  const duplicateImages = useMemo(
-    () => usedImages.filter((image) => duplicateSetImages.includes(image)),
-    [usedImages, duplicateSetImages]
-  );
   const display = useMemo(
     () => [
       {
@@ -195,6 +174,7 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
           />
           <DialogDelete
             checkedImages={checkedImages}
+            clearChecked={clearChecked}
             close={closeDelete}
             open={deleteOpen && checkedImages.length > 0}
             toggleImageChecked={toggleImageChecked}

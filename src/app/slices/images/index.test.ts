@@ -2,17 +2,13 @@ import { createStore } from "~/app/store";
 import {
   appendImages,
   selectCurrentFolder,
-  selectDuplicateSetImages,
   selectFolders,
   selectImages,
   selectLoading,
-  selectSetImages,
   setCurrentFolder,
-  setDuplicateSetImages,
   setFolders,
   setImages,
   setLoading,
-  setSetImages,
 } from "@s/images";
 import { partialImage } from "@s/images/constructors";
 
@@ -56,16 +52,4 @@ it("appends image array", () => {
   store.dispatch(appendImages([image2]));
   const response = selectImages(store.getState());
   expect(response).toEqual([image, image2]);
-});
-
-it("sets set image array", () => {
-  store.dispatch(setSetImages([folder]));
-  const response = selectSetImages(store.getState());
-  expect(response).toEqual([folder]);
-});
-
-it("sets duplicate set image array", () => {
-  store.dispatch(setDuplicateSetImages([folder]));
-  const response = selectDuplicateSetImages(store.getState());
-  expect(response).toEqual([folder]);
 });

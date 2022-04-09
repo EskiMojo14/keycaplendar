@@ -14,16 +14,17 @@ import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import {
   imageAdapter,
+  listAll,
   selectFolders,
   selectImageMap,
   setLoading,
 } from "@s/images";
-import { listAll } from "@s/images/functions";
 import { batchStorageDelete, filterFalsey, pluralise } from "@s/util/functions";
 import "./dialog-delete.scss";
 
 type DialogDeleteProps = {
   checkedImages: EntityId[];
+  clearChecked: () => void;
   close: () => void;
   open: boolean;
   toggleImageChecked: (image: EntityId) => void;
@@ -31,6 +32,7 @@ type DialogDeleteProps = {
 
 export const DialogDelete = ({
   checkedImages,
+  clearChecked,
   close,
   open,
   toggleImageChecked,
@@ -60,8 +62,9 @@ export const DialogDelete = ({
     batchStorageDelete(array)
       .then(() => {
         queue.notify({ title: "Successfully deleted files." });
+        clearChecked();
         close();
-        listAll();
+        dispatch(listAll());
       })
       .catch((error) => {
         queue.notify({ title: `Failed to delete files: ${error}` });
