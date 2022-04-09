@@ -54,7 +54,7 @@ export const Content = ({ className, ...props }: ContentProps) => {
     }
   }, [device, navEdited]);
 
-  const Content = useMemo(() => {
+  const InnerContent = useMemo(() => {
     if (arrayIncludes(mainPages, page)) {
       return ContentMain;
     }
@@ -93,7 +93,7 @@ export const Content = ({ className, ...props }: ContentProps) => {
     >
       <DrawerNav close={closeNav} open={navOpen} />
       <DrawerAppContent>
-        {Content && <Content openNav={openNav} />}
+        {InnerContent && <InnerContent openNav={openNav} />}
       </DrawerAppContent>
     </div>
   );
