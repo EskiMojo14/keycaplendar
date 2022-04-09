@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { HTMLAttributes } from "react";
 import { DrawerAppContent } from "@rmwc/drawer";
 import classNames from "classnames";
@@ -54,31 +54,32 @@ export const Content = ({ className, ...props }: ContentProps) => {
     }
   }, [device, navEdited]);
 
-  const content = () => {
+  const Content = useMemo(() => {
     if (arrayIncludes(mainPages, page)) {
-      return <ContentMain openNav={openNav} />;
+      return ContentMain;
     }
     switch (page) {
       case "statistics":
-        return <ContentStatistics openNav={openNav} />;
+        return ContentStatistics;
       case "history":
-        return <ContentHistory openNav={openNav} />;
+        return ContentHistory;
       case "audit":
-        return user.isAdmin && <ContentAudit openNav={openNav} />;
+        return user.isAdmin && ContentAudit;
       case "users":
-        return user.isAdmin && <ContentUsers openNav={openNav} />;
+        return user.isAdmin && ContentUsers;
       case "images":
-        return user.isAdmin && <ContentImages openNav={openNav} />;
+        return user.isAdmin && ContentImages;
       case "guides":
-        return <ContentGuides openNav={openNav} />;
+        return ContentGuides;
       case "updates":
-        return <ContentUpdates openNav={openNav} />;
+        return ContentUpdates;
       case "settings":
-        return <ContentSettings openNav={openNav} />;
+        return ContentSettings;
       default:
         return null;
     }
-  };
+  }, [page]);
+
   return (
     <div
       className={classNames(className, page, "app-container", {
@@ -91,7 +92,9 @@ export const Content = ({ className, ...props }: ContentProps) => {
       {...props}
     >
       <DrawerNav close={closeNav} open={navOpen} />
-      <DrawerAppContent>{content()}</DrawerAppContent>
+      <DrawerAppContent>
+        {Content && <Content openNav={openNav} />}
+      </DrawerAppContent>
     </div>
   );
 };
