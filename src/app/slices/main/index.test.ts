@@ -1,4 +1,3 @@
-import type { EntityId } from "@reduxjs/toolkit";
 import produce from "immer";
 import { createStore } from "~/app/store";
 import {
@@ -11,7 +10,6 @@ import {
   selectAllSets,
   selectAppPresetById,
   selectCurrentPresetId,
-  selectFilteredSetsIds,
   selectLinkedFavorites,
   selectLoading,
   selectSearch,
@@ -25,7 +23,6 @@ import {
   setAllSets,
   setAppPresets,
   setCurrentPreset,
-  setFilteredSets,
   setLinkedFavorites,
   setLoading,
   setSearch,
@@ -83,13 +80,6 @@ it("sets all sets", () => {
   const list: SetType[] = [blankKeyset];
   store.dispatch(setAllSets(list));
   const response = selectAllSets(store.getState());
-  expect(response).toEqual(list);
-});
-
-it("sets filtered sets", () => {
-  const list: EntityId[] = [blankKeyset.id];
-  store.dispatch(setFilteredSets(list));
-  const response = selectFilteredSetsIds(store.getState());
   expect(response).toEqual(list);
 });
 

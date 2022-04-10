@@ -18,8 +18,7 @@ import { mainPages, pageIcons, pageTitle } from "@s/common/constants";
 import { setPage } from "@s/common/functions";
 import type { MainPage } from "@s/common/types";
 import { selectRecentSetById } from "@s/history";
-import { selectSetById } from "@s/main";
-import { pageConditions } from "@s/main/functions";
+import { pageConditions, selectLinkedFavorites, selectSetById } from "@s/main";
 import { selectBought, selectFavorites, selectHidden } from "@s/user";
 import {
   arrayIncludes,
@@ -58,6 +57,7 @@ export const RecentSetCard = ({
   const favorites = useAppSelector(selectFavorites);
   const bought = useAppSelector(selectBought);
   const hidden = useAppSelector(selectHidden);
+  const linkedFavorites = useAppSelector(selectLinkedFavorites);
 
   const pages = useMemo(() => {
     if (currentSet) {
@@ -73,7 +73,7 @@ export const RecentSetCard = ({
         timeline: false,
       };
       const pageBools: Record<MainPage, boolean> = currentSet
-        ? pageConditions(currentSet, favorites, bought, hidden)
+        ? pageConditions(currentSet, favorites, bought, hidden, linkedFavorites)
         : falsePages;
       const keysetPages = objectKeys(pageBools).filter((key) => pageBools[key]);
       return keysetPages;

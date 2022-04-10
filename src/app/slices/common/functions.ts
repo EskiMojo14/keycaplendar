@@ -33,12 +33,7 @@ import {
   whitelistParams,
 } from "@s/main/constants";
 import type { whitelistShipped } from "@s/main/constants";
-import {
-  filterData,
-  getData,
-  setWhitelistMerge,
-  updatePreset,
-} from "@s/main/functions";
+import { getData, setWhitelistMerge, updatePreset } from "@s/main/functions";
 import type { WhitelistType } from "@s/main/types";
 import { setStatisticsTab } from "@s/statistics/functions";
 import type { StatsTab } from "@s/statistics/types";
@@ -318,7 +313,6 @@ export const setPage = (page: Page, state = store.getState()) => {
           setMainSort(pageSort[page]),
           setMainSortOrder(pageSortOrder[page]),
         ]);
-        filterData();
       }
       document.documentElement.scrollTop = 0;
     }, 90);

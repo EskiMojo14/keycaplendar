@@ -5,7 +5,6 @@ import { queue } from "~/app/snackbar-queue";
 import firestore from "@s/firebase/firestore";
 import type { KeysetId } from "@s/firebase/types";
 import { setSet } from "@s/main";
-import { filterData } from "@s/main/functions";
 import type { SetType } from "@s/main/types";
 import { selectUser } from "@s/user";
 import { batchStorageDelete, getStorageFolders } from "@s/util/functions";
@@ -63,7 +62,6 @@ export const SnackbarDeleted = ({
         console.log("Document recreated with ID: ", id);
         queue.notify({ title: "Entry successfully recreated." });
         dispatch(setSet({ id, ...set }));
-        filterData();
       })
       .catch((error) => {
         console.error("Error recreating document: ", error);

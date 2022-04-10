@@ -16,17 +16,26 @@ import {
   dateSorts,
   pageSort,
   pageSortOrder,
+  showAllPages,
   sortHiddenCheck,
 } from "@s/main/constants";
 import { partialPreset } from "@s/main/constructors";
-import { selectUserPresetMap } from "@s/user";
+import {
+  selectBought,
+  selectFavorites,
+  selectHidden,
+  selectUser,
+  selectUserPresetMap,
+} from "@s/user";
 import {
   alphabeticalSort,
   alphabeticalSortCurried,
   alphabeticalSortPropCurried,
   arrayIncludes,
   hasKey,
+  normalise,
   removeDuplicates,
+  replaceFunction,
 } from "@s/util/functions";
 import type { Overwrite } from "@s/util/types";
 import type {
@@ -52,11 +61,8 @@ export const setGroupAdapter = createEntityAdapter<SetGroup>({
 });
 
 export type MainState = {
-  content: boolean;
   initialLoad: boolean;
-  keysets: EntityState<SetType> & {
-    filteredSets: EntityId[];
-  };
+  keysets: EntityState<SetType>;
   linkedFavorites: { array: string[]; displayName: string };
   loading: boolean;
   presets: EntityState<PresetType> & {
@@ -75,11 +81,8 @@ export type MainState = {
 };
 
 export const initialState: MainState = {
-  content: true,
   initialLoad: true,
-  keysets: keysetAdapter.getInitialState({
-    filteredSets: [],
-  }),
+  keysets: keysetAdapter.getInitialState(),
   linkedFavorites: { array: [], displayName: "" },
   loading: true,
   presets: appPresetAdapter.getInitialState({
@@ -141,9 +144,6 @@ export const mainSlice = createSlice({
       { payload }: PayloadAction<"default" | (EntityId & Record<never, never>)>
     ) => {
       state.presets.currentPreset = payload;
-    },
-    setFilteredSets: (state, { payload }: PayloadAction<EntityId[]>) => {
-      state.keysets.filteredSets = payload;
     },
     setInitialLoad: (state, { payload }: PayloadAction<boolean>) => {
       state.initialLoad = payload;
@@ -211,7 +211,6 @@ export const {
     setAllSets,
     setAppPresets,
     setCurrentPreset,
-    setFilteredSets,
     setInitialLoad,
     setLinkedFavorites,
     setLoading,
@@ -232,8 +231,6 @@ export const selectTransition = (state: RootState) => state.main.transition;
 export const selectLoading = (state: RootState) => state.main.loading;
 
 export const selectInitialLoad = (state: RootState) => state.main.initialLoad;
-
-export const selectContent = (state: RootState) => state.main.content;
 
 export const selectSort = (state: RootState) => state.main.sort;
 
@@ -278,14 +275,193 @@ export const selectURLKeyset = createSelector(
   }
 );
 
-export const selectFilteredSetsIds = (state: RootState) =>
-  state.main.keysets.filteredSets;
+/**
+ * Tests whether a set would be shown on each page.
+ * @param set Set to be tested.
+ * @param favorites Array of set IDs which are favorited.
+ * @param bought Array of set IDs which are bought.
+ * @param hidden Array of set IDs which are hidden.
+ * @returns Object with page keys, containing a boolean of if that set would be shown on the page.
+ */
+
+export const pageConditions = (
+  set: SetType,
+  favorites: EntityId[],
+  bought: EntityId[],
+  hidden: EntityId[],
+  linkedFavorites: MainState["linkedFavorites"]
+): Record<typeof mainPages[number], boolean> => {
+  const today = DateTime.utc();
+  const yesterday = today.minus({ days: 1 });
+  const startDate = DateTime.fromISO(set.gbLaunch, {
+    zone: "utc",
+  });
+  const endDate = DateTime.fromISO(set.gbEnd).set({
+    hour: 23,
+    millisecond: 999,
+    minute: 59,
+    second: 59,
+  });
+  return {
+    archive: true,
+    bought: bought.includes(set.id),
+    calendar:
+      startDate > today ||
+      (startDate <= today && (endDate >= yesterday || !set.gbEnd)),
+    favorites:
+      linkedFavorites.array.length > 0
+        ? linkedFavorites.array.includes(set.id)
+        : favorites.includes(set.id),
+    hidden: hidden.includes(set.id),
+    ic: !set.gbLaunch || set.gbLaunch.includes("Q"),
+    live: startDate <= today && (endDate >= yesterday || !set.gbEnd),
+    previous: !!(endDate && endDate <= yesterday),
+    timeline: !!(set.gbLaunch && !set.gbLaunch.includes("Q")),
+  };
+};
 
 export const selectFilteredSets = createSelector(
-  selectSetMap,
-  selectFilteredSetsIds,
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  (entities, ids) => ids.map((id) => entities[id]!)
+  selectPage,
+  selectAllSets,
+  selectSearch,
+  selectWhitelist,
+  selectFavorites,
+  selectBought,
+  selectHidden,
+  selectUser,
+  selectInitialLoad,
+  selectLinkedFavorites,
+  (
+    page,
+    sets,
+    search,
+    whitelist,
+    favorites,
+    bought,
+    hidden,
+    user,
+    initialLoad,
+    linkedFavorites
+  ) => {
+    if (initialLoad) {
+      return [];
+    }
+
+    // filter bool functions
+
+    const hiddenBool = (set: SetType) => {
+      if (
+        showAllPages.includes(page) ||
+        (whitelist.hidden === "all" && user.email)
+      ) {
+        return true;
+      } else if (
+        (whitelist.hidden === "hidden" && user.email) ||
+        page === "hidden"
+      ) {
+        return hidden.includes(set.id);
+      } else {
+        return !hidden.includes(set.id);
+      }
+    };
+
+    const pageBool = (set: SetType): boolean => {
+      if (arrayIncludes(mainPages, page)) {
+        return pageConditions(set, favorites, bought, hidden, linkedFavorites)[
+          page
+        ];
+      }
+      return false;
+    };
+
+    const vendorBool = (set: SetType) => {
+      if (set.vendors) {
+        const included = set.vendors.some((vendor) =>
+          whitelist.vendors.includes(vendor.name)
+        );
+        return whitelist.vendorMode === "exclude" ? !included : included;
+      }
+      return false;
+    };
+
+    const regionBool = (set: SetType) => {
+      if (set.vendors) {
+        return set.vendors.some((vendor) =>
+          vendor.region
+            .split(", ")
+            .some((region) => whitelist.regions.includes(region))
+        );
+      }
+      return false;
+    };
+
+    const filterBool = (set: SetType) => {
+      const shippedBool =
+        (whitelist.shipped.includes("Shipped") && set.shipped) ||
+        (whitelist.shipped.includes("Not shipped") && !set.shipped);
+      const favoritesBool = user.email
+        ? !whitelist.favorites ||
+          (whitelist.favorites && favorites.includes(set.id))
+        : true;
+      const boughtBool = user.email
+        ? !whitelist.bought || (whitelist.bought && bought.includes(set.id))
+        : true;
+      if (set.vendors && set.vendors.length > 0) {
+        return (
+          vendorBool(set) &&
+          regionBool(set) &&
+          whitelist.profiles.includes(set.profile) &&
+          shippedBool &&
+          favoritesBool &&
+          boughtBool
+        );
+      } else {
+        if (
+          (whitelist.vendors.length === 1 &&
+            whitelist.vendorMode === "include") ||
+          whitelist.regions.length === 1
+        ) {
+          return false;
+        } else {
+          return (
+            whitelist.profiles.includes(set.profile) &&
+            shippedBool &&
+            favoritesBool &&
+            boughtBool
+          );
+        }
+      }
+    };
+
+    const searchBool = (set: SetType) => {
+      const setInfo = [
+        set.profile,
+        set.colorway,
+        normalise(replaceFunction(set.colorway)),
+        set.designer.join(" "),
+        set.vendors
+          ? set.vendors.map((vendor) => ` ${vendor.name} ${vendor.region}`)
+          : "",
+      ];
+      const bool = search
+        .toLowerCase()
+        .split(" ")
+        .every((term) =>
+          setInfo.join(" ").toLowerCase().includes(term.toLowerCase())
+        );
+      return search.length > 0 ? bool : true;
+    };
+
+    return sets.filter(
+      (set) =>
+        hiddenBool(set) && pageBool(set) && filterBool(set) && searchBool(set)
+    );
+  }
+);
+
+export const selectFilteredSetsIds = createSelector(
+  selectFilteredSets,
+  (filteredSets) => filteredSets.map(keysetAdapter.selectId)
 );
 
 export const selectSetGroups = createSelector(

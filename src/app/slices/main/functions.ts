@@ -5,26 +5,16 @@ import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import type { AppThunk } from "~/app/store";
 import { selectPage } from "@s/common";
-import { mainPages } from "@s/common/constants";
 import firestore from "@s/firebase/firestore";
 import type { UserId } from "@s/firebase/types";
 import {
   addUserPreset,
   deleteUserPreset,
   selectAllUserPresets,
-  selectBought,
-  selectFavorites,
-  selectHidden,
   selectUser,
   upsertUserPreset,
 } from "@s/user";
-import {
-  arrayIncludes,
-  createURL,
-  normalise,
-  objectEntries,
-  replaceFunction,
-} from "@s/util/functions";
+import { arrayIncludes, createURL, objectEntries } from "@s/util/functions";
 import {
   addAppPreset,
   deleteAppPreset,
@@ -34,16 +24,11 @@ import {
   selectAllSets,
   selectCurrentPreset,
   selectDefaultPreset,
-  selectInitialLoad,
-  selectLinkedFavorites,
   selectPresetById,
-  selectSearch,
-  selectSetTotal,
   selectURLWhitelist,
   selectWhitelist,
   setAllSets,
   setCurrentPreset,
-  setFilteredSets,
   setInitialLoad,
   setLoading,
   setSearch as setMainSearch,
@@ -56,7 +41,6 @@ import {
   allSorts,
   dateSorts,
   reverseSortDatePages,
-  showAllPages,
   whitelistParams,
 } from "./constants";
 import type {
@@ -81,192 +65,12 @@ export const addLastDate = (date: string) => {
   return `${date}-${lastInMonth}`;
 };
 
-/**
- * Tests whether a set would be shown on each page.
- * @param set Set to be tested.
- * @param favorites Array of set IDs which are favorited.
- * @param bought Array of set IDs which are bought.
- * @param hidden Array of set IDs which are hidden.
- * @returns Object with page keys, containing a boolean of if that set would be shown on the page.
- */
-
-export const pageConditions = (
-  set: SetType,
-  favorites: EntityId[],
-  bought: EntityId[],
-  hidden: EntityId[],
-  state = store.getState()
-): Record<typeof mainPages[number], boolean> => {
-  const linkedFavorites = selectLinkedFavorites(state);
-
-  const today = DateTime.utc();
-  const yesterday = today.minus({ days: 1 });
-  const startDate = DateTime.fromISO(set.gbLaunch, {
-    zone: "utc",
-  });
-  const endDate = DateTime.fromISO(set.gbEnd).set({
-    hour: 23,
-    millisecond: 999,
-    minute: 59,
-    second: 59,
-  });
-  return {
-    archive: true,
-    bought: bought.includes(set.id),
-    calendar:
-      startDate > today ||
-      (startDate <= today && (endDate >= yesterday || !set.gbEnd)),
-    favorites:
-      linkedFavorites.array.length > 0
-        ? linkedFavorites.array.includes(set.id)
-        : favorites.includes(set.id),
-    hidden: hidden.includes(set.id),
-    ic: !set.gbLaunch || set.gbLaunch.includes("Q"),
-    live: startDate <= today && (endDate >= yesterday || !set.gbEnd),
-    previous: !!(endDate && endDate <= yesterday),
-    timeline: !!(set.gbLaunch && !set.gbLaunch.includes("Q")),
-  };
-};
-
-export const filterData = (state = store.getState()) => {
-  const page = selectPage(state);
-  const sets = selectAllSets(state);
-  const search = selectSearch(state);
-  const whitelist = selectWhitelist(state);
-  const favorites = selectFavorites(state);
-  const bought = selectBought(state);
-  const hidden = selectHidden(state);
-  const user = selectUser(state);
-  const initialLoad = selectInitialLoad(state);
-
-  if (initialLoad) {
-    return;
-  }
-
-  // filter bool functions
-
-  const hiddenBool = (set: SetType) => {
-    if (
-      showAllPages.includes(page) ||
-      (whitelist.hidden === "all" && user.email)
-    ) {
-      return true;
-    } else if (
-      (whitelist.hidden === "hidden" && user.email) ||
-      page === "hidden"
-    ) {
-      return hidden.includes(set.id);
-    } else {
-      return !hidden.includes(set.id);
-    }
-  };
-
-  const pageBool = (set: SetType): boolean => {
-    if (arrayIncludes(mainPages, page)) {
-      return pageConditions(set, favorites, bought, hidden)[page];
-    }
-    return false;
-  };
-
-  const vendorBool = (set: SetType) => {
-    if (set.vendors) {
-      const included = set.vendors.some((vendor) =>
-        whitelist.vendors.includes(vendor.name)
-      );
-      return whitelist.vendorMode === "exclude" ? !included : included;
-    }
-    return false;
-  };
-
-  const regionBool = (set: SetType) => {
-    if (set.vendors) {
-      return set.vendors.some((vendor) =>
-        vendor.region
-          .split(", ")
-          .some((region) => whitelist.regions.includes(region))
-      );
-    }
-    return false;
-  };
-
-  const filterBool = (set: SetType) => {
-    const shippedBool =
-      (whitelist.shipped.includes("Shipped") && set.shipped) ||
-      (whitelist.shipped.includes("Not shipped") && !set.shipped);
-    const favoritesBool = user.email
-      ? !whitelist.favorites ||
-        (whitelist.favorites && favorites.includes(set.id))
-      : true;
-    const boughtBool = user.email
-      ? !whitelist.bought || (whitelist.bought && bought.includes(set.id))
-      : true;
-    if (set.vendors && set.vendors.length > 0) {
-      return (
-        vendorBool(set) &&
-        regionBool(set) &&
-        whitelist.profiles.includes(set.profile) &&
-        shippedBool &&
-        favoritesBool &&
-        boughtBool
-      );
-    } else {
-      if (
-        (whitelist.vendors.length === 1 &&
-          whitelist.vendorMode === "include") ||
-        whitelist.regions.length === 1
-      ) {
-        return false;
-      } else {
-        return (
-          whitelist.profiles.includes(set.profile) &&
-          shippedBool &&
-          favoritesBool &&
-          boughtBool
-        );
-      }
-    }
-  };
-
-  const searchBool = (set: SetType) => {
-    const setInfo = [
-      set.profile,
-      set.colorway,
-      normalise(replaceFunction(set.colorway)),
-      set.designer.join(" "),
-      set.vendors
-        ? set.vendors.map((vendor) => ` ${vendor.name} ${vendor.region}`)
-        : "",
-    ];
-    const bool = search
-      .toLowerCase()
-      .split(" ")
-      .every((term) =>
-        setInfo.join(" ").toLowerCase().includes(term.toLowerCase())
-      );
-    return search.length > 0 ? bool : true;
-  };
-
-  const filteredSets = sets.filter(
-    (set) =>
-      hiddenBool(set) && pageBool(set) && filterBool(set) && searchBool(set)
-  );
-
-  dispatch(setFilteredSets(filteredSets.map(({ id }) => id)));
-
-  dispatch(setLoading(false));
-};
-
 export const setWhitelistMerge = (
   partialWhitelist: Partial<WhitelistType>,
-  clearUrl = true,
-  state = store.getState()
+  clearUrl = true
 ) => {
-  const setTotal = selectSetTotal(state);
   dispatch(mergeWhitelist(partialWhitelist));
   document.documentElement.scrollTop = 0;
-  if (setTotal > 0) {
-    filterData();
-  }
   if (clearUrl) {
     dispatch(setURLWhitelist({}));
     const params = new URLSearchParams(window.location.search);
@@ -286,13 +90,9 @@ export const setWhitelist = <T extends keyof WhitelistType>(
   state = store.getState()
 ) => {
   const mainWhitelist = selectWhitelist(state);
-  const setTotal = selectSetTotal(state);
   if (is<string[]>(mainWhitelist.edited)) {
     dispatch(mergeWhitelist({ [prop]: val }));
     document.documentElement.scrollTop = 0;
-    if (setTotal > 0) {
-      filterData();
-    }
   }
   if (clearUrl) {
     dispatch(setURLWhitelist({}));
@@ -365,9 +165,8 @@ export const getData = (): AppThunk<void> => (dispatch) => {
         }
       });
 
-      dispatch([setAllSets(sets), setInitialLoad(false)]);
+      dispatch([setAllSets(sets), setInitialLoad(false), setLoading(false)]);
 
-      filterData();
       dispatch(applyInitialPreset());
     })
     .catch((error) => {
@@ -474,7 +273,6 @@ export const setSearch =
   (query: string): AppThunk<void> =>
   (dispatch) => {
     dispatch(setMainSearch(query));
-    filterData();
   };
 
 export const updatePreset = (

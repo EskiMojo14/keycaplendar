@@ -4,12 +4,11 @@ import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import type { BatchTuple } from "~/app/store";
-import { selectPage } from "@s/common";
 import firebase from "@s/firebase";
 import firestore from "@s/firebase/firestore";
 import type { UserId } from "@s/firebase/types";
-import { selectWhitelist, setLinkedFavorites } from "@s/main";
-import { filterData, updatePreset } from "@s/main/functions";
+import { setLinkedFavorites } from "@s/main";
+import { updatePreset } from "@s/main/functions";
 import { setShareNameLoading } from "@s/settings";
 import { setSyncSettings, settingFns } from "@s/settings/functions";
 import { addOrRemove, hasKey } from "@s/util/functions";
@@ -102,8 +101,6 @@ export const getUserPreferences = (id: string) => {
             }
 
             dispatch(actions as unknown as BatchTuple);
-
-            filterData();
           }
         }
       })
@@ -115,15 +112,10 @@ export const getUserPreferences = (id: string) => {
 };
 
 export const toggleFavorite = (id: EntityId, state = store.getState()) => {
-  const page = selectPage(state);
-  const whitelist = selectWhitelist(state);
   const user = selectUser(state);
   const userFavorites = selectFavorites(state);
   const favorites = addOrRemove([...userFavorites], id);
   dispatch(setFavorites(favorites));
-  if (page === "favorites" || whitelist.favorites) {
-    filterData();
-  }
   if (user.id) {
     firestore
       .collection("users")
@@ -142,15 +134,10 @@ export const toggleFavorite = (id: EntityId, state = store.getState()) => {
 };
 
 export const toggleBought = (id: EntityId, state = store.getState()) => {
-  const page = selectPage(state);
-  const whitelist = selectWhitelist(state);
   const user = selectUser(state);
   const userBought = selectBought(state);
   const bought = addOrRemove([...userBought], id);
   dispatch(setBought(bought));
-  if (page === "bought" || whitelist.bought) {
-    filterData();
-  }
   if (user.id) {
     firestore
       .collection("users")
@@ -169,14 +156,10 @@ export const toggleBought = (id: EntityId, state = store.getState()) => {
 };
 
 export const toggleHidden = (id: EntityId, state = store.getState()) => {
-  const page = selectPage(state);
   const user = selectUser(state);
   const userHidden = selectHidden(state);
   const hidden = addOrRemove([...userHidden], id);
   dispatch(setHidden(hidden));
-  if (page !== "favorites" && page !== "bought") {
-    filterData();
-  }
   const isHidden = hidden.includes(id);
   queue.notify({
     actions: [
@@ -260,7 +243,6 @@ export const getLinkedFavorites = (id: string) => {
     .then(({ data }) => {
       if (hasKey(data, "array") && is<string[]>(data.array)) {
         dispatch(setLinkedFavorites(data));
-        filterData();
       }
     })
     .catch((error) => {

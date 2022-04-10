@@ -11,7 +11,6 @@ import { queue } from "~/app/snackbar-queue";
 import firestore from "@s/firebase/firestore";
 import type { KeysetDoc, KeysetId } from "@s/firebase/types";
 import { deleteSet } from "@s/main";
-import { filterData } from "@s/main/functions";
 import type { SetType } from "@s/main/types";
 import { selectUser } from "@s/user";
 
@@ -41,7 +40,6 @@ export const DialogDelete = ({
       .then(() => {
         openSnackbar();
         dispatch(deleteSet(set.id));
-        filterData();
       })
       .catch((error) => {
         console.error("Error deleting document: ", error);

@@ -55,7 +55,7 @@ import {
   setSet,
 } from "@s/main";
 import { partialSet } from "@s/main/constructors";
-import { addLastDate, filterData } from "@s/main/functions";
+import { addLastDate } from "@s/main/functions";
 import { gbMonthCheck, SetSchema } from "@s/main/schemas";
 import type { SetType, VendorType } from "@s/main/types";
 import { selectUser } from "@s/user";
@@ -885,7 +885,6 @@ export const ModalCreate = ({ onClose, open }: ModalCreateProps) => {
               id: docRef.id,
             })
           );
-          filterData();
           onClose();
         })
         .catch((error) => {
@@ -992,7 +991,6 @@ export const ModalEdit = ({ onClose, open, set: setId }: ModalEditProps) => {
           queue.notify({ title: "Entry edited successfully." });
           onClose();
           dispatch(setSet(result.data));
-          filterData();
         })
         .catch((error) => {
           queue.notify({ title: `Error editing document: ${error}` });
