@@ -4,14 +4,12 @@ import {
   setStatisticsSort,
   setStatsTab,
 } from "@s/statistics";
-import * as statsFunctions from "@s/statistics/functions";
+import { setSetting, setSort, setStatisticsTab } from "@s/statistics/functions";
 import type {
   StatisticsSortType,
   StatisticsType,
   StatsTab,
 } from "@s/statistics/types";
-
-const { setSetting, setSort, setStatisticsTab } = statsFunctions;
 
 jest.mock("~/app/store");
 
@@ -27,28 +25,12 @@ afterAll(() => {
 
 describe("setStatisticsTab", () => {
   const tab: StatsTab = "timelines";
-  let pushStateSpy = jest.spyOn(window.history, "pushState");
-  beforeEach(() => {
-    pushStateSpy = jest.spyOn(window.history, "pushState");
-    // add necessary url params to make clearUrl trigger
-    global.window = Object.create(window);
-    Object.defineProperty(window, "location", {
-      value: new URL(
-        "https://keycaplendar.firebaseapp.com/statistics?statisticsTab=summary"
-      ) as unknown as Location,
-    });
-  });
-  afterAll(() => {
-    pushStateSpy.mockRestore();
-  });
   it("dispatches stats tab action", () => {
     setStatisticsTab(tab);
     expect(dispatchSpy).toHaveBeenNthCalledWith(1, setStatsTab(tab));
-    expect(pushStateSpy).toHaveBeenCalled();
   });
   it("doesn't push state when told not to", () => {
     setStatisticsTab(tab, false);
-    expect(pushStateSpy).not.toHaveBeenCalled();
   });
 });
 
@@ -65,20 +47,7 @@ describe("setSetting", () => {
 });
 
 describe("setSort", () => {
-  /* eslint-disable @typescript-eslint/no-empty-function */
-  let sortDataSpy = jest
-    .spyOn(statsFunctions, "sortData")
-    .mockImplementation(jest.fn());
-  beforeEach(() => {
-    sortDataSpy = jest
-      .spyOn(statsFunctions, "sortData")
-      .mockImplementation(jest.fn());
-  });
-  afterAll(() => {
-    sortDataSpy.mockRestore();
-  });
-  /* eslint-enable @typescript-eslint/no-empty-function */
-  it("dispatches sort action and calls sortData", () => {
+  it("dispatches sort action", () => {
     const setting: keyof StatisticsSortType = "vendors";
     const val: StatisticsSortType["vendors"] = "alphabetical";
     setSort(setting, val);
@@ -86,6 +55,5 @@ describe("setSort", () => {
       1,
       setStatisticsSort(setting, val)
     );
-    expect(sortDataSpy).toHaveBeenCalled();
   });
 });

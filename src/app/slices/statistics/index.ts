@@ -1,6 +1,9 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSelector, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import produce from "immer";
 import type { RootState } from "~/app/store";
+import { categories, properties } from "@s/statistics/constants";
+import { alphabeticalSortPropCurried } from "@s/util/functions";
 import type {
   StatisticsData,
   StatisticsSortType,
@@ -230,13 +233,70 @@ export const {
 
 export const selectTab = (state: RootState) => state.statistics.tab;
 
-export const selectData = (state: RootState) => state.statistics.data;
+export const selectUnsortedData = (state: RootState) => state.statistics.data;
 
 export const selectLoading = (state: RootState) => state.statistics.loading;
 
 export const selectSettings = (state: RootState) => state.statistics.settings;
 
 export const selectSort = (state: RootState) => state.statistics.sort;
+
+export const selectData = createSelector(
+  selectTab,
+  selectUnsortedData,
+  selectSort,
+  (tab, statisticsData, sort) =>
+    produce(statisticsData, (statisticsDataDraft) => {
+      if (tab === "duration") {
+        categories.forEach((category) => {
+          properties.forEach((property) => {
+            statisticsDataDraft[tab][category].breakdown[property].sort(
+              (a, b) => {
+                const key =
+                  sort[tab] === "alphabetical"
+                    ? "name"
+                    : sort[tab] === "duration"
+                    ? "mean"
+                    : "total";
+                return (
+                  alphabeticalSortPropCurried(
+                    key,
+                    sort[tab] !== "alphabetical"
+                  )(a, b) || alphabeticalSortPropCurried("name")(a, b)
+                );
+              }
+            );
+          });
+        });
+      } else if (tab === "timelines") {
+        categories.forEach((category) => {
+          properties.forEach((property) => {
+            statisticsDataDraft[tab][category].breakdown[property].sort(
+              (a, b) => {
+                const key = sort[tab] === "alphabetical" ? "name" : "total";
+                return (
+                  alphabeticalSortPropCurried(
+                    key,
+                    sort[tab] !== "alphabetical"
+                  )(a, b) || alphabeticalSortPropCurried("name")(a, b)
+                );
+              }
+            );
+          });
+        });
+      } else if (tab !== "summary") {
+        properties.forEach((properties) => {
+          statisticsDataDraft[tab].breakdown[properties].sort((a, b) => {
+            const key = sort[tab] === "total" ? "total" : "name";
+            return (
+              alphabeticalSortPropCurried(key, sort[tab] === "total")(a, b) ||
+              alphabeticalSortPropCurried(key)(a, b)
+            );
+          });
+        });
+      }
+    })
+);
 
 export default statisticsSlice.reducer;
 

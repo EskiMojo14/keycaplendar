@@ -1,17 +1,10 @@
 import { push } from "connected-react-router";
-import produce from "immer";
 import { DateTime } from "luxon";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import firebase from "@s/firebase";
+import { createURL, ordinal } from "@s/util/functions";
 import {
-  alphabeticalSortPropCurried,
-  createURL,
-  ordinal,
-} from "@s/util/functions";
-import {
-  selectData,
-  selectSort,
   selectTab,
   setLoading,
   setStatisticsData,
@@ -19,7 +12,6 @@ import {
   setStatisticsSort,
   setStatsTab,
 } from ".";
-import { categories, properties } from "./constants";
 import type { StatisticsSortType, StatisticsType, StatsTab } from "./types";
 
 const storage = firebase.storage();
@@ -55,66 +47,6 @@ export const getData = async () => {
     });
 };
 
-export const sortData = (state = store.getState()) => {
-  const tab = selectTab(state);
-  const statisticsData = selectData(state);
-  const sort = selectSort(state);
-  if (tab !== "summary") {
-    dispatch(setLoading(true));
-    const sortedData = produce(statisticsData, (statisticsDataDraft) => {
-      if (tab === "duration") {
-        categories.forEach((category) => {
-          properties.forEach((property) => {
-            statisticsDataDraft[tab][category].breakdown[property].sort(
-              (a, b) => {
-                const key =
-                  sort[tab] === "alphabetical"
-                    ? "name"
-                    : sort[tab] === "duration"
-                    ? "mean"
-                    : "total";
-                return (
-                  alphabeticalSortPropCurried(
-                    key,
-                    sort[tab] !== "alphabetical"
-                  )(a, b) || alphabeticalSortPropCurried("name")(a, b)
-                );
-              }
-            );
-          });
-        });
-      } else if (tab === "timelines") {
-        categories.forEach((category) => {
-          properties.forEach((property) => {
-            statisticsDataDraft[tab][category].breakdown[property].sort(
-              (a, b) => {
-                const key = sort[tab] === "alphabetical" ? "name" : "total";
-                return (
-                  alphabeticalSortPropCurried(
-                    key,
-                    sort[tab] !== "alphabetical"
-                  )(a, b) || alphabeticalSortPropCurried("name")(a, b)
-                );
-              }
-            );
-          });
-        });
-      } else {
-        properties.forEach((properties) => {
-          statisticsDataDraft[tab].breakdown[properties].sort((a, b) => {
-            const key = sort[tab] === "total" ? "total" : "name";
-            return (
-              alphabeticalSortPropCurried(key, sort[tab] === "total")(a, b) ||
-              alphabeticalSortPropCurried(key)(a, b)
-            );
-          });
-        });
-      }
-    });
-    dispatch([setStatisticsData(sortedData), setLoading(false)]);
-  }
-};
-
 export const setStatisticsTab = (
   tab: StatsTab,
   clearUrl = true,
@@ -148,5 +80,4 @@ export const setSort = <T extends keyof StatisticsSortType>(
   value: StatisticsSortType[T]
 ) => {
   dispatch(setStatisticsSort(prop, value));
-  sortData();
 };
