@@ -56,7 +56,7 @@ export const ElementImage = ({
 }: ElementImageProps) => {
   const device = useAppSelector(selectDevice);
 
-  const copyShareLink = () => {
+  const copyShareLink = async () => {
     const url = createURL({ pathname: "/" }, (params) => {
       clearSearchParams(params);
       params.set("keysetAlias", set.alias);
