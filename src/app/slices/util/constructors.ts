@@ -10,10 +10,14 @@ export class Interval<Fn extends (...args: any[]) => any> {
   clear() {
     clearTimeout(this.intervalId);
   }
+  restart() {
+    clearTimeout(this.intervalId);
+    this.intervalId = setInterval(this.callback, this.time);
+  }
   changeTime(time: number) {
     this.time = time;
     clearTimeout(this.intervalId);
-    this.intervalId = setInterval(this.callback, time);
+    this.intervalId = setInterval(this.callback, this.time);
   }
   changeFn(callback: Fn) {
     this.callback = callback;
