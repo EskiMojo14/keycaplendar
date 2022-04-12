@@ -1,3 +1,4 @@
+import { push } from "connected-react-router";
 import throttle from "lodash.throttle";
 import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
@@ -345,12 +346,6 @@ export const setPage = (page: Page, state = store.getState()) => {
         }
       });
     });
-    window.history.pushState(
-      {
-        page,
-      },
-      `KeycapLendar: ${pageTitle[page]}`,
-      newUrl
-    );
+    dispatch(push(newUrl));
   }
 };

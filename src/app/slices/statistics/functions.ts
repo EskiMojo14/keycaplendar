@@ -1,3 +1,4 @@
+import { push } from "connected-react-router";
 import produce from "immer";
 import { DateTime } from "luxon";
 import { queue } from "~/app/snackbar-queue";
@@ -130,7 +131,7 @@ export const setStatisticsTab = (
       const newUrl = createURL({}, (params) => {
         params.delete("statisticsTab");
       });
-      window.history.pushState({}, "KeycapLendar", newUrl);
+      dispatch(push(newUrl));
     }
   }
 };

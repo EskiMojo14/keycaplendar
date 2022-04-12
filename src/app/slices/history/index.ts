@@ -4,6 +4,7 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import type { EntityState, PayloadAction } from "@reduxjs/toolkit";
+import { push } from "connected-react-router";
 import isEqual from "lodash.isequal";
 import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
@@ -157,7 +158,7 @@ export const setHistoryTab =
         const newUrl = createURL({}, (params) => {
           params.delete("historyTab");
         });
-        window.history.pushState({}, "KeycapLendar", newUrl);
+        dispatch(push(newUrl));
       }
     }
   };

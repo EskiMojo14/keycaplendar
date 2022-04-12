@@ -2,9 +2,11 @@ import { useEffect } from "react";
 import { Portal } from "@rmwc/base";
 import { SnackbarQueue } from "@rmwc/snackbar";
 import classNames from "classnames";
-import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
+import { ConnectedRouter } from "connected-react-router";
+import { Route, Switch } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
+import { historyObj } from "~/app/store";
 import { SnackbarCookies } from "@c/common/snackbar-cookies";
 import { Content } from "@c/content";
 import { PrivacyPolicy } from "@c/pages/legal/privacy";
@@ -114,7 +116,7 @@ export const App = () => {
     };
   }, []);
   return (
-    <Router>
+    <ConnectedRouter history={historyObj}>
       <Switch>
         <Route path="/login">
           <Login />
@@ -144,7 +146,7 @@ export const App = () => {
         </Route>
         <Route component={NotFound} />
       </Switch>
-    </Router>
+    </ConnectedRouter>
   );
 };
 

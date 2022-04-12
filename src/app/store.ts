@@ -1,6 +1,9 @@
 import { reduxBatch } from "@manaflair/redux-batch";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import type { Action, AnyAction, UnsubscribeListener } from "@reduxjs/toolkit";
+import { connectRouter, routerMiddleware } from "connected-react-router";
+import type { History } from "history";
+import { createBrowserHistory } from "history";
 import { loadState } from "~/app/local-storage";
 import audit from "@s/audit";
 import common from "@s/common";
@@ -15,21 +18,24 @@ import user from "@s/user";
 import users from "@s/users";
 import listenerMiddleware from "~/app/middleware/listener";
 
-const reducers = {
+export const historyObj = createBrowserHistory();
+
+const createRootReducer = <S = unknown>(historyObj: History<S>) => ({
   audit,
   common,
   guides,
   history,
   images,
   main,
+  router: connectRouter(historyObj),
   settings,
   statistics,
   updates,
   user,
   users,
-};
+});
 
-const reducer = combineReducers(reducers);
+const reducer = combineReducers(createRootReducer(historyObj));
 
 export type RootState = ReturnType<typeof reducer>;
 
@@ -47,7 +53,9 @@ const _createStore = (preloadedState?: Partial<RootState>) =>
       getDefaultMiddleware({
         immutableCheck: false,
         serializableCheck: false,
-      }).prepend(listenerMiddleware),
+      })
+        .concat(routerMiddleware(historyObj))
+        .prepend(listenerMiddleware),
     preloadedState,
     reducer,
   });

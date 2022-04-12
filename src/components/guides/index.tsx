@@ -14,6 +14,7 @@ import {
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
+import { push } from "connected-react-router";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
 import { DialogDelete } from "@c/guides/admin/dialog-delete";
@@ -81,7 +82,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
       const newUrl = createURL({}, (params) => {
         params.delete("guideId");
       });
-      window.history.pushState({}, "KeycapLendar", newUrl);
+      dispatch(push(newUrl));
     }
   };
   const closeDetail = () => {

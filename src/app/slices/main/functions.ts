@@ -1,4 +1,5 @@
 import type { EntityId } from "@reduxjs/toolkit";
+import { push } from "connected-react-router";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
@@ -78,7 +79,7 @@ export const setWhitelistMerge = (
       const newUrl = createURL({}, (params) => {
         whitelistParams.forEach((param) => params.delete(param));
       });
-      window.history.pushState({}, "KeycapLendar", newUrl);
+      dispatch(push(newUrl));
     }
   }
 };
@@ -101,7 +102,7 @@ export const setWhitelist = <T extends keyof WhitelistType>(
       const newUrl = createURL({}, (params) => {
         whitelistParams.forEach((param) => params.delete(param));
       });
-      window.history.pushState({}, "KeycapLendar", newUrl);
+      dispatch(push(newUrl));
     }
   }
 };
@@ -250,7 +251,7 @@ export const setSort = (
       const newUrl = createURL({}, (params) => {
         params.delete("sort");
       });
-      window.history.pushState({}, "KeycapLendar", newUrl);
+      dispatch(push(newUrl));
     }
   }
 };
@@ -264,7 +265,7 @@ export const setSortOrder = (sortOrder: SortOrderType, clearUrl = true) => {
       const newUrl = createURL({}, (params) => {
         params.delete("sortOrder");
       });
-      window.history.pushState({}, "KeycapLendar", newUrl);
+      dispatch(push(newUrl));
     }
   }
 };

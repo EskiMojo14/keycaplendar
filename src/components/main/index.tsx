@@ -4,6 +4,7 @@ import { DrawerAppContent } from "@rmwc/drawer";
 import { Fab } from "@rmwc/fab";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import classNames from "classnames";
+import { push } from "connected-react-router";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
 import { DialogDelete } from "@c/main/admin/dialog-delete";
@@ -99,7 +100,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
           const newUrl = createURL({}, (params) => {
             keysetParams.forEach((param) => params.delete(param));
           });
-          window.history.pushState({}, "KeycapLendar", newUrl);
+          dispatch(push(newUrl));
         }
       }
     };
