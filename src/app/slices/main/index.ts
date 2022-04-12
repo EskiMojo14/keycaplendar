@@ -6,7 +6,6 @@ import {
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
-import { shallowEqual } from "react-redux";
 import { queue } from "~/app/snackbar-queue";
 import type { AppThunk, RootState } from "~/app/store";
 import { selectPage } from "@s/common";
@@ -605,7 +604,7 @@ export const {
 
 export const selectSortHiddenSets = createSelector(
   selectAllSetGroups,
-  selectAllSets,
+  selectFilteredSets,
   (setGroups, sets) => {
     const allGroupedSets = removeDuplicates(
       setGroups.map((group) => group.sets).flat()
@@ -624,17 +623,9 @@ export const setupHiddenSetsListener = (startListening: AppStartListening) =>
         )} sets hidden due to sort setting.`,
       });
     },
-    predicate: (
-      action,
-      state,
-      originalState
-    ): action is ReturnType<typeof setSort> =>
+    predicate: (action, state): action is ReturnType<typeof setSort> =>
       setSort.match(action) &&
       sortHiddenCheck[selectSort(state)].includes(selectPage(state)) &&
-      !shallowEqual(
-        selectFilteredSets(state),
-        selectFilteredSets(originalState)
-      ) &&
       selectSortHiddenSets(state) > 0,
   });
 
