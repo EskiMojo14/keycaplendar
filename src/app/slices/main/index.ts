@@ -624,7 +624,12 @@ export const setupHiddenSetsListener = (startListening: AppStartListening) =>
         )} sets hidden due to sort setting.`,
       });
     },
-    predicate: (action, state, originalState) =>
+    predicate: (
+      action,
+      state,
+      originalState
+    ): action is ReturnType<typeof setSort> =>
+      setSort.match(action) &&
       sortHiddenCheck[selectSort(state)].includes(selectPage(state)) &&
       !shallowEqual(
         selectFilteredSets(state),
