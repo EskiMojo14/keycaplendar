@@ -46,19 +46,17 @@ export const UpdateEntry = ({
   const urlEntry = useAppSelector(selectURLEntry);
 
   if (entry) {
-    const copyLink = () => {
+    const copyLink = async () => {
       const url = createURL({ pathname: "/updates" }, (params) => {
         clearSearchParams(params);
         params.set("updateId", `${entryId}`);
       });
-      navigator.clipboard
-        .writeText(url.href)
-        .then(() => {
-          queue.notify({ title: "Copied URL to clipboard." });
-        })
-        .catch((error) => {
-          queue.notify({ title: `Error copying to clipboard ${error}` });
-        });
+      try {
+        await navigator.clipboard.writeText(url.href);
+        queue.notify({ title: "Copied URL to clipboard." });
+      } catch (error) {
+        queue.notify({ title: `Error copying to clipboard ${error}` });
+      }
     };
 
     const linkedIndicator = entryId === urlEntry && (

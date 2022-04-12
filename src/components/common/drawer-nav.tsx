@@ -75,24 +75,28 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
 
   const [newUpdate, setNewUpdate] = useState(false);
 
-  const checkForUpdates = () => {
+  const checkForUpdates = async () => {
     const lastWeek = DateTime.utc().minus({ days: 7 });
-    firestore
-      .collection("updates")
-      .orderBy("date", "desc")
-      .limit(1)
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          const date = DateTime.fromISO(doc.data().date, { zone: "utc" });
-          if (date >= lastWeek) {
-            setNewUpdate(true);
-          }
-        });
+    try {
+      const querySnapshot = await firestore
+        .collection("updates")
+        .orderBy("date", "desc")
+        .limit(1)
+        .get();
+      querySnapshot.forEach((doc) => {
+        const date = DateTime.fromISO(doc.data().date, { zone: "utc" });
+        if (date >= lastWeek) {
+          setNewUpdate(true);
+        }
       });
+    } catch (error) {
+      console.log("Failed to check for updates", error);
+    }
   };
 
-  useEffect(checkForUpdates, []);
+  useEffect(() => {
+    checkForUpdates();
+  }, []);
 
   const newUpdateIcon = newUpdate && (
     <ListItemMeta icon={iconObject(<FiberNew />)} />

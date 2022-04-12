@@ -25,14 +25,13 @@ export const SnackbarDeleted = ({
   const deleteImages = async (name: string) => {
     const folders = await getStorageFolders();
     const allImages = folders.map((folder) => `${folder}/${name}`);
-    batchStorageDelete(allImages)
-      .then(() => {
-        queue.notify({ title: "Successfully deleted thumbnails." });
-      })
-      .catch((error) => {
-        queue.notify({ title: `Failed to delete thumbnails: ${error}` });
-        console.log(error);
-      });
+    try {
+      await batchStorageDelete(allImages);
+      queue.notify({ title: "Successfully deleted thumbnails." });
+    } catch (error) {
+      queue.notify({ title: `Failed to delete thumbnails: ${error}` });
+      console.log(error);
+    }
   };
   const closeBar = (recreated = false) => {
     if (!recreated) {
@@ -45,28 +44,27 @@ export const SnackbarDeleted = ({
     }
     close();
   };
-  const recreateEntry = (e: MouseEvent<HTMLButtonElement>) => {
+  const recreateEntry = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    firestore
-      .collection("keysets")
-      .doc(id as KeysetId)
-      .set(
-        {
-          ...set,
-          gbLaunch: set.gbMonth ? set.gbLaunch.slice(0, 7) : set.gbLaunch,
-          latestEditor: user.id,
-        },
-        { merge: true }
-      )
-      .then(() => {
-        console.log("Document recreated with ID: ", id);
-        queue.notify({ title: "Entry successfully recreated." });
-        dispatch(setSet({ id, ...set }));
-      })
-      .catch((error) => {
-        console.error("Error recreating document: ", error);
-        queue.notify({ title: `Error recreating document: ${error}` });
-      });
+    try {
+      await firestore
+        .collection("keysets")
+        .doc(id as KeysetId)
+        .set(
+          {
+            ...set,
+            gbLaunch: set.gbMonth ? set.gbLaunch.slice(0, 7) : set.gbLaunch,
+            latestEditor: user.id,
+          },
+          { merge: true }
+        );
+      console.log("Document recreated with ID: ", id);
+      queue.notify({ title: "Entry successfully recreated." });
+      dispatch(setSet({ id, ...set }));
+    } catch (error) {
+      console.error("Error recreating document: ", error);
+      queue.notify({ title: `Error recreating document: ${error}` });
+    }
     closeBar(true);
   };
   return (

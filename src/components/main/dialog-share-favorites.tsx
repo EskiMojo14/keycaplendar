@@ -61,15 +61,13 @@ export const DialogShareFavorites = ({
     [favoritesId]
   );
 
-  const copyLink = () => {
-    navigator.clipboard
-      .writeText(url.href)
-      .then(() => {
-        queue.notify({ title: "Copied URL to clipboard." });
-      })
-      .catch((error) => {
-        queue.notify({ title: `Error copying to clipboard ${error}` });
-      });
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(url.href);
+      queue.notify({ title: "Copied URL to clipboard." });
+    } catch (error) {
+      queue.notify({ title: `Error copying to clipboard ${error}` });
+    }
   };
 
   const handleSwitchChange = ({

@@ -26,20 +26,19 @@ export const DialogDelete = ({
   open,
 }: DialogDeleteProps) => {
   const entry = useAppSelector((state) => selectEntryById(state, entryId));
-  const deleteEntry = () => {
-    firestore
-      .collection("guides")
-      .doc(entryId as GuideId)
-      .delete()
-      .then(() => {
-        queue.notify({ title: "Successfully deleted entry." });
-        onClose();
-        getEntries();
-      })
-      .catch((error) => {
-        console.log(`Failed to delete entry: ${error}`);
-        queue.notify({ title: `Failed to delete entry: ${error}` });
-      });
+  const deleteEntry = async () => {
+    try {
+      await firestore
+        .collection("guides")
+        .doc(entryId as GuideId)
+        .delete();
+      queue.notify({ title: "Successfully deleted entry." });
+      onClose();
+      getEntries();
+    } catch (error) {
+      console.log(`Failed to delete entry: ${error}`);
+      queue.notify({ title: `Failed to delete entry: ${error}` });
+    }
   };
   return (
     <Dialog onClose={onClose} open={open}>

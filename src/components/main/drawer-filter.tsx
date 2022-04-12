@@ -225,7 +225,7 @@ export const DrawerFilter = ({
     }
   };
 
-  const copyLink = () => {
+  const copyLink = async () => {
     const url = createURL({}, (params) => {
       whitelistParams.forEach((param) => {
         if (arrayIncludes(["profile", "region", "vendor"] as const, param)) {
@@ -289,14 +289,12 @@ export const DrawerFilter = ({
         }
       });
     });
-    navigator.clipboard
-      .writeText(url.href)
-      .then(() => {
-        queue.notify({ title: "Copied filtered URL to clipboard." });
-      })
-      .catch((error) => {
-        queue.notify({ title: `Error copying to clipboard ${error}` });
-      });
+    try {
+      await navigator.clipboard.writeText(url.href);
+      queue.notify({ title: "Copied filtered URL to clipboard." });
+    } catch (error) {
+      queue.notify({ title: `Error copying to clipboard ${error}` });
+    }
   };
 
   const dismissible = device === "desktop" && view !== "compact";

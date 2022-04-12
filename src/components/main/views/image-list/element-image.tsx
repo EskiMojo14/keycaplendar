@@ -61,14 +61,12 @@ export const ElementImage = ({
       clearSearchParams(params);
       params.set("keysetAlias", set.alias);
     });
-    navigator.clipboard
-      .writeText(url.href)
-      .then(() => {
-        queue.notify({ title: "Copied URL to clipboard." });
-      })
-      .catch((error) => {
-        queue.notify({ title: `Error copying to clipboard ${error}` });
-      });
+    try {
+      await navigator.clipboard.writeText(url.href);
+      queue.notify({ title: "Copied URL to clipboard." });
+    } catch (error) {
+      queue.notify({ title: `Error copying to clipboard ${error}` });
+    }
   };
 
   const useLink = device === "desktop";

@@ -40,16 +40,16 @@ export const DrawerDetails = ({ close, imageId, open }: DrawerDetailsProps) => {
   useEffect(() => {
     if (image) {
       setMetadata({});
-      storageRef
-        .child(image.fullPath)
-        .getMetadata()
-        .then((metadata) => {
+      const getMetadata = async () => {
+        try {
+          const metadata = await storageRef.child(image.fullPath).getMetadata();
           setMetadata(metadata);
-        })
-        .catch((error) => {
+        } catch (error) {
           queue.notify({ title: `Failed to get metadata: ${error}` });
           setMetadata({});
-        });
+        }
+      };
+      getMetadata();
     } else {
       setMetadata({});
     }

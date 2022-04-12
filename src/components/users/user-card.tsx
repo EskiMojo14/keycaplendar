@@ -98,16 +98,17 @@ export const UserCard = ({ delete: deleteFn, userId }: UserCardProps) => {
     }
   };
 
-  const setRoles = () => {
+  const setRoles = async () => {
     setLoading(true);
     const setRolesFn = firebase.functions().httpsCallable("setRoles");
-    setRolesFn({
-      admin: user.admin,
-      designer: user.designer,
-      editor: user.editor,
-      email: user.email,
-      nickname: user.nickname,
-    }).then((result) => {
+    try {
+      const result = await setRolesFn({
+        admin: user.admin,
+        designer: user.designer,
+        editor: user.editor,
+        email: user.email,
+        nickname: user.nickname,
+      });
       setLoading(false);
       if (
         result.data.designer === user.designer &&
@@ -123,7 +124,11 @@ export const UserCard = ({ delete: deleteFn, userId }: UserCardProps) => {
       } else {
         queue.notify({ title: "Failed to edit user permissions." });
       }
-    });
+    } catch (error) {
+      queue.notify({
+        title: `Failed to edit user permissions: ${error}`,
+      });
+    }
   };
 
   const saveButton = loading ? (

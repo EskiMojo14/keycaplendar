@@ -29,22 +29,21 @@ export const DialogDelete = ({
 }: DialogDeleteProps) => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
-  const deleteEntry = (e: MouseEvent<HTMLButtonElement>) => {
+  const deleteEntry = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    firestore
-      .collection("keysets")
-      .doc(set.id as KeysetId)
-      .set({
-        latestEditor: user.id,
-      } as KeysetDoc)
-      .then(() => {
-        openSnackbar();
-        dispatch(deleteSet(set.id));
-      })
-      .catch((error) => {
-        console.error("Error deleting document: ", error);
-        queue.notify({ title: `Error deleting document: ${error}` });
-      });
+    try {
+      await firestore
+        .collection("keysets")
+        .doc(set.id as KeysetId)
+        .set({
+          latestEditor: user.id,
+        } as KeysetDoc);
+      openSnackbar();
+      dispatch(deleteSet(set.id));
+    } catch (error) {
+      console.error("Error deleting document: ", error);
+      queue.notify({ title: `Error deleting document: ${error}` });
+    }
     close();
   };
   return (

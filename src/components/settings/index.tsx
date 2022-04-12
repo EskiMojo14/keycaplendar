@@ -110,17 +110,14 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
   const [deleteDialogOpen, setDialogDeleteOpen] = useState(false);
   const [closeDeleteDialog, openDeleteDialog] =
     useBoolStates(setDialogDeleteOpen);
-  const signOut = () => {
-    firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        dispatch(setUser({}));
-      })
-      .catch((error) => {
-        console.log(`Error signing out: ${error}`);
-        queue.notify({ title: `Error signing out: ${error}` });
-      });
+  const signOut = async () => {
+    try {
+      await firebase.auth().signOut();
+      dispatch(setUser({}));
+    } catch (error) {
+      console.log(`Error signing out: ${error}`);
+      queue.notify({ title: `Error signing out: ${error}` });
+    }
   };
   const selectApplyTheme = (e: ChangeEvent<HTMLSelectElement>) => {
     setApplyTheme(e.target.value.toLowerCase());

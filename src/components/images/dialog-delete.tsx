@@ -56,21 +56,21 @@ export const DialogDelete = ({
           .map((image) => folders.map((folder) => `${folder}/${image.name}`))
           .flat(1)
       : images.map((image) => image.fullPath);
-  const deleteImages = () => {
+  const deleteImages = async () => {
     const array = createArray();
     dispatch(setLoading(true));
-    batchStorageDelete(array)
-      .then(() => {
-        queue.notify({ title: "Successfully deleted files." });
-        clearChecked();
-        close();
-        dispatch(listAll());
-      })
-      .catch((error) => {
-        queue.notify({ title: `Failed to delete files: ${error}` });
-        console.log(error);
-        dispatch(setLoading(false));
-      });
+    try {
+      await batchStorageDelete(array);
+
+      queue.notify({ title: "Successfully deleted files." });
+      clearChecked();
+      close();
+      dispatch(listAll());
+    } catch (error) {
+      queue.notify({ title: `Failed to delete files: ${error}` });
+      console.log(error);
+      dispatch(setLoading(false));
+    }
   };
   return (
     <Dialog className="delete-image-dialog" onClose={close} open={open}>

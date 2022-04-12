@@ -74,19 +74,17 @@ export const ElementCard = ({
   const favorites = useAppSelector(selectFavorites);
   const hidden = useAppSelector(selectHidden);
 
-  const copyShareLink = () => {
+  const copyShareLink = async () => {
     const url = createURL({ pathname: "/" }, (params) => {
       clearSearchParams(params);
       params.set("keysetAlias", set.alias);
     });
-    navigator.clipboard
-      .writeText(url.href)
-      .then(() => {
-        queue.notify({ title: "Copied URL to clipboard." });
-      })
-      .catch((error) => {
-        queue.notify({ title: `Error copying to clipboard ${error}` });
-      });
+    try {
+      await navigator.clipboard.writeText(url.href);
+      queue.notify({ title: "Copied URL to clipboard." });
+    } catch (error) {
+      queue.notify({ title: `Error copying to clipboard ${error}` });
+    }
   };
 
   const useLink = device === "desktop";

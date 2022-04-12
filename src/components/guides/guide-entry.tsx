@@ -41,19 +41,17 @@ export const GuideEntry = ({
   const setFilter = (tag: string) =>
     dispatch(setFilteredTag(filteredTag === tag ? "" : tag));
 
-  const copyLink = () => {
+  const copyLink = async () => {
     const url = createURL({ pathname: "/guides" }, (params) => {
       clearSearchParams(params);
       params.set("guideId", `${entryId}`);
     });
-    navigator.clipboard
-      .writeText(url.href)
-      .then(() => {
-        queue.notify({ title: "Copied URL to clipboard." });
-      })
-      .catch((error) => {
-        queue.notify({ title: `Error copying to clipboard ${error}` });
-      });
+    try {
+      await navigator.clipboard.writeText(url.href);
+      queue.notify({ title: "Copied URL to clipboard." });
+    } catch (error) {
+      queue.notify({ title: `Error copying to clipboard ${error}` });
+    }
   };
 
   const buttons = user.isAdmin ? (

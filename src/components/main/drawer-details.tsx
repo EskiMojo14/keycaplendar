@@ -89,20 +89,18 @@ export const DrawerDetails = ({
 
   const set = useAppSelector((state) => selectSetById(state, setId));
 
-  const copyLink = () => {
+  const copyLink = async () => {
     if (set) {
       const url = createURL({ pathname: "/" }, (params) => {
         clearSearchParams(params);
         params.set("keysetAlias", set.alias);
       });
-      navigator.clipboard
-        .writeText(url.href)
-        .then(() => {
-          queue.notify({ title: "Copied URL to clipboard." });
-        })
-        .catch((error) => {
-          queue.notify({ title: `Error copying to clipboard ${error}` });
-        });
+      try {
+        await navigator.clipboard.writeText(url.href);
+        queue.notify({ title: "Copied URL to clipboard." });
+      } catch (error) {
+        queue.notify({ title: `Error copying to clipboard ${error}` });
+      }
     }
   };
 

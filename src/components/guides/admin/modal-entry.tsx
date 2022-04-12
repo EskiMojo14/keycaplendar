@@ -274,24 +274,21 @@ export const ModalCreate = ({
 }: ModalCreateProps) => {
   const { nickname: name } = useAppSelector(selectUser);
 
-  const saveEntry = (entry: GuideEntryType) => {
+  const saveEntry = async (entry: GuideEntryType) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, ...data } = entry;
     const result = GuideEntrySchema.omit({ id: true }).safeParse(data);
     if (result.success) {
-      firestore
-        .collection("guides")
-        .add(result.data)
-        .then((docRef) => {
-          console.log("Document written with ID: ", docRef.id);
-          queue.notify({ title: "Entry written successfully." });
-          onClose();
-          getEntries();
-        })
-        .catch((error) => {
-          console.error("Error adding document: ", error);
-          queue.notify({ title: `Error adding document: ${error}` });
-        });
+      try {
+        const docRef = await firestore.collection("guides").add(result.data);
+        console.log("Document written with ID: ", docRef.id);
+        queue.notify({ title: "Entry written successfully." });
+        onClose();
+        getEntries();
+      } catch (error) {
+        console.error("Error adding document: ", error);
+        queue.notify({ title: `Error adding document: ${error}` });
+      }
     }
   };
 
@@ -315,26 +312,25 @@ export const ModalEdit = ({
 
   const entry = useAppSelector((state) => selectEntryById(state, entryId));
 
-  const saveEntry = (entry: GuideEntryType) => {
+  const saveEntry = async (entry: GuideEntryType) => {
     const result = GuideEntrySchema.safeParse(entry);
     if (result.success) {
       const {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         data: { id, ...data },
       } = result;
-      firestore
-        .collection("guides")
-        .doc(entryId as GuideId)
-        .set({ ...data, name })
-        .then(() => {
-          queue.notify({ title: "Entry edited successfully." });
-          onClose();
-          getEntries();
-        })
-        .catch((error) => {
-          console.error("Error adding document: ", error);
-          queue.notify({ title: `Error adding document: ${error}` });
-        });
+      try {
+        await firestore
+          .collection("guides")
+          .doc(entryId as GuideId)
+          .set({ ...data, name });
+        queue.notify({ title: "Entry edited successfully." });
+        onClose();
+        getEntries();
+      } catch (error) {
+        console.error("Error adding document: ", error);
+        queue.notify({ title: `Error adding document: ${error}` });
+      }
     }
   };
 

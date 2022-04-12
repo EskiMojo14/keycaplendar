@@ -59,18 +59,16 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
     }
   }, [image]);
 
-  const getImageFromURL = (url: string) => {
+  const getImageFromURL = async (url: string) => {
     setLoading(true);
-    fetch(url)
-      .then((response) => response.blob())
-      .then((blob) => {
-        setLoading(false);
-        setImage(blob);
-      })
-      .catch((err) => {
-        setLoading(false);
-        queue.notify({ title: `Failed to fetch image: ${err}` });
-      });
+    try {
+      const blob = await (await fetch(url)).blob();
+      setLoading(false);
+      setImage(blob);
+    } catch (err) {
+      setLoading(false);
+      queue.notify({ title: `Failed to fetch image: ${err}` });
+    }
   };
 
   const handleChange = ({

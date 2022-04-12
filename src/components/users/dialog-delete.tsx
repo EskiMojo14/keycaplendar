@@ -20,26 +20,26 @@ export type DialogDeleteProps = {
 export const DialogDelete = ({ onClose, open, userId }: DialogDeleteProps) => {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => selectUserById(state, userId));
-  const deleteUser = () => {
+  const deleteUser = async () => {
     onClose();
     dispatch(setLoading(true));
     const deleteUser = firebase.functions().httpsCallable("deleteUser");
-    deleteUser(user)
-      .then((result) => {
-        if (result.data.error) {
-          queue.notify({ title: result.data.error });
-          dispatch(setLoading(false));
-        } else {
-          queue.notify({
-            title: `User ${user?.displayName} successfully deleted.`,
-          });
-          dispatch(getUsers());
-        }
-      })
-      .catch((error) => {
-        queue.notify({ title: `Error deleting user: ${error}` });
+    try {
+      const result = await deleteUser(user);
+
+      if (result.data.error) {
+        queue.notify({ title: result.data.error });
         dispatch(setLoading(false));
-      });
+      } else {
+        queue.notify({
+          title: `User ${user?.displayName} successfully deleted.`,
+        });
+        dispatch(getUsers());
+      }
+    } catch (error) {
+      queue.notify({ title: `Error deleting user: ${error}` });
+      dispatch(setLoading(false));
+    }
   };
   return (
     <Dialog open={open}>

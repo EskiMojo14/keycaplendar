@@ -860,7 +860,7 @@ export const ModalCreate = ({ onClose, open }: ModalCreateProps) => {
   const [uploadingDoc, setUploadingDoc] = useState(false);
   const [imageUploadProgress, setImageUploadProgress] = useState(0);
 
-  const createEntry = (entry: SetType) => {
+  const createEntry = async (entry: SetType) => {
     const result = SetSchema.omit({ id: true }).safeParse(entry);
     if (result.success && !uploadingImage && !uploadingDoc) {
       setUploadingDoc(true);
@@ -869,31 +869,27 @@ export const ModalCreate = ({ onClose, open }: ModalCreateProps) => {
         alias: nanoid(10),
         latestEditor: user.id,
       };
-      firestore
-        .collection("keysets")
-        .add(set)
-        .then((docRef) => {
-          console.log("Document written with ID: ", docRef.id);
-          queue.notify({ title: "Entry written successfully." });
-          dispatch(
-            setSet({
-              ...set,
-              gbLaunch:
-                set.gbMonth && !set.gbLaunch.includes("Q")
-                  ? addLastDate(set.gbLaunch)
-                  : set.gbLaunch,
-              id: docRef.id,
-            })
-          );
-          onClose();
-        })
-        .catch((error) => {
-          console.error(error);
-          queue.notify({ title: `Error adding document: ${error}` });
-        })
-        .finally(() => {
-          setUploadingDoc(false);
-        });
+      try {
+        const docRef = await firestore.collection("keysets").add(set);
+        console.log("Document written with ID: ", docRef.id);
+        queue.notify({ title: "Entry written successfully." });
+        dispatch(
+          setSet({
+            ...set,
+            gbLaunch:
+              set.gbMonth && !set.gbLaunch.includes("Q")
+                ? addLastDate(set.gbLaunch)
+                : set.gbLaunch,
+            id: docRef.id,
+          })
+        );
+        onClose();
+      } catch (error) {
+        console.error(error);
+        queue.notify({ title: `Error adding document: ${error}` });
+      } finally {
+        setUploadingDoc(false);
+      }
     } else {
       console.log(result);
     }
@@ -924,23 +920,21 @@ export const ModalCreate = ({ onClose, open }: ModalCreateProps) => {
           setUploadingImage(false);
           setImageUploadProgress(0);
         },
-        () => {
+        async () => {
           // Handle successful uploads on complete
           // For instance, get the download URL: https://firebasestorage.googleapis.com/...
           queue.notify({ title: "Successfully uploaded image." });
-          imageRef
-            .getDownloadURL()
-            .then((downloadURL) => {
-              setUploadingImage(false);
-              setImageUploadProgress(0);
-              createEntry({ ...entry, image: downloadURL });
-            })
-            .catch((error) => {
-              setUploadingImage(false);
-              setImageUploadProgress(0);
-              queue.notify({ title: `Failed to get URL: ${error}` });
-              console.error(error);
-            });
+          try {
+            const downloadURL = await imageRef.getDownloadURL();
+            setUploadingImage(false);
+            setImageUploadProgress(0);
+            createEntry({ ...entry, image: downloadURL });
+          } catch (error) {
+            setUploadingImage(false);
+            setImageUploadProgress(0);
+            queue.notify({ title: `Failed to get URL: ${error}` });
+            console.error(error);
+          }
         }
       );
     }
@@ -976,29 +970,27 @@ export const ModalEdit = ({ onClose, open, set: setId }: ModalEditProps) => {
   const [uploadingDoc, setUploadingDoc] = useState(false);
   const [imageUploadProgress, setImageUploadProgress] = useState(0);
 
-  const editEntry = (entry: SetType) => {
+  const editEntry = async (entry: SetType) => {
     const result = SetSchema.safeParse(entry);
     if (result.success && !uploadingImage && !uploadingDoc) {
       setUploadingDoc(true);
       const {
         data: { id, ...data },
       } = result;
-      firestore
-        .collection("keysets")
-        .doc(id as KeysetId)
-        .update({ ...data, latestEditor: user.id })
-        .then(() => {
-          queue.notify({ title: "Entry edited successfully." });
-          onClose();
-          dispatch(setSet(result.data));
-        })
-        .catch((error) => {
-          queue.notify({ title: `Error editing document: ${error}` });
-          console.error(error);
-        })
-        .finally(() => {
-          setUploadingDoc(false);
-        });
+      try {
+        await firestore
+          .collection("keysets")
+          .doc(id as KeysetId)
+          .update({ ...data, latestEditor: user.id });
+        queue.notify({ title: "Entry edited successfully." });
+        onClose();
+        dispatch(setSet(result.data));
+      } catch (error) {
+        queue.notify({ title: `Error editing document: ${error}` });
+        console.error(error);
+      } finally {
+        setUploadingDoc(false);
+      }
     }
   };
 
@@ -1028,44 +1020,41 @@ export const ModalEdit = ({ onClose, open, set: setId }: ModalEditProps) => {
           setUploadingImage(false);
           setImageUploadProgress(0);
         },
-        () => {
+        async () => {
           // Handle successful uploads on complete
           // For instance, get the download URL: https://firebasestorage.googleapis.com/...
           queue.notify({ title: "Successfully uploaded image." });
-          imageRef
-            .getDownloadURL()
-            .then(async (downloadURL) => {
-              setUploadingImage(false);
-              setImageUploadProgress(0);
-              editEntry({ ...entry, image: downloadURL });
-              const fileNameRegex = /keysets%2F(.*)\?/;
-              const regexMatch = set?.image.match(fileNameRegex);
-              if (regexMatch) {
-                const [, imageName] = regexMatch;
-                const folders = await getStorageFolders();
-                const allImages = folders.map(
-                  (folder) => `${folder}/${imageName}`
-                );
-                batchStorageDelete(allImages)
-                  .then(() => {
-                    queue.notify({
-                      title: "Successfully deleted previous thumbnails.",
-                    });
-                  })
-                  .catch((error) => {
-                    queue.notify({
-                      title: `Failed to delete previous thumbnails: ${error}`,
-                    });
-                    console.error(error);
-                  });
+          try {
+            const downloadURL = await imageRef.getDownloadURL();
+            setUploadingImage(false);
+            setImageUploadProgress(0);
+            editEntry({ ...entry, image: downloadURL });
+            const fileNameRegex = /keysets%2F(.*)\?/;
+            const regexMatch = set?.image.match(fileNameRegex);
+            if (regexMatch) {
+              const [, imageName] = regexMatch;
+              const folders = await getStorageFolders();
+              const allImages = folders.map(
+                (folder) => `${folder}/${imageName}`
+              );
+              try {
+                await batchStorageDelete(allImages);
+                queue.notify({
+                  title: "Successfully deleted previous thumbnails.",
+                });
+              } catch (error) {
+                queue.notify({
+                  title: `Failed to delete previous thumbnails: ${error}`,
+                });
+                console.error(error);
               }
-            })
-            .catch((error) => {
-              setUploadingImage(false);
-              setImageUploadProgress(0);
-              queue.notify({ title: `Failed to get URL: ${error}` });
-              console.error(error);
-            });
+            }
+          } catch (error) {
+            setUploadingImage(false);
+            setImageUploadProgress(0);
+            queue.notify({ title: `Failed to get URL: ${error}` });
+            console.error(error);
+          }
         }
       );
     }

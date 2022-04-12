@@ -230,24 +230,21 @@ export const ModalCreate = ({
   open,
 }: ModalCreateProps) => {
   const { nickname: name } = useAppSelector(selectUser);
-  const saveEntry = (entry: UpdateEntryType) => {
+  const saveEntry = async (entry: UpdateEntryType) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, ...data } = entry;
     const result = UpdateEntrySchema.omit({ id: true }).safeParse(data);
     if (result.success) {
-      firestore
-        .collection("updates")
-        .add(result.data)
-        .then((docRef) => {
-          console.log("Document written with ID: ", docRef.id);
-          queue.notify({ title: "Entry written successfully." });
-          onClose();
-          getEntries();
-        })
-        .catch((error) => {
-          console.error("Error adding document: ", error);
-          queue.notify({ title: `Error adding document: ${error}` });
-        });
+      try {
+        const docRef = await firestore.collection("updates").add(result.data);
+        console.log("Document written with ID: ", docRef.id);
+        queue.notify({ title: "Entry written successfully." });
+        onClose();
+        getEntries();
+      } catch (error) {
+        console.error("Error adding document: ", error);
+        queue.notify({ title: `Error adding document: ${error}` });
+      }
     }
   };
   return <ModalEntry onSubmit={saveEntry} {...{ name, onClose, open }} />;
@@ -266,26 +263,25 @@ export const ModalEdit = ({
 }: ModalEditProps) => {
   const { nickname: name } = useAppSelector(selectUser);
   const entry = useAppSelector((state) => selectEntryById(state, entryId));
-  const saveEntry = (entry: UpdateEntryType) => {
+  const saveEntry = async (entry: UpdateEntryType) => {
     const result = UpdateEntrySchema.safeParse(entry);
     if (result.success) {
       const {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         data: { id, ...data },
       } = result;
-      firestore
-        .collection("updates")
-        .doc(entryId as UpdateId)
-        .set(data)
-        .then(() => {
-          queue.notify({ title: "Entry edited successfully." });
-          onClose();
-          getEntries();
-        })
-        .catch((error) => {
-          console.error("Error adding document: ", error);
-          queue.notify({ title: `Error adding document: ${error}` });
-        });
+      try {
+        await firestore
+          .collection("updates")
+          .doc(entryId as UpdateId)
+          .set(data);
+        queue.notify({ title: "Entry edited successfully." });
+        onClose();
+        getEntries();
+      } catch (error) {
+        console.error("Error adding document: ", error);
+        queue.notify({ title: `Error adding document: ${error}` });
+      }
     }
   };
   return (
