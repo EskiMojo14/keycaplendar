@@ -592,19 +592,16 @@ export const getStorageFolders = async () => {
 
 export const batchStorageDelete = (array: string[] = []) =>
   Promise.all(
-    array.map((path) => {
+    array.map(async (path) => {
       const ref = storageRef.child(path);
-      return ref
-        .getMetadata()
-        .then(() =>
-          // file exists
-          ref.delete()
-        )
-        .catch((error) => {
-          // file doesn't exist
-          console.log(error);
-          return Promise.resolve();
-        });
+      try {
+        await ref.getMetadata();
+        // file exists
+        await ref.delete();
+      } catch (error) {
+        // file doesn't exist
+        console.log(error);
+      }
     })
   );
 

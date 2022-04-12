@@ -275,27 +275,23 @@ export const getURLQuery = (state = store.getState()) => {
   dispatch(getData());
 };
 
-export const getGlobals = () => {
-  firestore
-    .collection("app")
-    .doc("globals")
-    .get()
-    .then((doc) => {
-      const data = doc.data();
-      if (data) {
-        const { filterPresets } = data;
-        if (filterPresets) {
-          const updatedPresets = filterPresets.map((preset) =>
-            updatePreset(preset)
-          );
-          dispatch(setAppPresets(updatedPresets));
-        }
+export const getGlobals = async () => {
+  try {
+    const doc = await firestore.collection("app").doc("globals").get();
+    const data = doc.data();
+    if (data) {
+      const { filterPresets } = data;
+      if (filterPresets) {
+        const updatedPresets = filterPresets.map((preset) =>
+          updatePreset(preset)
+        );
+        dispatch(setAppPresets(updatedPresets));
       }
-    })
-    .catch((error) => {
-      console.log(`Failed to get global settings: ${error}`);
-      queue.notify({ title: `Failed to get global settings: ${error}` });
-    });
+    }
+  } catch (error) {
+    console.log(`Failed to get global settings: ${error}`);
+    queue.notify({ title: `Failed to get global settings: ${error}` });
+  }
 };
 
 export const setPage = (page: Page, state = store.getState()) => {

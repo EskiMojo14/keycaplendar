@@ -66,7 +66,7 @@ export const clearCookies = () => {
   localStorage.removeItem("accepted");
 };
 
-export const syncSetting = <K extends keyof Settings>(
+export const syncSetting = async <K extends keyof Settings>(
   setting: K,
   value: Settings[K],
   state = store.getState()
@@ -75,29 +75,28 @@ export const syncSetting = <K extends keyof Settings>(
   const syncSettings = selectSyncSettings(state);
   if (user.id && syncSettings) {
     const userDocRef = firestore.collection("users").doc(user.id as UserId);
-    const sync = () => {
-      userDocRef.update({ [`settings.${setting}`]: value }).catch((error) => {
+    const sync = async () => {
+      try {
+        await userDocRef.update({ [`settings.${setting}`]: value });
+      } catch (error) {
         console.log(`Failed to sync settings: ${error}`);
         queue.notify({ title: `Failed to sync settings: ${error}` });
-      });
+      }
     };
-    userDocRef.get().then((doc) => {
+    try {
+      const doc = await userDocRef.get();
       if (doc.exists) {
         sync();
       } else {
-        userDocRef
-          .set({ settings: {} }, { merge: true })
-          .then(() => {
-            sync();
-          })
-          .catch((error) => {
-            console.log(`Failed to create settings object: ${error}`);
-            queue.notify({
-              title: `Failed to create settings object: ${error}`,
-            });
-          });
+        await userDocRef.set({ settings: {} }, { merge: true });
+        sync();
       }
-    });
+    } catch (error) {
+      console.log(`Failed to create settings object: ${error}`);
+      queue.notify({
+        title: `Failed to create settings object: ${error}`,
+      });
+    }
   }
 };
 

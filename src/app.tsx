@@ -68,38 +68,37 @@ export const App = () => {
       .matchMedia("(prefers-color-scheme: dark)")
       .addEventListener("change", checkThemeListener);
 
-    const authObserver = firebase.auth().onAuthStateChanged((user) => {
+    const authObserver = firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
         const getClaimsFn = firebase.functions().httpsCallable("getClaims");
-        getClaimsFn()
-          .then((result) => {
-            dispatch(
-              setUser({
-                avatar: user.photoURL ?? "",
-                email: user.email ?? "",
-                id: user.uid,
-                isAdmin: result.data.admin,
-                isDesigner: result.data.designer,
-                isEditor: result.data.editor,
-                name: user.displayName ?? "",
-                nickname: result.data.nickname,
-              })
-            );
-            if (result.data.admin) {
-              dispatch(testSets());
-            }
-          })
-          .catch((error) => {
-            queue.notify({ title: `Error verifying custom claims: ${error}` });
-            dispatch(
-              setUser({
-                avatar: user.photoURL ?? "",
-                email: user.email ?? "",
-                id: user.uid,
-                name: user.displayName ?? "",
-              })
-            );
-          });
+        try {
+          const result = await getClaimsFn();
+          dispatch(
+            setUser({
+              avatar: user.photoURL ?? "",
+              email: user.email ?? "",
+              id: user.uid,
+              isAdmin: result.data.admin,
+              isDesigner: result.data.designer,
+              isEditor: result.data.editor,
+              name: user.displayName ?? "",
+              nickname: result.data.nickname,
+            })
+          );
+          if (result.data.admin) {
+            dispatch(testSets());
+          }
+        } catch (error) {
+          queue.notify({ title: `Error verifying custom claims: ${error}` });
+          dispatch(
+            setUser({
+              avatar: user.photoURL ?? "",
+              email: user.email ?? "",
+              id: user.uid,
+              name: user.displayName ?? "",
+            })
+          );
+        }
         getUserPreferences(user.uid);
       } else {
         dispatch(resetUser());

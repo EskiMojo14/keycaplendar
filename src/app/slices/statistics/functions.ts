@@ -21,30 +21,25 @@ const { dispatch } = store;
 export const getData = async () => {
   const fileRef = storage.ref("statisticsData.json");
   dispatch(setLoading(true));
-  fileRef
-    .getDownloadURL()
-    .then((url) =>
-      fetch(url).then((response) =>
-        response.json().then((data) => {
-          const { timestamp, ...statisticsData } = data;
-          const luxonTimetamp = DateTime.fromISO(timestamp, { zone: "utc" });
-          const timestampOrdinal = ordinal(luxonTimetamp.day);
-          const formattedTimestamp = luxonTimetamp.toFormat(
-            `HH:mm d'${timestampOrdinal}' MMM yyyy 'UTC'`
-          );
-          queue.notify({
-            timeout: 4000,
-            title: `Last updated: ${formattedTimestamp}`,
-          });
-          dispatch([setStatisticsData(statisticsData), setLoading(false)]);
-        })
-      )
-    )
-    .catch((error) => {
-      console.log(error);
-      dispatch(setLoading(false));
-      queue.notify({ title: `Failed to create statistics data: ${error}` });
+  try {
+    const url = await fileRef.getDownloadURL();
+    const data = await (await fetch(url)).json();
+    const { timestamp, ...statisticsData } = data;
+    const luxonTimetamp = DateTime.fromISO(timestamp, { zone: "utc" });
+    const timestampOrdinal = ordinal(luxonTimetamp.day);
+    const formattedTimestamp = luxonTimetamp.toFormat(
+      `HH:mm d'${timestampOrdinal}' MMM yyyy 'UTC'`
+    );
+    queue.notify({
+      timeout: 4000,
+      title: `Last updated: ${formattedTimestamp}`,
     });
+    dispatch([setStatisticsData(statisticsData), setLoading(false)]);
+  } catch (error) {
+    console.log(error);
+    dispatch(setLoading(false));
+    queue.notify({ title: `Failed to create statistics data: ${error}` });
+  }
 };
 
 export const setStatisticsTab = (

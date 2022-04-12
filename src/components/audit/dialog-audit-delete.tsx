@@ -31,20 +31,20 @@ export const DialogAuditDelete = ({
     selectActionById(state, deleteAction)
   );
 
-  const deleteActionFn = () => {
-    firestore
-      .collection("changelog")
-      .doc(deleteAction as ChangelogId)
-      .delete()
-      .then(() => {
-        queue.notify({ title: "Successfully deleted changelog entry." });
-        dispatch(deleteActionCreator(deleteAction));
-        close();
-      })
-      .catch((error) => {
-        queue.notify({ title: `Error deleting changelog entry: ${error}` });
-        close();
-      });
+  const deleteActionFn = async () => {
+    try {
+      await firestore
+        .collection("changelog")
+        .doc(deleteAction as ChangelogId)
+        .delete();
+
+      queue.notify({ title: "Successfully deleted changelog entry." });
+      dispatch(deleteActionCreator(deleteAction));
+      close();
+    } catch (error) {
+      queue.notify({ title: `Error deleting changelog entry: ${error}` });
+      close();
+    }
   };
 
   return (

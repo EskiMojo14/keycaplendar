@@ -27,87 +27,86 @@ import {
 
 const { dispatch } = store;
 
-export const getUserPreferences = (id: string) => {
+export const getUserPreferences = async (id: string) => {
   if (id) {
-    firestore
-      .collection("users")
-      .doc(id as UserId)
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          const { settings } = store.getState();
-          const data = doc.data();
-          if (data) {
-            const {
-              bought,
-              favorites,
-              favoritesId,
-              filterPresets,
-              hidden,
-              settings: settingsPrefs,
-              shareName,
-              syncSettings,
-            } = data;
+    try {
+      const doc = await firestore
+        .collection("users")
+        .doc(id as UserId)
+        .get();
+      if (doc.exists) {
+        const { settings } = store.getState();
+        const data = doc.data();
+        if (data) {
+          const {
+            bought,
+            favorites,
+            favoritesId,
+            filterPresets,
+            hidden,
+            settings: settingsPrefs,
+            shareName,
+            syncSettings,
+          } = data;
 
-            const actions: AnyAction[] = [];
+          const actions: AnyAction[] = [];
 
-            if (shareName) {
-              actions.push(setShareName(shareName));
-            }
-
-            if (favoritesId) {
-              actions.push(setFavoritesId(favoritesId));
-            }
-
-            if (is<string[]>(favorites)) {
-              actions.push(setFavorites(favorites));
-            }
-            if (is<string[]>(bought)) {
-              actions.push(setBought(bought));
-            }
-            if (is<string[]>(hidden)) {
-              actions.push(setHidden(hidden));
-            }
-
-            if (filterPresets) {
-              const updatedPresets = filterPresets.map((preset) =>
-                updatePreset(preset)
-              );
-              actions.push(setUserPresets(updatedPresets));
-            }
-
-            if (is<boolean>(syncSettings)) {
-              if (syncSettings !== settings.syncSettings) {
-                setSyncSettings(syncSettings, false);
-              }
-              if (syncSettings) {
-                const getSetting = (
-                  setting: string,
-                  setFunction: (val: any, write: boolean) => void
-                ) => {
-                  if (settingsPrefs && hasKey(settingsPrefs, setting)) {
-                    if (settingsPrefs[setting] !== settings[setting]) {
-                      setFunction(settingsPrefs[setting], false);
-                    }
-                  }
-                };
-                Object.keys(settingFns).forEach((setting) => {
-                  if (hasKey(settingFns, setting)) {
-                    const { [setting]: func } = settingFns;
-                    getSetting(setting, func);
-                  }
-                });
-              }
-            }
-
-            dispatch(actions as unknown as BatchTuple);
+          if (shareName) {
+            actions.push(setShareName(shareName));
           }
+
+          if (favoritesId) {
+            actions.push(setFavoritesId(favoritesId));
+          }
+
+          if (is<string[]>(favorites)) {
+            actions.push(setFavorites(favorites));
+          }
+          if (is<string[]>(bought)) {
+            actions.push(setBought(bought));
+          }
+          if (is<string[]>(hidden)) {
+            actions.push(setHidden(hidden));
+          }
+
+          if (filterPresets) {
+            const updatedPresets = filterPresets.map((preset) =>
+              updatePreset(preset)
+            );
+            actions.push(setUserPresets(updatedPresets));
+          }
+
+          if (is<boolean>(syncSettings)) {
+            if (syncSettings !== settings.syncSettings) {
+              setSyncSettings(syncSettings, false);
+            }
+            if (syncSettings) {
+              const getSetting = (
+                setting: string,
+                setFunction: (val: any, write: boolean) => void
+              ) => {
+                if (settingsPrefs && hasKey(settingsPrefs, setting)) {
+                  if (settingsPrefs[setting] !== settings[setting]) {
+                    setFunction(settingsPrefs[setting], false);
+                  }
+                }
+              };
+              Object.keys(settingFns).forEach((setting) => {
+                if (hasKey(settingFns, setting)) {
+                  const { [setting]: func } = settingFns;
+                  getSetting(setting, func);
+                }
+              });
+            }
+          }
+
+          dispatch(actions as unknown as BatchTuple);
         }
-      })
-      .catch((error) => {
-        console.log(`Failed to get user preferences: ${error}`);
-        queue.notify({ title: `Failed to get user preferences: ${error}` });
-      });
+      }
+    } catch (error) {
+      console.log(`Failed to get user preferences: ${error}`);
+      queue.notify({ title: `Failed to get user preferences: ${error}` });
+    }
   }
 };
 
@@ -191,25 +190,27 @@ export const toggleHidden = (id: EntityId, state = store.getState()) => {
   }
 };
 
-export const syncShareName = (shareName: string, state = store.getState()) => {
+export const syncShareName = async (
+  shareName: string,
+  state = store.getState()
+) => {
   const user = selectUser(state);
   dispatch(setShareNameLoading(true));
-  firestore
-    .collection("users")
-    .doc(user.id as UserId)
-    .set(
-      {
-        shareName,
-      },
-      { merge: true }
-    )
-    .then(() => {
-      dispatch(setShareNameLoading(false));
-    })
-    .catch((error) => {
-      console.log(`Failed to sync display name: ${error}`);
-      queue.notify({ title: `Failed to sync display name: ${error}` });
-    });
+  try {
+    await firestore
+      .collection("users")
+      .doc(user.id as UserId)
+      .set(
+        {
+          shareName,
+        },
+        { merge: true }
+      );
+    dispatch(setShareNameLoading(false));
+  } catch (error) {
+    console.log(`Failed to sync display name: ${error}`);
+    queue.notify({ title: `Failed to sync display name: ${error}` });
+  }
 };
 
 export const debouncedSyncShareName = debounce(syncShareName, 1000, {
@@ -237,16 +238,15 @@ export const debouncedSyncFavoritesId = debounce(syncFavoritesId, 1000, {
   trailing: true,
 });
 
-export const getLinkedFavorites = (id: string) => {
+export const getLinkedFavorites = async (id: string) => {
   const cloudFn = firebase.functions().httpsCallable("getFavorites");
-  cloudFn({ id })
-    .then(({ data }) => {
-      if (hasKey(data, "array") && is<string[]>(data.array)) {
-        dispatch(setLinkedFavorites(data));
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-      queue.notify({ title: `Failed to get linked favorites: ${error}` });
-    });
+  try {
+    const { data } = await cloudFn({ id });
+    if (hasKey(data, "array") && is<string[]>(data.array)) {
+      dispatch(setLinkedFavorites(data));
+    }
+  } catch (error) {
+    console.log(error);
+    queue.notify({ title: `Failed to get linked favorites: ${error}` });
+  }
 };

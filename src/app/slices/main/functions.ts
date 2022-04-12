@@ -139,42 +139,39 @@ const applyInitialPreset = (): AppThunk<void> => (dispatch, getState) => {
   }
 };
 
-export const getData = (): AppThunk<void> => (dispatch) => {
+export const getData = (): AppThunk<Promise<void>> => async (dispatch) => {
   dispatch(setLoading(true));
-  firestore
-    .collection("keysets")
-    .get()
-    .then((querySnapshot) => {
-      const sets: SetType[] = [];
-      querySnapshot.forEach((doc) => {
-        if (doc.data().profile) {
-          const {
-            gbLaunch: docGbLaunch,
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            latestEditor,
-            ...data
-          } = doc.data();
+  try {
+    const querySnapshot = await firestore.collection("keysets").get();
+    const sets: SetType[] = [];
+    querySnapshot.forEach((doc) => {
+      if (doc.data().profile) {
+        const {
+          gbLaunch: docGbLaunch,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          latestEditor,
+          ...data
+        } = doc.data();
 
-          sets.push({
-            id: doc.id,
-            ...data,
-            gbLaunch:
-              data.gbMonth && docGbLaunch && !docGbLaunch.includes("Q")
-                ? addLastDate(docGbLaunch)
-                : docGbLaunch,
-          });
-        }
-      });
-
-      dispatch([setAllSets(sets), setInitialLoad(false), setLoading(false)]);
-
-      dispatch(applyInitialPreset());
-    })
-    .catch((error) => {
-      console.log(`Error getting data: ${error}`);
-      queue.notify({ title: `Error getting data: ${error}` });
-      dispatch(setLoading(false));
+        sets.push({
+          id: doc.id,
+          ...data,
+          gbLaunch:
+            data.gbMonth && docGbLaunch && !docGbLaunch.includes("Q")
+              ? addLastDate(docGbLaunch)
+              : docGbLaunch,
+        });
+      }
     });
+
+    dispatch([setAllSets(sets), setInitialLoad(false), setLoading(false)]);
+
+    dispatch(applyInitialPreset());
+  } catch (error) {
+    console.log(`Error getting data: ${error}`);
+    queue.notify({ title: `Error getting data: ${error}` });
+    dispatch(setLoading(false));
+  }
 };
 
 export const testSets = (): AppThunk<void> => (dispatch, getState) => {
