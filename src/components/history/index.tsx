@@ -27,6 +27,7 @@ import {
   processedActionsAdapter,
   selectLoading,
   selectProcessedActions,
+  selectRecentSetById,
   selectRecentSetsIds,
   selectTab,
   setTab,
@@ -97,29 +98,32 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
     setTimeout(() => setSalesSet(""), 300);
   };
 
-  const [filterSet, setFilterSet] = useState({ id: "", title: "" });
+  const [filterSetId, setFilterSet] = useState<EntityId>("");
+  const filterSet = useAppSelector((state) =>
+    selectRecentSetById(state, filterSetId)
+  );
 
   const clearFilter = () => {
-    setFilterSet({ id: "", title: "" });
+    setFilterSet("");
   };
 
-  const filterChangelog = ({ id, title }: { id: string; title: string }) => {
-    if (id === filterSet.id) {
+  const filterChangelog = (id: EntityId) => {
+    if (id === filterSetId) {
       clearFilter();
     } else {
-      setFilterSet({ id, title });
+      setFilterSet(id);
       dispatch(setTab("changelog"));
     }
   };
 
   const filteredActions = useMemo(
     () =>
-      filterSet.id
+      filterSetId
         ? processedActions
-            .filter((action) => action.documentId === filterSet.id)
+            .filter((action) => action.documentId === filterSetId)
             .map(processedActionsAdapter.selectId)
         : processedActions.map(processedActionsAdapter.selectId),
-    [filterSet.id, processedActions]
+    [filterSetId, processedActions]
   );
 
   const tabRow = (
@@ -137,7 +141,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
     </TopAppBarRow>
   );
 
-  const clearFilterButton = filterSet.id && (
+  const clearFilterButton = filterSet && (
     <TopAppBarSection alignEnd>
       <div className="clear-filter">
         <Chip
@@ -177,7 +181,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
             <RecentSetCard
               key={recentSet}
               filterChangelog={filterChangelog}
-              filtered={recentSet === filterSet.id}
+              filtered={recentSet === filterSetId}
               openDetails={openDetails}
               recentSetId={recentSet}
               selected={recentSet === detailSet}
