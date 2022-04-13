@@ -32,6 +32,11 @@ export const SearchBarPersistent = () => {
   const searchTerms = useAppSelector(selectSearchTerms);
 
   const [search, setSearch] = useState(searchFromState);
+  useEffect(() => {
+    if (search !== searchFromState) {
+      setSearch(searchFromState);
+    }
+  }, [searchFromState]);
 
   const [focused, setFocused] = useState(false);
 
@@ -118,6 +123,11 @@ export const SearchBarModal = ({
   const searchTerms = useAppSelector(selectSearchTerms);
 
   const [search, setSearch] = useState(searchFromState);
+  useEffect(() => {
+    if (search !== searchFromState) {
+      setSearch(searchFromState);
+    }
+  }, [searchFromState]);
 
   const [opening, setOpening] = useState(false);
   const [closing, setClosing] = useState(false);
@@ -253,6 +263,11 @@ export const SearchAppBar = ({ close, open, openBar }: SearchAppBarProps) => {
   const searchTerms = useAppSelector(selectSearchTerms);
 
   const [search, setSearch] = useState(searchFromState);
+  useEffect(() => {
+    if (search !== searchFromState) {
+      setSearch(searchFromState);
+    }
+  }, [searchFromState]);
 
   const [focused, setFocused] = useState(false);
 
