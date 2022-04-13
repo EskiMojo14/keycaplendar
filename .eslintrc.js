@@ -5,11 +5,17 @@ const {
   compilerOptions: { paths },
 } = tsconfig;
 
+/* eslint-disable sort-keys/sort-keys-fix */
 const pathGroupsOverrides = {
-  "./*.scss": {
-    group: "object",
-    pattern: "./*.scss",
-    position: "after",
+  react: {
+    group: "external",
+    pattern: "react",
+    position: "before",
+  },
+  "~/app/*": {
+    group: "internal",
+    pattern: "~/app/*",
+    position: "before",
   },
   "@i": {
     group: "internal",
@@ -21,17 +27,13 @@ const pathGroupsOverrides = {
     pattern: "@m/*",
     position: "after",
   },
-  "~/app/*": {
-    group: "internal",
-    pattern: "~/app/*",
-    position: "before",
-  },
-  react: {
-    group: "external",
-    pattern: "react",
-    position: "before",
+  "./*.scss": {
+    group: "object",
+    pattern: "./*.scss",
+    position: "after",
   },
 };
+/* eslint-enable sort-keys/sort-keys-fix */
 
 module.exports = {
   // Specifies the ESLint parser
