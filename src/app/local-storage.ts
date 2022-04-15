@@ -1,3 +1,4 @@
+import pick from "lodash.pick";
 import type { RootState } from "~/app/store";
 import { initialState as common } from "@s/common";
 import type { CommonState } from "@s/common";
@@ -44,38 +45,22 @@ export const sanitiseState = (
   const { common, main, settings, user } = state;
   const sanitiseCommonSlice = (
     commonSlice: CommonState
-  ): Partial<CommonState> => {
-    const { theme } = commonSlice;
-    return { theme };
-  };
-  const sanitiseMainSlice = (mainSlice: MainState): Partial<MainState> => {
-    const {
-      allDesigners,
-      allProfiles,
-      allRegions,
-      allVendorRegions,
-      allVendors,
-      appPresets,
-      currentPreset,
-      defaultPreset,
-      sort,
-      sortOrder,
-      whitelist,
-    } = mainSlice;
-    return {
-      allDesigners,
-      allProfiles,
-      allRegions,
-      allVendorRegions,
-      allVendors,
-      appPresets,
-      currentPreset,
-      defaultPreset,
-      sort,
-      sortOrder,
-      whitelist,
-    };
-  };
+  ): Partial<CommonState> => pick(commonSlice, "theme");
+  const sanitiseMainSlice = (mainSlice: MainState): Partial<MainState> =>
+    pick(
+      mainSlice,
+      "allDesigners",
+      "allProfiles",
+      "allRegions",
+      "allVendorRegions",
+      "allVendors",
+      "appPresets",
+      "currentPreset",
+      "defaultPreset",
+      "sort",
+      "sortOrder",
+      "whitelist"
+    );
   return {
     common: sanitiseCommonSlice(common),
     main: sanitiseMainSlice(main),

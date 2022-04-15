@@ -42,6 +42,19 @@ export const settingsSlice = createSlice({
     setCookies: (state, { payload }: PayloadAction<boolean>) => {
       state.cookies = payload;
     },
+    setSetting: {
+      prepare: <K extends keyof SettingsState>(
+        key: K,
+        value: SettingsState[K]
+      ) => ({ payload: { key, value } }),
+      reducer: <K extends keyof SettingsState>(
+        state: SettingsState,
+        { payload }: PayloadAction<{ key: K; value: SettingsState[K] }>
+      ) => {
+        const { key, value } = payload;
+        state[key] = value;
+      },
+    },
     setSettings: (
       state,
       { payload }: PayloadAction<Partial<SettingsState>>
@@ -49,13 +62,6 @@ export const settingsSlice = createSlice({
       ...state,
       ...payload,
     }),
-    setSettingState: <K extends keyof SettingsState>(
-      state: SettingsState,
-      { payload }: PayloadAction<{ key: K; value: SettingsState[K] }>
-    ) => {
-      const { key, value } = payload;
-      state[key] = value;
-    },
     setShareNameLoading: (state, { payload }: PayloadAction<boolean>) => {
       state.shareNameLoading = payload;
     },
@@ -66,19 +72,8 @@ export const settingsSlice = createSlice({
 });
 
 export const {
-  actions: {
-    setCookies,
-    setSettings,
-    setSettingState,
-    setShareNameLoading,
-    toggleLich,
-  },
+  actions: { setCookies, setSettings, setShareNameLoading, toggleLich },
 } = settingsSlice;
-
-export const setSetting = <K extends keyof SettingsState>(
-  key: K,
-  value: SettingsState[K]
-) => setSettingState({ key, value });
 
 export const selectSettings = (state: RootState) => state.settings;
 
@@ -96,3 +91,22 @@ export const selectShareNameLoading = (state: RootState) =>
   state.settings.shareNameLoading;
 
 export default settingsSlice.reducer;
+
+const {
+  actions: { setSetting: _setSetting },
+} = settingsSlice;
+
+/** wrapper to make sure generics work */
+export const setSetting = (<K extends keyof SettingsState>(
+  key: K,
+  value: SettingsState[K]
+) => _setSetting(key, value)) as Pick<typeof _setSetting, "match" | "type"> &
+  (<K extends keyof SettingsState>(
+    // eslint-disable-next-line no-use-before-define
+    key: K,
+    // eslint-disable-next-line no-use-before-define
+    value: SettingsState[K]
+  ) => ReturnType<typeof _setSetting>);
+
+// carry over type and match properties
+Object.assign(setSetting, _setSetting);
