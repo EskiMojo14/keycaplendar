@@ -1,16 +1,20 @@
 import type { EntityId } from "@reduxjs/toolkit";
+import { Card } from "@rmwc/card";
+import { ImageList } from "@rmwc/image-list";
+import { List, ListDivider } from "@rmwc/list";
 import { Typography } from "@rmwc/typography";
 import { useAppSelector } from "~/app/hooks";
-import { ViewCard } from "@c/main/views/card/view-card";
-import { ViewCompact } from "@c/main/views/compact/view-compact";
-import { ViewImageList } from "@c/main/views/image-list/view-image-list";
-import { ViewList } from "@c/main/views/list/view-list";
+import ElementCard from "@c/main/views/card/element-card";
+import ElementCompact from "@c/main/views/compact/element-compact";
+import ElementImage from "@c/main/views/image-list/element-image";
+import ElementList from "@c/main/views/list/element-list";
 import { SkeletonBlock } from "@c/util/skeleton-block";
-import { selectPage } from "@s/common";
 import { selectAllSetGroups, selectLoading } from "@s/main";
 import { selectView } from "@s/settings";
-import { selectUser } from "@s/user";
 import "./content-grid.scss";
+import "./view-card.scss";
+import "./view-compact.scss";
+import "./view-list.scss";
 
 type ContentGridProps = {
   closeDetails: () => void;
@@ -30,46 +34,75 @@ export const ContentGrid = ({
   const setGroups = useAppSelector(selectAllSetGroups);
   const loading = useAppSelector(selectLoading);
 
-  const user = useAppSelector(selectUser);
-  const page = useAppSelector(selectPage);
-
   const createGroup = (sets: EntityId[]) => {
     switch (view) {
       case "card": {
         return (
-          <ViewCard
-            {...{
-              closeDetails,
-              details,
-              detailSet,
-              edit,
-              loading,
-              page,
-              sets,
-              user,
-            }}
-          />
+          <div className="group-container">
+            {sets.map((setId) => (
+              <ElementCard
+                key={setId}
+                selected={detailSet === setId}
+                {...{
+                  closeDetails,
+                  details,
+                  edit,
+                  loading,
+                  setId,
+                }}
+              />
+            ))}
+          </div>
         );
       }
       case "list": {
         return (
-          <ViewList
-            {...{ closeDetails, details, detailSet, edit, loading, page, sets }}
-          />
+          <List
+            className="view-list three-line"
+            nonInteractive={loading}
+            twoLine
+          >
+            {sets.map((setId) => (
+              <ElementList
+                key={setId}
+                selected={detailSet === setId}
+                {...{
+                  closeDetails,
+                  details,
+                  setId,
+                }}
+              />
+            ))}
+            <ListDivider />
+          </List>
         );
       }
       case "imageList": {
         return (
-          <ViewImageList
-            {...{ closeDetails, details, detailSet, edit, loading, page, sets }}
-          />
+          <ImageList style={{ margin: -2 }} withTextProtection>
+            {sets.map((setId) => (
+              <ElementImage
+                key={setId}
+                selected={detailSet === setId}
+                {...{ closeDetails, details, loading, setId }}
+              />
+            ))}
+          </ImageList>
         );
       }
       case "compact": {
         return (
-          <ViewCompact
-            {...{ closeDetails, details, detailSet, edit, loading, page, sets }}
-          />
+          <Card>
+            <List nonInteractive={loading} twoLine>
+              {sets.map((setId) => (
+                <ElementCompact
+                  key={setId}
+                  selected={detailSet === setId}
+                  {...{ closeDetails, details, loading, setId }}
+                />
+              ))}
+            </List>
+          </Card>
         );
       }
       default:

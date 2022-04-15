@@ -16,12 +16,13 @@ import LazyLoad from "react-lazy-load";
 import Twemoji from "react-twemoji";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
+import { SkeletonCard } from "@c/main/views/card/skeleton-card";
 import { withTooltip } from "@c/util/hocs";
-import { selectDevice } from "@s/common";
-import type { SetType } from "@s/main/types";
-import { selectFavorites, selectHidden } from "@s/user";
+import { selectDevice, selectPage } from "@s/common";
+import { selectSetById } from "@s/main";
+import { getSetDetails } from "@s/main/functions";
+import { selectFavorites, selectHidden, selectUser } from "@s/user";
 import { toggleFavorite, toggleHidden } from "@s/user/functions";
-import type { CurrentUserType } from "@s/user/types";
 import {
   clearSearchParams,
   createURL,
@@ -41,38 +42,40 @@ import "./element-card.scss";
 
 type ElementCardProps = {
   closeDetails: () => void;
-  daysLeft: number;
-  designer: string;
   details: (set: EntityId) => void;
   edit: (set: EntityId) => void;
-  image: string;
-  live: boolean;
   selected: boolean;
-  set: SetType;
-  subtitle: string;
-  thisWeek: boolean;
-  title: string;
-  user: CurrentUserType;
+  setId: EntityId;
+  loading?: boolean;
 };
 
 export const ElementCard = ({
   closeDetails,
-  daysLeft,
-  designer,
   details,
   edit,
-  image,
-  live,
+  loading,
   selected,
-  set,
-  subtitle,
-  thisWeek,
-  title,
-  user,
+  setId,
 }: ElementCardProps) => {
+  const set = useAppSelector((state) => selectSetById(state, setId));
+
+  if (!set) {
+    return null;
+  }
+
+  const { daysLeft, live, subtitle, thisWeek } = getSetDetails(set);
+
+  const user = useAppSelector(selectUser);
+  const page = useAppSelector(selectPage);
   const device = useAppSelector(selectDevice);
+  const useLink = device === "desktop";
+
   const favorites = useAppSelector(selectFavorites);
   const hidden = useAppSelector(selectHidden);
+
+  if (loading) {
+    return <SkeletonCard icon={set.shipped || live} loggedIn={!!user?.email} />;
+  }
 
   const copyShareLink = async () => {
     const url = createURL({ pathname: "/" }, (params) => {
@@ -87,16 +90,17 @@ export const ElementCard = ({
     }
   };
 
-  const useLink = device === "desktop";
+  const title = `${set.profile} ${set.colorway}`;
 
   const liveIndicator =
+    page !== "live" &&
     live &&
     withTooltip(
       <Icon className="live-indicator" icon={iconObject(<NewReleases />)} />,
       "Live"
     );
   const shipIndicator =
-    set?.shipped &&
+    set.shipped &&
     withTooltip(
       <Icon className="ship-indicator" icon={iconObject(<CheckCircle />)} />,
       "Shipped"
@@ -203,7 +207,12 @@ export const ElementCard = ({
             >
               <CardMedia
                 sixteenByNine
-                style={{ backgroundImage: `url(${image})` }}
+                style={{
+                  backgroundImage: `url(${set.image.replace(
+                    "keysets",
+                    "card"
+                  )})`,
+                }}
               />
             </LazyLoad>
             {timeIndicator}
@@ -212,7 +221,7 @@ export const ElementCard = ({
             <div className="text-container">
               <div className="overline">
                 <Typography tag="h3" use="overline">
-                  {designer}
+                  {set.designer.join(" + ")}
                 </Typography>
                 {liveIndicator}
                 {shipIndicator}

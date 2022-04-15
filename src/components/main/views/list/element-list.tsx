@@ -12,9 +12,11 @@ import LazyLoad from "react-lazy-load";
 import Twemoji from "react-twemoji";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
+import { SkeletonList } from "@c/main/views/list/skeleton-list";
 import { withTooltip } from "@c/util/hocs";
-import { selectDevice } from "@s/common";
-import type { SetType } from "@s/main/types";
+import { selectDevice, selectPage } from "@s/common";
+import { selectSetById } from "@s/main";
+import { getSetDetails } from "@s/main/functions";
 import {
   clearSearchParams,
   createURL,
@@ -26,32 +28,34 @@ import "./element-list.scss";
 
 type ElementListProps = {
   closeDetails: () => void;
-  daysLeft: number;
-  designer: string;
   details: (set: EntityId) => void;
-  image: string;
-  live: boolean;
   selected: boolean;
-  set: SetType;
-  subtitle: string;
-  thisWeek: boolean;
-  title: string;
+  setId: EntityId;
+  loading?: boolean;
 };
 
 export const ElementList = ({
   closeDetails,
-  daysLeft,
-  designer,
   details,
-  image,
-  live,
+  loading,
   selected,
-  set,
-  subtitle,
-  thisWeek,
-  title,
+  setId,
 }: ElementListProps) => {
+  const set = useAppSelector((state) => selectSetById(state, setId));
+
+  if (!set) {
+    return null;
+  }
+
+  const { daysLeft, live, subtitle, thisWeek } = getSetDetails(set);
+
+  const page = useAppSelector(selectPage);
   const device = useAppSelector(selectDevice);
+  const useLink = device === "desktop";
+
+  if (loading) {
+    return <SkeletonList icon={set.shipped || live} />;
+  }
 
   const copyShareLink = async () => {
     const url = createURL({ pathname: "/" }, (params) => {
@@ -66,9 +70,10 @@ export const ElementList = ({
     }
   };
 
-  const useLink = device === "desktop";
+  const title = `${set.profile} ${set.colorway}`;
 
   const liveIndicator =
+    page !== "live" &&
     live &&
     withTooltip(
       <ListItemMeta
@@ -120,12 +125,14 @@ export const ElementList = ({
       >
         <div
           className="list-image"
-          style={{ backgroundImage: `url(${image})` }}
+          style={{
+            backgroundImage: `url(${set.image.replace("keysets", "list")})`,
+          }}
         ></div>
       </LazyLoad>
       <ListItemText>
         <Typography className="overline" use="overline">
-          {designer}
+          {set.designer.join(" + ")}
         </Typography>
         <ListItemPrimaryText>
           <Twemoji options={{ className: "twemoji" }}>{title}</Twemoji>

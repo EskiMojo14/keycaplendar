@@ -15,9 +15,11 @@ import LazyLoad from "react-lazy-load";
 import Twemoji from "react-twemoji";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
+import { SkeletonImage } from "@c/main/views/image-list/skeleton-image";
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice } from "@s/common";
-import type { SetType } from "@s/main/types";
+import { selectSetById } from "@s/main";
+import { getSetDetails } from "@s/main/functions";
 import {
   clearSearchParams,
   createURL,
@@ -29,32 +31,35 @@ import "./element-image.scss";
 
 type ElementImageProps = {
   closeDetails: () => void;
-  daysLeft: number;
   details: (set: EntityId) => void;
-  image: string;
-  link: string;
-  live: boolean;
   selected: boolean;
-  set: SetType;
-  subtitle: string;
-  thisWeek: boolean;
-  title: string;
+  setId: EntityId;
+  loading?: boolean;
 };
 
 export const ElementImage = ({
   closeDetails,
-  daysLeft,
   details,
-  image,
-  link,
-  live,
+  loading,
   selected,
-  set,
-  subtitle,
-  thisWeek,
-  title,
+  setId,
 }: ElementImageProps) => {
+  const set = useAppSelector((state) => selectSetById(state, setId));
+
+  if (!set) {
+    return null;
+  }
+
+  const { daysLeft, live, subtitle, thisWeek } = getSetDetails(set, {
+    month: "MMM",
+  });
+
   const device = useAppSelector(selectDevice);
+  const useLink = device === "desktop";
+
+  if (loading) {
+    return <SkeletonImage icon={set.shipped || live} />;
+  }
 
   const copyShareLink = async () => {
     const url = createURL({ pathname: "/" }, (params) => {
@@ -69,7 +74,7 @@ export const ElementImage = ({
     }
   };
 
-  const useLink = device === "desktop";
+  const title = `${set.profile} ${set.colorway}`;
 
   const liveIndicator =
     live &&
@@ -96,7 +101,7 @@ export const ElementImage = ({
     withTooltip(
       <IconButton
         className="link-icon"
-        href={link}
+        href={set.details}
         icon="open_in_new"
         label={`Link to ${title}`}
         rel="noopener noreferrer"
@@ -130,7 +135,12 @@ export const ElementImage = ({
             >
               <LazyLoad debounce={false} offsetVertical={480}>
                 <ImageListImage
-                  style={{ backgroundImage: `url(${image})` }}
+                  style={{
+                    backgroundImage: `url(${set.image.replace(
+                      "keysets",
+                      "image-list"
+                    )})`,
+                  }}
                   tag="div"
                 />
               </LazyLoad>
