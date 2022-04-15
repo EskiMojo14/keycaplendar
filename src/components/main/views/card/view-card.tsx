@@ -104,7 +104,6 @@ export const ViewCard = ({
             key={set.id}
             icon={set.shipped || live}
             loggedIn={!!user?.email}
-            {...{ designer, subtitle, title }}
           />
         ) : (
           <ElementCard

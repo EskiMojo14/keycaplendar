@@ -18,6 +18,9 @@
       }
     }
   }
+  &__secondary-text {
+    align-self: flex-start;
+  }
 
   @media (min-width: 1240px) {
     &:hover {

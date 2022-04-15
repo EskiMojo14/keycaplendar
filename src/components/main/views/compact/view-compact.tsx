@@ -99,11 +99,7 @@ export const ViewCompact = ({
                 (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd)
               : false;
           return loading ? (
-            <SkeletonCompact
-              key={set.id}
-              icon={set.shipped || live}
-              {...{ subtitle, title }}
-            />
+            <SkeletonCompact key={set.id} icon={set.shipped || live} />
           ) : (
             <ElementCompact
               key={set.id}

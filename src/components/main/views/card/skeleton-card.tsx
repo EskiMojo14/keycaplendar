@@ -9,20 +9,11 @@ import { SkeletonBlock, SkeletonIcon } from "@c/util/skeleton-block";
 import { iconObject } from "@s/util/functions";
 
 export type SkeletonCardProps = {
-  designer?: string;
   icon?: boolean;
   loggedIn?: boolean;
-  subtitle?: string;
-  title?: string;
 };
 
-export const SkeletonCard = ({
-  designer,
-  icon,
-  loggedIn,
-  subtitle,
-  title,
-}: SkeletonCardProps) => (
+export const SkeletonCard = ({ icon, loggedIn }: SkeletonCardProps) => (
   <div className="card-container">
     <Card className="skeleton">
       <div className="content">
@@ -35,7 +26,8 @@ export const SkeletonCard = ({
               <div className="overline-container">
                 <SkeletonBlock
                   constrain
-                  content={designer}
+                  maxContentLength={16}
+                  minContentLength={10}
                   tag="span"
                   typography="overline"
                 />
@@ -47,11 +39,16 @@ export const SkeletonCard = ({
               )}
             </div>
             <div className="title">
-              <SkeletonBlock content={title} typography="headline5" />
+              <SkeletonBlock
+                maxContentLength={24}
+                minContentLength={9}
+                typography="headline5"
+              />
             </div>
             <div className="subtitle">
               <SkeletonBlock
-                content={subtitle}
+                maxContentLength={21}
+                minContentLength={14}
                 tag="span"
                 typography="subtitle2"
               />

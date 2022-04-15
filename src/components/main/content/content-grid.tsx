@@ -83,7 +83,8 @@ export const ContentGrid = ({
           <div className="subheader">
             {loading ? (
               <SkeletonBlock
-                content={`${group.title} (${group.sets.length})`}
+                maxContentLength={16}
+                minContentLength={12}
                 typography="caption"
               />
             ) : (

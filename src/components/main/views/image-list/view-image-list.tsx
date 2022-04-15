@@ -95,11 +95,7 @@ export const ViewImageList = ({
               (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd)
             : false;
         return loading ? (
-          <SkeletonImage
-            key={set.id}
-            icon={set.shipped || live}
-            {...{ subtitle, title }}
-          />
+          <SkeletonImage key={set.id} icon={set.shipped || live} />
         ) : (
           <ElementImage
             key={set.id}

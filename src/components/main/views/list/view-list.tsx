@@ -89,7 +89,6 @@ export const ViewList = ({
             `d'${icDateOrdinal}'\xa0MMMM`
           )}${icDate.year !== today.year ? icDate.toFormat("\xa0yyyy") : ""}`;
         }
-        const title = `${set.profile} ${set.colorway}`;
         const designer = set.designer.join(" + ");
         const live =
           page !== "live" && gbLaunch instanceof DateTime && gbEnd
@@ -97,11 +96,7 @@ export const ViewList = ({
               (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd)
             : false;
         return loading ? (
-          <SkeletonList
-            key={set.id}
-            icon={set.shipped || live}
-            {...{ designer, subtitle, title }}
-          />
+          <SkeletonList key={set.id} icon={set.shipped || live} />
         ) : (
           <ElementList
             key={set.id}

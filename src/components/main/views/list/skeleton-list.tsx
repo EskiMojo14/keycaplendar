@@ -8,18 +8,10 @@ import {
 import { SkeletonBlock, SkeletonIcon } from "@c/util/skeleton-block";
 
 export type SkeletonListProps = {
-  designer: string;
-  subtitle: string;
-  title: string;
   icon?: boolean;
 };
 
-export const SkeletonList = ({
-  designer,
-  icon,
-  subtitle,
-  title,
-}: SkeletonListProps) => (
+export const SkeletonList = ({ icon }: SkeletonListProps) => (
   <ListItem className="skeleton" ripple={false}>
     <div className="list-image-container">
       <div className="list-image" />
@@ -28,14 +20,15 @@ export const SkeletonList = ({
       <SkeletonBlock
         className="overline"
         constrain
-        content={designer}
+        maxContentLength={16}
+        minContentLength={10}
         typography="overline"
       />
       <ListItemPrimaryText>
-        <SkeletonBlock content={title} />
+        <SkeletonBlock maxContentLength={24} minContentLength={9} />
       </ListItemPrimaryText>
       <ListItemSecondaryText>
-        <SkeletonBlock content={subtitle} />
+        <SkeletonBlock maxContentLength={21} minContentLength={14} />
       </ListItemSecondaryText>
     </ListItemText>
     {icon && <ListItemMeta tag={SkeletonIcon} />}
