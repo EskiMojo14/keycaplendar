@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import type { EntityId } from "@reduxjs/toolkit";
 import {
   Card,
@@ -21,7 +22,11 @@ import { withTooltip } from "@c/util/hocs";
 import { selectDevice, selectPage } from "@s/common";
 import { selectSetById } from "@s/main";
 import { getSetDetails } from "@s/main/functions";
-import { selectFavorites, selectHidden, selectUser } from "@s/user";
+import {
+  createSelectSetFavorited,
+  createSelectSetHidden,
+  selectUser,
+} from "@s/user";
 import { toggleFavorite, toggleHidden } from "@s/user/functions";
 import {
   clearSearchParams,
@@ -57,6 +62,14 @@ export const ElementCard = ({
   selected,
   setId,
 }: ElementCardProps) => {
+  const selectSetFavorited = useCallback(createSelectSetFavorited(setId), [
+    setId,
+  ]);
+  const selectSetHidden = useCallback(createSelectSetHidden(setId), [setId]);
+
+  const favorited = useAppSelector(selectSetFavorited);
+  const hidden = useAppSelector(selectSetHidden);
+
   const set = useAppSelector((state) => selectSetById(state, setId));
 
   if (!set) {
@@ -69,9 +82,6 @@ export const ElementCard = ({
   const page = useAppSelector(selectPage);
   const device = useAppSelector(selectDevice);
   const useLink = device === "desktop";
-
-  const favorites = useAppSelector(selectFavorites);
-  const hidden = useAppSelector(selectHidden);
 
   if (loading) {
     return <SkeletonCard icon={set.shipped || live} loggedIn={!!user?.email} />;
@@ -110,10 +120,9 @@ export const ElementCard = ({
       {pluralise`${daysLeft} ${[daysLeft, "day"]}`}
     </Typography>
   );
-  const userButtons =
-    user.email &&
-    (useLink ? (
-      <CardActionButtons>
+  const userButtons = user.email && (
+    <CardActionButtons>
+      {useLink ? (
         <CardActionButton
           href={set.details}
           label="Link"
@@ -121,12 +130,11 @@ export const ElementCard = ({
           tag="a"
           target="_blank"
         />
-      </CardActionButtons>
-    ) : (
-      <CardActionButtons>
+      ) : (
         <CardActionButton label="Share" onClick={copyShareLink} />
-      </CardActionButtons>
-    ));
+      )}
+    </CardActionButtons>
+  );
   const linkIcon =
     !user.email &&
     withTooltip(
@@ -154,13 +162,13 @@ export const ElementCard = ({
     user.email &&
     withTooltip(
       <CardActionIcon
-        checked={favorites.includes(set.id)}
+        checked={favorited}
         className="favorite"
         icon="favorite_border"
         onClick={() => toggleFavorite(set.id)}
         onIcon={iconObject(<Favorite />)}
       />,
-      favorites.includes(set.id) ? "Unfavorite" : "Favorite"
+      favorited ? "Unfavorite" : "Favorite"
     );
   const hiddenIcon =
     user.email &&
@@ -170,26 +178,25 @@ export const ElementCard = ({
     ) &&
     withTooltip(
       <CardActionIcon
-        checked={hidden.includes(set.id)}
+        checked={hidden}
         className="hide"
         icon={iconObject(<Visibility />)}
         onClick={() => toggleHidden(set.id)}
         onIcon={iconObject(<VisibilityOff />)}
       />,
-      hidden.includes(set.id) ? "Unhide" : "Hide"
+      hidden ? "Unhide" : "Hide"
     );
   const editButton =
     user.isEditor ||
-    (user.isDesigner &&
-      set.designer &&
-      set.designer.includes(user.nickname) &&
-      withTooltip(
-        <CardActionIcon
-          icon={iconObject(<Edit />)}
-          onClick={() => edit(set.id)}
-        />,
-        "Edit"
-      ));
+    (user.isDesigner && set.designer && set.designer.includes(user.nickname))
+      ? withTooltip(
+          <CardActionIcon
+            icon={iconObject(<Edit />)}
+            onClick={() => edit(set.id)}
+          />,
+          "Edit"
+        )
+      : null;
   return (
     <div className="card-container">
       <Card className={classNames({ "mdc-card--selected": selected })}>

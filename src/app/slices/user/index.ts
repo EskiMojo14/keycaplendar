@@ -1,4 +1,8 @@
-import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import {
+  createEntityAdapter,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import { nanoid } from "nanoid";
 import type { AppThunk, RootState } from "~/app/store";
@@ -125,6 +129,18 @@ export const {
 } = userPresetAdapter.getSelectors(
   (state: RootState) => state.user.userPresets
 );
+
+const createSetListSelector = (
+  selector: (state: RootState) => EntityId[],
+  id: EntityId
+) => createSelector(selector, (list) => list.includes(id));
+
+export const createSelectSetFavorited = (id: EntityId) =>
+  createSetListSelector(selectFavorites, id);
+export const createSelectSetBought = (id: EntityId) =>
+  createSetListSelector(selectBought, id);
+export const createSelectSetHidden = (id: EntityId) =>
+  createSetListSelector(selectHidden, id);
 
 export default userSlice.reducer;
 
