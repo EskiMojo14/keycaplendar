@@ -62,12 +62,10 @@ export const ElementCard = ({
   selected,
   setId,
 }: ElementCardProps) => {
-  const favorited = useAppSelector(
-    useCallback(createSelectSetFavorited(setId), [setId])
-  );
-  const hidden = useAppSelector(
-    useCallback(createSelectSetHidden(setId), [setId])
-  );
+  const selectFavorited = useCallback(createSelectSetFavorited(), []);
+  const favorited = useAppSelector((state) => selectFavorited(state, setId));
+  const selectHidden = useCallback(createSelectSetHidden(), []);
+  const hidden = useAppSelector((state) => selectHidden(state, setId));
 
   const set = useAppSelector((state) => selectSetById(state, setId));
 

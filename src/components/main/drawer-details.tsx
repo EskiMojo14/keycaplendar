@@ -75,15 +75,12 @@ export const DrawerDetails = ({
   openSales,
   set: setId,
 }: DrawerDetailsProps) => {
-  const favorited = useAppSelector(
-    useCallback(createSelectSetFavorited(setId), [setId])
-  );
-  const hidden = useAppSelector(
-    useCallback(createSelectSetHidden(setId), [setId])
-  );
-  const bought = useAppSelector(
-    useCallback(createSelectSetBought(setId), [setId])
-  );
+  const selectFavorited = useCallback(createSelectSetFavorited(), []);
+  const favorited = useAppSelector((state) => selectFavorited(state, setId));
+  const selectHidden = useCallback(createSelectSetHidden(), []);
+  const hidden = useAppSelector((state) => selectHidden(state, setId));
+  const selectBought = useCallback(createSelectSetBought(), []);
+  const bought = useAppSelector((state) => selectBought(state, setId));
 
   const device = useAppSelector(selectDevice);
   const page = useAppSelector(selectPage);

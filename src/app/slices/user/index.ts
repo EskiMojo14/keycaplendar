@@ -130,17 +130,17 @@ export const {
   (state: RootState) => state.user.userPresets
 );
 
-const createSetListSelector = (
-  selector: (state: RootState) => EntityId[],
-  id: EntityId
-) => createSelector(selector, (list) => list.includes(id));
+const createSetListSelector = (selector: (state: RootState) => EntityId[]) =>
+  createSelector(
+    selector,
+    (state: RootState, id: EntityId) => id,
+    (list, id) => list.includes(id)
+  );
 
-export const createSelectSetFavorited = (id: EntityId) =>
-  createSetListSelector(selectFavorites, id);
-export const createSelectSetBought = (id: EntityId) =>
-  createSetListSelector(selectBought, id);
-export const createSelectSetHidden = (id: EntityId) =>
-  createSetListSelector(selectHidden, id);
+export const createSelectSetFavorited = () =>
+  createSetListSelector(selectFavorites);
+export const createSelectSetBought = () => createSetListSelector(selectBought);
+export const createSelectSetHidden = () => createSetListSelector(selectHidden);
 
 export default userSlice.reducer;
 
