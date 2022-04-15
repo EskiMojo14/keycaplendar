@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import type { ReactNode } from "react";
 import type { EntityId } from "@reduxjs/toolkit";
 import { Button } from "@rmwc/button";
@@ -30,9 +30,9 @@ import type { SetType } from "@s/main/types";
 import { selectView } from "@s/settings";
 import { toggleLichTheme } from "@s/settings/functions";
 import {
-  selectBought,
-  selectFavorites,
-  selectHidden,
+  createSelectSetBought,
+  createSelectSetFavorited,
+  createSelectSetHidden,
   selectUser,
 } from "@s/user";
 import { toggleBought, toggleFavorite, toggleHidden } from "@s/user/functions";
@@ -75,15 +75,22 @@ export const DrawerDetails = ({
   openSales,
   set: setId,
 }: DrawerDetailsProps) => {
+  const favorited = useAppSelector(
+    useCallback(createSelectSetFavorited(setId), [setId])
+  );
+  const hidden = useAppSelector(
+    useCallback(createSelectSetHidden(setId), [setId])
+  );
+  const bought = useAppSelector(
+    useCallback(createSelectSetBought(setId), [setId])
+  );
+
   const device = useAppSelector(selectDevice);
   const page = useAppSelector(selectPage);
 
   const view = useAppSelector(selectView);
 
   const user = useAppSelector(selectUser);
-  const favorites = useAppSelector(selectFavorites);
-  const bought = useAppSelector(selectBought);
-  const hidden = useAppSelector(selectHidden);
 
   const search = useAppSelector(selectSearch);
 
@@ -323,33 +330,33 @@ export const DrawerDetails = ({
     <>
       {withTooltip(
         <IconButton
-          checked={arrayIncludes(favorites, setId)}
+          checked={favorited}
           className="favorite"
           icon="favorite_border"
           onClick={() => toggleFavorite(setId)}
           onIcon={iconObject(<Favorite />)}
         />,
-        arrayIncludes(favorites, setId) ? "Unfavorite" : "Favorite"
+        favorited ? "Unfavorite" : "Favorite"
       )}
       {withTooltip(
         <IconButton
-          checked={arrayIncludes(bought, setId)}
+          checked={bought}
           className="bought"
           icon={iconObject(<ShoppingBasketOff />)}
           onClick={() => toggleBought(setId)}
           onIcon={iconObject(<ShoppingBasket />)}
         />,
-        arrayIncludes(bought, setId) ? "Bought" : "Not bought"
+        bought ? "Bought" : "Not bought"
       )}
       {withTooltip(
         <IconButton
-          checked={arrayIncludes(hidden, setId)}
+          checked={hidden}
           className="hide"
           icon={iconObject(<Visibility />)}
           onClick={() => toggleHidden(setId)}
           onIcon={iconObject(<VisibilityOff />)}
         />,
-        arrayIncludes(hidden, setId) ? "Unhide" : "Hide"
+        hidden ? "Unhide" : "Hide"
       )}
     </>
   );
