@@ -12,7 +12,7 @@ import {
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { DateTime } from "luxon";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectDevice, selectPage } from "@s/common";
 import {
   adminPages,
@@ -21,7 +21,7 @@ import {
   standardPages,
   userPages,
 } from "@s/common/constants";
-import { setPage as setMainPage } from "@s/common/functions";
+import { setPage as setMainPage } from "@s/common/thunks";
 import type { Page } from "@s/common/types";
 import firestore from "@s/firebase/firestore";
 import { selectLinkedFavorites } from "@s/main";
@@ -43,6 +43,8 @@ type DrawerNavProps = {
 };
 
 export const DrawerNav = ({ close, open }: DrawerNavProps) => {
+  const dispatch = useAppDispatch();
+
   const device = useAppSelector(selectDevice);
   const bottomNav = useAppSelector(selectBottomNav);
 
@@ -58,7 +60,7 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
   const dismissible = device === "desktop";
 
   const setPage = (page: Page) => {
-    setMainPage(page);
+    dispatch(setMainPage(page));
     if (!dismissible) {
       close();
     }

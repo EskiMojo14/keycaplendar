@@ -6,7 +6,8 @@ import {
   DialogContent,
   DialogTitle,
 } from "@rmwc/dialog";
-import { deleteGlobalPreset, deletePreset } from "@s/main/functions";
+import { useAppDispatch } from "~/app/hooks";
+import { deleteGlobalPreset, deletePreset } from "@s/main/thunks";
 import type { PresetType } from "@s/main/types";
 
 type DialogDeleteFilterPresetProps = {
@@ -20,13 +21,12 @@ export const DialogDeleteFilterPreset = ({
   open,
   preset,
 }: DialogDeleteFilterPresetProps) => {
+  const dispatch = useAppDispatch();
   const deleteFn = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (preset.global) {
-      deleteGlobalPreset(preset.id);
-    } else {
-      deletePreset(preset.id);
-    }
+    dispatch(
+      preset.global ? deleteGlobalPreset(preset.id) : deletePreset(preset.id)
+    );
     close();
   };
   return (

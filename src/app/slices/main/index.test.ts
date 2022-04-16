@@ -32,11 +32,10 @@ import {
   setTransition,
   setURLSet,
   setURLWhitelist,
-  setWhitelist,
   upsertAppPreset,
 } from "@s/main";
 import { blankKeyset } from "@s/main/constants";
-import { partialPreset, partialWhitelist } from "@s/main/constructors";
+import { partialPreset } from "@s/main/constructors";
 import type {
   SetType,
   SortOrderType,
@@ -110,13 +109,6 @@ it("sets search", () => {
   store.dispatch(setSearch(search));
   const response = selectSearch(store.getState());
   expect(response).toBe(search);
-});
-
-it("sets whitelist", () => {
-  const whitelist = partialWhitelist({ bought: true, favorites: true });
-  store.dispatch(setWhitelist(whitelist));
-  const response = selectWhitelist(store.getState());
-  expect(response).toEqual({ ...whitelist, edited: Object.keys(whitelist) });
 });
 
 const whitelist: Partial<WhitelistType> = { profiles: ["test"] };

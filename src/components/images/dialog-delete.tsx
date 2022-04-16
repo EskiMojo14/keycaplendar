@@ -14,11 +14,11 @@ import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import {
   imageAdapter,
-  listAll,
   selectFolders,
   selectImageMap,
   setLoading,
 } from "@s/images";
+import { listAll } from "@s/images/thunks";
 import { batchStorageDelete, filterFalsey, pluralise } from "@s/util/functions";
 import "./dialog-delete.scss";
 

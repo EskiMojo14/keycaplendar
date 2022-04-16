@@ -18,24 +18,23 @@ import classNames from "classnames";
 import { DateTime } from "luxon";
 import Twemoji from "react-twemoji";
 import { is } from "typescript-is";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice, selectPage } from "@s/common";
 import { mainPages } from "@s/common/constants";
-import { selectSearch, selectSetById } from "@s/main";
-import { setSearch } from "@s/main/functions";
+import { selectSearch, selectSetById, setSearch } from "@s/main";
 import type { SetType } from "@s/main/types";
 import { selectView } from "@s/settings";
-import { toggleLichTheme } from "@s/settings/functions";
+import { toggleLichTheme } from "@s/settings/thunks";
 import {
   createSelectSetBought,
   createSelectSetFavorited,
   createSelectSetHidden,
   selectUser,
 } from "@s/user";
-import { toggleBought, toggleFavorite, toggleHidden } from "@s/user/functions";
+import { toggleBought, toggleFavorite, toggleHidden } from "@s/user/thunks";
 import {
   alphabeticalSortProp,
   arrayIncludes,
@@ -75,6 +74,8 @@ export const DrawerDetails = ({
   openSales,
   set: setId,
 }: DrawerDetailsProps) => {
+  const dispatch = useAppDispatch();
+
   const selectFavorited = useCallback(createSelectSetFavorited(), []);
   const favorited = useAppSelector((state) => selectFavorited(state, setId));
   const selectHidden = useCallback(createSelectSetHidden(), []);
@@ -321,7 +322,10 @@ export const DrawerDetails = ({
       </div>
     );
   const lichButton = set?.colorway === "Lich" && (
-    <IconButton icon={iconObject(<Palette />)} onClick={toggleLichTheme} />
+    <IconButton
+      icon={iconObject(<Palette />)}
+      onClick={() => dispatch(toggleLichTheme())}
+    />
   );
   const userButtons = user.email && (
     <>
@@ -330,7 +334,7 @@ export const DrawerDetails = ({
           checked={favorited}
           className="favorite"
           icon="favorite_border"
-          onClick={() => toggleFavorite(setId)}
+          onClick={() => dispatch(toggleFavorite(setId))}
           onIcon={iconObject(<Favorite />)}
         />,
         favorited ? "Unfavorite" : "Favorite"
@@ -340,7 +344,7 @@ export const DrawerDetails = ({
           checked={bought}
           className="bought"
           icon={iconObject(<ShoppingBasketOff />)}
-          onClick={() => toggleBought(setId)}
+          onClick={() => dispatch(toggleBought(setId))}
           onIcon={iconObject(<ShoppingBasket />)}
         />,
         bought ? "Bought" : "Not bought"
@@ -350,7 +354,7 @@ export const DrawerDetails = ({
           checked={hidden}
           className="hide"
           icon={iconObject(<Visibility />)}
-          onClick={() => toggleHidden(setId)}
+          onClick={() => dispatch(toggleHidden(setId))}
           onIcon={iconObject(<VisibilityOff />)}
         />,
         hidden ? "Unhide" : "Hide"
@@ -387,7 +391,7 @@ export const DrawerDetails = ({
               icon="search"
               label={value}
               onClick={() => {
-                setSearch(value);
+                dispatch(setSearch(value));
                 if (!dismissible) {
                   close();
                 }

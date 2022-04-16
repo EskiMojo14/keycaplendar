@@ -1,8 +1,8 @@
 import { Menu, MenuItem } from "@rmwc/menu";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectView } from "@s/settings";
 import { allViews, viewNames } from "@s/settings/constants";
-import { setView } from "@s/settings/functions";
+import { setView } from "@s/settings/thunks";
 
 type MenuViewProps = {
   onClose: () => void;
@@ -10,13 +10,14 @@ type MenuViewProps = {
 };
 
 export const MenuView = ({ onClose, open }: MenuViewProps) => {
+  const dispatch = useAppDispatch();
   const view = useAppSelector(selectView);
   return (
     <Menu anchorCorner="bottomLeft" onClose={onClose} open={open}>
       {allViews.map((key) => (
         <MenuItem
           key={key}
-          onClick={() => setView(key)}
+          onClick={() => dispatch(setView(key))}
           selected={view === key}
         >
           {viewNames[key]}

@@ -3,7 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
 import type { ViewType } from "./types";
 
-type SettingsState = {
+export type SettingsState = {
   applyTheme: string;
   bottomNav: boolean;
   cookies: boolean;

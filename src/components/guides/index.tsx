@@ -24,13 +24,13 @@ import { withTooltip } from "@c/util/hocs";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import {
-  getEntries as getEntriesThunk,
   selectEntries,
   selectEntryTotal,
   selectLoading,
   selectURLEntry,
   setURLEntry,
 } from "@s/guides";
+import { getEntries as getEntriesThunk } from "@s/guides/thunks";
 import { selectBottomNav } from "@s/settings";
 import { selectUser } from "@s/user";
 import { closeModal, createURL, openModal } from "@s/util/functions";

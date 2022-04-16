@@ -4,9 +4,7 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
-import { queue } from "~/app/snackbar-queue";
-import type { AppThunk, RootState } from "~/app/store";
-import firebase from "@s/firebase";
+import type { RootState } from "~/app/store";
 import { visibilityVals } from "@s/guides/constants";
 import {
   alphabeticalSort,
@@ -120,16 +118,3 @@ export const selectFilteredVisibilityMap = createSelector(
 );
 
 export default guidesSlice.reducer;
-
-export const getEntries = (): AppThunk<Promise<void>> => async (dispatch) => {
-  const cloudFn = firebase.functions().httpsCallable("getGuides");
-  dispatch(setLoading(true));
-  try {
-    const result = await cloudFn();
-    dispatch([setEntries(result.data), setLoading(false)]);
-  } catch (error) {
-    console.log(`Error getting data: ${error}`);
-    queue.notify({ title: `Error getting data: ${error}` });
-    dispatch(setLoading(false));
-  }
-};

@@ -13,7 +13,7 @@ import {
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import produce from "immer";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import {
   FullScreenDialog,
@@ -30,7 +30,7 @@ import {
   editPreset,
   newGlobalPreset,
   newPreset,
-} from "@s/main/functions";
+} from "@s/main/thunks";
 import type { PresetType } from "@s/main/types";
 import { selectUser } from "@s/user";
 import "./modal-filter-preset.scss";
@@ -46,6 +46,8 @@ export const ModalFilterPreset = ({
   open,
   preset,
 }: ModalFilterPresetProps) => {
+  const dispatch = useAppDispatch();
+
   const device = useAppSelector(selectDevice);
   const user = useAppSelector(selectUser);
 
@@ -71,17 +73,15 @@ export const ModalFilterPreset = ({
         draftPreset.name = name;
       });
       if (preset.global && user.isAdmin) {
-        if (!preset.name) {
-          newGlobalPreset(savedPreset);
-        } else {
-          editGlobalPreset(savedPreset);
-        }
+        dispatch(
+          !preset.name
+            ? newGlobalPreset(savedPreset)
+            : editGlobalPreset(savedPreset)
+        );
       } else {
-        if (!preset.name) {
-          newPreset(savedPreset);
-        } else {
-          editPreset(savedPreset);
-        }
+        dispatch(
+          !preset.name ? newPreset(savedPreset) : editPreset(savedPreset)
+        );
       }
       close();
     }

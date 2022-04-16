@@ -8,7 +8,6 @@ import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
 import { queue } from "~/app/snackbar-queue";
 import type { AppThunk, RootState } from "~/app/store";
-import { selectPage } from "@s/common";
 import { mainPages } from "@s/common/constants";
 import {
   arraySorts,
@@ -193,9 +192,6 @@ export const mainSlice = createSlice({
     ) => {
       state.urlWhitelist = payload;
     },
-    setWhitelist: (state, { payload }: PayloadAction<WhitelistType>) => {
-      state.whitelist = { ...payload, edited: Object.keys(payload) };
-    },
     upsertAppPreset: (state, { payload }: PayloadAction<PresetType>) => {
       appPresetAdapter.upsertOne(state.presets, payload);
     },
@@ -220,7 +216,6 @@ export const {
     setTransition,
     setURLSet,
     setURLWhitelist,
-    setWhitelist,
     upsertAppPreset,
   },
 } = mainSlice;
@@ -318,6 +313,9 @@ export const pageConditions = (
     timeline: !!(set.gbLaunch && !set.gbLaunch.includes("Q")),
   };
 };
+
+// avoid circular import
+export const selectPage = (state: RootState) => state.common.page;
 
 export const selectFilteredSets = createSelector(
   selectPage,

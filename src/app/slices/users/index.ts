@@ -1,9 +1,12 @@
-import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import {
+  createEntityAdapter,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
 import type { EntityState, PayloadAction } from "@reduxjs/toolkit";
+import produce from "immer";
 import { is } from "typescript-is";
-import { queue } from "~/app/snackbar-queue";
-import type { AppThunk, RootState } from "~/app/store";
-import firebase from "@s/firebase";
+import type { RootState } from "~/app/store";
 import type { sortProps } from "@s/users/constants";
 import {
   alphabeticalSortCurried,
@@ -24,49 +27,6 @@ type UserState = {
   view: "card" | "table";
 };
 
-const sortUsers = (state: UserState) => {
-  const {
-    reverseSort,
-    sort,
-    users: { entities: users },
-  } = state;
-  state.users.ids = Object.values(users)
-    .sort((a, b) => {
-      if (a && b) {
-        const { [sort]: aVal } = a;
-        const { [sort]: bVal } = b;
-        if (is<string>(aVal) && is<string>(bVal)) {
-          if ((aVal === "" || bVal === "") && !(aVal === "" && bVal === "")) {
-            return aVal === "" ? 1 : -1;
-          }
-          return (
-            alphabeticalSortCurried(reverseSort)(aVal, bVal) ||
-            alphabeticalSortPropCurried("nickname")(a, b) ||
-            alphabeticalSortPropCurried("email")(a, b)
-          );
-        } else {
-          if (
-            (aVal === null || bVal === null) &&
-            !(aVal === null && bVal === null)
-          ) {
-            return aVal === null ? 1 : -1;
-          }
-          return (
-            alphabeticalSortCurried(
-              is<boolean>(aVal) && is<boolean>(bVal)
-                ? !reverseSort
-                : reverseSort
-            )(aVal, bVal) ||
-            alphabeticalSortPropCurried("nickname")(a, b) ||
-            alphabeticalSortPropCurried("email")(a, b)
-          );
-        }
-      }
-      return 0;
-    })
-    .map((user) => userAdapter.selectId(user!));
-};
-
 export const initialState: UserState = {
   loading: false,
   nextPageToken: "",
@@ -84,7 +44,6 @@ export const usersSlice = createSlice({
   reducers: {
     appendUsers: (state, { payload }: PayloadAction<UserType[]>) => {
       userAdapter.addMany(state.users, payload);
-      sortUsers(state);
     },
     setLoading: (state, { payload }: PayloadAction<boolean>) => {
       state.loading = payload;
@@ -103,11 +62,9 @@ export const usersSlice = createSlice({
       state.reverseSort = state.sort === payload ? !state.reverseSort : false;
       state.sort = payload;
       state.page = 1;
-      sortUsers(state);
     },
     setUsers: (state, { payload }: PayloadAction<UserType[]>) => {
       userAdapter.setAll(state.users, payload);
-      sortUsers(state);
     },
     setView: (state, { payload }: PayloadAction<"card" | "table">) => {
       state.view = payload;
@@ -128,14 +85,6 @@ export const {
   },
 } = usersSlice;
 
-export const {
-  selectAll: selectUsers,
-  selectById: selectUserById,
-  selectEntities: selectUserMap,
-  selectIds: selectUserIds,
-  selectTotal: selectUserTotal,
-} = userAdapter.getSelectors<RootState>((state) => state.users.users);
-
 export const selectView = (state: RootState) => state.users.view;
 
 export const selectLoading = (state: RootState) => state.users.loading;
@@ -151,30 +100,59 @@ export const selectRowsPerPage = (state: RootState) => state.users.rowsPerPage;
 
 export const selectPage = (state: RootState) => state.users.page;
 
+export const selectSortedUsers = createSelector(
+  (state: RootState) => state.users.users,
+  selectSort,
+  selectReverseSort,
+  (entityState, sort, reverseSort) =>
+    produce(entityState, (draftEntityState) => {
+      draftEntityState.ids = Object.values(draftEntityState.entities)
+        .sort((a, b) => {
+          if (a && b) {
+            const { [sort]: aVal } = a;
+            const { [sort]: bVal } = b;
+            if (is<string>(aVal) && is<string>(bVal)) {
+              if (
+                (aVal === "" || bVal === "") &&
+                !(aVal === "" && bVal === "")
+              ) {
+                return aVal === "" ? 1 : -1;
+              }
+              return (
+                alphabeticalSortCurried(reverseSort)(aVal, bVal) ||
+                alphabeticalSortPropCurried("nickname")(a, b) ||
+                alphabeticalSortPropCurried("email")(a, b)
+              );
+            } else {
+              if (
+                (aVal === null || bVal === null) &&
+                !(aVal === null && bVal === null)
+              ) {
+                return aVal === null ? 1 : -1;
+              }
+              return (
+                alphabeticalSortCurried(
+                  is<boolean>(aVal) && is<boolean>(bVal)
+                    ? !reverseSort
+                    : reverseSort
+                )(aVal, bVal) ||
+                alphabeticalSortPropCurried("nickname")(a, b) ||
+                alphabeticalSortPropCurried("email")(a, b)
+              );
+            }
+          }
+          return 0;
+        })
+        .map((user) => userAdapter.selectId(user!));
+    })
+);
+
+export const {
+  selectAll: selectUsers,
+  selectById: selectUserById,
+  selectEntities: selectUserMap,
+  selectIds: selectUserIds,
+  selectTotal: selectUserTotal,
+} = userAdapter.getSelectors<RootState>(selectSortedUsers);
+
 export default usersSlice.reducer;
-
-const length = 1000;
-
-export const getUsers =
-  (append = false): AppThunk<Promise<void>> =>
-  async (dispatch, getState) => {
-    const nextPageToken = selectNextPageToken(getState());
-    dispatch(setLoading(true));
-    const listUsersFn = firebase.functions().httpsCallable("listUsers");
-    try {
-      const result = await listUsersFn({ length, nextPageToken });
-      if (result.data.error) {
-        queue.notify({ title: result.data.error });
-        dispatch(setLoading(false));
-      } else {
-        dispatch([
-          setLoading(false),
-          append ? appendUsers(result.data.users) : setUsers(result.data.users),
-          setNextPageToken(result.data.nextPageToken ?? ""),
-        ]);
-      }
-    } catch (error) {
-      queue.notify({ title: `Error listing users: ${error}` });
-      dispatch(setLoading(false));
-    }
-  };

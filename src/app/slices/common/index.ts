@@ -1,5 +1,5 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
+import type { Dictionary, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
 import type { Page, ThemeMap } from "./types";
 
@@ -8,7 +8,7 @@ export type CommonState = {
   orientation: "landscape" | "portrait";
   page: Page;
   theme: string;
-  themeMaps: Record<string, ThemeMap>;
+  themeMaps: Dictionary<ThemeMap>;
 };
 
 export const initialState: CommonState = {
@@ -41,10 +41,7 @@ export const commonSlice = createSlice({
     setTheme: (state, { payload }: PayloadAction<string>) => {
       state.theme = payload;
     },
-    setThemeMaps: (
-      state,
-      { payload }: PayloadAction<Record<string, ThemeMap>>
-    ) => {
+    setThemeMaps: (state, { payload }: PayloadAction<Dictionary<ThemeMap>>) => {
       state.themeMaps = payload;
     },
   },
@@ -66,7 +63,7 @@ export const selectThemesMap = (state: RootState) => state.common.themeMaps;
 
 export const selectCurrentThemeMap = createSelector(
   [selectTheme, selectThemesMap],
-  (theme, themesMap) => themesMap[theme] as ThemeMap | undefined
+  (theme, themesMap) => themesMap[theme]
 );
 
 export default commonSlice.reducer;

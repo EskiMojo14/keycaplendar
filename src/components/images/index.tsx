@@ -14,13 +14,12 @@ import ImageItem from "@c/images/image-item";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { selectDevice } from "@s/common";
 import {
-  getFolders,
-  listAll,
   selectCurrentFolder,
   selectDuplicateImages,
   selectImages,
   selectImagesByUsage,
 } from "@s/images";
+import { getFolders, listAll } from "@s/images/thunks";
 import { selectBottomNav } from "@s/settings";
 import {
   addOrRemove,

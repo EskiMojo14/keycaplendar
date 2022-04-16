@@ -18,12 +18,8 @@ import {
 } from "@c/util/segmented-button";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
-import {
-  selectCurrentFolder,
-  selectFolders,
-  selectLoading,
-  setFolder,
-} from "@s/images";
+import { selectCurrentFolder, selectFolders, selectLoading } from "@s/images";
+import { setFolder } from "@s/images/thunks";
 import { selectBottomNav } from "@s/settings";
 import { iconObject, useBoolStates } from "@s/util/functions";
 import { Delete, PermMedia } from "@i";

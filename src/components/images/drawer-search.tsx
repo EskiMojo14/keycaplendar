@@ -1,15 +1,15 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import type { ChangeEvent } from "react";
 import type { EntityId } from "@reduxjs/toolkit";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import { List } from "@rmwc/list";
 import { TextField } from "@rmwc/textfield";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { useAppSelector } from "~/app/hooks";
 import { SearchItem } from "@c/images/search-item";
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice } from "@s/common";
-import { searchImages } from "@s/images";
+import { selectSearchedImages } from "@s/images";
 import { iconObject } from "@s/util/functions";
 import { Regex, RegexOff } from "@i";
 import "./drawer-search.scss";
@@ -25,7 +25,6 @@ export const DrawerSearch = ({
   open,
   unusedImages,
 }: DrawerSearchProps) => {
-  const dispatch = useAppDispatch();
   const device = useAppSelector(selectDevice);
   const dismissible = device === "desktop";
   const closeIcon =
@@ -45,9 +44,8 @@ export const DrawerSearch = ({
     setRegexSearch(!regexSearch);
   };
 
-  const searchedImages = useMemo(
-    () => dispatch(searchImages(search, regexSearch)),
-    [search, regexSearch]
+  const searchedImages = useAppSelector((state) =>
+    selectSearchedImages(state, search, regexSearch)
   );
 
   return (

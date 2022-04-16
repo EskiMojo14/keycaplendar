@@ -23,7 +23,6 @@ import { DialogSales } from "@c/main/dialog-sales";
 import { DrawerDetails } from "@c/main/drawer-details";
 import { pageTitle } from "@s/common/constants";
 import {
-  getData,
   processedActionsAdapter,
   selectLoading,
   selectProcessedActions,
@@ -33,6 +32,7 @@ import {
   setTab,
 } from "@s/history";
 import { historyTabs } from "@s/history/constants";
+import { getData } from "@s/history/thunks";
 import { selectAllSets } from "@s/main";
 import { selectBottomNav } from "@s/settings";
 import {

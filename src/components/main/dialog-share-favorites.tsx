@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ChangeEvent } from "react";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { Dialog, DialogContent, DialogTitle } from "@rmwc/dialog";
@@ -12,9 +12,9 @@ import { queue } from "~/app/snackbar-queue";
 import { selectShareNameLoading, setShareNameLoading } from "@s/settings";
 import { selectFavoritesId, selectShareName, setFavoritesId } from "@s/user";
 import {
-  debouncedSyncFavoritesId,
-  debouncedSyncShareName,
-} from "@s/user/functions";
+  createDebouncedSyncFavoritesId,
+  createDebouncedSyncShareName,
+} from "@s/user/thunks";
 import { clearSearchParams, createURL } from "@s/util/functions";
 import "./dialog-share-favorites.scss";
 
@@ -28,6 +28,14 @@ export const DialogShareFavorites = ({
   open,
 }: DialogShareFavoritesProps) => {
   const dispatch = useAppDispatch();
+  const debouncedSyncShareName = useCallback(
+    createDebouncedSyncShareName(dispatch),
+    [dispatch]
+  );
+  const debouncedSyncFavoritesId = useCallback(
+    createDebouncedSyncFavoritesId(dispatch),
+    [dispatch]
+  );
 
   const docShareName = useAppSelector(selectShareName);
   const shareNameLoading = useAppSelector(selectShareNameLoading);

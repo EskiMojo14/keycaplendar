@@ -14,7 +14,8 @@ import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { Autocomplete, AutocompleteMobile } from "@c/util/autocomplete";
 import BEMHelper from "@s/common/bem-helper";
 import { selectSearch, selectSearchTerms } from "@s/main";
-import { setSearch as setSearchInState } from "@s/main/functions";
+import { setSearch as setSearchInState } from "@s/main/thunks";
+
 import "./search-bar.scss";
 
 const bemClasses = new BEMHelper("search-bar");

@@ -15,7 +15,7 @@ import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
 import Twemoji from "react-twemoji";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { SkeletonCard } from "@c/main/views/card/skeleton-card";
 import { withTooltip } from "@c/util/hocs";
@@ -27,7 +27,7 @@ import {
   createSelectSetHidden,
   selectUser,
 } from "@s/user";
-import { toggleFavorite, toggleHidden } from "@s/user/functions";
+import { toggleFavorite, toggleHidden } from "@s/user/thunks";
 import {
   clearSearchParams,
   createURL,
@@ -62,6 +62,8 @@ export const ElementCard = ({
   selected,
   setId,
 }: ElementCardProps) => {
+  const dispatch = useAppDispatch();
+
   const selectFavorited = useCallback(createSelectSetFavorited(), []);
   const favorited = useAppSelector((state) => selectFavorited(state, setId));
   const selectHidden = useCallback(createSelectSetHidden(), []);
@@ -162,7 +164,7 @@ export const ElementCard = ({
         checked={favorited}
         className="favorite"
         icon="favorite_border"
-        onClick={() => toggleFavorite(set.id)}
+        onClick={() => dispatch(toggleFavorite(set.id))}
         onIcon={iconObject(<Favorite />)}
       />,
       favorited ? "Unfavorite" : "Favorite"
@@ -178,7 +180,7 @@ export const ElementCard = ({
         checked={hidden}
         className="hide"
         icon={iconObject(<Visibility />)}
-        onClick={() => toggleHidden(set.id)}
+        onClick={() => dispatch(toggleHidden(set.id))}
         onIcon={iconObject(<VisibilityOff />)}
       />,
       hidden ? "Unhide" : "Hide"

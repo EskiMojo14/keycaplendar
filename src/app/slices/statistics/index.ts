@@ -308,10 +308,7 @@ const {
 } = statisticsSlice;
 
 /** wrapper for generics */
-export const setStatisticsSetting = (<T extends keyof StatisticsType>(
-  key: T,
-  value: StatisticsType[T]
-) => _setStatisticsSetting(key, value)) as Pick<
+export const setStatisticsSetting = _setStatisticsSetting as Pick<
   typeof _setStatisticsSetting,
   "match" | "type"
 > &
@@ -326,10 +323,7 @@ export const setStatisticsSetting = (<T extends keyof StatisticsType>(
 Object.assign(setStatisticsSetting, _setStatisticsSetting);
 
 /** wrapper for generics */
-export const setStatisticsSort = (<T extends keyof StatisticsSortType>(
-  key: T,
-  value: StatisticsSortType[T]
-) => _setStatisticsSort(key, value)) as Pick<
+export const setStatisticsSort = _setStatisticsSort as Pick<
   typeof _setStatisticsSort,
   "match" | "type"
 > &

@@ -1,10 +1,10 @@
 import { ListDivider } from "@rmwc/list";
 import { Menu, MenuItem } from "@rmwc/menu";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectPage } from "@s/common";
 import { selectSort, selectSortOrder } from "@s/main";
 import { allSorts, sortBlacklist, sortNames } from "@s/main/constants";
-import { setSort, setSortOrder } from "@s/main/functions";
+import { setSort, setSortOrder } from "@s/main/thunks";
 import type { SortOrderType } from "@s/main/types";
 import { arrayIncludes, capitalise } from "@s/util/functions";
 
@@ -16,6 +16,7 @@ type MenuSortProps = {
 const sortOrders: SortOrderType[] = ["ascending", "descending"];
 
 export const MenuSort = ({ onClose, open }: MenuSortProps) => {
+  const dispatch = useAppDispatch();
   const page = useAppSelector(selectPage);
   const sort = useAppSelector(selectSort);
   const sortOrder = useAppSelector(selectSortOrder);
@@ -25,7 +26,7 @@ export const MenuSort = ({ onClose, open }: MenuSortProps) => {
         arrayIncludes(sortBlacklist[key], page) ? null : (
           <MenuItem
             key={key}
-            onClick={() => setSort(key)}
+            onClick={() => dispatch(setSort(key))}
             selected={sort === key}
           >
             {sortNames[key]}
@@ -36,7 +37,7 @@ export const MenuSort = ({ onClose, open }: MenuSortProps) => {
       {sortOrders.map((item) => (
         <MenuItem
           key={item}
-          onClick={() => setSortOrder(item)}
+          onClick={() => dispatch(setSortOrder(item))}
           selected={sortOrder === item}
         >
           {capitalise(item)}

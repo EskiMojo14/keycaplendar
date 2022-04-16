@@ -1,15 +1,15 @@
+import type { Dictionary } from "@reduxjs/toolkit";
 import { push } from "connected-react-router";
 import throttle from "lodash.throttle";
 import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
-import store from "~/app/store";
 import type { AppThunk } from "~/app/store";
 import firestore from "@s/firebase/firestore";
 import {
   selectURLEntry as selectURLGuide,
   setURLEntry as setURLGuide,
 } from "@s/guides";
-import { setHistoryTab } from "@s/history";
+import { setHistoryTab } from "@s/history/thunks";
 import type { HistoryTab } from "@s/history/types";
 import {
   selectDefaultPreset,
@@ -34,15 +34,15 @@ import {
   whitelistParams,
 } from "@s/main/constants";
 import type { whitelistShipped } from "@s/main/constants";
-import { getData, setWhitelistMerge, updatePreset } from "@s/main/functions";
+import { getData, setWhitelistMerge, updatePreset } from "@s/main/thunks";
 import type { WhitelistType } from "@s/main/types";
-import { setStatisticsTab } from "@s/statistics/functions";
+import { setStatisticsTab } from "@s/statistics/thunks";
 import type { StatsTab } from "@s/statistics/types";
 import {
   selectURLEntry as selectURLUpdate,
   setURLEntry as setURLUpdate,
 } from "@s/updates";
-import { getLinkedFavorites } from "@s/user/functions";
+import { getLinkedFavorites } from "@s/user/thunks";
 import { arrayIncludes, camelise, createURL, hasKey } from "@s/util/functions";
 import themesMap from "~/_themes.module.scss";
 import {
@@ -55,8 +55,6 @@ import {
 import { blankTheme, mainPages, pageTitle, urlPages } from "./constants";
 import type { Page, ThemeMap } from "./types";
 
-const { dispatch } = store;
-
 export const triggerTransition =
   (delay = 300): AppThunk<void> =>
   (dispatch) => {
@@ -66,29 +64,25 @@ export const triggerTransition =
     }, delay);
   };
 
-export const saveTheme = () => {
+export const saveTheme = (): AppThunk<void> => (dispatch) => {
   const interpolatedThemeMap = Object.entries(themesMap).reduce<
-    Record<string, ThemeMap>
+    Dictionary<ThemeMap>
   >((prev, [key, val]) => {
     const [theme, prop] = key.split("|");
 
     const copy = { ...prev };
 
-    if (prev[theme] === undefined) {
-      copy[theme] = blankTheme;
-    }
-
     const value = val === "true" || val === "false" ? val === "true" : val;
     const camelProp = camelise(prop, "-");
     if (hasKey(copy, theme) && hasKey(blankTheme, camelProp)) {
-      copy[theme] = { ...copy[theme], [camelProp]: value };
+      copy[theme] = { ...(copy[theme] ?? blankTheme), [camelProp]: value };
     }
     return copy;
   }, {});
   dispatch(setThemeMaps(interpolatedThemeMap));
 };
 
-export const checkDevice = () => {
+export const checkDevice = (): AppThunk<void> => (dispatch) => {
   let i = 0;
   let lastWidth = Math.max(
     document.documentElement.clientWidth,
@@ -133,7 +127,7 @@ export const checkDevice = () => {
   window.addEventListener("resize", throttle(calculate, 1000));
 };
 
-export const getURLQuery = (state = store.getState()) => {
+export const getURLQuery = (): AppThunk<void> => (dispatch, getState) => {
   const params = new URLSearchParams(window.location.search);
   const path = window.location.pathname.substring(1);
   if (path || params.has("page")) {
@@ -221,9 +215,14 @@ export const getURLQuery = (state = store.getState()) => {
       }
     }
     if (index === array.length - 1 && Object.keys(whitelistObj).length > 0) {
-      const defaultPreset = selectDefaultPreset(state);
+      const defaultPreset = selectDefaultPreset(getState());
       dispatch([setURLWhitelist(whitelistObj), setCurrentPreset("default")]);
-      setWhitelistMerge({ ...defaultPreset.whitelist, ...whitelistObj }, false);
+      dispatch(
+        setWhitelistMerge(
+          { ...defaultPreset.whitelist, ...whitelistObj },
+          false
+        )
+      );
     }
   });
   if (params.has("keysetId")) {
@@ -245,7 +244,7 @@ export const getURLQuery = (state = store.getState()) => {
   if (params.has("statisticsTab")) {
     const urlTab = params.get("statisticsTab");
     if (urlTab && is<StatsTab>(urlTab)) {
-      setStatisticsTab(urlTab);
+      dispatch(setStatisticsTab(urlTab));
     }
   }
   if (params.has("historyTab")) {
@@ -269,13 +268,13 @@ export const getURLQuery = (state = store.getState()) => {
   if (params.has("favoritesId")) {
     const favoritesId = params.get("favoritesId");
     if (favoritesId) {
-      getLinkedFavorites(favoritesId);
+      dispatch(getLinkedFavorites(favoritesId));
     }
   }
   dispatch(getData());
 };
 
-export const getGlobals = async () => {
+export const getGlobals = (): AppThunk<Promise<void>> => async (dispatch) => {
   try {
     const doc = await firestore.collection("app").doc("globals").get();
     const data = doc.data();
@@ -283,7 +282,7 @@ export const getGlobals = async () => {
       const { filterPresets } = data;
       if (filterPresets) {
         const updatedPresets = filterPresets.map((preset) =>
-          updatePreset(preset)
+          dispatch(updatePreset(preset))
         );
         dispatch(setAppPresets(updatedPresets));
       }
@@ -294,54 +293,57 @@ export const getGlobals = async () => {
   }
 };
 
-export const setPage = (page: Page, state = store.getState()) => {
-  const appPage = selectPage(state);
-  const loading = selectLoading(state);
-  const urlSet = selectURLSet(state);
-  const linkedFavorites = selectLinkedFavorites(state);
-  const urlGuide = selectURLGuide(state);
-  const urlUpdate = selectURLUpdate(state);
-  if (page !== appPage && !loading && is<Page>(page)) {
-    dispatch(triggerTransition());
-    setTimeout(() => {
-      dispatch([setMainSearch(""), setAppPage(page)]);
-      if (arrayIncludes(mainPages, page)) {
-        dispatch([
-          setMainSort(pageSort[page]),
-          setMainSortOrder(pageSortOrder[page]),
-        ]);
-      }
-      document.documentElement.scrollTop = 0;
-    }, 90);
-    document.title = `KeycapLendar: ${pageTitle[page]}`;
-    if (urlSet.value) {
-      dispatch(setURLSet("id", ""));
-    }
-    if (urlGuide) {
-      dispatch(setURLGuide(""));
-    }
-    if (urlUpdate) {
-      dispatch(setURLUpdate(""));
-    }
-    if (linkedFavorites.array.length > 0) {
-      dispatch(setLinkedFavorites({ array: [], displayName: "" }));
-    }
-    const newUrl = createURL({ pathname: `/${page}` }, (params) => {
-      params.delete("page");
-      const pageParams = [
-        "keysetId",
-        "keysetAlias",
-        "keysetName",
-        "guideId",
-        "updateId",
-        "favoritesId",
-      ];
-      pageParams.forEach((param) => {
-        if (params.has(param)) {
-          params.delete(param);
+export const setPage =
+  (page: Page): AppThunk<void> =>
+  (dispatch, getState) => {
+    const state = getState();
+    const appPage = selectPage(state);
+    const loading = selectLoading(state);
+    const urlSet = selectURLSet(state);
+    const linkedFavorites = selectLinkedFavorites(state);
+    const urlGuide = selectURLGuide(state);
+    const urlUpdate = selectURLUpdate(state);
+    if (page !== appPage && !loading && is<Page>(page)) {
+      dispatch(triggerTransition());
+      setTimeout(() => {
+        dispatch([setMainSearch(""), setAppPage(page)]);
+        if (arrayIncludes(mainPages, page)) {
+          dispatch([
+            setMainSort(pageSort[page]),
+            setMainSortOrder(pageSortOrder[page]),
+          ]);
         }
+        document.documentElement.scrollTop = 0;
+      }, 90);
+      document.title = `KeycapLendar: ${pageTitle[page]}`;
+      if (urlSet.value) {
+        dispatch(setURLSet("id", ""));
+      }
+      if (urlGuide) {
+        dispatch(setURLGuide(""));
+      }
+      if (urlUpdate) {
+        dispatch(setURLUpdate(""));
+      }
+      if (linkedFavorites.array.length > 0) {
+        dispatch(setLinkedFavorites({ array: [], displayName: "" }));
+      }
+      const newUrl = createURL({ pathname: `/${page}` }, (params) => {
+        params.delete("page");
+        const pageParams = [
+          "keysetId",
+          "keysetAlias",
+          "keysetName",
+          "guideId",
+          "updateId",
+          "favoritesId",
+        ];
+        pageParams.forEach((param) => {
+          if (params.has(param)) {
+            params.delete(param);
+          }
+        });
       });
-    });
-    dispatch(push(newUrl));
-  }
-};
+      dispatch(push(newUrl));
+    }
+  };

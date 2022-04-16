@@ -20,23 +20,23 @@ import {
   getGlobals,
   getURLQuery,
   saveTheme,
-} from "@s/common/functions";
+} from "@s/common/thunks";
 import firebase from "@s/firebase";
 import {
   selectDefaultPreset,
   selectTransition,
   setCurrentPreset,
 } from "@s/main";
-import { testSets } from "@s/main/functions";
+import { testSets } from "@s/main/thunks";
 import { selectCookies, selectSettings } from "@s/settings";
 import {
   acceptCookies,
   checkStorage,
   checkTheme,
   clearCookies,
-} from "@s/settings/functions";
+} from "@s/settings/thunks";
 import { resetUser, setUser } from "@s/user";
-import { getUserPreferences } from "@s/user/functions";
+import { getUserPreferences } from "@s/user/thunks";
 import "./app.scss";
 
 export const App = () => {
@@ -52,16 +52,17 @@ export const App = () => {
   const defaultPreset = useAppSelector(selectDefaultPreset);
 
   useEffect(() => {
-    saveTheme();
-    checkDevice();
-    getURLQuery();
-    checkStorage();
-    checkTheme();
-    getGlobals();
+    dispatch([
+      saveTheme(),
+      checkDevice(),
+      getURLQuery(),
+      checkStorage(),
+      getGlobals(),
+    ]);
 
     const checkThemeListener = (e: MediaQueryListEvent) => {
       e.preventDefault();
-      checkTheme();
+      dispatch(checkTheme());
     };
 
     window
@@ -99,7 +100,7 @@ export const App = () => {
             })
           );
         }
-        getUserPreferences(user.uid);
+        dispatch(getUserPreferences(user.uid));
       } else {
         dispatch(resetUser());
         if (defaultPreset.name) {
@@ -136,8 +137,8 @@ export const App = () => {
             />
             <SnackbarQueue messages={queue.messages} />
             <SnackbarCookies
-              accept={acceptCookies}
-              clear={clearCookies}
+              accept={() => dispatch(acceptCookies())}
+              clear={() => dispatch(clearCookies())}
               open={!cookies}
             />
             <Portal />

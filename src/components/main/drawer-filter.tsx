@@ -11,7 +11,7 @@ import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import isEqual from "lodash.isequal";
 import { is } from "typescript-is";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import {
@@ -33,7 +33,7 @@ import {
   whitelistShipped,
 } from "@s/main/constants";
 import { partialPreset } from "@s/main/constructors";
-import { selectPreset, setWhitelist } from "@s/main/functions";
+import { selectPreset, setWhitelist } from "@s/main/thunks";
 import type { PresetType } from "@s/main/types";
 import { selectView } from "@s/settings";
 import { selectAllUserPresets, selectUser } from "@s/user";
@@ -82,6 +82,8 @@ export const DrawerFilter = ({
   open,
   openPreset,
 }: DrawerFilterProps) => {
+  const dispatch = useAppDispatch();
+
   const device = useAppSelector(selectDevice);
   const page = useAppSelector(selectPage);
 
@@ -114,7 +116,7 @@ export const DrawerFilter = ({
   }, [preset.whitelist, mainWhitelist]);
 
   const selectPresetFn = (e: ChangeEvent<HTMLSelectElement>) =>
-    selectPreset(e.target.value);
+    dispatch(selectPreset(e.target.value));
 
   const newPreset = (global = false) => {
     const {
@@ -189,24 +191,24 @@ export const DrawerFilter = ({
       } else if (name === "unhidden" || name === "hidden" || name === "all") {
         edited = name;
       }
-      setWhitelist(prop, edited);
+      dispatch(setWhitelist(prop, edited));
     }
   };
 
   const checkAll = (prop: string) => {
     if (hasKey(lists, prop)) {
       const { [prop]: all } = lists;
-      setWhitelist(prop, all);
+      dispatch(setWhitelist(prop, all));
     } else if (prop === "shipped") {
-      setWhitelist(prop, [...whitelistShipped]);
+      dispatch(setWhitelist(prop, [...whitelistShipped]));
     }
   };
 
   const uncheckAll = (prop: string) => {
     if (hasKey(lists, prop) && hasKey(mainWhitelist, prop)) {
-      setWhitelist(prop, []);
+      dispatch(setWhitelist(prop, []));
     } else if (prop === "shipped") {
-      setWhitelist(prop, []);
+      dispatch(setWhitelist(prop, []));
     }
   };
 
@@ -216,12 +218,12 @@ export const DrawerFilter = ({
       const inverted = all.filter(
         (value) => !mainWhitelist[prop].includes(value)
       );
-      setWhitelist(prop, inverted);
+      dispatch(setWhitelist(prop, inverted));
     } else if (prop === "shipped") {
       const inverted = whitelistShipped.filter(
         (value) => !mainWhitelist[prop].includes(value)
       );
-      setWhitelist(prop, inverted);
+      dispatch(setWhitelist(prop, inverted));
     }
   };
 
@@ -536,9 +538,7 @@ export const DrawerFilter = ({
           disabled={!modified}
           icon="restore"
           label="Reset"
-          onClick={() => {
-            selectPreset(preset.id);
-          }}
+          onClick={() => dispatch(selectPreset(preset.id))}
           outlined
         />
         <Button
@@ -729,16 +729,16 @@ export const DrawerFilter = ({
               <SegmentedButton toggle>
                 <SegmentedButtonSegment
                   label="Include"
-                  onClick={() => {
-                    setWhitelist("vendorMode", "include");
-                  }}
+                  onClick={() =>
+                    dispatch(setWhitelist("vendorMode", "include"))
+                  }
                   selected={mainWhitelist.vendorMode === "include"}
                 />
                 <SegmentedButtonSegment
                   label="Exclude"
-                  onClick={() => {
-                    setWhitelist("vendorMode", "exclude");
-                  }}
+                  onClick={() =>
+                    dispatch(setWhitelist("vendorMode", "exclude"))
+                  }
                   selected={mainWhitelist.vendorMode === "exclude"}
                 />
               </SegmentedButton>

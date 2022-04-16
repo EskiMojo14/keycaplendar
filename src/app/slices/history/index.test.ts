@@ -1,14 +1,13 @@
 import { createStore } from "~/app/store";
 import {
-  processAction,
   selectLoading,
   selectProcessedActions,
   selectTab,
-  setHistoryTab,
   setLoading,
   setProcessedActions,
   setTab,
 } from "@s/history";
+import { processAction, setHistoryTab } from "@s/history/thunks";
 import type {
   HistoryTab,
   ProcessedPublicActionType,

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { ChangeEvent } from "react";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
@@ -59,9 +59,9 @@ import {
   setManualTheme,
   setSyncSettings,
   setToTimeTheme,
-} from "@s/settings/functions";
+} from "@s/settings/thunks";
 import { selectShareName, selectUser, setUser } from "@s/user";
-import { debouncedSyncShareName } from "@s/user/functions";
+import { createDebouncedSyncShareName } from "@s/user/thunks";
 import { userRoleIcons } from "@s/users/constants";
 import { useBoolStates } from "@s/util/functions";
 import { DialogDelete } from "./dialog-delete";
@@ -73,6 +73,12 @@ type ContentSettingsProps = {
 
 export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
   const dispatch = useAppDispatch();
+
+  const debouncedSyncShareName = useCallback(
+    createDebouncedSyncShareName(dispatch),
+    [dispatch]
+  );
+
   const {
     applyTheme,
     bottomNav,
@@ -119,9 +125,8 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
       queue.notify({ title: `Error signing out: ${error}` });
     }
   };
-  const selectApplyTheme = (e: ChangeEvent<HTMLSelectElement>) => {
-    setApplyTheme(e.target.value.toLowerCase());
-  };
+  const selectApplyTheme = (e: ChangeEvent<HTMLSelectElement>) =>
+    dispatch(setApplyTheme(e.target.value.toLowerCase()));
   const permissionIcon = user.isAdmin
     ? userRoleIcons.admin
     : user.isEditor
@@ -220,7 +225,9 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
           <Switch
             checked={syncSettings}
             label="Sync settings to account"
-            onChange={(evt) => setSyncSettings(evt.currentTarget.checked)}
+            onChange={(evt) =>
+              dispatch(setSyncSettings(evt.currentTarget.checked))
+            }
           />
         </div>
         <div className="delete-container">
@@ -267,7 +274,9 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
           <Switch
             checked={bottomNav}
             label="Bottom navigation"
-            onChange={(evt) => setBottomNav(evt.currentTarget.checked)}
+            onChange={(evt) =>
+              dispatch(setBottomNav(evt.currentTarget.checked))
+            }
           />
         </div>
       </Card>
@@ -281,7 +290,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
           <div className="field-container">
             <TimePicker
               icon="history"
-              onChange={setFromTimeTheme}
+              onChange={(time) => dispatch(setFromTimeTheme(time))}
               outlined
               saveOnClose
               showNowButton
@@ -294,7 +303,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
           <div className="field-container">
             <TimePicker
               icon="update"
-              onChange={setToTimeTheme}
+              onChange={(time) => dispatch(setToTimeTheme(time))}
               outlined
               saveOnClose
               showNowButton
@@ -312,9 +321,9 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
           <Switch
             checked={manualTheme}
             id="manualTheme"
-            onChange={(e) => {
-              setManualTheme((e.target as HTMLInputElement).checked);
-            }}
+            onChange={(e) =>
+              dispatch(setManualTheme((e.target as HTMLInputElement).checked))
+            }
           />
         </div>
       </FormField>
@@ -328,23 +337,17 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
         <SegmentedButton className="density-toggle" toggle>
           <SegmentedButtonSegment
             label="Default"
-            onClick={() => {
-              setDensity("default");
-            }}
+            onClick={() => dispatch(setDensity("default"))}
             selected={density === "default"}
           />
           <SegmentedButtonSegment
             label="Comfortable"
-            onClick={() => {
-              setDensity("comfortable");
-            }}
+            onClick={() => dispatch(setDensity("comfortable"))}
             selected={density === "comfortable"}
           />
           <SegmentedButtonSegment
             label="Compact"
-            onClick={() => {
-              setDensity("compact");
-            }}
+            onClick={() => dispatch(setDensity("compact"))}
             selected={density === "compact"}
           />
         </SegmentedButton>
@@ -378,7 +381,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
                 <List className="theme-list">
                   <ListItem
                     className="light"
-                    onClick={() => setLightTheme("light")}
+                    onClick={() => dispatch(setLightTheme("light"))}
                   >
                     Light
                     <ListItemMeta>
@@ -391,7 +394,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
                   </ListItem>
                   <ListItem
                     className="sepia"
-                    onClick={() => setLightTheme("sepia")}
+                    onClick={() => dispatch(setLightTheme("sepia"))}
                   >
                     Sepia
                     <ListItemMeta>
@@ -430,7 +433,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
                 <List className="theme-list">
                   <ListItem
                     className="ocean"
-                    onClick={() => setDarkTheme("ocean")}
+                    onClick={() => dispatch(setDarkTheme("ocean"))}
                   >
                     Ocean
                     <ListItemMeta>
@@ -443,7 +446,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
                   </ListItem>
                   <ListItem
                     className="grey"
-                    onClick={() => setDarkTheme("grey")}
+                    onClick={() => dispatch(setDarkTheme("grey"))}
                   >
                     Grey
                     <ListItemMeta>
@@ -456,7 +459,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
                   </ListItem>
                   <ListItem
                     className="deep-ocean"
-                    onClick={() => setDarkTheme("deep-ocean")}
+                    onClick={() => dispatch(setDarkTheme("deep-ocean"))}
                   >
                     Deep Ocean
                     <ListItemMeta>
@@ -469,7 +472,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
                   </ListItem>
                   <ListItem
                     className="deep"
-                    onClick={() => setDarkTheme("deep")}
+                    onClick={() => dispatch(setDarkTheme("deep"))}
                   >
                     Deep Purple
                     <ListItemMeta>
@@ -482,7 +485,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
                   </ListItem>
                   <ListItem
                     className="dark"
-                    onClick={() => setDarkTheme("dark")}
+                    onClick={() => dispatch(setDarkTheme("dark"))}
                   >
                     Dark
                     <ListItemMeta>
