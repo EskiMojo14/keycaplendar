@@ -1008,6 +1008,15 @@ $overlay-values: (
         )
       );
     }
+    &--delete-confirm .mdc-button[data-mdc-dialog-action="accept"] {
+      @include button.ink-color(map-get($variables, error));
+      @include ripple.states(
+        map-get($variables, error),
+        false,
+        feature-targeting.all(),
+        ".mdc-button__ripple"
+      );
+    }
   }
 
   .mdc-drawer {

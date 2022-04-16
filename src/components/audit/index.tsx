@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { EntityId } from "@reduxjs/toolkit";
 import { Card } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -32,7 +31,6 @@ import { pageTitle } from "@s/common/constants";
 import { selectBottomNav } from "@s/settings";
 import { closeModal, openModal } from "@s/util/functions";
 import { AuditEntry } from "./audit-entry";
-import { DialogAuditDelete } from "./dialog-audit-delete";
 import { DrawerAuditFilter } from "./drawer-audit-filter";
 import "./index.scss";
 
@@ -68,8 +66,6 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
   );
 
   const [filterOpen, setFilterOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [deleteAction, setDeleteAction] = useState<EntityId>("");
 
   const toggleFilter = () => {
     if (filterOpen && device !== "desktop") {
@@ -84,16 +80,6 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
       closeModal();
     }
     setFilterOpen(false);
-  };
-  const openDelete = (action: EntityId) => {
-    setDeleteOpen(true);
-    setDeleteAction(action);
-  };
-  const closeDelete = () => {
-    setDeleteOpen(false);
-    setTimeout(() => {
-      setDeleteAction("");
-    }, 100);
   };
 
   const refreshButton = loading ? (
@@ -146,22 +132,13 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
                 >
                   <List className="three-line" twoLine>
                     {filteredActions.map((actionId) => (
-                      <AuditEntry
-                        key={actionId}
-                        actionId={actionId}
-                        openDeleteDialog={openDelete}
-                      />
+                      <AuditEntry key={actionId} actionId={actionId} />
                     ))}
                   </List>
                 </Card>
               </div>
             </div>
           </ConditionalWrapper>
-          <DialogAuditDelete
-            close={closeDelete}
-            deleteAction={deleteAction}
-            open={deleteOpen}
-          />
         </div>
       </div>
       <Footer />
@@ -169,4 +146,5 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
     </>
   );
 };
+
 export default ContentAudit;

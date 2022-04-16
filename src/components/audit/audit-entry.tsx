@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import type { EntityId } from "@reduxjs/toolkit";
 import { Button } from "@rmwc/button";
 import { Checkbox } from "@rmwc/checkbox";
@@ -23,8 +24,10 @@ import classNames from "classnames";
 import isEqual from "lodash.isequal";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
-import { useAppSelector } from "~/app/hooks";
-import { selectActionById } from "@s/audit";
+import { confirm } from "~/app/dialog-queue";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { notify } from "~/app/snackbar-queue";
+import { deleteAction, selectActionById } from "@s/audit";
 import { auditProperties } from "@s/audit/constants";
 import type { KeysetDoc } from "@s/firebase/types";
 import { alphabeticalSortProp, hasKey, ordinal } from "@s/util/functions";
@@ -32,11 +35,36 @@ import "./audit-entry.scss";
 
 type AuditEntryProps = {
   actionId: EntityId;
-  openDeleteDialog: (action: EntityId) => void;
 };
 
-export const AuditEntry = ({ actionId, openDeleteDialog }: AuditEntryProps) => {
+export const AuditEntry = ({ actionId }: AuditEntryProps) => {
+  const dispatch = useAppDispatch();
+
   const action = useAppSelector((state) => selectActionById(state, actionId));
+
+  const openDeleteDialog = useCallback(
+    () =>
+      confirm({
+        acceptLabel: "Delete",
+        body: `Are you sure you want to delete the changelog entry with the ID ${action?.changelogId}?`,
+        className: "mdc-dialog--delete-confirm",
+        onClose: async (e) => {
+          switch (e.detail.action) {
+            case "accept": {
+              try {
+                await dispatch(deleteAction(actionId)).unwrap();
+
+                notify({ title: "Successfully deleted changelog entry." });
+              } catch (error) {
+                notify({ title: `Error deleting changelog entry: ${error}` });
+              }
+            }
+          }
+        },
+        title: "Delete Action",
+      }),
+    [action]
+  );
 
   if (action) {
     const timestamp = DateTime.fromISO(action.timestamp);
@@ -613,7 +641,7 @@ export const AuditEntry = ({ actionId, openDeleteDialog }: AuditEntryProps) => {
           <Button
             className="delete"
             label="delete"
-            onClick={() => openDeleteDialog(actionId)}
+            onClick={() => openDeleteDialog()}
           />
         </div>
       </CollapsibleList>
