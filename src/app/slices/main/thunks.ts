@@ -106,7 +106,7 @@ const applyInitialPreset = (): AppThunk<void> => (dispatch, getState) => {
     Object.keys(urlWhitelist).length === 0;
   if (!currentPreset.name && noUrlParams) {
     dispatch(setCurrentPreset("default"));
-    setWhitelistMerge(defaultPreset.whitelist);
+    dispatch(setWhitelistMerge(defaultPreset.whitelist));
   } else if (!currentPreset.name && !noUrlParams) {
     const urlParams = [
       ...whitelistParams.filter((param) => params.has(param)),
@@ -122,7 +122,7 @@ const applyInitialPreset = (): AppThunk<void> => (dispatch, getState) => {
         } = defaultPreset);
       }
     });
-    setWhitelistMerge(partialWhitelist, false);
+    dispatch(setWhitelistMerge(partialWhitelist, false));
   }
 };
 
@@ -274,7 +274,7 @@ export const selectPreset =
     const preset = selectPresetById(getState(), id);
     if (preset) {
       dispatch(setCurrentPreset(preset.id));
-      setWhitelistMerge(preset.whitelist);
+      dispatch(setWhitelistMerge(preset.whitelist));
     }
   };
 
