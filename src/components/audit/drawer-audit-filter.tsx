@@ -1,5 +1,5 @@
+import { useCallback, useMemo } from "react";
 import type { ChangeEvent } from "react";
-import { useMemo } from "react";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import { Select } from "@rmwc/select";
@@ -7,9 +7,10 @@ import { Slider } from "@rmwc/slider";
 import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import {
-  getActions,
+  getActions as getActionsThunk,
   selectFilterAction,
   selectFilterUser,
   selectLength,
@@ -38,6 +39,17 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
   const filterAction = useAppSelector(selectFilterAction);
   const filterUser = useAppSelector(selectFilterUser);
   const users = useAppSelector(selectUsers);
+
+  const getActions = useCallback(
+    async (length?: number) => {
+      try {
+        await dispatch(getActionsThunk(length)).unwrap();
+      } catch (err) {
+        queue.notify({ title: `Error getting data: ${err}` });
+      }
+    },
+    [dispatch]
+  );
 
   const userOptions = useMemo(
     () => [
@@ -72,7 +84,7 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
     if (!loading) {
       dispatch(setLength(length));
       if (length >= 50 && length % 50 === 0 && length <= 250) {
-        dispatch(getActions(length));
+        getActions(length);
       }
     }
   };
@@ -102,7 +114,7 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
               min={50}
               onChange={() => {
                 if (!loading) {
-                  dispatch(getActions());
+                  getActions();
                 }
               }}
               onInput={(e) => {

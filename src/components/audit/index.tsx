@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { EntityId } from "@reduxjs/toolkit";
 import { Card } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -15,11 +15,12 @@ import {
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
 import {
-  getActions,
+  getActions as getActionsThunk,
   selectActions,
   selectActionTotal,
   selectFilter,
@@ -42,10 +43,16 @@ type ContentAuditProps = {
 export const ContentAudit = ({ openNav }: ContentAuditProps) => {
   const dispatch = useAppDispatch();
   const total = useAppSelector(selectActionTotal);
-
+  const getActions = useCallback(async () => {
+    try {
+      await dispatch(getActionsThunk()).unwrap();
+    } catch (err) {
+      queue.notify({ title: `Error getting data: ${err}` });
+    }
+  }, [dispatch]);
   useEffect(() => {
     if (total === 0) {
-      dispatch(getActions());
+      getActions();
     }
   }, []);
 
@@ -93,10 +100,7 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
     <CircularProgress />
   ) : (
     withTooltip(
-      <TopAppBarActionItem
-        icon="refresh"
-        onClick={() => dispatch(getActions())}
-      />,
+      <TopAppBarActionItem icon="refresh" onClick={() => getActions()} />,
       "Refresh",
       { align: bottomNav ? "top" : "bottom" }
     )
