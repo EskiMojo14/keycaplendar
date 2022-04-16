@@ -9,15 +9,16 @@ import { Typography } from "@rmwc/typography";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { withTooltip } from "@c/util/hocs";
 import {
+  getActions,
   selectFilterAction,
   selectFilterUser,
   selectLength,
+  selectLoading,
   selectUsers,
   setFilterAction,
   setFilterUser,
   setLength,
 } from "@s/audit";
-import { getActions } from "@s/audit/thunks";
 import { selectDevice } from "@s/common";
 import { arrayIncludes } from "@s/util/functions";
 import "./drawer-audit-filter.scss";
@@ -32,6 +33,7 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
 
   const device = useAppSelector(selectDevice);
 
+  const loading = useAppSelector(selectLoading);
   const auditLength = useAppSelector(selectLength);
   const filterAction = useAppSelector(selectFilterAction);
   const filterUser = useAppSelector(selectFilterUser);
@@ -67,9 +69,11 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
     );
   const handleLengthChange = (e: ChangeEvent<HTMLInputElement>) => {
     const length = parseInt(e.target.value);
-    dispatch(setLength(length));
-    if (length >= 50 && length % 50 === 0 && length <= 250) {
-      dispatch(getActions(length));
+    if (!loading) {
+      dispatch(setLength(length));
+      if (length >= 50 && length % 50 === 0 && length <= 250) {
+        dispatch(getActions(length));
+      }
     }
   };
 
@@ -96,8 +100,16 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
               displayMarkers
               max={250}
               min={50}
-              onChange={() => dispatch(getActions())}
-              onInput={(e) => dispatch(setLength(e.detail.value))}
+              onChange={() => {
+                if (!loading) {
+                  dispatch(getActions());
+                }
+              }}
+              onInput={(e) => {
+                if (e.detail.value !== auditLength) {
+                  dispatch(setLength(e.detail.value));
+                }
+              }}
               step={50}
               value={auditLength}
             />

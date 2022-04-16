@@ -1,12 +1,17 @@
 import {
+  createAsyncThunk,
   createEntityAdapter,
   createSelector,
   createSlice,
 } from "@reduxjs/toolkit";
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
+import isEqual from "lodash.isequal";
 import type { RootState } from "~/app/store";
+import { auditProperties } from "@s/audit/constants";
+import firestore from "@s/firebase/firestore";
 import {
   alphabeticalSort,
+  alphabeticalSortProp,
   alphabeticalSortPropCurried,
   removeDuplicates,
 } from "@s/util/functions";
@@ -24,17 +29,33 @@ export type AuditState = {
     user: string;
   };
   length: number;
-  loading: boolean;
+  loadingId: string;
 };
 
 export const initialState: AuditState = {
   actions: actionAdapter.getInitialState(),
   filter: { action: "none", user: "all" },
   length: 50,
-  loading: false,
+  loadingId: "",
 };
 
+/* eslint-disable no-use-before-define */
 export const auditSlice = createSlice({
+  extraReducers: (builder) => {
+    builder
+      .addCase(getActions.pending, (state, { meta: { requestId } }) => {
+        state.loadingId = requestId;
+      })
+      .addCase(
+        getActions.fulfilled,
+        (state, { meta: { requestId }, payload }) => {
+          actionAdapter.setAll(state.actions, payload);
+          if (state.loadingId === requestId) {
+            state.loadingId = "";
+          }
+        }
+      );
+  },
   initialState,
   name: "audit",
   reducers: {
@@ -56,11 +77,9 @@ export const auditSlice = createSlice({
     setLength: (state, { payload }: PayloadAction<number>) => {
       state.length = payload;
     },
-    setLoading: (state, { payload }: PayloadAction<boolean>) => {
-      state.loading = payload;
-    },
   },
 });
+/* eslint-enable no-use-before-define */
 
 export const {
   actions: {
@@ -69,11 +88,10 @@ export const {
     setFilterAction,
     setFilterUser,
     setLength,
-    setLoading,
   },
 } = auditSlice;
 
-export const selectLoading = (state: RootState) => state.audit.loading;
+export const selectLoading = (state: RootState) => !!state.audit.loadingId;
 
 export const selectFilter = (state: RootState) => state.audit.filter;
 
@@ -101,3 +119,59 @@ export const selectUsers = createSelector(selectActions, (actions) =>
 );
 
 export default auditSlice.reducer;
+
+export const processAction = ({
+  after,
+  before,
+  ...restAction
+}: ActionType): ActionType => {
+  if (before && after) {
+    auditProperties.forEach((prop) => {
+      const { [prop]: beforeProp } = before;
+      const { [prop]: afterProp } = after;
+      if (
+        isEqual(beforeProp, afterProp) &&
+        prop !== "profile" &&
+        prop !== "colorway"
+      ) {
+        delete before[prop];
+        delete after[prop];
+      }
+    });
+  }
+  return {
+    ...restAction,
+    after,
+    before,
+  };
+};
+
+export const getActions = createAsyncThunk<
+  ActionType[],
+  number | undefined,
+  { state: RootState }
+>("audit/getActions", async (length, { getState }) => {
+  const querySnapshot = await firestore
+    .collection("changelog")
+    .orderBy("timestamp", "desc")
+    .limit(length ?? selectLength(getState()))
+    .get();
+
+  const actions: ActionType[] = [];
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    const action = data.before?.profile
+      ? data.after?.profile
+        ? "updated"
+        : "deleted"
+      : "created";
+    actions.push({
+      ...data,
+      action,
+      changelogId: doc.id,
+    });
+  });
+
+  alphabeticalSortProp(actions, "timestamp", true);
+  return actions.map(processAction);
+});

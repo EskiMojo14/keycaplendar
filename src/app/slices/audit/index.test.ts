@@ -5,12 +5,10 @@ import {
   selectFilterAction,
   selectFilterUser,
   selectLength,
-  selectLoading,
   setAllActions,
   setFilterAction,
   setFilterUser,
   setLength,
-  setLoading,
 } from "@s/audit";
 import type { ActionType } from "@s/audit/types";
 
@@ -31,12 +29,6 @@ let store = createStore();
 
 beforeEach(() => {
   store = createStore();
-});
-
-it("sets loading state", () => {
-  store.dispatch(setLoading(true));
-  const response = selectLoading(store.getState());
-  expect(response).toBe(true);
 });
 
 it("sets all actions array", () => {
