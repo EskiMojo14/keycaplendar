@@ -13,9 +13,11 @@ import { SnackbarDeleted } from "@c/main/admin/snackbar-deleted";
 import { AppBar } from "@c/main/app_bar/app-bar";
 import { ContentEmpty } from "@c/main/content/content-empty";
 import { ContentGrid } from "@c/main/content/content-grid";
+import ContentSkeleton from "@c/main/content/content-skeleton";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { selectDevice, selectPage } from "@s/common";
 import {
+  selectInitialLoad,
   selectLinkedFavorites,
   selectSetGroupTotal,
   selectURLKeyset,
@@ -48,6 +50,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
 
   const user = useAppSelector(selectUser);
 
+  const initialLoad = useAppSelector(selectInitialLoad);
   const contentBool = useAppSelector((state) => !!selectSetGroupTotal(state));
   const urlSet = useAppSelector(selectURLKeyset);
   const linkedFavorites = useAppSelector(selectLinkedFavorites);
@@ -279,7 +282,9 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
     </ConditionalWrapper>
   );
 
-  const content = contentBool ? (
+  const content = initialLoad ? (
+    <ContentSkeleton />
+  ) : contentBool ? (
     <ContentGrid
       closeDetails={closeDetails}
       details={openDetails}
