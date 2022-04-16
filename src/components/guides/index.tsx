@@ -15,16 +15,20 @@ import {
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { push } from "connected-react-router";
+import { confirm } from "~/app/dialog-queue";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { notify } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
-import { DialogDelete } from "@c/guides/admin/dialog-delete";
 import { ModalCreate, ModalEdit } from "@c/guides/admin/modal-entry";
 import { AppBarIndent } from "@c/util/app-bar-indent";
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
+import firestore from "@s/firebase/firestore";
+import type { GuideId } from "@s/firebase/types";
 import {
   selectEntries,
+  selectEntryById,
   selectEntryTotal,
   selectLoading,
   selectURLEntry,
@@ -34,6 +38,7 @@ import { getEntries as getEntriesThunk } from "@s/guides/thunks";
 import { selectBottomNav } from "@s/settings";
 import { selectUser } from "@s/user";
 import { closeModal, createURL, openModal } from "@s/util/functions";
+import { selectFromState } from "@s/util/thunks";
 import { EntriesList } from "./entries-list";
 import { GuideEntry } from "./guide-entry";
 import { ModalDetail } from "./modal-detail";
@@ -134,27 +139,35 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
     closeModal();
   };
 
-  const [deleteEntry, setDeleteEntry] = useState<EntityId>("");
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const openDelete = (entry: EntityId) => {
-    const open = () => {
-      setDeleteOpen(true);
-      setDeleteEntry(entry);
-      openModal();
-    };
-    if (detailOpen && device !== "desktop") {
-      closeDetail();
-      setTimeout(() => open(), 300);
-    } else {
-      open();
+  const openDelete = (id: EntityId) => {
+    const entry = dispatch(
+      selectFromState((state) => selectEntryById(state, id))
+    );
+    if (entry) {
+      confirm({
+        acceptLabel: "Delete",
+        body: `Are you sure you want to delete the guide entry "${entry.title}"? This cannot be undone.`,
+        className: "mdc-dialog--delete-confirm",
+        onClose: async (e) => {
+          switch (e.detail.action) {
+            case "accept": {
+              try {
+                await firestore
+                  .collection("guides")
+                  .doc(id as GuideId)
+                  .delete();
+                notify({ title: "Successfully deleted entry." });
+                getEntries();
+              } catch (error) {
+                console.log(`Failed to delete entry: ${error}`);
+                notify({ title: `Failed to delete entry: ${error}` });
+              }
+            }
+          }
+        },
+        title: `Delete "${entry.title}"`,
+      });
     }
-  };
-  const closeDelete = () => {
-    setDeleteOpen(false);
-    setTimeout(() => {
-      setDeleteEntry("");
-    }, 300);
-    closeModal();
   };
 
   const refreshButton =
@@ -190,12 +203,6 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
         getEntries={getEntries}
         onClose={closeEdit}
         open={editOpen}
-      />
-      <DialogDelete
-        entryId={deleteEntry}
-        getEntries={getEntries}
-        onClose={closeDelete}
-        open={deleteOpen}
       />
     </>
   );
