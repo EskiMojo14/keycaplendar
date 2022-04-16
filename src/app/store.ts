@@ -92,9 +92,4 @@ export type AppDispatch = AppStore["dispatch"];
 
 export const store = createStore(loadState());
 
-export const selectFromState =
-  <Selected>(selector: (state: RootState) => Selected): AppThunk<Selected> =>
-  (dispatch, getState) =>
-    selector(getState());
-
 export default store;
