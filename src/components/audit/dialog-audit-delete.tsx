@@ -8,12 +8,7 @@ import {
 } from "@rmwc/dialog";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
-import {
-  deleteAction as deleteActionCreator,
-  selectActionById,
-} from "@s/audit";
-import firestore from "@s/firebase/firestore";
-import type { ChangelogId } from "@s/firebase/types";
+import { deleteAction, selectActionById } from "@s/audit";
 
 type DialogAuditDeleteProps = {
   close: () => void;
@@ -23,23 +18,19 @@ type DialogAuditDeleteProps = {
 
 export const DialogAuditDelete = ({
   close,
-  deleteAction,
+  deleteAction: deleteActionId,
   open,
 }: DialogAuditDeleteProps) => {
   const dispatch = useAppDispatch();
   const action = useAppSelector((state) =>
-    selectActionById(state, deleteAction)
+    selectActionById(state, deleteActionId)
   );
 
   const deleteActionFn = async () => {
     try {
-      await firestore
-        .collection("changelog")
-        .doc(deleteAction as ChangelogId)
-        .delete();
+      await dispatch(deleteAction(deleteActionId)).unwrap();
 
       queue.notify({ title: "Successfully deleted changelog entry." });
-      dispatch(deleteActionCreator(deleteAction));
       close();
     } catch (error) {
       queue.notify({ title: `Error deleting changelog entry: ${error}` });

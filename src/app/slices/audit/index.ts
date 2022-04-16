@@ -9,6 +9,7 @@ import isEqual from "lodash.isequal";
 import type { RootState } from "~/app/store";
 import { auditProperties } from "@s/audit/constants";
 import firestore from "@s/firebase/firestore";
+import type { ChangelogId } from "@s/firebase/types";
 import {
   alphabeticalSort,
   alphabeticalSortProp,
@@ -54,12 +55,20 @@ export const auditSlice = createSlice({
             state.loadingId = "";
           }
         }
-      );
+      )
+      .addCase(getActions.rejected, (state, { meta: { requestId } }) => {
+        if (state.loadingId === requestId) {
+          state.loadingId = "";
+        }
+      })
+      .addCase(deleteAction.fulfilled, (state, { meta: { arg } }) => {
+        actionAdapter.removeOne(state.actions, arg);
+      });
   },
   initialState,
   name: "audit",
   reducers: {
-    deleteAction: (state, { payload }: PayloadAction<EntityId>) => {
+    removeAction: (state, { payload }: PayloadAction<EntityId>) => {
       actionAdapter.removeOne(state.actions, payload);
     },
     setAllActions: (state, { payload }: PayloadAction<ActionType[]>) => {
@@ -83,7 +92,7 @@ export const auditSlice = createSlice({
 
 export const {
   actions: {
-    deleteAction,
+    removeAction,
     setAllActions,
     setFilterAction,
     setFilterUser,
@@ -175,3 +184,12 @@ export const getActions = createAsyncThunk<
   alphabeticalSortProp(actions, "timestamp", true);
   return actions.map(processAction);
 });
+
+export const deleteAction = createAsyncThunk(
+  "audit/deleteAction",
+  async (id: EntityId) =>
+    await firestore
+      .collection("changelog")
+      .doc(id as ChangelogId)
+      .delete()
+);
