@@ -9,7 +9,6 @@ import { dialogQueue } from "~/app/dialog-queue";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { notify, snackbarQueue } from "~/app/snackbar-queue";
 import { historyObj } from "~/app/store";
-import { SnackbarCookies } from "@c/common/snackbar-cookies";
 import { Content } from "@c/content";
 import { PrivacyPolicy } from "@c/pages/legal/privacy";
 import { TermsOfService } from "@c/pages/legal/terms";
@@ -31,12 +30,7 @@ import {
 } from "@s/main";
 import { testSets } from "@s/main/thunks";
 import { selectCookies, selectSettings } from "@s/settings";
-import {
-  acceptCookies,
-  checkStorage,
-  checkTheme,
-  clearCookies,
-} from "@s/settings/thunks";
+import { acceptCookies, checkStorage, checkTheme } from "@s/settings/thunks";
 import { resetUser, setUser } from "@s/user";
 import { getUserPreferences } from "@s/user/thunks";
 import "./app.scss";
@@ -48,6 +42,20 @@ export const App = () => {
 
   const settings = useAppSelector(selectSettings);
   const cookies = useAppSelector(selectCookies);
+  useEffect(() => {
+    if (!cookies) {
+      notify({
+        actions: [
+          { label: "Accept", onClick: () => dispatch(acceptCookies()) },
+        ],
+        dismissesOnAction: true,
+        onClose: () => dispatch(acceptCookies()),
+        timeout: 200000,
+        title:
+          "By using this site, you consent to use of cookies to store preferences.",
+      });
+    }
+  }, [cookies]);
 
   const transition = useAppSelector(selectTransition);
 
@@ -139,11 +147,6 @@ export const App = () => {
             />
             <SnackbarQueue messages={snackbarQueue.messages} />
             <DialogQueue dialogs={dialogQueue.dialogs} />
-            <SnackbarCookies
-              accept={() => dispatch(acceptCookies())}
-              clear={() => dispatch(clearCookies())}
-              open={!cookies}
-            />
             <Portal />
           </div>
         </Route>
