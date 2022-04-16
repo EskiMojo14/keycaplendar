@@ -2,10 +2,12 @@
 const { alias, aliasJest, configPaths } = require("react-app-rewire-alias");
 
 const aliasMap = configPaths("./tsconfig.paths.json");
+const CircularDependencyPlugin = require("circular-dependency-plugin");
 
 module.exports = function override(config, env) {
   const {
     module: { rules: moduleRules },
+    plugins,
   } = config;
   const index = moduleRules.findIndex((val) => "oneOf" in val);
   moduleRules[index].oneOf.unshift({
@@ -25,6 +27,11 @@ module.exports = function override(config, env) {
       },
     ],
   });
+  plugins.push(
+    new CircularDependencyPlugin({
+      exclude: /node_modules/,
+    })
+  );
   return alias(aliasMap)(config);
 };
 
