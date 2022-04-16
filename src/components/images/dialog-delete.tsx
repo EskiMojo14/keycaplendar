@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "@rmwc/dialog";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import {
   imageAdapter,
   selectFolders,
@@ -62,12 +62,12 @@ export const DialogDelete = ({
     try {
       await batchStorageDelete(array);
 
-      queue.notify({ title: "Successfully deleted files." });
+      notify({ title: "Successfully deleted files." });
       clearChecked();
       close();
       dispatch(listAll());
     } catch (error) {
-      queue.notify({ title: `Failed to delete files: ${error}` });
+      notify({ title: `Failed to delete files: ${error}` });
       console.log(error);
       dispatch(setLoading(false));
     }

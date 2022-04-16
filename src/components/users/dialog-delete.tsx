@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from "@rmwc/dialog";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import firebase from "@s/firebase";
 import { selectUserById, setLoading } from "@s/users";
 import { getUsers } from "@s/users/thunks";
@@ -29,16 +29,16 @@ export const DialogDelete = ({ onClose, open, userId }: DialogDeleteProps) => {
       const result = await deleteUser(user);
 
       if (result.data.error) {
-        queue.notify({ title: result.data.error });
+        notify({ title: result.data.error });
         dispatch(setLoading(false));
       } else {
-        queue.notify({
+        notify({
           title: `User ${user?.displayName} successfully deleted.`,
         });
         dispatch(getUsers());
       }
     } catch (error) {
-      queue.notify({ title: `Error deleting user: ${error}` });
+      notify({ title: `Error deleting user: ${error}` });
       dispatch(setLoading(false));
     }
   };

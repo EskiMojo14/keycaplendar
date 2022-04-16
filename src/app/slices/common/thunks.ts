@@ -2,7 +2,7 @@ import type { Dictionary } from "@reduxjs/toolkit";
 import { push } from "connected-react-router";
 import throttle from "lodash.throttle";
 import { is } from "typescript-is";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import firestore from "@s/firebase/firestore";
 import {
@@ -290,7 +290,7 @@ export const getGlobals = (): AppThunk<Promise<void>> => async (dispatch) => {
     }
   } catch (error) {
     console.log(`Failed to get global settings: ${error}`);
-    queue.notify({ title: `Failed to get global settings: ${error}` });
+    notify({ title: `Failed to get global settings: ${error}` });
   }
 };
 

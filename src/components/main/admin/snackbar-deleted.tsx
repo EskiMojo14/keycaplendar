@@ -1,7 +1,7 @@
 import type { MouseEvent } from "react";
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import firestore from "@s/firebase/firestore";
 import type { KeysetId } from "@s/firebase/types";
 import { setSet } from "@s/main";
@@ -27,9 +27,9 @@ export const SnackbarDeleted = ({
     const allImages = folders.map((folder) => `${folder}/${name}`);
     try {
       await batchStorageDelete(allImages);
-      queue.notify({ title: "Successfully deleted thumbnails." });
+      notify({ title: "Successfully deleted thumbnails." });
     } catch (error) {
-      queue.notify({ title: `Failed to delete thumbnails: ${error}` });
+      notify({ title: `Failed to delete thumbnails: ${error}` });
       console.log(error);
     }
   };
@@ -59,11 +59,11 @@ export const SnackbarDeleted = ({
           { merge: true }
         );
       console.log("Document recreated with ID: ", id);
-      queue.notify({ title: "Entry successfully recreated." });
+      notify({ title: "Entry successfully recreated." });
       dispatch(setSet({ id, ...set }));
     } catch (error) {
       console.error("Error recreating document: ", error);
-      queue.notify({ title: `Error recreating document: ${error}` });
+      notify({ title: `Error recreating document: ${error}` });
     }
     closeBar(true);
   };

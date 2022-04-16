@@ -1,4 +1,4 @@
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import firebase from "@s/firebase";
 import { setEntries, setLoading } from "@s/guides";
@@ -11,7 +11,7 @@ export const getEntries = (): AppThunk<Promise<void>> => async (dispatch) => {
     dispatch([setEntries(result.data), setLoading(false)]);
   } catch (error) {
     console.log(`Error getting data: ${error}`);
-    queue.notify({ title: `Error getting data: ${error}` });
+    notify({ title: `Error getting data: ${error}` });
     dispatch(setLoading(false));
   }
 };

@@ -2,7 +2,7 @@ import type { EntityId } from "@reduxjs/toolkit";
 import { push } from "connected-react-router";
 import { nanoid } from "nanoid";
 import { is } from "typescript-is";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import firestore from "@s/firebase/firestore";
 import type { UserId } from "@s/firebase/types";
@@ -156,7 +156,7 @@ export const getData = (): AppThunk<Promise<void>> => async (dispatch) => {
     dispatch(applyInitialPreset());
   } catch (error) {
     console.log(`Error getting data: ${error}`);
-    queue.notify({ title: `Error getting data: ${error}` });
+    notify({ title: `Error getting data: ${error}` });
     dispatch(setLoading(false));
   }
 };
@@ -290,7 +290,7 @@ export const syncPresets =
         .set({ filterPresets: presets }, { merge: true });
     } catch (error) {
       console.log(`Failed to sync presets: ${error}`);
-      queue.notify({ title: `Failed to sync presets: ${error}` });
+      notify({ title: `Failed to sync presets: ${error}` });
     }
   };
 
@@ -326,7 +326,7 @@ export const syncGlobalPresets =
         .set({ filterPresets: presets }, { merge: true });
     } catch (error) {
       console.log(`Failed to sync presets: ${error}`);
-      queue.notify({ title: `Failed to sync presets: ${error}` });
+      notify({ title: `Failed to sync presets: ${error}` });
     }
   };
 

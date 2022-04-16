@@ -1,6 +1,6 @@
 import { push } from "connected-react-router";
 import { DateTime } from "luxon";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import firebase from "@s/firebase";
 import { createURL, ordinal } from "@s/util/functions";
@@ -40,7 +40,7 @@ export const getData = (): AppThunk<Promise<void>> => async (dispatch) => {
     const formattedTimestamp = luxonTimetamp.toFormat(
       `HH:mm d'${timestampOrdinal}' MMM yyyy 'UTC'`
     );
-    queue.notify({
+    notify({
       timeout: 4000,
       title: `Last updated: ${formattedTimestamp}`,
     });
@@ -48,6 +48,6 @@ export const getData = (): AppThunk<Promise<void>> => async (dispatch) => {
   } catch (error) {
     console.log(error);
     dispatch(setLoading(false));
-    queue.notify({ title: `Failed to create statistics data: ${error}` });
+    notify({ title: `Failed to create statistics data: ${error}` });
   }
 };

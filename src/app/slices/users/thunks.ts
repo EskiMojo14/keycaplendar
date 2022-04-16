@@ -1,4 +1,4 @@
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import firebase from "@s/firebase";
 import {
@@ -20,7 +20,7 @@ export const getUsers =
     try {
       const result = await listUsersFn({ length, nextPageToken });
       if (result.data.error) {
-        queue.notify({ title: result.data.error });
+        notify({ title: result.data.error });
         dispatch(setLoading(false));
       } else {
         dispatch([
@@ -30,7 +30,7 @@ export const getUsers =
         ]);
       }
     } catch (error) {
-      queue.notify({ title: `Error listing users: ${error}` });
+      notify({ title: `Error listing users: ${error}` });
       dispatch(setLoading(false));
     }
   };

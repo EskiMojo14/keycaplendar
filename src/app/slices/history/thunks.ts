@@ -1,7 +1,7 @@
 import { push } from "connected-react-router";
 import isEqual from "lodash.isequal";
 import { is } from "typescript-is";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import { auditProperties } from "@s/audit/constants";
 import firebase from "@s/firebase";
@@ -76,6 +76,6 @@ export const getData = (): AppThunk<Promise<void>> => async (dispatch) => {
     ]);
   } catch (error) {
     console.log(error);
-    queue.notify({ title: `Failed to get changelog: ${error}` });
+    notify({ title: `Failed to get changelog: ${error}` });
   }
 };

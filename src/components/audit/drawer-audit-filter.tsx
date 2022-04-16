@@ -7,7 +7,7 @@ import { Slider } from "@rmwc/slider";
 import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import {
   getActions as getActionsThunk,
@@ -45,7 +45,7 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
       try {
         await dispatch(getActionsThunk(length)).unwrap();
       } catch (err) {
-        queue.notify({ title: `Error getting data: ${err}` });
+        notify({ title: `Error getting data: ${err}` });
       }
     },
     [dispatch]

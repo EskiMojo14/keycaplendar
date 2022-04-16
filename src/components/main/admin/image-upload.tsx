@@ -12,7 +12,7 @@ import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { is } from "typescript-is";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import { iconObject } from "@s/util/functions";
 import { AddPhotoAlternate } from "@i";
 import "./image-upload.scss";
@@ -67,7 +67,7 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
       setImage(blob);
     } catch (err) {
       setLoading(false);
-      queue.notify({ title: `Failed to fetch image: ${err}` });
+      notify({ title: `Failed to fetch image: ${err}` });
     }
   };
 
@@ -117,7 +117,7 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
         },
       } = e;
       if (!file.type.includes("image")) {
-        queue.notify({ title: "Error: file is not an image." });
+        notify({ title: "Error: file is not an image." });
         setDragOver(false);
         setLoading(false);
       } else {

@@ -5,7 +5,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@rmwc/dialog";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import firebase from "@s/firebase";
 
 type DialogDeleteProps = {
@@ -23,23 +23,23 @@ export const DialogDelete = ({ close, open, signOut }: DialogDeleteProps) => {
         const {
           data: { error },
         } = result;
-        queue.notify({ title: `Failed to delete account: ${error}` });
+        notify({ title: `Failed to delete account: ${error}` });
         console.log(
           `Failed to delete account: ${error}. Please contact keycaplendar@gmail.com if this issue reoccurs.`
         );
       } else if (result.data[0]?.error || result.data[1]?.error) {
         const error = result.data[0]?.error || result.data[1]?.error;
-        queue.notify({ title: `Failed to delete account: ${error}` });
+        notify({ title: `Failed to delete account: ${error}` });
         console.log(
           `Failed to delete account: ${error}. Please contact keycaplendar@gmail.com if this issue reoccurs.`
         );
       } else {
         close();
-        queue.notify({ title: "Account deleted." });
+        notify({ title: "Account deleted." });
         signOut();
       }
     } catch (error) {
-      queue.notify({ title: `Failed to delete account: ${error}` });
+      notify({ title: `Failed to delete account: ${error}` });
       console.log(
         `Failed to delete account: ${error}. Please contact keycaplendar@gmail.com if this issue reoccurs.`
       );

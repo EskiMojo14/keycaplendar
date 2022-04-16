@@ -8,7 +8,7 @@ import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
 import { nanoid } from "nanoid";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import { selectShareNameLoading, setShareNameLoading } from "@s/settings";
 import { selectFavoritesId, selectShareName, setFavoritesId } from "@s/user";
 import {
@@ -72,9 +72,9 @@ export const DialogShareFavorites = ({
   const copyLink = async () => {
     try {
       await navigator.clipboard.writeText(url.href);
-      queue.notify({ title: "Copied URL to clipboard." });
+      notify({ title: "Copied URL to clipboard." });
     } catch (error) {
-      queue.notify({ title: `Error copying to clipboard ${error}` });
+      notify({ title: `Error copying to clipboard ${error}` });
     }
   };
 

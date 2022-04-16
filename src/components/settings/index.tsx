@@ -32,7 +32,7 @@ import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
 import { TimePicker } from "@c/util/pickers/time-picker";
 import {
@@ -122,7 +122,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
       dispatch(setUser({}));
     } catch (error) {
       console.log(`Error signing out: ${error}`);
-      queue.notify({ title: `Error signing out: ${error}` });
+      notify({ title: `Error signing out: ${error}` });
     }
   };
   const selectApplyTheme = (e: ChangeEvent<HTMLSelectElement>) =>

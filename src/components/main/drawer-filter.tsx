@@ -12,7 +12,7 @@ import classNames from "classnames";
 import isEqual from "lodash.isequal";
 import { is } from "typescript-is";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import {
   SegmentedButton,
@@ -293,9 +293,9 @@ export const DrawerFilter = ({
     });
     try {
       await navigator.clipboard.writeText(url.href);
-      queue.notify({ title: "Copied filtered URL to clipboard." });
+      notify({ title: "Copied filtered URL to clipboard." });
     } catch (error) {
-      queue.notify({ title: `Error copying to clipboard ${error}` });
+      notify({ title: `Error copying to clipboard ${error}` });
     }
   };
 

@@ -1,4 +1,4 @@
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import firebase from "@s/firebase";
 import {
@@ -52,7 +52,7 @@ export const listAll =
           dispatch(setLoading(false));
         }
       } catch (error) {
-        queue.notify({ title: `Failed to list images: ${error}` });
+        notify({ title: `Failed to list images: ${error}` });
         dispatch(setLoading(false));
       }
     };

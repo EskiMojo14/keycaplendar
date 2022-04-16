@@ -26,7 +26,7 @@ import { TextField } from "@rmwc/textfield";
 import { DateTime } from "luxon";
 import { useImmer } from "use-immer";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import { Autocomplete } from "@c/util/autocomplete";
 import {
   SegmentedButton,
@@ -116,17 +116,17 @@ export const UserCard = ({ delete: deleteFn, userId }: UserCardProps) => {
         result.data.editor === user.editor &&
         result.data.admin === user.admin
       ) {
-        queue.notify({ title: "Successfully edited user permissions." });
+        notify({ title: "Successfully edited user permissions." });
         dispatch(getUsers());
       } else if (result.data.error) {
-        queue.notify({
+        notify({
           title: `Failed to edit user permissions: ${result.data.error}`,
         });
       } else {
-        queue.notify({ title: "Failed to edit user permissions." });
+        notify({ title: "Failed to edit user permissions." });
       }
     } catch (error) {
-      queue.notify({
+      notify({
         title: `Failed to edit user permissions: ${error}`,
       });
     }

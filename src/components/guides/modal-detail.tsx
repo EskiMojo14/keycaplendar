@@ -11,7 +11,7 @@ import {
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import {
   FullScreenDialog,
@@ -64,9 +64,9 @@ export const ModalDetail = ({
     });
     try {
       await navigator.clipboard.writeText(url.href);
-      queue.notify({ title: "Copied URL to clipboard." });
+      notify({ title: "Copied URL to clipboard." });
     } catch (error) {
-      queue.notify({ title: `Error copying to clipboard: ${error}` });
+      notify({ title: `Error copying to clipboard: ${error}` });
     }
   };
 

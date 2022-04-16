@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import { selectTheme, setTheme } from "@s/common";
 import firestore from "@s/firebase/firestore";
@@ -76,7 +76,7 @@ export const syncSetting =
           await userDocRef.update({ [`settings.${setting}`]: value });
         } catch (error) {
           console.log(`Failed to sync settings: ${error}`);
-          queue.notify({ title: `Failed to sync settings: ${error}` });
+          notify({ title: `Failed to sync settings: ${error}` });
         }
       };
       try {
@@ -89,7 +89,7 @@ export const syncSetting =
         }
       } catch (error) {
         console.log(`Failed to create settings object: ${error}`);
-        queue.notify({
+        notify({
           title: `Failed to create settings object: ${error}`,
         });
       }
@@ -340,7 +340,7 @@ export const setSyncSettings =
           );
       } catch (error) {
         console.log(`Failed to set sync setting: ${error}`);
-        queue.notify({ title: `Failed to set sync setting: ${error}` });
+        notify({ title: `Failed to set sync setting: ${error}` });
       }
     }
   };

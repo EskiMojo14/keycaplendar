@@ -1,5 +1,5 @@
 import type { EntityId } from "@reduxjs/toolkit";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import firestore from "@s/firebase/firestore";
 import type { UpdateId } from "@s/firebase/types";
@@ -27,7 +27,7 @@ export const getEntries = (): AppThunk<Promise<void>> => async (dispatch) => {
   } catch (error) {
     dispatch(setLoading(false));
     console.log(`Error getting data: ${error}`);
-    queue.notify({ title: `Error getting data: ${error}` });
+    notify({ title: `Error getting data: ${error}` });
   }
 };
 
@@ -40,7 +40,7 @@ export const pinEntry =
         .collection("updates")
         .doc(entryId as UpdateId)
         .set({ pinned: !entry?.pinned }, { merge: true });
-      queue.notify({
+      notify({
         title: `Entry ${entry?.pinned ? "unpinned" : "pinned"}.`,
       });
       await dispatch(getEntries());
@@ -48,7 +48,7 @@ export const pinEntry =
       console.log(
         `Failed to ${entry?.pinned ? "unpin" : "pin"} entry: ${error}`
       );
-      queue.notify({
+      notify({
         title: `Failed to ${entry?.pinned ? "unpin" : "pin"} entry: ${error}`,
       });
     }

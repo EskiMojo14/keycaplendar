@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from "@rmwc/dialog";
 import { useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import firestore from "@s/firebase/firestore";
 import type { GuideId } from "@s/firebase/types";
 import { selectEntryById } from "@s/guides";
@@ -32,12 +32,12 @@ export const DialogDelete = ({
         .collection("guides")
         .doc(entryId as GuideId)
         .delete();
-      queue.notify({ title: "Successfully deleted entry." });
+      notify({ title: "Successfully deleted entry." });
       onClose();
       getEntries();
     } catch (error) {
       console.log(`Failed to delete entry: ${error}`);
-      queue.notify({ title: `Failed to delete entry: ${error}` });
+      notify({ title: `Failed to delete entry: ${error}` });
     }
   };
   return (

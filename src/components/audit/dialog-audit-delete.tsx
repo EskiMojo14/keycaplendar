@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from "@rmwc/dialog";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import { deleteAction, selectActionById } from "@s/audit";
 
 type DialogAuditDeleteProps = {
@@ -30,10 +30,10 @@ export const DialogAuditDelete = ({
     try {
       await dispatch(deleteAction(deleteActionId)).unwrap();
 
-      queue.notify({ title: "Successfully deleted changelog entry." });
+      notify({ title: "Successfully deleted changelog entry." });
       close();
     } catch (error) {
-      queue.notify({ title: `Error deleting changelog entry: ${error}` });
+      notify({ title: `Error deleting changelog entry: ${error}` });
       close();
     }
   };

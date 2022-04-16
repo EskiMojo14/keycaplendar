@@ -12,7 +12,7 @@ import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { DateTime } from "luxon";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import { CustomReactMarkdown } from "@c/util/react-markdown";
 import { selectEntryById, selectURLEntry } from "@s/updates";
@@ -54,9 +54,9 @@ export const UpdateEntry = ({
       });
       try {
         await navigator.clipboard.writeText(url.href);
-        queue.notify({ title: "Copied URL to clipboard." });
+        notify({ title: "Copied URL to clipboard." });
       } catch (error) {
-        queue.notify({ title: `Error copying to clipboard ${error}` });
+        notify({ title: `Error copying to clipboard ${error}` });
       }
     };
 

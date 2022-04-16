@@ -1,3 +1,5 @@
 import { createSnackbarQueue } from "@rmwc/snackbar";
 
-export const queue = createSnackbarQueue();
+export const snackbarQueue = createSnackbarQueue();
+
+export const { notify } = snackbarQueue;

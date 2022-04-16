@@ -2,7 +2,7 @@ import type { AnyAction, EntityId } from "@reduxjs/toolkit";
 import debounce from "lodash.debounce";
 import { nanoid } from "nanoid";
 import { is } from "typescript-is";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import type { AppDispatch, AppThunk, BatchTuple } from "~/app/store";
 import firebase from "@s/firebase";
 import firestore from "@s/firebase/firestore";
@@ -112,7 +112,7 @@ export const getUserPreferences =
         }
       } catch (error) {
         console.log(`Failed to get user preferences: ${error}`);
-        queue.notify({ title: `Failed to get user preferences: ${error}` });
+        notify({ title: `Failed to get user preferences: ${error}` });
       }
     }
   };
@@ -138,7 +138,7 @@ export const toggleFavorite =
           );
       } catch (error) {
         console.log(`Failed to sync favorites: ${error}`);
-        queue.notify({ title: `Failed to sync favorites: ${error}` });
+        notify({ title: `Failed to sync favorites: ${error}` });
       }
     }
   };
@@ -164,7 +164,7 @@ export const toggleBought =
           );
       } catch (error) {
         console.log(`Failed to sync bought sets: ${error}`);
-        queue.notify({ title: `Failed to sync bought sets: ${error}` });
+        notify({ title: `Failed to sync bought sets: ${error}` });
       }
     }
   };
@@ -178,12 +178,12 @@ export const toggleHidden =
     const hidden = addOrRemove([...userHidden], id);
     dispatch(setHidden(hidden));
     const isHidden = hidden.includes(id);
-    queue.notify({
+    notify({
       actions: [
         {
           label: "Undo",
           onClick: () => {
-            toggleHidden(id);
+            dispatch(toggleHidden(id));
           },
         },
       ],
@@ -204,7 +204,7 @@ export const toggleHidden =
           );
       } catch (error) {
         console.log(`Failed to sync hidden sets: ${error}`);
-        queue.notify({ title: `Failed to sync hidden sets: ${error}` });
+        notify({ title: `Failed to sync hidden sets: ${error}` });
       }
     }
   };
@@ -228,7 +228,7 @@ export const syncShareName =
       dispatch(setShareNameLoading(false));
     } catch (error) {
       console.log(`Failed to sync display name: ${error}`);
-      queue.notify({ title: `Failed to sync display name: ${error}` });
+      notify({ title: `Failed to sync display name: ${error}` });
     }
   };
 
@@ -258,7 +258,7 @@ export const syncFavoritesId =
         );
     } catch (error) {
       console.log(`Failed to sync favorites ID: ${error}`);
-      queue.notify({ title: `Failed to sync favorites ID: ${error}` });
+      notify({ title: `Failed to sync favorites ID: ${error}` });
     }
   };
 
@@ -283,6 +283,6 @@ export const getLinkedFavorites =
       }
     } catch (error) {
       console.log(error);
-      queue.notify({ title: `Failed to get linked favorites: ${error}` });
+      notify({ title: `Failed to get linked favorites: ${error}` });
     }
   };

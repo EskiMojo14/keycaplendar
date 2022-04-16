@@ -1,11 +1,13 @@
 import { useEffect } from "react";
 import { Portal } from "@rmwc/base";
+import { DialogQueue } from "@rmwc/dialog";
 import { SnackbarQueue } from "@rmwc/snackbar";
 import classNames from "classnames";
 import { ConnectedRouter } from "connected-react-router";
 import { Route, Switch } from "react-router-dom";
+import { dialogQueue } from "~/app/dialog-queue";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { notify, snackbarQueue } from "~/app/snackbar-queue";
 import { historyObj } from "~/app/store";
 import { SnackbarCookies } from "@c/common/snackbar-cookies";
 import { Content } from "@c/content";
@@ -90,7 +92,7 @@ export const App = () => {
             dispatch(testSets());
           }
         } catch (error) {
-          queue.notify({ title: `Error verifying custom claims: ${error}` });
+          notify({ title: `Error verifying custom claims: ${error}` });
           dispatch(
             setUser({
               avatar: user.photoURL ?? "",
@@ -135,7 +137,8 @@ export const App = () => {
             <Content
               className={classNames({ "view-transition": transition })}
             />
-            <SnackbarQueue messages={queue.messages} />
+            <SnackbarQueue messages={snackbarQueue.messages} />
+            <DialogQueue dialogs={dialogQueue.dialogs} />
             <SnackbarCookies
               accept={() => dispatch(acceptCookies())}
               clear={() => dispatch(clearCookies())}

@@ -14,7 +14,7 @@ import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
 import Twemoji from "react-twemoji";
 import { useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import { SkeletonImage } from "@c/main/views/image-list/skeleton-image";
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice } from "@s/common";
@@ -68,9 +68,9 @@ export const ElementImage = ({
     });
     try {
       await navigator.clipboard.writeText(url.href);
-      queue.notify({ title: "Copied URL to clipboard." });
+      notify({ title: "Copied URL to clipboard." });
     } catch (error) {
-      queue.notify({ title: `Error copying to clipboard ${error}` });
+      notify({ title: `Error copying to clipboard ${error}` });
     }
   };
 

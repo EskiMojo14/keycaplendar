@@ -12,7 +12,7 @@ import {
 import { Typography } from "@rmwc/typography";
 import { DateTime } from "luxon";
 import { useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice } from "@s/common";
 import firebase from "@s/firebase";
@@ -45,7 +45,7 @@ export const DrawerDetails = ({ close, imageId, open }: DrawerDetailsProps) => {
           const metadata = await storageRef.child(image.fullPath).getMetadata();
           setMetadata(metadata);
         } catch (error) {
-          queue.notify({ title: `Failed to get metadata: ${error}` });
+          notify({ title: `Failed to get metadata: ${error}` });
           setMetadata({});
         }
       };

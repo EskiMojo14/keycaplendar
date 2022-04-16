@@ -32,7 +32,7 @@ import { is } from "typescript-is";
 import { useImmer } from "use-immer";
 import { z } from "zod";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import { Autocomplete } from "@c/util/autocomplete";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import {
@@ -872,7 +872,7 @@ export const ModalCreate = ({ onClose, open }: ModalCreateProps) => {
       try {
         const docRef = await firestore.collection("keysets").add(set);
         console.log("Document written with ID: ", docRef.id);
-        queue.notify({ title: "Entry written successfully." });
+        notify({ title: "Entry written successfully." });
         dispatch(
           setSet({
             ...set,
@@ -886,7 +886,7 @@ export const ModalCreate = ({ onClose, open }: ModalCreateProps) => {
         onClose();
       } catch (error) {
         console.error(error);
-        queue.notify({ title: `Error adding document: ${error}` });
+        notify({ title: `Error adding document: ${error}` });
       } finally {
         setUploadingDoc(false);
       }
@@ -916,14 +916,14 @@ export const ModalCreate = ({ onClose, open }: ModalCreateProps) => {
         },
         (error) => {
           // Handle unsuccessful uploads
-          queue.notify({ title: `Failed to upload image: ${error}` });
+          notify({ title: `Failed to upload image: ${error}` });
           setUploadingImage(false);
           setImageUploadProgress(0);
         },
         async () => {
           // Handle successful uploads on complete
           // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-          queue.notify({ title: "Successfully uploaded image." });
+          notify({ title: "Successfully uploaded image." });
           try {
             const downloadURL = await imageRef.getDownloadURL();
             setUploadingImage(false);
@@ -932,7 +932,7 @@ export const ModalCreate = ({ onClose, open }: ModalCreateProps) => {
           } catch (error) {
             setUploadingImage(false);
             setImageUploadProgress(0);
-            queue.notify({ title: `Failed to get URL: ${error}` });
+            notify({ title: `Failed to get URL: ${error}` });
             console.error(error);
           }
         }
@@ -982,11 +982,11 @@ export const ModalEdit = ({ onClose, open, set: setId }: ModalEditProps) => {
           .collection("keysets")
           .doc(id as KeysetId)
           .update({ ...data, latestEditor: user.id });
-        queue.notify({ title: "Entry edited successfully." });
+        notify({ title: "Entry edited successfully." });
         onClose();
         dispatch(setSet(result.data));
       } catch (error) {
-        queue.notify({ title: `Error editing document: ${error}` });
+        notify({ title: `Error editing document: ${error}` });
         console.error(error);
       } finally {
         setUploadingDoc(false);
@@ -1016,14 +1016,14 @@ export const ModalEdit = ({ onClose, open, set: setId }: ModalEditProps) => {
         (error) => {
           // Handle unsuccessful uploads
           console.error(error);
-          queue.notify({ title: `Failed to upload image: ${error}` });
+          notify({ title: `Failed to upload image: ${error}` });
           setUploadingImage(false);
           setImageUploadProgress(0);
         },
         async () => {
           // Handle successful uploads on complete
           // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-          queue.notify({ title: "Successfully uploaded image." });
+          notify({ title: "Successfully uploaded image." });
           try {
             const downloadURL = await imageRef.getDownloadURL();
             setUploadingImage(false);
@@ -1039,11 +1039,11 @@ export const ModalEdit = ({ onClose, open, set: setId }: ModalEditProps) => {
               );
               try {
                 await batchStorageDelete(allImages);
-                queue.notify({
+                notify({
                   title: "Successfully deleted previous thumbnails.",
                 });
               } catch (error) {
-                queue.notify({
+                notify({
                   title: `Failed to delete previous thumbnails: ${error}`,
                 });
                 console.error(error);
@@ -1052,7 +1052,7 @@ export const ModalEdit = ({ onClose, open, set: setId }: ModalEditProps) => {
           } catch (error) {
             setUploadingImage(false);
             setImageUploadProgress(0);
-            queue.notify({ title: `Failed to get URL: ${error}` });
+            notify({ title: `Failed to get URL: ${error}` });
             console.error(error);
           }
         }

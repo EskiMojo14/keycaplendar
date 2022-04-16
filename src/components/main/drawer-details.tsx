@@ -19,7 +19,7 @@ import { DateTime } from "luxon";
 import Twemoji from "react-twemoji";
 import { is } from "typescript-is";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice, selectPage } from "@s/common";
@@ -102,9 +102,9 @@ export const DrawerDetails = ({
       });
       try {
         await navigator.clipboard.writeText(url.href);
-        queue.notify({ title: "Copied URL to clipboard." });
+        notify({ title: "Copied URL to clipboard." });
       } catch (error) {
-        queue.notify({ title: `Error copying to clipboard ${error}` });
+        notify({ title: `Error copying to clipboard ${error}` });
       }
     }
   };

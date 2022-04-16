@@ -10,7 +10,7 @@ import {
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Typography } from "@rmwc/typography";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import { CustomReactMarkdown } from "@c/util/react-markdown";
 import { selectEntryById, selectFilteredTag, setFilteredTag } from "@s/guides";
@@ -48,9 +48,9 @@ export const GuideEntry = ({
     });
     try {
       await navigator.clipboard.writeText(url.href);
-      queue.notify({ title: "Copied URL to clipboard." });
+      notify({ title: "Copied URL to clipboard." });
     } catch (error) {
-      queue.notify({ title: `Error copying to clipboard ${error}` });
+      notify({ title: `Error copying to clipboard ${error}` });
     }
   };
 

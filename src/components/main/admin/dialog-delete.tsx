@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from "@rmwc/dialog";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import firestore from "@s/firebase/firestore";
 import type { KeysetDoc, KeysetId } from "@s/firebase/types";
 import { deleteSet } from "@s/main";
@@ -42,7 +42,7 @@ export const DialogDelete = ({
       dispatch(deleteSet(set.id));
     } catch (error) {
       console.error("Error deleting document: ", error);
-      queue.notify({ title: `Error deleting document: ${error}` });
+      notify({ title: `Error deleting document: ${error}` });
     }
     close();
   };

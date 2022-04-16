@@ -6,7 +6,7 @@ import {
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import type { AppThunk, RootState } from "~/app/store";
 import { mainPages } from "@s/common/constants";
 import {
@@ -616,7 +616,7 @@ export const selectSortHiddenSets = createSelector(
 export const setupHiddenSetsListener = (startListening: AppStartListening) =>
   startListening({
     effect: (action, { getState }) => {
-      queue.notify({
+      notify({
         title: `${selectSortHiddenSets(
           getState()
         )} sets hidden due to sort setting.`,

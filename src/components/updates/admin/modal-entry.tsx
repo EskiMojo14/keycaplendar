@@ -16,7 +16,7 @@ import { DateTime } from "luxon";
 import { useImmer } from "use-immer";
 import { z } from "zod";
 import { useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
+import { notify } from "~/app/snackbar-queue";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import {
   FullScreenDialog,
@@ -238,12 +238,12 @@ export const ModalCreate = ({
       try {
         const docRef = await firestore.collection("updates").add(result.data);
         console.log("Document written with ID: ", docRef.id);
-        queue.notify({ title: "Entry written successfully." });
+        notify({ title: "Entry written successfully." });
         onClose();
         getEntries();
       } catch (error) {
         console.error("Error adding document: ", error);
-        queue.notify({ title: `Error adding document: ${error}` });
+        notify({ title: `Error adding document: ${error}` });
       }
     }
   };
@@ -275,12 +275,12 @@ export const ModalEdit = ({
           .collection("updates")
           .doc(entryId as UpdateId)
           .set(data);
-        queue.notify({ title: "Entry edited successfully." });
+        notify({ title: "Entry edited successfully." });
         onClose();
         getEntries();
       } catch (error) {
         console.error("Error adding document: ", error);
-        queue.notify({ title: `Error adding document: ${error}` });
+        notify({ title: `Error adding document: ${error}` });
       }
     }
   };
