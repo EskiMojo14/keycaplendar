@@ -2,7 +2,6 @@ import produce from "immer";
 import { createStore } from "~/app/store";
 import { partialPreset } from "@s/main/constructors";
 import {
-  addUserPreset,
   blankCurrentUser,
   deleteUserPreset,
   selectAllUserPresets,
@@ -22,6 +21,7 @@ import {
   setUserPresets,
   upsertUserPreset,
 } from "@s/user";
+import { addUserPreset } from "@s/user/thunks";
 import type { CurrentUserType } from "@s/user/types";
 
 let store = createStore();

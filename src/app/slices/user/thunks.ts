@@ -1,5 +1,6 @@
 import type { AnyAction, EntityId } from "@reduxjs/toolkit";
 import debounce from "lodash.debounce";
+import { nanoid } from "nanoid";
 import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
 import type { AppDispatch, AppThunk, BatchTuple } from "~/app/store";
@@ -8,9 +9,11 @@ import firestore from "@s/firebase/firestore";
 import type { UserId } from "@s/firebase/types";
 import { setLinkedFavorites } from "@s/main";
 import { updatePreset } from "@s/main/thunks";
+import type { PresetType } from "@s/main/types";
 import { setShareNameLoading } from "@s/settings";
 import { setSyncSettings, settingFns } from "@s/settings/thunks";
 import {
+  addUserPreset as _addUserPreset,
   selectBought,
   selectFavorites,
   selectHidden,
@@ -23,6 +26,15 @@ import {
   setUserPresets,
 } from "@s/user";
 import { addOrRemove, hasKey } from "@s/util/functions";
+import type { Overwrite } from "@s/util/types";
+
+export const addUserPreset =
+  (userPreset: Overwrite<PresetType, { id?: string }>): AppThunk<PresetType> =>
+  (dispatch) => {
+    const preset: PresetType = { ...userPreset, id: userPreset.id ?? nanoid() };
+    dispatch(_addUserPreset(preset));
+    return preset;
+  };
 
 export const getUserPreferences =
   (id: string): AppThunk<Promise<void>> =>

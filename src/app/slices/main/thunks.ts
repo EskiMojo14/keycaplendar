@@ -36,12 +36,12 @@ import {
 } from "@s/main/constants";
 import { addLastDate } from "@s/main/functions";
 import {
-  addUserPreset,
   deleteUserPreset,
   selectAllUserPresets,
   selectUser,
   upsertUserPreset,
 } from "@s/user";
+import { addUserPreset } from "@s/user/thunks";
 import { arrayIncludes, createURL, objectEntries } from "@s/util/functions";
 import type {
   OldPresetType,
