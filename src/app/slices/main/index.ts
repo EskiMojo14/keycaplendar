@@ -5,9 +5,8 @@ import {
 } from "@reduxjs/toolkit";
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import { DateTime } from "luxon";
-import { nanoid } from "nanoid";
 import { queue } from "~/app/snackbar-queue";
-import type { AppThunk, RootState } from "~/app/store";
+import type { RootState } from "~/app/store";
 import { mainPages } from "@s/common/constants";
 import {
   arraySorts,
@@ -35,7 +34,6 @@ import {
   removeDuplicates,
   replaceFunction,
 } from "@s/util/functions";
-import type { Overwrite } from "@s/util/types";
 import type {
   PresetType,
   SetGroup,
@@ -200,6 +198,7 @@ export const mainSlice = createSlice({
 
 export const {
   actions: {
+    addAppPreset,
     deleteAppPreset,
     deleteSet,
     mergeWhitelist,
@@ -739,15 +738,3 @@ export const selectSearchTerms = createSelector(
 );
 
 export default mainSlice.reducer;
-
-const {
-  actions: { addAppPreset: _addAppPreset },
-} = mainSlice;
-
-export const addAppPreset =
-  (userPreset: Overwrite<PresetType, { id?: string }>): AppThunk<PresetType> =>
-  (dispatch) => {
-    const preset: PresetType = { ...userPreset, id: userPreset.id ?? nanoid() };
-    dispatch(_addAppPreset(preset));
-    return preset;
-  };

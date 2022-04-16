@@ -1,15 +1,16 @@
 import type { EntityId } from "@reduxjs/toolkit";
 import { push } from "connected-react-router";
+import { nanoid } from "nanoid";
 import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import firestore from "@s/firebase/firestore";
 import type { UserId } from "@s/firebase/types";
 import {
+  addAppPreset as _addAppPreset,
   setSearch as _setSearch,
   setSort as _setSort,
   setSortOrder as _setSortOrder,
-  addAppPreset,
   deleteAppPreset,
   mergeWhitelist,
   selectAllAppPresets,
@@ -43,6 +44,7 @@ import {
 } from "@s/user";
 import { addUserPreset } from "@s/user/thunks";
 import { arrayIncludes, createURL, objectEntries } from "@s/util/functions";
+import type { Overwrite } from "@s/util/types";
 import type {
   OldPresetType,
   PresetType,
@@ -258,6 +260,14 @@ export const setSearch =
   (query: string): AppThunk<void> =>
   (dispatch) => {
     dispatch(_setSearch(query));
+  };
+
+export const addAppPreset =
+  (userPreset: Overwrite<PresetType, { id?: string }>): AppThunk<PresetType> =>
+  (dispatch) => {
+    const preset: PresetType = { ...userPreset, id: userPreset.id ?? nanoid() };
+    dispatch(_addAppPreset(preset));
+    return preset;
   };
 
 export const updatePreset =

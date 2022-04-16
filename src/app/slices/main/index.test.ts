@@ -1,7 +1,6 @@
 import produce from "immer";
 import { createStore } from "~/app/store";
 import {
-  addAppPreset,
   deleteAppPreset,
   deleteSet,
   initialState,
@@ -36,6 +35,7 @@ import {
 } from "@s/main";
 import { blankKeyset } from "@s/main/constants";
 import { partialPreset } from "@s/main/constructors";
+import { addAppPreset } from "@s/main/thunks";
 import type {
   SetType,
   SortOrderType,
