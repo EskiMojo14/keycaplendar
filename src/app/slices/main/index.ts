@@ -5,8 +5,9 @@ import {
 } from "@reduxjs/toolkit";
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import { DateTime } from "luxon";
+import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
-import type { RootState } from "~/app/store";
+import type { AppThunk, RootState } from "~/app/store";
 import { mainPages } from "@s/common/constants";
 import {
   arraySorts,
@@ -35,6 +36,7 @@ import {
   replaceFunction,
 } from "@s/util/functions";
 import type {
+  OldPresetType,
   PresetType,
   SetGroup,
   SetType,
@@ -738,3 +740,21 @@ export const selectSearchTerms = createSelector(
 );
 
 export default mainSlice.reducer;
+
+export const updatePreset =
+  (preset: OldPresetType | PresetType): AppThunk<PresetType> =>
+  (dispatch, getState) => {
+    const allRegions = selectAllRegions(getState());
+    const regions = preset.whitelist.regions ?? allRegions;
+    const bought = !!preset.whitelist.bought ?? false;
+    const hidden = is<boolean>(preset.whitelist.hidden)
+      ? preset.whitelist.hidden
+        ? "hidden"
+        : "unhidden"
+      : preset.whitelist.hidden;
+    const updatedPreset: PresetType = {
+      ...preset,
+      whitelist: { ...preset.whitelist, bought, hidden, regions },
+    };
+    return updatedPreset;
+  };

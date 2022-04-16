@@ -14,7 +14,6 @@ import {
   deleteAppPreset,
   mergeWhitelist,
   selectAllAppPresets,
-  selectAllRegions,
   selectAllSets,
   selectCurrentPreset,
   selectDefaultPreset,
@@ -46,7 +45,6 @@ import { addUserPreset } from "@s/user/thunks";
 import { arrayIncludes, createURL, objectEntries } from "@s/util/functions";
 import type { Overwrite } from "@s/util/types";
 import type {
-  OldPresetType,
   PresetType,
   SetType,
   SortOrderType,
@@ -268,24 +266,6 @@ export const addAppPreset =
     const preset: PresetType = { ...userPreset, id: userPreset.id ?? nanoid() };
     dispatch(_addAppPreset(preset));
     return preset;
-  };
-
-export const updatePreset =
-  (preset: OldPresetType | PresetType): AppThunk<PresetType> =>
-  (dispatch, getState) => {
-    const allRegions = selectAllRegions(getState());
-    const regions = preset.whitelist.regions ?? allRegions;
-    const bought = !!preset.whitelist.bought ?? false;
-    const hidden = is<boolean>(preset.whitelist.hidden)
-      ? preset.whitelist.hidden
-        ? "hidden"
-        : "unhidden"
-      : preset.whitelist.hidden;
-    const updatedPreset: PresetType = {
-      ...preset,
-      whitelist: { ...preset.whitelist, bought, hidden, regions },
-    };
-    return updatedPreset;
   };
 
 export const selectPreset =

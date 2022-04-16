@@ -98,6 +98,7 @@ module.exports = {
     "@typescript-eslint/sort-type-union-intersection-members": "warn",
     "arrow-body-style": ["error", "as-needed"],
     "import/newline-after-import": "error",
+    "import/no-cycle": "warn",
     "import/no-named-as-default": "off",
     "import/order": [
       "warn",

@@ -25,6 +25,7 @@ import {
   setTransition,
   setURLSet,
   setURLWhitelist,
+  updatePreset,
 } from "@s/main";
 import {
   allSorts,
@@ -34,7 +35,7 @@ import {
   whitelistParams,
 } from "@s/main/constants";
 import type { whitelistShipped } from "@s/main/constants";
-import { getData, setWhitelistMerge, updatePreset } from "@s/main/thunks";
+import { getData, setWhitelistMerge } from "@s/main/thunks";
 import type { WhitelistType } from "@s/main/types";
 import { setStatisticsTab } from "@s/statistics/thunks";
 import type { StatsTab } from "@s/statistics/types";
