@@ -73,10 +73,12 @@ export const saveTheme = (): AppThunk<void> => (dispatch) => {
 
     const copy = { ...prev };
 
+    copy[theme] ??= blankTheme;
+
     const value = val === "true" || val === "false" ? val === "true" : val;
     const camelProp = camelise(prop, "-");
     if (hasKey(copy, theme) && hasKey(blankTheme, camelProp)) {
-      copy[theme] = { ...(copy[theme] ?? blankTheme), [camelProp]: value };
+      copy[theme] = { ...copy[theme], [camelProp]: value } as ThemeMap;
     }
     return copy;
   }, {});
