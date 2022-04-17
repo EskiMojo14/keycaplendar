@@ -9,6 +9,7 @@ export type CommonState = {
   page: Page;
   theme: string;
   themeMaps: Dictionary<ThemeMap>;
+  time: string;
 };
 
 export const initialState: CommonState = {
@@ -17,6 +18,7 @@ export const initialState: CommonState = {
   page: "calendar",
   theme: "light",
   themeMaps: {},
+  time: "",
 };
 
 export const commonSlice = createSlice({
@@ -44,11 +46,21 @@ export const commonSlice = createSlice({
     setThemeMaps: (state, { payload }: PayloadAction<Dictionary<ThemeMap>>) => {
       state.themeMaps = payload;
     },
+    setTime: (state, { payload }: PayloadAction<string>) => {
+      state.time = payload;
+    },
   },
 });
 
 export const {
-  actions: { setAppPage, setDevice, setOrientation, setTheme, setThemeMaps },
+  actions: {
+    setAppPage,
+    setDevice,
+    setOrientation,
+    setTheme,
+    setThemeMaps,
+    setTime,
+  },
 } = commonSlice;
 
 export const selectDevice = (state: RootState) => state.common.device;
@@ -60,6 +72,8 @@ export const selectPage = (state: RootState) => state.common.page;
 export const selectTheme = (state: RootState) => state.common.theme;
 
 export const selectThemesMap = (state: RootState) => state.common.themeMaps;
+
+export const selectTime = (state: RootState) => state.common.time;
 
 export const selectCurrentThemeMap = createSelector(
   [selectTheme, selectThemesMap],

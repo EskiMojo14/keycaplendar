@@ -4,6 +4,7 @@ import { DialogQueue } from "@rmwc/dialog";
 import { SnackbarQueue } from "@rmwc/snackbar";
 import classNames from "classnames";
 import { ConnectedRouter } from "connected-react-router";
+import { DateTime } from "luxon";
 import { Route, Switch } from "react-router-dom";
 import { dialogQueue } from "~/app/dialog-queue";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
@@ -14,7 +15,7 @@ import { PrivacyPolicy } from "@c/pages/legal/privacy";
 import { TermsOfService } from "@c/pages/legal/terms";
 import { Login } from "@c/pages/login";
 import { NotFound } from "@c/pages/not-found";
-import { selectDevice } from "@s/common";
+import { selectDevice, setTime } from "@s/common";
 import { allPages } from "@s/common/constants";
 import {
   checkDevice,
@@ -33,6 +34,7 @@ import { selectCookies, selectSettings, setSystemTheme } from "@s/settings";
 import { acceptCookies, checkStorage, checkTheme } from "@s/settings/thunks";
 import { resetUser, setUser } from "@s/user";
 import { getUserPreferences } from "@s/user/thunks";
+import { Interval } from "@s/util/constructors";
 import "./app.scss";
 
 export const App = () => {
@@ -79,10 +81,18 @@ export const App = () => {
     dispatch(
       setSystemTheme(window.matchMedia("(prefers-color-scheme: dark)").matches)
     );
-
     window
       .matchMedia("(prefers-color-scheme: dark)")
       .addEventListener("change", checkThemeListener);
+
+    dispatch(setTime(DateTime.now().toLocaleString(DateTime.TIME_24_SIMPLE)));
+    const syncTime = new Interval(
+      () =>
+        dispatch(
+          setTime(DateTime.now().toLocaleString(DateTime.TIME_24_SIMPLE))
+        ),
+      60000
+    );
 
     const authObserver = firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
@@ -128,6 +138,7 @@ export const App = () => {
       window
         .matchMedia("(prefers-color-scheme: dark)")
         .removeEventListener("change", checkThemeListener);
+      syncTime.clear();
     };
   }, []);
   return (
