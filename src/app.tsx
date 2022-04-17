@@ -29,7 +29,7 @@ import {
   setCurrentPreset,
 } from "@s/main";
 import { testSets } from "@s/main/thunks";
-import { selectCookies, selectSettings } from "@s/settings";
+import { selectCookies, selectSettings, setSystemTheme } from "@s/settings";
 import { acceptCookies, checkStorage, checkTheme } from "@s/settings/thunks";
 import { resetUser, setUser } from "@s/user";
 import { getUserPreferences } from "@s/user/thunks";
@@ -73,7 +73,12 @@ export const App = () => {
     const checkThemeListener = (e: MediaQueryListEvent) => {
       e.preventDefault();
       dispatch(checkTheme());
+      dispatch(setSystemTheme(e.matches));
     };
+
+    dispatch(
+      setSystemTheme(window.matchMedia("(prefers-color-scheme: dark)").matches)
+    );
 
     window
       .matchMedia("(prefers-color-scheme: dark)")

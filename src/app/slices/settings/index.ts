@@ -15,6 +15,7 @@ export type SettingsState = {
   manualTheme: boolean;
   shareNameLoading: boolean;
   syncSettings: boolean;
+  systemTheme: "dark" | "light";
   toTimeTheme: string;
   view: ViewType;
 };
@@ -31,6 +32,7 @@ export const initialState: SettingsState = {
   manualTheme: false,
   shareNameLoading: false,
   syncSettings: false,
+  systemTheme: "light",
   toTimeTheme: "06:00",
   view: "card",
 };
@@ -65,6 +67,9 @@ export const settingsSlice = createSlice({
     setShareNameLoading: (state, { payload }: PayloadAction<boolean>) => {
       state.shareNameLoading = payload;
     },
+    setSystemTheme: (state, { payload }: PayloadAction<boolean>) => {
+      state.systemTheme = payload ? "dark" : "light";
+    },
     toggleLich: (state) => {
       state.lichTheme = !state.lichTheme;
     },
@@ -72,7 +77,13 @@ export const settingsSlice = createSlice({
 });
 
 export const {
-  actions: { setCookies, setSettings, setShareNameLoading, toggleLich },
+  actions: {
+    setCookies,
+    setSettings,
+    setShareNameLoading,
+    setSystemTheme,
+    toggleLich,
+  },
 } = settingsSlice;
 
 export const selectSettings = (state: RootState) => state.settings;
@@ -89,6 +100,9 @@ export const selectSyncSettings = (state: RootState) =>
 
 export const selectShareNameLoading = (state: RootState) =>
   state.settings.shareNameLoading;
+
+export const selectSystemTheme = (state: RootState) =>
+  state.settings.systemTheme;
 
 export default settingsSlice.reducer;
 
