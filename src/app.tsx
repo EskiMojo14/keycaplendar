@@ -15,7 +15,7 @@ import { PrivacyPolicy } from "@c/pages/legal/privacy";
 import { TermsOfService } from "@c/pages/legal/terms";
 import { Login } from "@c/pages/login";
 import { NotFound } from "@c/pages/not-found";
-import { selectDevice, setTime } from "@s/common";
+import { selectDevice, setSystemTheme, setTime } from "@s/common";
 import { allPages } from "@s/common/constants";
 import {
   checkDevice,
@@ -30,7 +30,7 @@ import {
   setCurrentPreset,
 } from "@s/main";
 import { testSets } from "@s/main/thunks";
-import { selectCookies, selectSettings, setSystemTheme } from "@s/settings";
+import { selectCookies, selectSettings } from "@s/settings";
 import { acceptCookies, checkStorage, checkTheme } from "@s/settings/thunks";
 import { resetUser, setUser } from "@s/user";
 import { getUserPreferences } from "@s/user/thunks";

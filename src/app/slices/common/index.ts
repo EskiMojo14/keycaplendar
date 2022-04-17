@@ -7,6 +7,7 @@ export type CommonState = {
   device: "desktop" | "mobile" | "tablet";
   orientation: "landscape" | "portrait";
   page: Page;
+  systemTheme: "dark" | "light";
   theme: string;
   themeMaps: Dictionary<ThemeMap>;
   time: string;
@@ -16,6 +17,7 @@ export const initialState: CommonState = {
   device: "tablet",
   orientation: "landscape",
   page: "calendar",
+  systemTheme: "light",
   theme: "light",
   themeMaps: {},
   time: "",
@@ -40,6 +42,9 @@ export const commonSlice = createSlice({
     ) => {
       state.orientation = payload;
     },
+    setSystemTheme: (state, { payload }: PayloadAction<boolean>) => {
+      state.systemTheme = payload ? "dark" : "light";
+    },
     setTheme: (state, { payload }: PayloadAction<string>) => {
       state.theme = payload;
     },
@@ -57,6 +62,7 @@ export const {
     setAppPage,
     setDevice,
     setOrientation,
+    setSystemTheme,
     setTheme,
     setThemeMaps,
     setTime,
@@ -72,6 +78,8 @@ export const selectPage = (state: RootState) => state.common.page;
 export const selectTheme = (state: RootState) => state.common.theme;
 
 export const selectThemesMap = (state: RootState) => state.common.themeMaps;
+
+export const selectSystemTheme = (state: RootState) => state.common.systemTheme;
 
 export const selectTime = (state: RootState) => state.common.time;
 
