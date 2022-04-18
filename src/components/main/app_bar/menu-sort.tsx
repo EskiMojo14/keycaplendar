@@ -1,6 +1,6 @@
 import { ListDivider } from "@rmwc/list";
 import { Menu, MenuItem } from "@rmwc/menu";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "@h";
 import { selectPage } from "@s/common";
 import { selectSort, selectSortOrder } from "@s/main";
 import { allSorts, sortBlacklist, sortNames } from "@s/main/constants";

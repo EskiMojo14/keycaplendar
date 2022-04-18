@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import type { HTMLAttributes } from "react";
 import { DrawerAppContent } from "@rmwc/drawer";
 import classNames from "classnames";
-import { useAppSelector } from "~/app/hooks";
 import { ContentAudit } from "@c/audit";
 import { DrawerNav } from "@c/common/drawer-nav";
 import { ContentGuides } from "@c/guides";
@@ -13,7 +12,9 @@ import { ContentSettings } from "@c/settings";
 import { ContentStatistics } from "@c/statistics";
 import { ContentUpdates } from "@c/updates";
 import { ContentUsers } from "@c/users";
-import { selectDevice, selectPage } from "@s/common";
+import { useAppSelector } from "@h";
+import useDevice from "@h/use-device";
+import { selectPage } from "@s/common";
 import { mainPages } from "@s/common/constants";
 import { selectBottomNav } from "@s/settings";
 import { selectUser } from "@s/user";
@@ -23,7 +24,8 @@ import "./content.scss";
 type ContentProps = HTMLAttributes<HTMLDivElement>;
 
 export const Content = ({ className, ...props }: ContentProps) => {
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
+
   const bottomNav = useAppSelector(selectBottomNav);
 
   const user = useAppSelector(selectUser);

@@ -9,8 +9,8 @@ import {
   ListItemText,
 } from "@rmwc/list";
 import reactStringReplace from "react-string-replace";
-import { useAppSelector } from "~/app/hooks";
 import { withTooltip } from "@c/util/hocs";
+import { useAppSelector } from "@h";
 import { selectImageById } from "@s/images";
 import "./search-item.scss";
 

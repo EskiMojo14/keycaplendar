@@ -10,11 +10,12 @@ import {
 import { Typography } from "@rmwc/typography";
 import LazyLoad from "react-lazy-load";
 import Twemoji from "react-twemoji";
-import { useAppSelector } from "~/app/hooks";
 import { notify } from "~/app/snackbar-queue";
 import { SkeletonList } from "@c/main/views/list/skeleton-list";
 import { withTooltip } from "@c/util/hocs";
-import { selectDevice, selectPage } from "@s/common";
+import { useAppSelector } from "@h";
+import useDevice from "@h/use-device";
+import { selectPage } from "@s/common";
 import { selectSetById } from "@s/main";
 import { getSetDetails } from "@s/main/functions";
 import {
@@ -50,7 +51,7 @@ export const ElementList = ({
   const { daysLeft, live, subtitle, thisWeek } = getSetDetails(set);
 
   const page = useAppSelector(selectPage);
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
   const useLink = device === "desktop";
 
   if (loading) {

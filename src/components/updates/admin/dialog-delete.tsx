@@ -6,8 +6,8 @@ import {
   DialogContent,
   DialogTitle,
 } from "@rmwc/dialog";
-import { useAppSelector } from "~/app/hooks";
 import { notify } from "~/app/snackbar-queue";
+import { useAppSelector } from "@h";
 import firestore from "@s/firebase/firestore";
 import type { UpdateId } from "@s/firebase/types";
 import { selectEntryById } from "@s/updates";

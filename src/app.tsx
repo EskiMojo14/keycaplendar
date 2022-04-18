@@ -6,7 +6,6 @@ import classNames from "classnames";
 import { ConnectedRouter } from "connected-react-router";
 import { Route, Switch } from "react-router-dom";
 import { dialogQueue } from "~/app/dialog-queue";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { notify, snackbarQueue } from "~/app/snackbar-queue";
 import { historyObj } from "~/app/store";
 import { Content } from "@c/content";
@@ -14,14 +13,11 @@ import { PrivacyPolicy } from "@c/pages/legal/privacy";
 import { TermsOfService } from "@c/pages/legal/terms";
 import { Login } from "@c/pages/login";
 import { NotFound } from "@c/pages/not-found";
-import { selectDevice, selectTheme, setSystemTheme, setTimed } from "@s/common";
+import { useAppDispatch, useAppSelector } from "@h";
+import useDevice from "@h/use-device";
+import { selectTheme, setSystemTheme, setTimed } from "@s/common";
 import { allPages } from "@s/common/constants";
-import {
-  checkDevice,
-  getGlobals,
-  getURLQuery,
-  saveTheme,
-} from "@s/common/thunks";
+import { getGlobals, getURLQuery, saveTheme } from "@s/common/thunks";
 import firebase from "@s/firebase";
 import {
   selectDefaultPreset,
@@ -45,7 +41,7 @@ import "./app.scss";
 export const App = () => {
   const dispatch = useAppDispatch();
 
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
   const theme = useAppSelector(selectTheme);
   useEffect(() => {
     const { documentElement: html } = document;
@@ -90,13 +86,7 @@ export const App = () => {
   const defaultPreset = useAppSelector(selectDefaultPreset);
 
   useEffect(() => {
-    dispatch([
-      saveTheme(),
-      checkDevice(),
-      getURLQuery(),
-      checkStorage(),
-      getGlobals(),
-    ]);
+    dispatch([saveTheme(), getURLQuery(), checkStorage(), getGlobals()]);
 
     const checkThemeListener = (e: MediaQueryListEvent) => {
       e.preventDefault();

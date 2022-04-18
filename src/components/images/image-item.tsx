@@ -10,7 +10,7 @@ import {
 import { Ripple } from "@rmwc/ripple";
 import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
-import { useAppSelector } from "~/app/hooks";
+import { useAppSelector } from "@h";
 import { selectImageById } from "@s/images";
 import "./image-item.scss";
 

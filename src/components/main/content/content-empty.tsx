@@ -1,5 +1,5 @@
 import { Typography } from "@rmwc/typography";
-import { useAppSelector } from "~/app/hooks";
+import { useAppSelector } from "@h";
 import { selectPage } from "@s/common";
 import { selectFavorites, selectHidden } from "@s/user";
 import emptyImg from "@m/empty.svg";

@@ -10,8 +10,8 @@ import {
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
 import debounce from "lodash.debounce";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { Autocomplete, AutocompleteMobile } from "@c/util/autocomplete";
+import { useAppDispatch, useAppSelector } from "@h";
 import BEMHelper from "@s/common/bem-helper";
 import { selectSearch, selectSearchTerms } from "@s/main";
 import { setSearch as setSearchInState } from "@s/main/thunks";

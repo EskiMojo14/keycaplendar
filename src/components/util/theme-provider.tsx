@@ -4,7 +4,7 @@ import {
   createTheme,
   ThemeProvider as MuiThemeProvider,
 } from "@material-ui/core/styles";
-import { useAppSelector } from "~/app/hooks";
+import { useAppSelector } from "@h";
 import { selectCurrentThemeMap } from "@s/common";
 import { blankTheme } from "@s/common/constants";
 

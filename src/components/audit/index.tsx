@@ -13,11 +13,12 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { notify } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
+import { useAppDispatch, useAppSelector } from "@h";
+import useDevice from "@h/use-device";
 import {
   getActions as getActionsThunk,
   selectActions,
@@ -26,7 +27,6 @@ import {
   selectLoading,
 } from "@s/audit";
 import { filterActions } from "@s/audit/functions";
-import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { selectBottomNav } from "@s/settings";
 import { closeModal, openModal } from "@s/util/functions";
@@ -54,7 +54,7 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
     }
   }, []);
 
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
   const bottomNav = useAppSelector(selectBottomNav);
 
   const loading = useAppSelector(selectLoading);

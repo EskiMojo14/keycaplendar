@@ -1,10 +1,8 @@
 import { createStore } from "~/app/store";
 import {
-  selectDevice,
   selectPage,
   selectThemesMap,
   setAppPage,
-  setDevice,
   setThemeMaps,
 } from "@s/common";
 import { blankTheme } from "@s/common/constants";
@@ -14,13 +12,6 @@ let store = createStore();
 
 beforeEach(() => {
   store = createStore();
-});
-
-it("sets device category", () => {
-  const category = "mobile";
-  store.dispatch(setDevice(category));
-  const response = selectDevice(store.getState());
-  expect(response).toBe(category);
 });
 
 it("sets app page", () => {

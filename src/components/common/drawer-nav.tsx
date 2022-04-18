@@ -12,8 +12,9 @@ import {
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { DateTime } from "luxon";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { selectDevice, selectPage } from "@s/common";
+import { useAppDispatch, useAppSelector } from "@h";
+import useDevice from "@h/use-device";
+import { selectPage } from "@s/common";
 import {
   adminPages,
   pageIcons,
@@ -45,7 +46,7 @@ type DrawerNavProps = {
 export const DrawerNav = ({ close, open }: DrawerNavProps) => {
   const dispatch = useAppDispatch();
 
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
   const bottomNav = useAppSelector(selectBottomNav);
 
   const appPage = useAppSelector(selectPage);

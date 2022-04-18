@@ -11,8 +11,6 @@ import {
 import type { Page, ThemeMap } from "./types";
 
 export type CommonState = {
-  device: "desktop" | "mobile" | "tablet";
-  orientation: "landscape" | "portrait";
   page: Page;
   systemTheme: "dark" | "light";
   themeMaps: Dictionary<ThemeMap>;
@@ -20,8 +18,6 @@ export type CommonState = {
 };
 
 export const initialState: CommonState = {
-  device: "tablet",
-  orientation: "landscape",
   page: "calendar",
   systemTheme: "light",
   themeMaps: {},
@@ -34,12 +30,6 @@ export const commonSlice = createSlice({
   reducers: {
     setAppPage: (state, { payload }: PayloadAction<Page>) => {
       state.page = payload;
-    },
-    setDevice: (
-      state,
-      { payload }: PayloadAction<"desktop" | "mobile" | "tablet">
-    ) => {
-      state.device = payload;
     },
     setSystemTheme: (state, { payload }: PayloadAction<boolean>) => {
       state.systemTheme = payload ? "dark" : "light";
@@ -54,10 +44,8 @@ export const commonSlice = createSlice({
 });
 
 export const {
-  actions: { setAppPage, setDevice, setSystemTheme, setThemeMaps, setTimed },
+  actions: { setAppPage, setSystemTheme, setThemeMaps, setTimed },
 } = commonSlice;
-
-export const selectDevice = (state: RootState) => state.common.device;
 
 export const selectPage = (state: RootState) => state.common.page;
 

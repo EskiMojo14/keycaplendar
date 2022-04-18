@@ -1,5 +1,5 @@
 import { Menu, MenuItem } from "@rmwc/menu";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "@h";
 import { selectView } from "@s/settings";
 import { allViews, viewNames } from "@s/settings/constants";
 import { setView } from "@s/settings/thunks";

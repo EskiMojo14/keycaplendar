@@ -15,7 +15,6 @@ import {
 import { Typography } from "@rmwc/typography";
 import { useImmer } from "use-immer";
 import { z } from "zod";
-import { useAppSelector } from "~/app/hooks";
 import { notify } from "~/app/snackbar-queue";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import {
@@ -24,7 +23,8 @@ import {
   FullScreenDialogContent,
 } from "@c/util/full-screen-dialog";
 import { CustomReactMarkdown, CustomReactMde } from "@c/util/react-markdown";
-import { selectDevice } from "@s/common";
+import { useAppSelector } from "@h";
+import useDevice from "@h/use-device";
 import firestore from "@s/firebase/firestore";
 import type { GuideId } from "@s/firebase/types";
 import { selectEntryById } from "@s/guides";
@@ -56,7 +56,7 @@ export const ModalEntry = ({
   onSubmit,
   open,
 }: ModalEntryProps) => {
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
 
   const [entry, updateEntry] = useImmer(partialGuide({ name }));
 

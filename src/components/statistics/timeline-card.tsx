@@ -24,13 +24,12 @@ import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
 import classNames from "classnames";
 import ChartistGraph from "react-chartist";
-import { useAppSelector } from "~/app/hooks";
 import { withTooltip } from "@c/util/hocs";
 import {
   SegmentedButton,
   SegmentedButtonSegment,
 } from "@c/util/segmented-button";
-import { selectDevice } from "@s/common";
+import useDevice from "@h/use-device";
 import type {
   ShippedDataObject,
   TimelineDataObject,
@@ -145,7 +144,7 @@ export const ShippedCard = ({
   overline,
   summary,
 }: ShippedCardProps) => {
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [graphType, setGraphType] = useState<"bar" | "line">(defaultType);
   const chartData =

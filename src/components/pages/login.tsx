@@ -7,16 +7,16 @@ import {
 import { Typography } from "@rmwc/typography";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import { Redirect } from "react-router-dom";
-import { useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
-import { selectDevice } from "@s/common";
+import { useAppSelector } from "@h";
+import useDevice from "@h/use-device";
 import firebase from "@s/firebase";
 import { selectUser } from "@s/user";
 import peach from "@m/peach.svg";
 import "./login.scss";
 
 export const Login = () => {
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
 
   const user = useAppSelector(selectUser);
 

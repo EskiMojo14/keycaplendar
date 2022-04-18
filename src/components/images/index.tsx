@@ -7,12 +7,12 @@ import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { useImmer } from "use-immer";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
 import ImageAppBar from "@c/images/app-bar";
 import ImageItem from "@c/images/image-item";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
-import { selectDevice } from "@s/common";
+import { useAppDispatch, useAppSelector } from "@h";
+import useDevice from "@h/use-device";
 import {
   selectCurrentFolder,
   selectDuplicateImages,
@@ -47,7 +47,7 @@ type ContentImagesProps = {
 
 export const ContentImages = ({ openNav }: ContentImagesProps) => {
   const dispatch = useAppDispatch();
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
 
   const bottomNav = useAppSelector(selectBottomNav);
 

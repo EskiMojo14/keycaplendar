@@ -11,12 +11,12 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
 import { DialogDelete } from "@c/updates/admin/dialog-delete";
 import { ModalCreate, ModalEdit } from "@c/updates/admin/modal-entry";
 import { AppBarIndent } from "@c/util/app-bar-indent";
-import { selectDevice } from "@s/common";
+import { useAppDispatch, useAppSelector } from "@h";
+import useDevice from "@h/use-device";
 import { pageTitle } from "@s/common/constants";
 import { selectBottomNav } from "@s/settings";
 import { selectEntryIds, selectLoading, selectURLEntry } from "@s/updates";
@@ -35,7 +35,7 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
 
   const getEntries = () => dispatch(getEntriesThunk());
 
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
 
   const bottomNav = useAppSelector(selectBottomNav);
 

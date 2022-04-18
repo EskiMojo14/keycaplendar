@@ -18,11 +18,12 @@ import classNames from "classnames";
 import { DateTime } from "luxon";
 import Twemoji from "react-twemoji";
 import { is } from "typescript-is";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { notify } from "~/app/snackbar-queue";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
-import { selectDevice, selectPage } from "@s/common";
+import { useAppDispatch, useAppSelector } from "@h";
+import useDevice from "@h/use-device";
+import { selectPage } from "@s/common";
 import { mainPages } from "@s/common/constants";
 import { selectSearch, selectSetById, setSearch } from "@s/main";
 import type { SetType } from "@s/main/types";
@@ -83,7 +84,7 @@ export const DrawerDetails = ({
   const selectBought = useCallback(createSelectSetBought(), []);
   const bought = useAppSelector((state) => selectBought(state, setId));
 
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
   const page = useAppSelector(selectPage);
 
   const view = useAppSelector(selectView);

@@ -1,22 +1,14 @@
 {
-    "compilerOptions": {
-        "baseUrl": ".",
-        "paths": {
-            "@s/*": [
-                "src/app/slices/*"
-            ],
-            "@c/*": [
-                "src/components/*"
-            ],
-            "@i": [
-                "src/media/icons"
-            ],
-            "@m/*": [
-                "src/media/*"
-            ],
-            "~/*": [
-                "src/*"
-            ]
-        }
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@s/*": ["src/app/slices/*"],
+      "@h": ["src/app/hooks/index.ts"],
+      "@h/*": ["src/app/hooks/*"],
+      "@c/*": ["src/components/*"],
+      "@i": ["src/media/icons"],
+      "@m/*": ["src/media/*"],
+      "~/*": ["src/*"]
     }
+  }
 }

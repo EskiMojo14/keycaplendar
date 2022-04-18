@@ -14,14 +14,14 @@ import classNames from "classnames";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
 import type { SlideRendererCallback } from "react-swipeable-views-utils";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
 import { withTooltip } from "@c/util/hocs";
 import {
   SegmentedButton,
   SegmentedButtonSegment,
 } from "@c/util/segmented-button";
-import { selectDevice } from "@s/common";
+import { useAppDispatch, useAppSelector } from "@h";
+import useDevice from "@h/use-device";
 import { pageTitle } from "@s/common/constants";
 import { selectBottomNav } from "@s/settings";
 import {
@@ -62,7 +62,7 @@ type ContentStatisticsProps = {
 
 export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
   const dispatch = useAppDispatch();
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
   const bottomNav = useAppSelector(selectBottomNav);
 
   const statisticsTab = useAppSelector(selectTab);

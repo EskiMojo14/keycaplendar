@@ -5,7 +5,6 @@ import { Fab } from "@rmwc/fab";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import classNames from "classnames";
 import { push } from "connected-react-router";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
 import { DialogDelete } from "@c/main/admin/dialog-delete";
 import { ModalCreate, ModalEdit } from "@c/main/admin/modal-entry";
@@ -15,7 +14,9 @@ import { ContentEmpty } from "@c/main/content/content-empty";
 import { ContentGrid } from "@c/main/content/content-grid";
 import ContentSkeleton from "@c/main/content/content-skeleton";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
-import { selectDevice, selectPage } from "@s/common";
+import { useAppDispatch, useAppSelector } from "@h";
+import useDevice from "@h/use-device";
+import { selectPage } from "@s/common";
 import {
   selectInitialLoad,
   selectLinkedFavorites,
@@ -42,7 +43,7 @@ type ContentMainProps = {
 export const ContentMain = ({ openNav }: ContentMainProps) => {
   const dispatch = useAppDispatch();
 
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
   const bottomNav = useAppSelector(selectBottomNav);
   const view = useAppSelector(selectView);
 

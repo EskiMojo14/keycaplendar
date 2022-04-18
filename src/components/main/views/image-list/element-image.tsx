@@ -13,11 +13,11 @@ import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
 import Twemoji from "react-twemoji";
-import { useAppSelector } from "~/app/hooks";
 import { notify } from "~/app/snackbar-queue";
 import { SkeletonImage } from "@c/main/views/image-list/skeleton-image";
 import { withTooltip } from "@c/util/hocs";
-import { selectDevice } from "@s/common";
+import { useAppSelector } from "@h";
+import useDevice from "@h/use-device";
 import { selectSetById } from "@s/main";
 import { getSetDetails } from "@s/main/functions";
 import {
@@ -54,7 +54,7 @@ export const ElementImage = ({
     month: "MMM",
   });
 
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
   const useLink = device === "desktop";
 
   if (loading) {

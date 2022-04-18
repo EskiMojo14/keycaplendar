@@ -22,7 +22,7 @@ import {
 import { Typography } from "@rmwc/typography";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
-import { useAppSelector } from "~/app/hooks";
+import { useAppSelector } from "@h";
 import { auditProperties, auditPropertiesFormatted } from "@s/audit/constants";
 import type { ActionSetType } from "@s/audit/types";
 import type { KeysetDoc } from "@s/firebase/types";

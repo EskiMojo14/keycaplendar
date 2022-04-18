@@ -10,10 +10,11 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
-import { useAppSelector } from "~/app/hooks";
 import { AppBarIndent } from "@c/util/app-bar-indent";
 import { withTooltip } from "@c/util/hocs";
-import { selectDevice, selectPage } from "@s/common";
+import { useAppSelector } from "@h";
+import useDevice from "@h/use-device";
+import { selectPage } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { selectLinkedFavorites, selectLoading } from "@s/main";
 import { selectBottomNav, selectView } from "@s/settings";
@@ -43,7 +44,7 @@ export const AppBar = ({
   openNav,
   openShare,
 }: AppBarProps) => {
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
   const view = useAppSelector(selectView);
   const bottomNav = useAppSelector(selectBottomNav);
 

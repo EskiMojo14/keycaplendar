@@ -31,7 +31,6 @@ import type { IconOptions } from "@rmwc/types";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { notify } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
 import { TimePicker } from "@c/util/pickers/time-picker";
@@ -39,7 +38,8 @@ import {
   SegmentedButton,
   SegmentedButtonSegment,
 } from "@c/util/segmented-button";
-import { selectDevice } from "@s/common";
+import { useAppDispatch, useAppSelector } from "@h";
+import useDevice from "@h/use-device";
 import { pageTitle } from "@s/common/constants";
 import firebase from "@s/firebase";
 import {
@@ -90,7 +90,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
     toTimeTheme,
   } = useAppSelector(selectSettings);
   const bottomNavSetting = useAppSelector(selectBottomNav);
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
   const syncSettings = useAppSelector(selectSyncSettings);
 
   const user = useAppSelector(selectUser);

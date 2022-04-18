@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useDebugValue, useEffect, useState } from "react";
 
 export type OrientationState = {
   angle: number;
@@ -17,6 +17,7 @@ const defaultState: OrientationState = {
 
 const useOrientation = (initialState: OrientationState = defaultState) => {
   const [state, setState] = useState(initialState);
+  useDebugValue(state);
 
   useEffect(() => {
     let mounted = true;
@@ -40,6 +41,7 @@ const useOrientation = (initialState: OrientationState = defaultState) => {
       }
     };
     window.screen.orientation.addEventListener("change", onChange);
+    onChange();
     return () => {
       mounted = false;
       window.screen.orientation.removeEventListener("change", onChange);

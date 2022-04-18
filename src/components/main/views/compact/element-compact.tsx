@@ -9,11 +9,12 @@ import {
   ListItemText,
 } from "@rmwc/list";
 import Twemoji from "react-twemoji";
-import { useAppSelector } from "~/app/hooks";
 import { notify } from "~/app/snackbar-queue";
 import { SkeletonCompact } from "@c/main/views/compact/skeleton-compact";
 import { withTooltip } from "@c/util/hocs";
-import { selectDevice, selectPage } from "@s/common";
+import { useAppSelector } from "@h";
+import useDevice from "@h/use-device";
+import { selectPage } from "@s/common";
 import { selectSetById } from "@s/main";
 import { getSetDetails } from "@s/main/functions";
 import { clearSearchParams, createURL, iconObject } from "@s/util/functions";
@@ -43,7 +44,7 @@ export const ElementCompact = ({
   const { live, subtitle } = getSetDetails(set, { month: "MMM" });
 
   const page = useAppSelector(selectPage);
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
   const useLink = device === "desktop";
 
   if (loading) {

@@ -10,13 +10,13 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { withTooltip } from "@c/util/hocs";
 import {
   SegmentedButton,
   SegmentedButtonSegment,
 } from "@c/util/segmented-button";
-import { selectDevice } from "@s/common";
+import { useAppDispatch, useAppSelector } from "@h";
+import useDevice from "@h/use-device";
 import { pageTitle } from "@s/common/constants";
 import { selectCurrentFolder, selectFolders, selectLoading } from "@s/images";
 import { setFolder } from "@s/images/thunks";
@@ -41,7 +41,7 @@ export const ImageAppBar = ({
 }: ImageAppBarProps) => {
   const dispatch = useAppDispatch();
 
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
 
   const bottomNav = useAppSelector(selectBottomNav);
   const loading = useAppSelector(selectLoading);

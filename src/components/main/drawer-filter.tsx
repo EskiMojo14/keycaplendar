@@ -11,14 +11,15 @@ import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import isEqual from "lodash.isequal";
 import { is } from "typescript-is";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { notify } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import {
   SegmentedButton,
   SegmentedButtonSegment,
 } from "@c/util/segmented-button";
-import { selectDevice, selectPage } from "@s/common";
+import { useAppDispatch, useAppSelector } from "@h";
+import useDevice from "@h/use-device";
+import { selectPage } from "@s/common";
 import {
   selectAllAppPresets,
   selectAllProfiles,
@@ -84,7 +85,7 @@ export const DrawerFilter = ({
 }: DrawerFilterProps) => {
   const dispatch = useAppDispatch();
 
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
   const page = useAppSelector(selectPage);
 
   const view = useAppSelector(selectView);

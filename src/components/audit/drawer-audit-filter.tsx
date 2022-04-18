@@ -6,9 +6,10 @@ import { Select } from "@rmwc/select";
 import { Slider } from "@rmwc/slider";
 import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { notify } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
+import { useAppDispatch, useAppSelector } from "@h";
+import useDevice from "@h/use-device";
 import {
   getActions as getActionsThunk,
   selectFilterAction,
@@ -20,7 +21,6 @@ import {
   setFilterUser,
   setLength,
 } from "@s/audit";
-import { selectDevice } from "@s/common";
 import { arrayIncludes } from "@s/util/functions";
 import "./drawer-audit-filter.scss";
 
@@ -32,7 +32,7 @@ type DrawerAuditFilterProps = {
 export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
   const dispatch = useAppDispatch();
 
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
 
   const loading = useAppSelector(selectLoading);
   const auditLength = useAppSelector(selectLength);

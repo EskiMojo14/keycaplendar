@@ -16,8 +16,7 @@ import type { IPieChartOptions } from "chartist";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
 import classNames from "classnames";
 import ChartistGraph from "react-chartist";
-import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common";
+import useDevice from "@h/use-device";
 import type { StatusDataObject } from "@s/statistics/types";
 import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
 import "./pie-card.scss";
@@ -37,7 +36,7 @@ export const StatusCard = ({
   overline,
   summary,
 }: StatusCardProps) => {
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const chartData =
     selectedIndex >= 0 && summary && breakdownData

@@ -6,8 +6,8 @@ import {
   DialogContent,
   DialogTitle,
 } from "@rmwc/dialog";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { notify } from "~/app/snackbar-queue";
+import { useAppDispatch, useAppSelector } from "@h";
 import firebase from "@s/firebase";
 import { selectUserById, setLoading } from "@s/users";
 import { getUsers } from "@s/users/thunks";

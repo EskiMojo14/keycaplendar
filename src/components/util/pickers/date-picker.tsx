@@ -16,15 +16,14 @@ import type {
 } from "@rmwc/textfield";
 import { DateTime } from "luxon";
 import { useRifm } from "rifm";
-import { useAppSelector } from "~/app/hooks";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
-import { selectDevice } from "@s/common";
+import useDevice from "@h/use-device";
+import useOrientation from "@h/use-orientation";
 import BEMHelper from "@s/common/bem-helper";
 import { capitalise, iconObject, invalidDate } from "@s/util/functions";
 import type { Common, Overwrite } from "@s/util/types";
 import { Event } from "@i";
-import useOrientation from "~/app/hooks/use-orientation";
 import "./pickers.scss";
 
 const parseDigits = (string: string) => (string.match(/\d+/g) || []).join("");
@@ -106,7 +105,7 @@ export const DatePicker = ({
   helpTextProps = {},
   ...props
 }: DatePickerProps) => {
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
   const useInline = device === "desktop";
   const orientation = useOrientation();
   const landscape = orientation.type.startsWith("landscape");

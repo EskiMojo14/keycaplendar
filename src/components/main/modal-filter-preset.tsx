@@ -13,7 +13,6 @@ import {
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import produce from "immer";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import {
   FullScreenDialog,
@@ -24,7 +23,8 @@ import {
   SegmentedButton,
   SegmentedButtonSegment,
 } from "@c/util/segmented-button";
-import { selectDevice } from "@s/common";
+import { useAppDispatch, useAppSelector } from "@h";
+import useDevice from "@h/use-device";
 import {
   editGlobalPreset,
   editPreset,
@@ -48,7 +48,7 @@ export const ModalFilterPreset = ({
 }: ModalFilterPresetProps) => {
   const dispatch = useAppDispatch();
 
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
   const user = useAppSelector(selectUser);
 
   const [name, setName] = useState("");

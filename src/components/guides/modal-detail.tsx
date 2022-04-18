@@ -10,7 +10,6 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { notify } from "~/app/snackbar-queue";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import {
@@ -20,7 +19,8 @@ import {
 } from "@c/util/full-screen-dialog";
 import { withTooltip } from "@c/util/hocs";
 import { CustomReactMarkdown } from "@c/util/react-markdown";
-import { selectDevice } from "@s/common";
+import { useAppDispatch, useAppSelector } from "@h";
+import useDevice from "@h/use-device";
 import { selectEntryById, selectFilteredTag, setFilteredTag } from "@s/guides";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
 import { selectUser } from "@s/user";
@@ -45,7 +45,7 @@ export const ModalDetail = ({
 }: ModalCreateProps) => {
   const dispatch = useAppDispatch();
 
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
 
   const user = useAppSelector(selectUser);
 

@@ -22,7 +22,6 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
 import { DialogDelete } from "@c/users/dialog-delete";
 import {
@@ -36,7 +35,8 @@ import {
   DataTablePaginationTrailing,
 } from "@c/util/data-table-pagination";
 import { withTooltip } from "@c/util/hocs";
-import { selectDevice } from "@s/common";
+import { useAppDispatch, useAppSelector } from "@h";
+import useDevice from "@h/use-device";
 import { pageTitle } from "@s/common/constants";
 import { selectBottomNav } from "@s/settings";
 import {
@@ -78,7 +78,7 @@ type ContentUsersProps = {
 export const ContentUsers = ({ openNav }: ContentUsersProps) => {
   const dispatch = useAppDispatch();
 
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
   const bottomNav = useAppSelector(selectBottomNav);
 
   const view = useAppSelector(selectView);

@@ -17,10 +17,10 @@ import classNames from "classnames";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
 import type { SlideRendererCallback } from "react-swipeable-views-utils";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
 import { DialogSales } from "@c/main/dialog-sales";
 import { DrawerDetails } from "@c/main/drawer-details";
+import { useAppDispatch, useAppSelector } from "@h";
 import { pageTitle } from "@s/common/constants";
 import {
   processedActionsAdapter,

@@ -25,14 +25,14 @@ import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
 import { DateTime } from "luxon";
 import { useImmer } from "use-immer";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { notify } from "~/app/snackbar-queue";
 import { Autocomplete } from "@c/util/autocomplete";
 import {
   SegmentedButton,
   SegmentedButtonSegment,
 } from "@c/util/segmented-button";
-import { selectDevice } from "@s/common";
+import { useAppDispatch, useAppSelector } from "@h";
+import useDevice from "@h/use-device";
 import firebase from "@s/firebase";
 import { selectAllDesigners } from "@s/main";
 import { selectUser } from "@s/user";
@@ -54,7 +54,7 @@ const roles = ["designer", "editor", "admin"] as const;
 export const UserCard = ({ delete: deleteFn, userId }: UserCardProps) => {
   const dispatch = useAppDispatch();
 
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
 
   const currentUser = useAppSelector(selectUser);
   const propsUser = useAppSelector((state) => selectUserById(state, userId));

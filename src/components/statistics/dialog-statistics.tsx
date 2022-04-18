@@ -8,7 +8,7 @@ import {
 } from "@rmwc/dialog";
 import { List, ListItem, ListItemMeta } from "@rmwc/list";
 import { Radio } from "@rmwc/radio";
-import { useAppSelector } from "~/app/hooks";
+import { useAppSelector } from "@h";
 import { selectSettings, selectTab, setStatisticsSetting } from "@s/statistics";
 import type { Categories, Properties } from "@s/statistics/types";
 import { hasKey } from "@s/util/functions";

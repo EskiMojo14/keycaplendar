@@ -6,7 +6,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@rmwc/dialog";
-import { useAppSelector } from "~/app/hooks";
+import { useAppSelector } from "@h";
 import { selectSetById } from "@s/main";
 import "./dialog-sales.scss";
 

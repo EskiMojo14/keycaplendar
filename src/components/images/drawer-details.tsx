@@ -11,10 +11,10 @@ import {
 } from "@rmwc/list";
 import { Typography } from "@rmwc/typography";
 import { DateTime } from "luxon";
-import { useAppSelector } from "~/app/hooks";
 import { notify } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
-import { selectDevice } from "@s/common";
+import { useAppSelector } from "@h";
+import useDevice from "@h/use-device";
 import firebase from "@s/firebase";
 import { selectImageById } from "@s/images";
 import { formatBytes, objectKeys, ordinal } from "@s/util/functions";
@@ -31,7 +31,7 @@ type DrawerDetailsProps = {
 };
 
 export const DrawerDetails = ({ close, imageId, open }: DrawerDetailsProps) => {
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
 
   const image = useAppSelector((state) => selectImageById(state, imageId));
 

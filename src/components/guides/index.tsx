@@ -16,13 +16,13 @@ import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { push } from "connected-react-router";
 import { confirm } from "~/app/dialog-queue";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { notify } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
 import { ModalCreate, ModalEdit } from "@c/guides/admin/modal-entry";
 import { AppBarIndent } from "@c/util/app-bar-indent";
 import { withTooltip } from "@c/util/hocs";
-import { selectDevice } from "@s/common";
+import { useAppDispatch, useAppSelector } from "@h";
+import useDevice from "@h/use-device";
 import { pageTitle } from "@s/common/constants";
 import firestore from "@s/firebase/firestore";
 import type { GuideId } from "@s/firebase/types";
@@ -54,7 +54,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
 
   const getEntries = () => dispatch(getEntriesThunk());
 
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
 
   const bottomNav = useAppSelector(selectBottomNav);
 

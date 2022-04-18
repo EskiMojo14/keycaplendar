@@ -14,9 +14,9 @@ import {
   ListItemSecondaryText,
   ListItemText,
 } from "@rmwc/list";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { BoolWrapper } from "@c/util/conditional-wrapper";
-import { selectDevice } from "@s/common";
+import { useAppDispatch, useAppSelector } from "@h";
+import useDevice from "@h/use-device";
 import {
   selectAllTags,
   selectEntryMap,
@@ -37,7 +37,7 @@ type EntriesDrawerProps = {
 export const EntriesList = ({ detailEntry, openEntry }: EntriesDrawerProps) => {
   const dispatch = useAppDispatch();
 
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
 
   const entriesMap = useAppSelector(selectEntryMap);
   const allTags = useAppSelector(selectAllTags);

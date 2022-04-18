@@ -7,8 +7,8 @@ import { Switch } from "@rmwc/switch";
 import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
 import { nanoid } from "nanoid";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { notify } from "~/app/snackbar-queue";
+import { useAppDispatch, useAppSelector } from "@h";
 import { selectShareNameLoading, setShareNameLoading } from "@s/settings";
 import { selectFavoritesId, selectShareName, setFavoritesId } from "@s/user";
 import {

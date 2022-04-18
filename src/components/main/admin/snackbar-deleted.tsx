@@ -1,7 +1,7 @@
 import type { MouseEvent } from "react";
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { notify } from "~/app/snackbar-queue";
+import { useAppDispatch, useAppSelector } from "@h";
 import firestore from "@s/firebase/firestore";
 import type { KeysetId } from "@s/firebase/types";
 import { setSet } from "@s/main";

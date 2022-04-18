@@ -6,7 +6,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@rmwc/dialog";
-import { useAppDispatch } from "~/app/hooks";
+import { useAppDispatch } from "@h";
 import { deleteGlobalPreset, deletePreset } from "@s/main/thunks";
 import type { PresetType } from "@s/main/types";
 

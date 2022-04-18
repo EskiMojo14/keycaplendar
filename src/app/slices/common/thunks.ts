@@ -1,6 +1,5 @@
 import type { Dictionary } from "@reduxjs/toolkit";
 import { push } from "connected-react-router";
-import throttle from "lodash.throttle";
 import { is } from "typescript-is";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
@@ -46,7 +45,7 @@ import {
 import { getLinkedFavorites } from "@s/user/thunks";
 import { arrayIncludes, camelise, createURL, hasKey } from "@s/util/functions";
 import themesMap from "~/_themes.module.scss";
-import { selectPage, setAppPage, setDevice, setThemeMaps } from ".";
+import { selectPage, setAppPage, setThemeMaps } from ".";
 import { blankTheme, mainPages, pageTitle, urlPages } from "./constants";
 import type { Page, ThemeMap } from "./types";
 
@@ -77,43 +76,6 @@ export const saveTheme = (): AppThunk<void> => (dispatch) => {
     return copy;
   }, {});
   dispatch(setThemeMaps(interpolatedThemeMap));
-};
-
-export const checkDevice = (): AppThunk<void> => (dispatch) => {
-  let i = 0;
-  let lastWidth = Math.max(
-    document.documentElement.clientWidth,
-    window.innerWidth || 0
-  );
-  let lastDevice = "tablet";
-  const calculate = () => {
-    const vw = Math.max(
-      document.documentElement.clientWidth,
-      window.innerWidth || 0
-    );
-    if (vw !== lastWidth || i === 0) {
-      if (vw >= 1240) {
-        if (lastDevice !== "desktop") {
-          dispatch(setDevice("desktop"));
-          lastDevice = "desktop";
-        }
-      } else if (vw < 1240 && vw >= 600) {
-        if (lastDevice !== "tablet") {
-          dispatch(setDevice("tablet"));
-          lastDevice = "tablet";
-        }
-      } else {
-        if (lastDevice !== "mobile") {
-          dispatch(setDevice("mobile"));
-          lastDevice = "mobile";
-        }
-      }
-      lastWidth = vw;
-      i++;
-    }
-  };
-  calculate();
-  window.addEventListener("resize", throttle(calculate, 1000));
 };
 
 export const getURLQuery = (): AppThunk<void> => (dispatch, getState) => {

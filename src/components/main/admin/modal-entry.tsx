@@ -31,7 +31,6 @@ import type { DraggableProvided, DropResult } from "react-beautiful-dnd";
 import { is } from "typescript-is";
 import { useImmer } from "use-immer";
 import { z } from "zod";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { notify } from "~/app/snackbar-queue";
 import { Autocomplete } from "@c/util/autocomplete";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
@@ -42,7 +41,8 @@ import {
 } from "@c/util/full-screen-dialog";
 import { withTooltip } from "@c/util/hocs";
 import { DatePicker } from "@c/util/pickers/date-picker";
-import { selectDevice } from "@s/common";
+import { useAppDispatch, useAppSelector } from "@h";
+import useDevice from "@h/use-device";
 import firebase from "@s/firebase";
 import firestore from "@s/firebase/firestore";
 import type { KeysetId } from "@s/firebase/types";
@@ -116,7 +116,7 @@ export const ModalEntry = ({
   open,
   user,
 }: ModalEntryProps) => {
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
 
   const allDesigners = useAppSelector(selectAllDesigners);
   const allProfiles = useAppSelector(selectAllProfiles);

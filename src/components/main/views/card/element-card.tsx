@@ -15,11 +15,12 @@ import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
 import Twemoji from "react-twemoji";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { notify } from "~/app/snackbar-queue";
 import { SkeletonCard } from "@c/main/views/card/skeleton-card";
 import { withTooltip } from "@c/util/hocs";
-import { selectDevice, selectPage } from "@s/common";
+import { useAppDispatch, useAppSelector } from "@h";
+import useDevice from "@h/use-device";
+import { selectPage } from "@s/common";
 import { selectSetById } from "@s/main";
 import { getSetDetails } from "@s/main/functions";
 import {
@@ -79,7 +80,7 @@ export const ElementCard = ({
 
   const user = useAppSelector(selectUser);
   const page = useAppSelector(selectPage);
-  const device = useAppSelector(selectDevice);
+  const device = useDevice();
   const useLink = device === "desktop";
 
   if (loading) {

@@ -157,6 +157,12 @@
       "@s/(.*)": [
         "<rootDir>/src/app/slices/$1"
       ],
+      "@h": [
+        "<rootDir>/src/app/hooks/index.ts"
+      ],
+      "@h/(.*)": [
+        "<rootDir>/src/app/hooks/$1"
+      ],
       "@c/(.*)": [
         "<rootDir>/src/components/$1"
       ],
