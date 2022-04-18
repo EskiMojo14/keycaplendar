@@ -57,14 +57,16 @@ export const App = () => {
   const toTimeTheme = useAppSelector(selectToTimeTheme);
   useEffect(() => {
     dispatch(setTimed(isBetweenTimes(fromTimeTheme, toTimeTheme)));
-    const syncTime = new Interval(() => {
-      dispatch((dispatch, getState) => {
-        const newVal = isBetweenTimes(fromTimeTheme, toTimeTheme);
-        if ((selectTimed(getState()) === "dark") !== newVal) {
-          dispatch(setTimed(isBetweenTimes(fromTimeTheme, toTimeTheme)));
-        }
-      });
-    }, 60000);
+    const syncTime = new Interval(
+      () =>
+        dispatch((dispatch, getState) => {
+          const newVal = isBetweenTimes(fromTimeTheme, toTimeTheme);
+          if ((selectTimed(getState()) === "dark") !== newVal) {
+            dispatch(setTimed(isBetweenTimes(fromTimeTheme, toTimeTheme)));
+          }
+        }),
+      60000
+    );
     return () => syncTime.clear();
   }, [dispatch, fromTimeTheme, toTimeTheme]);
 

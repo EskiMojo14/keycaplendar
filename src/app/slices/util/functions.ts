@@ -744,11 +744,10 @@ export const isBetweenTimes = (
   end: string,
   now = DateTime.now().toLocaleString(DateTime.TIME_24_SIMPLE)
 ) => {
-  let startDT = DateTime.fromFormat(start, "HH:mm");
-  const endDT = DateTime.fromFormat(end, "HH:mm");
-  const nowDT = DateTime.fromFormat(now, "HH:mm");
-  if (startDT > endDT) {
-    startDT = startDT.minus({ day: 1 });
-  }
-  return startDT <= nowDT && nowDT <= endDT;
+  const startToday = DateTime.fromFormat(start, "HH:mm");
+  const endToday = DateTime.fromFormat(end, "HH:mm");
+  const timeNow = DateTime.fromFormat(now, "HH:mm");
+  return startToday >= endToday // different day
+    ? startToday <= timeNow || timeNow <= endToday
+    : startToday <= timeNow && timeNow <= endToday;
 };
