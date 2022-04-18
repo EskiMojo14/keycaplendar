@@ -46,8 +46,9 @@ const createBreakpoint = <
     useDebugValue(result);
     return result;
   }
-  Object.defineProperty(hook, "name", { value: camelise(`use ${name}`) });
-  return hook;
+  return Object.defineProperty(hook, "name", {
+    value: camelise(`use ${name}`),
+  });
 };
 
 export default createBreakpoint;
