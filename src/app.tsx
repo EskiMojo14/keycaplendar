@@ -15,7 +15,7 @@ import { Login } from "@c/pages/login";
 import { NotFound } from "@c/pages/not-found";
 import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
-import { selectTheme, setSystemTheme, setTimed } from "@s/common";
+import { selectTheme, selectTimed, setSystemTheme, setTimed } from "@s/common";
 import { allPages } from "@s/common/constants";
 import { getGlobals, getURLQuery } from "@s/common/thunks";
 import firebase from "@s/firebase";
@@ -58,7 +58,12 @@ export const App = () => {
   useEffect(() => {
     dispatch(setTimed(isBetweenTimes(fromTimeTheme, toTimeTheme)));
     const syncTime = new Interval(() => {
-      dispatch(setTimed(isBetweenTimes(fromTimeTheme, toTimeTheme)));
+      dispatch((dispatch, getState) => {
+        const newVal = isBetweenTimes(fromTimeTheme, toTimeTheme);
+        if ((selectTimed(getState()) === "dark") !== newVal) {
+          dispatch(setTimed(isBetweenTimes(fromTimeTheme, toTimeTheme)));
+        }
+      });
     }, 60000);
     return () => syncTime.clear();
   }, [dispatch, fromTimeTheme, toTimeTheme]);
