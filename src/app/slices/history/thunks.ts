@@ -1,6 +1,6 @@
-import { push } from "connected-react-router";
 import isEqual from "lodash.isequal";
 import { is } from "typescript-is";
+import { history } from "~/app/router";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import { auditProperties } from "@s/audit/constants";
@@ -32,7 +32,7 @@ export const setHistoryTab =
           },
           true
         );
-        dispatch(push(newUrl));
+        history.push(newUrl);
       }
     }
   };

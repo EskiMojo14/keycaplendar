@@ -1,5 +1,5 @@
-import { push } from "connected-react-router";
 import { DateTime } from "luxon";
+import { history } from "~/app/router";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import firebase from "@s/firebase";
@@ -25,7 +25,7 @@ export const setStatisticsTab =
           },
           true
         );
-        dispatch(push(newUrl));
+        history.push(newUrl);
       }
     }
   };

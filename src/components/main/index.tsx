@@ -4,7 +4,7 @@ import { DrawerAppContent } from "@rmwc/drawer";
 import { Fab } from "@rmwc/fab";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import classNames from "classnames";
-import { push } from "connected-react-router";
+import { history } from "~/app/router";
 import { Footer } from "@c/common/footer";
 import { DialogDelete } from "@c/main/admin/dialog-delete";
 import { ModalCreate, ModalEdit } from "@c/main/admin/modal-entry";
@@ -108,7 +108,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
             },
             true
           );
-          dispatch(push(newUrl));
+          history.push(newUrl);
         }
       }
     };

@@ -14,8 +14,8 @@ import {
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
-import { push } from "connected-react-router";
 import { confirm } from "~/app/dialog-queue";
+import { history } from "~/app/router";
 import { notify } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
 import { ModalCreate, ModalEdit } from "@c/guides/admin/modal-entry";
@@ -91,7 +91,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
         },
         true
       );
-      dispatch(push(newUrl));
+      history.push(newUrl);
     }
   };
   const closeDetail = () => {

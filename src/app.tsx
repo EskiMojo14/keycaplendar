@@ -3,11 +3,9 @@ import { Portal } from "@rmwc/base";
 import { DialogQueue } from "@rmwc/dialog";
 import { SnackbarQueue } from "@rmwc/snackbar";
 import classNames from "classnames";
-import { ConnectedRouter } from "connected-react-router";
-import { Route, Switch } from "react-router-dom";
+import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import { dialogQueue } from "~/app/dialog-queue";
 import { notify, snackbarQueue } from "~/app/snackbar-queue";
-import { historyObj } from "~/app/store";
 import { Content } from "@c/content";
 import { PrivacyPolicy } from "@c/pages/legal/privacy";
 import { TermsOfService } from "@c/pages/legal/terms";
@@ -154,7 +152,7 @@ export const App = () => {
     };
   }, []);
   return (
-    <ConnectedRouter history={historyObj}>
+    <Router>
       <Switch>
         <Route path="/login">
           <Login />
@@ -180,7 +178,7 @@ export const App = () => {
         </Route>
         <Route component={NotFound} />
       </Switch>
-    </ConnectedRouter>
+    </Router>
   );
 };
 

@@ -1,5 +1,5 @@
-import { push } from "connected-react-router";
 import { is } from "typescript-is";
+import { history } from "~/app/router";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import firestore from "@s/firebase/firestore";
@@ -277,7 +277,6 @@ export const setPage =
         },
         true
       );
-      console.log(newUrl);
-      dispatch(push(newUrl));
+      history.push(newUrl);
     }
   };

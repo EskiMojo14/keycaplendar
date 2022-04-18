@@ -1,7 +1,7 @@
 import type { EntityId } from "@reduxjs/toolkit";
-import { push } from "connected-react-router";
 import { nanoid } from "nanoid";
 import { is } from "typescript-is";
+import { history } from "~/app/router";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import firestore from "@s/firebase/firestore";
@@ -69,7 +69,7 @@ export const setWhitelistMerge =
           },
           true
         );
-        dispatch(push(newUrl));
+        history.push(newUrl);
       }
     }
   };
@@ -93,7 +93,7 @@ export const setWhitelist =
         const newUrl = createURL({}, (params) => {
           whitelistParams.forEach((param) => params.delete(param));
         });
-        dispatch(push(newUrl));
+        history.push(newUrl);
       }
     }
   };
@@ -241,7 +241,7 @@ export const setSort =
           },
           true
         );
-        dispatch(push(newUrl));
+        history.push(newUrl);
       }
     }
   };
@@ -261,7 +261,7 @@ export const setSortOrder =
           },
           true
         );
-        dispatch(push(newUrl));
+        history.push(newUrl);
       }
     }
   };
