@@ -77,6 +77,8 @@ export const {
 
 export const selectSettings = (state: RootState) => state.settings;
 
+export const selectDensity = (state: RootState) => state.settings.density;
+
 export const selectBottomNav = (state: RootState) =>
   state.settings.bottomNav && state.common.device === "mobile";
 

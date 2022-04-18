@@ -1,6 +1,5 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 import type { Dictionary, PayloadAction } from "@reduxjs/toolkit";
-import { DateTime } from "luxon";
 import type { RootState } from "~/app/store";
 import {
   selectApplyTheme,
@@ -19,7 +18,8 @@ export type CommonState = {
   page: Page;
   systemTheme: "dark" | "light";
   themeMaps: Dictionary<ThemeMap>;
-  time: string;
+  /** whether to use dark theme when applytheme is timed */
+  timedDark: boolean;
 };
 
 export const initialState: CommonState = {
@@ -28,7 +28,7 @@ export const initialState: CommonState = {
   page: "calendar",
   systemTheme: "light",
   themeMaps: {},
-  time: "",
+  timedDark: false,
 };
 
 export const commonSlice = createSlice({
@@ -56,8 +56,8 @@ export const commonSlice = createSlice({
     setThemeMaps: (state, { payload }: PayloadAction<Dictionary<ThemeMap>>) => {
       state.themeMaps = payload;
     },
-    setTime: (state, { payload }: PayloadAction<string>) => {
-      state.time = payload;
+    setTimedDark: (state, { payload }: PayloadAction<boolean>) => {
+      state.timedDark = payload;
     },
   },
 });
@@ -69,7 +69,7 @@ export const {
     setOrientation,
     setSystemTheme,
     setThemeMaps,
-    setTime,
+    setTimedDark,
   },
 } = commonSlice;
 
@@ -83,10 +83,10 @@ export const selectThemesMap = (state: RootState) => state.common.themeMaps;
 
 export const selectSystemTheme = (state: RootState) => state.common.systemTheme;
 
-export const selectTime = (state: RootState) => state.common.time;
+export const selectTimedDark = (state: RootState) => state.common.timedDark;
 
 export const selectTheme = createSelector(
-  selectTime,
+  selectTimedDark,
   selectSystemTheme,
   selectApplyTheme,
   selectLichTheme,
@@ -96,7 +96,7 @@ export const selectTheme = createSelector(
   selectToTimeTheme,
   selectManualTheme,
   (
-    time,
+    timedDark,
     systemTheme,
     applyTheme,
     lichTheme,
@@ -117,13 +117,7 @@ export const selectTheme = createSelector(
         return systemTheme === "dark" ? darkTheme : lightTheme;
       }
       case "timed": {
-        const now = DateTime.fromFormat(time, "HH:mm");
-        let start = DateTime.fromFormat(fromTimeTheme, "HH:mm");
-        const end = DateTime.fromFormat(toTimeTheme, "HH:mm");
-        if (start > end) {
-          start = start.minus({ day: 1 });
-        }
-        return start <= now && now <= end ? darkTheme : lightTheme;
+        return timedDark ? darkTheme : lightTheme;
       }
       default: {
         return lightTheme;
