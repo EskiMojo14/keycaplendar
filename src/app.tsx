@@ -3,7 +3,8 @@ import { Portal } from "@rmwc/base";
 import { DialogQueue } from "@rmwc/dialog";
 import { SnackbarQueue } from "@rmwc/snackbar";
 import classNames from "classnames";
-import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
+import { Router } from "react-router";
+import { Route, Switch } from "react-router-dom";
 import { dialogQueue } from "~/app/dialog-queue";
 import { notify, snackbarQueue } from "~/app/snackbar-queue";
 import { Content } from "@c/content";
@@ -23,6 +24,7 @@ import {
   setCurrentPreset,
 } from "@s/main";
 import { testSets } from "@s/main/thunks";
+import { history } from "@s/router";
 import {
   selectCookies,
   selectDensity,
@@ -152,7 +154,7 @@ export const App = () => {
     };
   }, []);
   return (
-    <Router>
+    <Router history={history}>
       <Switch>
         <Route path="/login">
           <Login />
