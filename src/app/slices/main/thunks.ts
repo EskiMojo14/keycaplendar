@@ -1,7 +1,6 @@
 import type { EntityId } from "@reduxjs/toolkit";
 import { nanoid } from "nanoid";
 import { is } from "typescript-is";
-import { history } from "~/app/router";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import firestore from "@s/firebase/firestore";
@@ -35,6 +34,7 @@ import {
   whitelistParams,
 } from "@s/main/constants";
 import { addLastDate } from "@s/main/functions";
+import { history } from "@s/router";
 import {
   deleteUserPreset,
   selectAllUserPresets,

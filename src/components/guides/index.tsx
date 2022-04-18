@@ -15,7 +15,6 @@ import {
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { confirm } from "~/app/dialog-queue";
-import { history } from "~/app/router";
 import { notify } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
 import { ModalCreate, ModalEdit } from "@c/guides/admin/modal-entry";
@@ -35,6 +34,7 @@ import {
   setURLEntry,
 } from "@s/guides";
 import { getEntries as getEntriesThunk } from "@s/guides/thunks";
+import { history } from "@s/router";
 import { selectBottomNav } from "@s/settings";
 import { selectUser } from "@s/user";
 import { closeModal, createURL, openModal } from "@s/util/functions";

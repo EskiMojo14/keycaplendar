@@ -1,8 +1,8 @@
 import { DateTime } from "luxon";
-import { history } from "~/app/router";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import firebase from "@s/firebase";
+import { history } from "@s/router";
 import { createURL, ordinal } from "@s/util/functions";
 import { selectTab, setLoading, setStatisticsData, setStatsTab } from ".";
 import type { StatsTab } from "./types";
