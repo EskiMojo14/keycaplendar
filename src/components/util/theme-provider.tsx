@@ -4,12 +4,13 @@ import {
   createTheme,
   ThemeProvider as MuiThemeProvider,
 } from "@material-ui/core/styles";
+import themeMaps, { blankTheme } from "~/app/themesMap";
 import { useAppSelector } from "@h";
-import { selectCurrentThemeMap } from "@s/common";
-import { blankTheme } from "@s/common/constants";
+import { selectTheme } from "@s/common";
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const currentThemeMap = useAppSelector(selectCurrentThemeMap) || blankTheme;
+  const currentTheme = useAppSelector(selectTheme);
+  const currentThemeMap = themeMaps[currentTheme] ?? blankTheme;
   const theme = currentThemeMap.primary
     ? createTheme({
         palette: {

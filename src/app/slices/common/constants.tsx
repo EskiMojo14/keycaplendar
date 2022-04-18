@@ -14,7 +14,7 @@ import {
   Store,
   VisibilityOff,
 } from "@i";
-import type { Page, ThemeMap } from "./types";
+import type { Page } from "./types";
 
 /**
  * Converts JSX to RMWC icon object parameter.
@@ -153,17 +153,4 @@ export const pageIcons: Record<Page, IconPropT> = {
   timeline: "timeline",
   updates: iconObject(<Campaign />),
   users: iconObject(<People />),
-};
-
-export const blankTheme: ThemeMap = {
-  background: "",
-  dark: false,
-  error: "",
-  onError: "",
-  onPrimary: "",
-  onSecondary: "",
-  onSurface: "",
-  primary: "",
-  secondary: "",
-  surface: "",
 };

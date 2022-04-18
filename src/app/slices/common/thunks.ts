@@ -1,4 +1,3 @@
-import type { Dictionary } from "@reduxjs/toolkit";
 import { push } from "connected-react-router";
 import { is } from "typescript-is";
 import { notify } from "~/app/snackbar-queue";
@@ -43,11 +42,10 @@ import {
   setURLEntry as setURLUpdate,
 } from "@s/updates";
 import { getLinkedFavorites } from "@s/user/thunks";
-import { arrayIncludes, camelise, createURL, hasKey } from "@s/util/functions";
-import themesMap from "~/_themes.module.scss";
-import { selectPage, setAppPage, setThemeMaps } from ".";
-import { blankTheme, mainPages, pageTitle, urlPages } from "./constants";
-import type { Page, ThemeMap } from "./types";
+import { arrayIncludes, createURL } from "@s/util/functions";
+import { selectPage, setAppPage } from ".";
+import { mainPages, pageTitle, urlPages } from "./constants";
+import type { Page } from "./types";
 
 export const triggerTransition =
   (delay = 300): AppThunk<void> =>
@@ -57,26 +55,6 @@ export const triggerTransition =
       dispatch(setTransition(false));
     }, delay);
   };
-
-export const saveTheme = (): AppThunk<void> => (dispatch) => {
-  const interpolatedThemeMap = Object.entries(themesMap).reduce<
-    Dictionary<ThemeMap>
-  >((prev, [key, val]) => {
-    const [theme, prop] = key.split("|");
-
-    const copy = { ...prev };
-
-    copy[theme] ??= blankTheme;
-
-    const value = val === "true" || val === "false" ? val === "true" : val;
-    const camelProp = camelise(prop, "-");
-    if (hasKey(copy, theme) && hasKey(blankTheme, camelProp)) {
-      copy[theme] = { ...copy[theme], [camelProp]: value } as ThemeMap;
-    }
-    return copy;
-  }, {});
-  dispatch(setThemeMaps(interpolatedThemeMap));
-};
 
 export const getURLQuery = (): AppThunk<void> => (dispatch, getState) => {
   const params = new URLSearchParams(window.location.search);

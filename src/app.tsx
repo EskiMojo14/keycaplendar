@@ -17,7 +17,7 @@ import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import { selectTheme, setSystemTheme, setTimed } from "@s/common";
 import { allPages } from "@s/common/constants";
-import { getGlobals, getURLQuery, saveTheme } from "@s/common/thunks";
+import { getGlobals, getURLQuery } from "@s/common/thunks";
 import firebase from "@s/firebase";
 import {
   selectDefaultPreset,
@@ -86,7 +86,7 @@ export const App = () => {
   const defaultPreset = useAppSelector(selectDefaultPreset);
 
   useEffect(() => {
-    dispatch([saveTheme(), getURLQuery(), checkStorage(), getGlobals()]);
+    dispatch([getURLQuery(), checkStorage(), getGlobals()]);
 
     const checkThemeListener = (e: MediaQueryListEvent) => {
       e.preventDefault();
