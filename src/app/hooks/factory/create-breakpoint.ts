@@ -15,7 +15,7 @@ const createBreakpoint = <
     laptopL: 1440,
     tablet: 768,
   } as unknown as Breakpoints,
-  { name = "breakpoint", throttle: throttleTime = 0 }
+  { name = "breakpoint", throttle: throttleTime = 0 } = {}
 ) => {
   const sortedBreakpoints = Object.entries(breakpoints).sort((a, b) =>
     a[1] >= b[1] ? 1 : -1
