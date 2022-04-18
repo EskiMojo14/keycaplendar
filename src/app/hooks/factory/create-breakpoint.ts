@@ -27,16 +27,13 @@ const createBreakpoint = <
       const setScreenSize = (): void => {
         setScreen(window.innerWidth);
       };
-      const throttledSetScreen = throttleTime
+      const finalSetScreen = throttleTime
         ? throttle(setScreenSize, throttleTime)
-        : undefined;
+        : setScreenSize;
       setScreenSize();
-      window.addEventListener("resize", throttledSetScreen ?? setScreenSize);
+      window.addEventListener("resize", finalSetScreen);
       return () => {
-        window.removeEventListener(
-          "resize",
-          throttledSetScreen ?? setScreenSize
-        );
+        window.removeEventListener("resize", finalSetScreen);
       };
     });
     const result = useMemo(
