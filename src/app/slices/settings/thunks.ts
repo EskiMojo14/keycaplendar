@@ -9,6 +9,7 @@ import {
   selectCookies,
   selectSyncSettings,
   setCookies,
+  setManualTheme as setManualThemeAction,
   setSetting,
   toggleLich,
 } from ".";
@@ -147,7 +148,7 @@ export const setDarkTheme =
 export const setManualTheme =
   (bool: boolean, write = true): AppThunk<void> =>
   (dispatch) => {
-    dispatch(setSetting("manualTheme", bool));
+    dispatch(setManualThemeAction(bool));
     if (write) {
       dispatch(syncSetting("manualTheme", bool));
     }

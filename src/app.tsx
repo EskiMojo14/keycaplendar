@@ -14,12 +14,7 @@ import { PrivacyPolicy } from "@c/pages/legal/privacy";
 import { TermsOfService } from "@c/pages/legal/terms";
 import { Login } from "@c/pages/login";
 import { NotFound } from "@c/pages/not-found";
-import {
-  selectDevice,
-  selectTheme,
-  setSystemTheme,
-  setTimedDark,
-} from "@s/common";
+import { selectDevice, selectTheme, setSystemTheme, setTimed } from "@s/common";
 import { allPages } from "@s/common/constants";
 import {
   checkDevice,
@@ -65,9 +60,9 @@ export const App = () => {
   const fromTimeTheme = useAppSelector(selectFromTimeTheme);
   const toTimeTheme = useAppSelector(selectToTimeTheme);
   useEffect(() => {
-    dispatch(setTimedDark(isBetweenTimes(fromTimeTheme, toTimeTheme)));
+    dispatch(setTimed(isBetweenTimes(fromTimeTheme, toTimeTheme)));
     const syncTime = new Interval(() => {
-      dispatch(setTimedDark(isBetweenTimes(fromTimeTheme, toTimeTheme)));
+      dispatch(setTimed(isBetweenTimes(fromTimeTheme, toTimeTheme)));
     }, 60000);
     return () => syncTime.clear();
   }, [dispatch, fromTimeTheme, toTimeTheme]);

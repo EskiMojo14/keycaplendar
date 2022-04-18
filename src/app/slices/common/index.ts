@@ -4,11 +4,9 @@ import type { RootState } from "~/app/store";
 import {
   selectApplyTheme,
   selectDarkTheme,
-  selectFromTimeTheme,
   selectLichTheme,
   selectLightTheme,
   selectManualTheme,
-  selectToTimeTheme,
 } from "@s/settings";
 import type { Page, ThemeMap } from "./types";
 
@@ -18,8 +16,7 @@ export type CommonState = {
   page: Page;
   systemTheme: "dark" | "light";
   themeMaps: Dictionary<ThemeMap>;
-  /** whether to use dark theme when applytheme is timed */
-  timedDark: boolean;
+  timed: "dark" | "light";
 };
 
 export const initialState: CommonState = {
@@ -28,7 +25,7 @@ export const initialState: CommonState = {
   page: "calendar",
   systemTheme: "light",
   themeMaps: {},
-  timedDark: false,
+  timed: "light",
 };
 
 export const commonSlice = createSlice({
@@ -56,8 +53,8 @@ export const commonSlice = createSlice({
     setThemeMaps: (state, { payload }: PayloadAction<Dictionary<ThemeMap>>) => {
       state.themeMaps = payload;
     },
-    setTimedDark: (state, { payload }: PayloadAction<boolean>) => {
-      state.timedDark = payload;
+    setTimed: (state, { payload }: PayloadAction<boolean>) => {
+      state.timed = payload ? "dark" : "light";
     },
   },
 });
@@ -69,7 +66,7 @@ export const {
     setOrientation,
     setSystemTheme,
     setThemeMaps,
-    setTimedDark,
+    setTimed,
   },
 } = commonSlice;
 
@@ -83,41 +80,37 @@ export const selectThemesMap = (state: RootState) => state.common.themeMaps;
 
 export const selectSystemTheme = (state: RootState) => state.common.systemTheme;
 
-export const selectTimedDark = (state: RootState) => state.common.timedDark;
+export const selectTimed = (state: RootState) => state.common.timed;
 
 export const selectTheme = createSelector(
-  selectTimedDark,
-  selectSystemTheme,
   selectApplyTheme,
-  selectLichTheme,
-  selectDarkTheme,
-  selectLightTheme,
-  selectFromTimeTheme,
-  selectToTimeTheme,
   selectManualTheme,
+  selectTimed,
+  selectSystemTheme,
+  selectLichTheme,
+  selectLightTheme,
+  selectDarkTheme,
   (
+    applyTheme,
+    manualTheme,
     timedDark,
     systemTheme,
-    applyTheme,
     lichTheme,
-    darkTheme,
     lightTheme,
-    fromTimeTheme,
-    toTimeTheme,
-    manualTheme
+    darkTheme
   ) => {
     if (lichTheme) {
       return "lich";
     }
     switch (applyTheme) {
       case "manual": {
-        return manualTheme ? darkTheme : lightTheme;
+        return manualTheme === "dark" ? darkTheme : lightTheme;
       }
       case "system": {
         return systemTheme === "dark" ? darkTheme : lightTheme;
       }
       case "timed": {
-        return timedDark ? darkTheme : lightTheme;
+        return timedDark === "dark" ? darkTheme : lightTheme;
       }
       default: {
         return lightTheme;

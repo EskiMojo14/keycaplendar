@@ -12,7 +12,7 @@ export type SettingsState = {
   fromTimeTheme: string;
   lichTheme: boolean;
   lightTheme: string;
-  manualTheme: boolean;
+  manualTheme: "dark" | "light";
   shareNameLoading: boolean;
   syncSettings: boolean;
   toTimeTheme: string;
@@ -28,7 +28,7 @@ export const initialState: SettingsState = {
   fromTimeTheme: "21:00",
   lichTheme: false,
   lightTheme: "light",
-  manualTheme: false,
+  manualTheme: "light",
   shareNameLoading: false,
   syncSettings: false,
   toTimeTheme: "06:00",
@@ -41,6 +41,9 @@ export const settingsSlice = createSlice({
   reducers: {
     setCookies: (state, { payload }: PayloadAction<boolean>) => {
       state.cookies = payload;
+    },
+    setManualTheme: (state, { payload }: PayloadAction<boolean>) => {
+      state.manualTheme = payload ? "dark" : "light";
     },
     setSetting: {
       prepare: <K extends keyof SettingsState>(
@@ -72,7 +75,13 @@ export const settingsSlice = createSlice({
 });
 
 export const {
-  actions: { setCookies, setSettings, setShareNameLoading, toggleLich },
+  actions: {
+    setCookies,
+    setManualTheme,
+    setSettings,
+    setShareNameLoading,
+    toggleLich,
+  },
 } = settingsSlice;
 
 export const selectSettings = (state: RootState) => state.settings;

@@ -319,7 +319,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
         </Typography>
         <div className="switch-container">
           <Switch
-            checked={manualTheme}
+            checked={manualTheme === "dark"}
             id="manualTheme"
             onChange={(e) =>
               dispatch(setManualTheme((e.target as HTMLInputElement).checked))
