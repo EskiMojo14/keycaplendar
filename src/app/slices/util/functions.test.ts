@@ -8,6 +8,7 @@ import {
   arrayMove,
   getSetMonthRange,
   groupBy,
+  isBetweenTimes,
   pluralise,
   removeDuplicates,
 } from "@s/util/functions";
@@ -222,5 +223,61 @@ describe("getSetMonthRange", () => {
         "yyyy-MM"
       )
     ).toEqual(["2021-01", "2021-02", "2021-03"]);
+  });
+});
+
+describe("isBetweenTimes", () => {
+  const testCases = [
+    // different day
+    {
+      end: 6,
+      inside: false,
+      now: 12,
+      start: 19,
+    },
+    {
+      end: 6,
+      inside: true,
+      now: 3,
+      start: 19,
+    },
+    {
+      end: 6,
+      inside: true,
+      now: 22,
+      start: 19,
+    },
+    // same day
+    {
+      end: 18,
+      inside: true,
+      now: 12,
+      start: 7,
+    },
+    {
+      end: 18,
+      inside: false,
+      now: 3,
+      start: 7,
+    },
+    {
+      end: 18,
+      inside: false,
+      now: 22,
+      start: 7,
+    },
+  ];
+  const numberToTime = (num: number) =>
+    num >= 10 ? `${num}:00` : `0${num}:00`;
+  testCases.forEach(({ end, inside, now, start }) => {
+    it(`returns ${inside} for ${JSON.stringify({ end, now, start })}`, () => {
+      expect(
+        isBetweenTimes(
+          numberToTime(start),
+          numberToTime(end),
+          numberToTime(now)
+        )
+      ).toBe(inside);
+    });
   });
 });

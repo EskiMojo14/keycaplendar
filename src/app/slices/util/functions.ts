@@ -724,7 +724,7 @@ export const invalidTime = (
   if (required && !date) {
     return "Field is required";
   } else if (date && date.length !== 5) {
-    return "Format: HH:YY (24hr)";
+    return "Format: HH:MM (24hr)";
   } else if (date.length === 5) {
     const [hours, minutes] = date.split(":");
     const valid =
@@ -734,10 +734,19 @@ export const invalidTime = (
       parseInt(hours) <= 23 &&
       parseInt(minutes) >= 0 &&
       parseInt(minutes) <= 59;
-    return valid ? false : "Format: HH:YY (24hr)";
+    return valid ? false : "Format: HH:MM (24hr)";
   }
   return false;
 };
+
+/**
+ * Returns true if `now` is between `start` and `end`
+ * **All dates should be HH:MM (24hr)**
+ * @param start
+ * @param end
+ * @param [now] Defaults to current time
+ * @returns Whether `now` is between `start` and `end`
+ */
 
 export const isBetweenTimes = (
   start: string,
