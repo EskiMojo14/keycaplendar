@@ -27,16 +27,15 @@ const createBreakpoint = <
       const setScreenSize = (): void => {
         setScreen(window.innerWidth);
       };
-      const throttledSetScreen = throttle(setScreenSize, throttleTime);
+      const throttledSetScreen = throttleTime
+        ? throttle(setScreenSize, throttleTime)
+        : undefined;
       setScreenSize();
-      window.addEventListener(
-        "resize",
-        throttleTime ? throttledSetScreen : setScreenSize
-      );
+      window.addEventListener("resize", throttledSetScreen ?? setScreenSize);
       return () => {
         window.removeEventListener(
           "resize",
-          throttleTime ? throttledSetScreen : setScreenSize
+          throttledSetScreen ?? setScreenSize
         );
       };
     });
