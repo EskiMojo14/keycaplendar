@@ -1,12 +1,10 @@
 import { createStore } from "~/app/store";
 import {
   selectDevice,
-  selectOrientation,
   selectPage,
   selectThemesMap,
   setAppPage,
   setDevice,
-  setOrientation,
   setThemeMaps,
 } from "@s/common";
 import { blankTheme } from "@s/common/constants";
@@ -23,13 +21,6 @@ it("sets device category", () => {
   store.dispatch(setDevice(category));
   const response = selectDevice(store.getState());
   expect(response).toBe(category);
-});
-
-it("sets device orientation", () => {
-  const orientation = "portrait";
-  store.dispatch(setOrientation(orientation));
-  const response = selectOrientation(store.getState());
-  expect(response).toBe(orientation);
 });
 
 it("sets app page", () => {

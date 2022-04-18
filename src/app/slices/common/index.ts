@@ -41,12 +41,6 @@ export const commonSlice = createSlice({
     ) => {
       state.device = payload;
     },
-    setOrientation: (
-      state,
-      { payload }: PayloadAction<"landscape" | "portrait">
-    ) => {
-      state.orientation = payload;
-    },
     setSystemTheme: (state, { payload }: PayloadAction<boolean>) => {
       state.systemTheme = payload ? "dark" : "light";
     },
@@ -60,19 +54,10 @@ export const commonSlice = createSlice({
 });
 
 export const {
-  actions: {
-    setAppPage,
-    setDevice,
-    setOrientation,
-    setSystemTheme,
-    setThemeMaps,
-    setTimed,
-  },
+  actions: { setAppPage, setDevice, setSystemTheme, setThemeMaps, setTimed },
 } = commonSlice;
 
 export const selectDevice = (state: RootState) => state.common.device;
-
-export const selectOrientation = (state: RootState) => state.common.orientation;
 
 export const selectPage = (state: RootState) => state.common.page;
 

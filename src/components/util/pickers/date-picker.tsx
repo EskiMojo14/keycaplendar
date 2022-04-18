@@ -19,11 +19,12 @@ import { useRifm } from "rifm";
 import { useAppSelector } from "~/app/hooks";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
-import { selectDevice, selectOrientation } from "@s/common";
+import { selectDevice } from "@s/common";
 import BEMHelper from "@s/common/bem-helper";
 import { capitalise, iconObject, invalidDate } from "@s/util/functions";
 import type { Common, Overwrite } from "@s/util/types";
 import { Event } from "@i";
+import useOrientation from "~/app/hooks/use-orientation";
 import "./pickers.scss";
 
 const parseDigits = (string: string) => (string.match(/\d+/g) || []).join("");
@@ -107,8 +108,8 @@ export const DatePicker = ({
 }: DatePickerProps) => {
   const device = useAppSelector(selectDevice);
   const useInline = device === "desktop";
-  const orientation = useAppSelector(selectOrientation);
-  const landscape = orientation === "landscape";
+  const orientation = useOrientation();
+  const landscape = orientation.type.startsWith("landscape");
 
   const [touched, setTouched] = useState(false);
   const invalid = touched
@@ -225,7 +226,7 @@ export const DatePicker = ({
         minDate={minDate}
         onChange={handleDatePickerChange}
         openTo={openTo}
-        orientation={orientation}
+        orientation={landscape ? "landscape" : "portrait"}
         value={dialogVal || validFallback || DateTime.now().toISODate()}
         variant="static"
         views={views}

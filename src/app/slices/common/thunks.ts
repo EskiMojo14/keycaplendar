@@ -46,13 +46,7 @@ import {
 import { getLinkedFavorites } from "@s/user/thunks";
 import { arrayIncludes, camelise, createURL, hasKey } from "@s/util/functions";
 import themesMap from "~/_themes.module.scss";
-import {
-  selectPage,
-  setAppPage,
-  setDevice,
-  setOrientation,
-  setThemeMaps,
-} from ".";
+import { selectPage, setAppPage, setDevice, setThemeMaps } from ".";
 import { blankTheme, mainPages, pageTitle, urlPages } from "./constants";
 import type { Page, ThemeMap } from "./types";
 
@@ -92,7 +86,6 @@ export const checkDevice = (): AppThunk<void> => (dispatch) => {
     window.innerWidth || 0
   );
   let lastDevice = "tablet";
-  let lastOrientation = "landscape";
   const calculate = () => {
     const vw = Math.max(
       document.documentElement.clientWidth,
@@ -117,13 +110,6 @@ export const checkDevice = (): AppThunk<void> => (dispatch) => {
       }
       lastWidth = vw;
       i++;
-    }
-    const orientation = window.matchMedia("(orientation: portrait)").matches
-      ? "portrait"
-      : "landscape";
-    if (lastOrientation !== orientation) {
-      dispatch(setOrientation(orientation));
-      lastOrientation = orientation;
     }
   };
   calculate();
