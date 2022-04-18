@@ -257,22 +257,27 @@ export const setPage =
       if (linkedFavorites.array.length > 0) {
         dispatch(setLinkedFavorites({ array: [], displayName: "" }));
       }
-      const newUrl = createURL({ pathname: `/${page}` }, (params) => {
-        params.delete("page");
-        const pageParams = [
-          "keysetId",
-          "keysetAlias",
-          "keysetName",
-          "guideId",
-          "updateId",
-          "favoritesId",
-        ];
-        pageParams.forEach((param) => {
-          if (params.has(param)) {
-            params.delete(param);
-          }
-        });
-      });
+      const newUrl = createURL(
+        { pathname: `/${page}` },
+        (params) => {
+          params.delete("page");
+          const pageParams = [
+            "keysetId",
+            "keysetAlias",
+            "keysetName",
+            "guideId",
+            "updateId",
+            "favoritesId",
+          ];
+          pageParams.forEach((param) => {
+            if (params.has(param)) {
+              params.delete(param);
+            }
+          });
+        },
+        true
+      );
+      console.log(newUrl);
       dispatch(push(newUrl));
     }
   };

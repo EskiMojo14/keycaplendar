@@ -25,9 +25,13 @@ export const setHistoryTab =
     if (clearUrl) {
       const params = new URLSearchParams(window.location.search);
       if (params.has("historyTab")) {
-        const newUrl = createURL({}, (params) => {
-          params.delete("historyTab");
-        });
+        const newUrl = createURL(
+          {},
+          (params) => {
+            params.delete("historyTab");
+          },
+          true
+        );
         dispatch(push(newUrl));
       }
     }

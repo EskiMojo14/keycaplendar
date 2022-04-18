@@ -18,9 +18,13 @@ export const setStatisticsTab =
     if (clearUrl) {
       const params = new URLSearchParams(window.location.search);
       if (params.has("statisticsTab")) {
-        const newUrl = createURL({}, (params) => {
-          params.delete("statisticsTab");
-        });
+        const newUrl = createURL(
+          {},
+          (params) => {
+            params.delete("statisticsTab");
+          },
+          true
+        );
         dispatch(push(newUrl));
       }
     }

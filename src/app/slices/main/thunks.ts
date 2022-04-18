@@ -62,9 +62,13 @@ export const setWhitelistMerge =
       dispatch(setURLWhitelist({}));
       const params = new URLSearchParams(window.location.search);
       if (whitelistParams.some((param) => params.has(param))) {
-        const newUrl = createURL({}, (params) => {
-          whitelistParams.forEach((param) => params.delete(param));
-        });
+        const newUrl = createURL(
+          {},
+          (params) => {
+            whitelistParams.forEach((param) => params.delete(param));
+          },
+          true
+        );
         dispatch(push(newUrl));
       }
     }
@@ -230,9 +234,13 @@ export const setSort =
     if (clearUrl) {
       const params = new URLSearchParams(window.location.search);
       if (params.has("sort")) {
-        const newUrl = createURL({}, (params) => {
-          params.delete("sort");
-        });
+        const newUrl = createURL(
+          {},
+          (params) => {
+            params.delete("sort");
+          },
+          true
+        );
         dispatch(push(newUrl));
       }
     }
@@ -246,9 +254,13 @@ export const setSortOrder =
     if (clearUrl) {
       const params = new URLSearchParams(window.location.search);
       if (params.has("sortOrder")) {
-        const newUrl = createURL({}, (params) => {
-          params.delete("sortOrder");
-        });
+        const newUrl = createURL(
+          {},
+          (params) => {
+            params.delete("sortOrder");
+          },
+          true
+        );
         dispatch(push(newUrl));
       }
     }

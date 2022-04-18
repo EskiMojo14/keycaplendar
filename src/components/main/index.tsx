@@ -101,9 +101,13 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
         const params = new URLSearchParams(window.location.search);
         const keysetParams = ["keysetId", "keysetAlias", "keysetName"];
         if (keysetParams.some((param) => params.has(param))) {
-          const newUrl = createURL({}, (params) => {
-            keysetParams.forEach((param) => params.delete(param));
-          });
+          const newUrl = createURL(
+            {},
+            (params) => {
+              keysetParams.forEach((param) => params.delete(param));
+            },
+            true
+          );
           dispatch(push(newUrl));
         }
       }

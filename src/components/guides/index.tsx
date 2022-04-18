@@ -84,9 +84,13 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
     }
     const params = new URLSearchParams(window.location.search);
     if (params.has("guideId")) {
-      const newUrl = createURL({}, (params) => {
-        params.delete("guideId");
-      });
+      const newUrl = createURL(
+        {},
+        (params) => {
+          params.delete("guideId");
+        },
+        true
+      );
       dispatch(push(newUrl));
     }
   };
