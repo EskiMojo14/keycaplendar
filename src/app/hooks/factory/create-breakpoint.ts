@@ -1,4 +1,5 @@
 import { useDebugValue, useEffect, useMemo, useState } from "react";
+import throttle from "lodash.throttle";
 import { camelise } from "@s/util/functions";
 
 // mostly taken from react-use
@@ -14,7 +15,7 @@ const createBreakpoint = <
     laptopL: 1440,
     tablet: 768,
   } as unknown as Breakpoints,
-  name = "breakpoint"
+  { name = "breakpoint", throttle: throttleTime = 0 }
 ) => {
   const sortedBreakpoints = Object.entries(breakpoints).sort((a, b) =>
     a[1] >= b[1] ? 1 : -1
@@ -23,13 +24,20 @@ const createBreakpoint = <
     const [screen, setScreen] = useState(window.innerWidth);
 
     useEffect(() => {
-      const setSideScreen = (): void => {
+      const setScreenSize = (): void => {
         setScreen(window.innerWidth);
       };
-      setSideScreen();
-      window.addEventListener("resize", setSideScreen);
+      const throttledSetScreen = throttle(setScreenSize, throttleTime);
+      setScreenSize();
+      window.addEventListener(
+        "resize",
+        throttleTime ? throttledSetScreen : setScreenSize
+      );
       return () => {
-        window.removeEventListener("resize", setSideScreen);
+        window.removeEventListener(
+          "resize",
+          throttleTime ? throttledSetScreen : setScreenSize
+        );
       };
     });
     const result = useMemo(
