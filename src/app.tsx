@@ -15,7 +15,7 @@ import { PrivacyPolicy } from "@c/pages/legal/privacy";
 import { TermsOfService } from "@c/pages/legal/terms";
 import { Login } from "@c/pages/login";
 import { NotFound } from "@c/pages/not-found";
-import { selectDevice, setSystemTheme, setTime } from "@s/common";
+import { selectDevice, selectTheme, setSystemTheme, setTime } from "@s/common";
 import { allPages } from "@s/common/constants";
 import {
   checkDevice,
@@ -31,7 +31,7 @@ import {
 } from "@s/main";
 import { testSets } from "@s/main/thunks";
 import { selectCookies, selectSettings } from "@s/settings";
-import { acceptCookies, checkStorage, checkTheme } from "@s/settings/thunks";
+import { acceptCookies, checkStorage } from "@s/settings/thunks";
 import { resetUser, setUser } from "@s/user";
 import { getUserPreferences } from "@s/user/thunks";
 import { Interval } from "@s/util/constructors";
@@ -41,6 +41,16 @@ export const App = () => {
   const dispatch = useAppDispatch();
 
   const device = useAppSelector(selectDevice);
+  const theme = useAppSelector(selectTheme);
+  useEffect(() => {
+    const { documentElement: html } = document;
+    html.setAttribute("class", theme);
+    const meta = document.querySelector("meta[name=theme-color]");
+    meta?.setAttribute(
+      "content",
+      getComputedStyle(html).getPropertyValue("--theme-meta")
+    );
+  }, [theme]);
 
   const settings = useAppSelector(selectSettings);
   const cookies = useAppSelector(selectCookies);
@@ -74,7 +84,6 @@ export const App = () => {
 
     const checkThemeListener = (e: MediaQueryListEvent) => {
       e.preventDefault();
-      dispatch(checkTheme());
       dispatch(setSystemTheme(e.matches));
     };
 

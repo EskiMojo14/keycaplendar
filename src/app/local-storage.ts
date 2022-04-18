@@ -39,7 +39,7 @@ type InitialStates<Whitelist extends WhitelistDef> = {
 const idWhitelist = <W extends WhitelistDef>(whitelist: W) => whitelist;
 
 const persistWhitelist = idWhitelist({
-  common: ["theme", "themeMaps"],
+  common: ["systemTheme", "themeMaps"],
   main: ["presets", "sort", "sortOrder", "whitelist"],
   settings: true,
   user: true,

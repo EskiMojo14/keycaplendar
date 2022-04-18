@@ -1,6 +1,16 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 import type { Dictionary, PayloadAction } from "@reduxjs/toolkit";
+import { DateTime } from "luxon";
 import type { RootState } from "~/app/store";
+import {
+  selectApplyTheme,
+  selectDarkTheme,
+  selectFromTimeTheme,
+  selectLichTheme,
+  selectLightTheme,
+  selectManualTheme,
+  selectToTimeTheme,
+} from "@s/settings";
 import type { Page, ThemeMap } from "./types";
 
 export type CommonState = {
@@ -8,7 +18,6 @@ export type CommonState = {
   orientation: "landscape" | "portrait";
   page: Page;
   systemTheme: "dark" | "light";
-  theme: string;
   themeMaps: Dictionary<ThemeMap>;
   time: string;
 };
@@ -18,7 +27,6 @@ export const initialState: CommonState = {
   orientation: "landscape",
   page: "calendar",
   systemTheme: "light",
-  theme: "light",
   themeMaps: {},
   time: "",
 };
@@ -45,9 +53,6 @@ export const commonSlice = createSlice({
     setSystemTheme: (state, { payload }: PayloadAction<boolean>) => {
       state.systemTheme = payload ? "dark" : "light";
     },
-    setTheme: (state, { payload }: PayloadAction<string>) => {
-      state.theme = payload;
-    },
     setThemeMaps: (state, { payload }: PayloadAction<Dictionary<ThemeMap>>) => {
       state.themeMaps = payload;
     },
@@ -63,7 +68,6 @@ export const {
     setDevice,
     setOrientation,
     setSystemTheme,
-    setTheme,
     setThemeMaps,
     setTime,
   },
@@ -75,16 +79,62 @@ export const selectOrientation = (state: RootState) => state.common.orientation;
 
 export const selectPage = (state: RootState) => state.common.page;
 
-export const selectTheme = (state: RootState) => state.common.theme;
-
 export const selectThemesMap = (state: RootState) => state.common.themeMaps;
 
 export const selectSystemTheme = (state: RootState) => state.common.systemTheme;
 
 export const selectTime = (state: RootState) => state.common.time;
 
+export const selectTheme = createSelector(
+  selectTime,
+  selectSystemTheme,
+  selectApplyTheme,
+  selectLichTheme,
+  selectDarkTheme,
+  selectLightTheme,
+  selectFromTimeTheme,
+  selectToTimeTheme,
+  selectManualTheme,
+  (
+    time,
+    systemTheme,
+    applyTheme,
+    lichTheme,
+    darkTheme,
+    lightTheme,
+    fromTimeTheme,
+    toTimeTheme,
+    manualTheme
+  ) => {
+    if (lichTheme) {
+      return "lich";
+    }
+    switch (applyTheme) {
+      case "manual": {
+        return manualTheme ? darkTheme : lightTheme;
+      }
+      case "system": {
+        return systemTheme === "dark" ? darkTheme : lightTheme;
+      }
+      case "timed": {
+        const now = DateTime.fromFormat(time, "HH:mm");
+        let start = DateTime.fromFormat(fromTimeTheme, "HH:mm");
+        const end = DateTime.fromFormat(toTimeTheme, "HH:mm");
+        if (start > end) {
+          start = start.minus({ day: 1 });
+        }
+        return start <= now && now <= end ? darkTheme : lightTheme;
+      }
+      default: {
+        return lightTheme;
+      }
+    }
+  }
+);
+
 export const selectCurrentThemeMap = createSelector(
-  [selectTheme, selectThemesMap],
+  selectTheme,
+  selectThemesMap,
   (theme, themesMap) => themesMap[theme]
 );
 

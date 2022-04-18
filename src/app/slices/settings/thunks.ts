@@ -1,14 +1,10 @@
-import { DateTime } from "luxon";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
-import { selectTheme, setTheme } from "@s/common";
 import firestore from "@s/firebase/firestore";
 import type { UserId } from "@s/firebase/types";
 import { selectLoading, setTransition } from "@s/main";
 import { selectUser } from "@s/user";
-import { Interval } from "@s/util/constructors";
 import { hasKey } from "@s/util/functions";
-import type { SettingsState } from ".";
 import {
   selectCookies,
   selectSyncSettings,
@@ -121,65 +117,10 @@ export const setView =
     }
   };
 
-const isDarkTheme = (settings: SettingsState) => {
-  const manualBool = settings.applyTheme === "manual" && settings.manualTheme;
-  const systemBool =
-    settings.applyTheme === "system" &&
-    window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-  const currentDay = DateTime.now();
-  const [fromHour = "0", fromMinute = "0"] = settings.fromTimeTheme.split(":");
-  const fromTime = currentDay.set({
-    hour: parseInt(fromHour),
-    minute: parseInt(fromMinute),
-  });
-  const [toHour = "0", toMinute = "0"] = settings.toTimeTheme.split(":");
-  const toTime = currentDay.set({
-    hour: parseInt(toHour),
-    minute: parseInt(toMinute),
-  });
-  const timedBool =
-    settings.applyTheme === "timed" &&
-    (currentDay >= fromTime || currentDay <= toTime);
-  return manualBool || systemBool || timedBool;
-};
-
-// eslint-disable-next-line no-use-before-define
-let intervalCheckTheme: Interval<() => void>;
-
-export const checkTheme = (): AppThunk<void> => (dispatch, getState) => {
-  if (!intervalCheckTheme) {
-    intervalCheckTheme = new Interval(() => dispatch(checkTheme()), 1000 * 60);
-  }
-
-  const state = getState();
-
-  const { settings } = getState();
-  const theme = settings.lichTheme
-    ? "lich"
-    : isDarkTheme(settings)
-    ? settings.darkTheme
-    : settings.lightTheme;
-  if (selectTheme(state) !== theme) {
-    dispatch(setTheme(theme));
-  }
-  const { documentElement: html } = document;
-  html.setAttribute("class", theme);
-  const meta = document.querySelector("meta[name=theme-color]");
-  if (meta) {
-    meta.setAttribute(
-      "content",
-      getComputedStyle(html).getPropertyValue("--theme-meta")
-    );
-  }
-};
-
 export const setApplyTheme =
   (applyTheme: string, write = true): AppThunk<void> =>
   (dispatch) => {
     dispatch(setSetting("applyTheme", applyTheme));
-    dispatch(checkTheme());
     if (write) {
       dispatch(syncSetting("applyTheme", applyTheme));
     }
@@ -189,7 +130,6 @@ export const setLightTheme =
   (theme: string, write = true): AppThunk<void> =>
   (dispatch) => {
     dispatch(setSetting("lightTheme", theme));
-    dispatch(checkTheme());
     if (write) {
       dispatch(syncSetting("lightTheme", theme));
     }
@@ -199,7 +139,6 @@ export const setDarkTheme =
   (theme: string, write = true): AppThunk<void> =>
   (dispatch) => {
     dispatch(setSetting("darkTheme", theme));
-    dispatch(checkTheme());
     if (write) {
       dispatch(syncSetting("darkTheme", theme));
     }
@@ -209,7 +148,6 @@ export const setManualTheme =
   (bool: boolean, write = true): AppThunk<void> =>
   (dispatch) => {
     dispatch(setSetting("manualTheme", bool));
-    dispatch(checkTheme());
     if (write) {
       dispatch(syncSetting("manualTheme", bool));
     }
@@ -219,7 +157,6 @@ export const setFromTimeTheme =
   (time: string, write = true): AppThunk<void> =>
   (dispatch) => {
     dispatch(setSetting("fromTimeTheme", time));
-    dispatch(checkTheme());
     if (write) {
       dispatch(syncSetting("fromTimeTheme", time));
     }
@@ -229,7 +166,6 @@ export const setToTimeTheme =
   (time: string, write = true): AppThunk<void> =>
   (dispatch) => {
     dispatch(setSetting("toTimeTheme", time));
-    dispatch(checkTheme());
     if (write) {
       dispatch(syncSetting("toTimeTheme", time));
     }
@@ -237,7 +173,6 @@ export const setToTimeTheme =
 
 export const toggleLichTheme = (): AppThunk<void> => (dispatch) => {
   dispatch(toggleLich());
-  dispatch(checkTheme());
 };
 
 export const setBottomNav =

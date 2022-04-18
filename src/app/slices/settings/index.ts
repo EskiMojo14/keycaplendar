@@ -90,6 +90,23 @@ export const selectSyncSettings = (state: RootState) =>
 export const selectShareNameLoading = (state: RootState) =>
   state.settings.shareNameLoading;
 
+export const selectApplyTheme = (state: RootState) => state.settings.applyTheme;
+
+export const selectLichTheme = (state: RootState) => state.settings.lichTheme;
+
+export const selectDarkTheme = (state: RootState) => state.settings.darkTheme;
+
+export const selectLightTheme = (state: RootState) => state.settings.lightTheme;
+
+export const selectFromTimeTheme = (state: RootState) =>
+  state.settings.fromTimeTheme;
+
+export const selectToTimeTheme = (state: RootState) =>
+  state.settings.toTimeTheme;
+
+export const selectManualTheme = (state: RootState) =>
+  state.settings.manualTheme;
+
 export default settingsSlice.reducer;
 
 const {
