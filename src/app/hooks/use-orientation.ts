@@ -3,7 +3,6 @@ import { useDebugValue, useEffect, useState } from "react";
 export type OrientationState = {
   angle: number;
   type:
-    | ""
     | "landscape-primary"
     | "landscape-secondary"
     | "portrait-primary"
@@ -31,9 +30,11 @@ const useOrientation = (initialState: OrientationState = defaultState) => {
           setState({ angle, type });
         } else if (window.orientation !== undefined) {
           setState({
+            ...initialState,
             angle:
-              typeof window.orientation === "number" ? window.orientation : 0,
-            type: "",
+              typeof window.orientation === "number"
+                ? window.orientation
+                : initialState.angle,
           });
         } else {
           setState(initialState);
