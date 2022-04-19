@@ -65,7 +65,7 @@ export const setGroupAdapter = createEntityAdapter<SetGroup>({
 export type MainState = {
   initialLoad: boolean;
   keysets: EntityState<SetType>;
-  linkedFavorites: { array: string[]; displayName: string };
+  linkedFavorites: { array: EntityId[]; displayName: string };
   loading: boolean;
   presets: EntityState<PresetType> & {
     currentPreset: EntityId;
@@ -275,20 +275,14 @@ export const selectURLKeyset = createSelector(
 );
 
 /**
- * Tests whether a set would be shown on each page.
+ * Tests whether a set would be shown on a page.
  * @param set Set to be tested.
- * @param favorites Array of set IDs which are favorited.
- * @param bought Array of set IDs which are bought.
- * @param hidden Array of set IDs which are hidden.
- * @returns Object with page keys, containing a boolean of if that set would be shown on the page.
+ * @param page
+ * @returns if that set would be shown on the page.
  */
 
 export const pageCondition = (
   set: SetType,
-  favorites: EntityId[],
-  bought: EntityId[],
-  hidden: EntityId[],
-  linkedFavorites: MainState["linkedFavorites"],
   page: typeof mainPages[number]
 ): boolean => {
   const today = DateTime.utc();
@@ -306,21 +300,11 @@ export const pageCondition = (
     case "archive": {
       return true;
     }
-    case "bought": {
-      return bought.includes(set.id);
-    }
     case "calendar":
       return (
         startDate > today ||
         (startDate <= today && (endDate >= yesterday || !set.gbEnd))
       );
-    case "favorites":
-      return linkedFavorites.array.length > 0
-        ? linkedFavorites.array.includes(set.id)
-        : favorites.includes(set.id);
-    case "hidden": {
-      return hidden.includes(set.id);
-    }
     case "ic": {
       return !set.gbLaunch || set.gbLaunch.includes("Q");
     }
@@ -333,67 +317,54 @@ export const pageCondition = (
     case "timeline": {
       return !!(set.gbLaunch && !set.gbLaunch.includes("Q"));
     }
+    default: {
+      return false;
+    }
   }
 };
 
 /**
  * Tests whether a set would be shown on each page.
  * @param set Set to be tested.
- * @param favorites Array of set IDs which are favorited.
- * @param bought Array of set IDs which are bought.
- * @param hidden Array of set IDs which are hidden.
  * @returns Object with page keys, containing a boolean of if that set would be shown on the page.
  */
 
-export const pageConditions = (
-  set: SetType,
-  favorites: EntityId[],
-  bought: EntityId[],
-  hidden: EntityId[],
-  linkedFavorites: MainState["linkedFavorites"]
-) =>
+export const pageConditions = (set: SetType) =>
   objectFromEntries<Record<typeof mainPages[number], boolean>>(
-    mainPages.map((page) => [
-      page,
-      pageCondition(set, favorites, bought, hidden, linkedFavorites, page),
-    ])
+    mainPages.map((page) => [page, pageCondition(set, page)])
   );
 
-export const selectSetsByPage = createSelector(
-  selectAllSets,
-  selectFavorites,
-  selectBought,
-  selectHidden,
-  selectLinkedFavorites,
-  (sets, favorites, bought, hidden, linkedFavorites) =>
-    sets.reduce<Record<typeof mainPages[number], SetType[]>>((acc, set) => {
-      mainPages.forEach((page) => {
-        if (
-          pageCondition(set, favorites, bought, hidden, linkedFavorites, page)
-        ) {
-          acc[page].push(set);
-        }
-      });
-      return acc;
-    }, objectFromEntries(mainPages.map((page) => [page, []])))
+export const selectSetsByPage = createSelector(selectAllSets, (sets) =>
+  sets.reduce<Record<typeof mainPages[number], SetType[]>>((acc, set) => {
+    mainPages.forEach((page) => {
+      if (pageCondition(set, page)) {
+        acc[page].push(set);
+      }
+    });
+    return acc;
+  }, objectFromEntries(mainPages.map((page) => [page, []])))
 );
 
 export const selectFilteredSets = createSelector(
   selectLocation,
+  selectSetMap,
   selectSetsByPage,
   selectSearch,
   selectWhitelist,
   selectFavorites,
+  selectLinkedFavorites,
   selectBought,
   selectHidden,
   selectUser,
   selectInitialLoad,
   (
     location,
+    setMap,
     setsByPage,
     search,
     whitelist,
     favorites,
+    linkedFavorites,
     bought,
     hidden,
     user,
@@ -404,13 +375,29 @@ export const selectFilteredSets = createSelector(
     }
 
     const page = getPageName(location.pathname);
+    if (!arrayIncludes(mainPages, page)) {
+      return [];
+    }
 
     let sets: SetType[] = [];
-
-    if (arrayIncludes(mainPages, page)) {
-      ({ [page]: sets } = setsByPage);
-    } else {
-      return [];
+    switch (page) {
+      case "favorites": {
+        sets = (
+          linkedFavorites.array.length ? linkedFavorites.array : favorites
+        ).map((id) => setMap[id]!);
+        break;
+      }
+      case "bought": {
+        sets = bought.map((id) => setMap[id]!);
+        break;
+      }
+      case "hidden": {
+        sets = hidden.map((id) => setMap[id]!);
+        break;
+      }
+      default: {
+        ({ [page]: sets } = setsByPage);
+      }
     }
 
     // filter bool functions

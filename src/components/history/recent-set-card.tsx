@@ -16,7 +16,6 @@ import { useHistory } from "react-router-dom";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { useAppSelector } from "@h";
 import { mainPages, pageIcons, pageTitle } from "@s/common/constants";
-import type { MainPage } from "@s/common/types";
 import { selectRecentSetById } from "@s/history";
 import { pageConditions, selectLinkedFavorites, selectSetById } from "@s/main";
 import { selectBought, selectFavorites, selectHidden } from "@s/user";
@@ -63,20 +62,12 @@ export const RecentSetCard = ({
 
   const pages = useMemo(() => {
     if (currentSet) {
-      const falsePages: Record<MainPage, boolean> = {
-        archive: false,
-        bought: false,
-        calendar: false,
-        favorites: false,
-        hidden: false,
-        ic: false,
-        live: false,
-        previous: false,
-        timeline: false,
-      };
-      const pageBools: Record<MainPage, boolean> = currentSet
-        ? pageConditions(currentSet, favorites, bought, hidden, linkedFavorites)
-        : falsePages;
+      const pageBools = pageConditions(currentSet);
+      pageBools.favorites = linkedFavorites.array.length
+        ? linkedFavorites.array.includes(recentSetId)
+        : favorites.includes(recentSetId);
+      pageBools.bought = bought.includes(recentSetId);
+      pageBools.hidden = hidden.includes(recentSetId);
       const keysetPages = objectKeys(pageBools).filter((key) => pageBools[key]);
       return keysetPages;
     }
