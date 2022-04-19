@@ -1,7 +1,7 @@
 import { ListDivider } from "@rmwc/list";
 import { Menu, MenuItem } from "@rmwc/menu";
 import { useAppDispatch, useAppSelector } from "@h";
-import { selectPage } from "@s/common";
+import usePage from "@h/use-page";
 import { selectSort, selectSortOrder } from "@s/main";
 import { allSorts, sortBlacklist, sortNames } from "@s/main/constants";
 import { setSort, setSortOrder } from "@s/main/thunks";
@@ -17,7 +17,9 @@ const sortOrders: SortOrderType[] = ["ascending", "descending"];
 
 export const MenuSort = ({ onClose, open }: MenuSortProps) => {
   const dispatch = useAppDispatch();
-  const page = useAppSelector(selectPage);
+
+  const page = usePage();
+
   const sort = useAppSelector(selectSort);
   const sortOrder = useAppSelector(selectSortOrder);
   return (

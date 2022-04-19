@@ -19,7 +19,7 @@ import {
 } from "@c/util/segmented-button";
 import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
-import { selectPage } from "@s/common";
+import usePage from "@h/use-page";
 import {
   selectAllAppPresets,
   selectAllProfiles,
@@ -86,7 +86,8 @@ export const DrawerFilter = ({
   const dispatch = useAppDispatch();
 
   const device = useDevice();
-  const page = useAppSelector(selectPage);
+
+  const page = usePage();
 
   const view = useAppSelector(selectView);
 

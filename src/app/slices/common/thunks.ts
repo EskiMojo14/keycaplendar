@@ -3,21 +3,13 @@ import { history } from "~/app/history";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import firestore from "@s/firebase/firestore";
-import {
-  selectURLEntry as selectURLGuide,
-  setURLEntry as setURLGuide,
-} from "@s/guides";
+import { setURLEntry as setURLGuide } from "@s/guides";
 import { setHistoryTab } from "@s/history/thunks";
 import type { HistoryTab } from "@s/history/types";
 import {
   selectDefaultPreset,
-  selectLinkedFavorites,
-  selectLoading,
-  selectURLSet,
   setAppPresets,
   setCurrentPreset,
-  setLinkedFavorites,
-  setSearch as setMainSearch,
   setSort as setMainSort,
   setSortOrder as setMainSortOrder,
   setTransition,
@@ -35,16 +27,13 @@ import {
 import type { whitelistShipped } from "@s/main/constants";
 import { getData, setWhitelistMerge } from "@s/main/thunks";
 import type { WhitelistType } from "@s/main/types";
+import { getPageName } from "@s/router";
 import { setStatisticsTab } from "@s/statistics/thunks";
 import type { StatsTab } from "@s/statistics/types";
-import {
-  selectURLEntry as selectURLUpdate,
-  setURLEntry as setURLUpdate,
-} from "@s/updates";
+import { setURLEntry as setURLUpdate } from "@s/updates";
 import { getLinkedFavorites } from "@s/user/thunks";
-import { arrayIncludes, createURL } from "@s/util/functions";
-import { selectPage, setAppPage } from ".";
-import { mainPages, pageTitle, urlPages } from "./constants";
+import { arrayIncludes } from "@s/util/functions";
+import { mainPages, urlPages } from "./constants";
 import type { Page } from "./types";
 
 export const triggerTransition =
@@ -58,8 +47,8 @@ export const triggerTransition =
 
 export const getURLQuery = (): AppThunk<void> => (dispatch, getState) => {
   const params = new URLSearchParams(window.location.search);
-  const path = window.location.pathname.substring(1);
-  if (path || params.has("page")) {
+  const path = getPageName(history.location.pathname);
+  if (path) {
     const pageQuery = path || params.get("page");
     if (
       arrayIncludes(urlPages, pageQuery) ||
@@ -69,7 +58,6 @@ export const getURLQuery = (): AppThunk<void> => (dispatch, getState) => {
       if (arrayIncludes(mainPages, pageQuery)) {
         if (pageQuery === "calendar") {
           dispatch([
-            setAppPage(pageQuery),
             setMainSort(pageSort[pageQuery]),
             setMainSortOrder(pageSortOrder[pageQuery]),
           ]);
@@ -77,7 +65,6 @@ export const getURLQuery = (): AppThunk<void> => (dispatch, getState) => {
           const sortQuery = params.get("sort");
           const sortOrderQuery = params.get("sortOrder");
           dispatch([
-            setAppPage(pageQuery),
             setMainSort(
               arrayIncludes(allSorts, sortQuery) &&
                 !arrayIncludes(sortBlacklist[sortQuery], pageQuery)
@@ -93,22 +80,8 @@ export const getURLQuery = (): AppThunk<void> => (dispatch, getState) => {
             ),
           ]);
         }
-      } else {
-        dispatch(setAppPage(pageQuery));
       }
-    } else {
-      dispatch([
-        setAppPage("calendar"),
-        setMainSort(pageSort.calendar),
-        setMainSortOrder(pageSortOrder.calendar),
-      ]);
     }
-  } else {
-    dispatch([
-      setAppPage("calendar"),
-      setMainSort(pageSort.calendar),
-      setMainSortOrder(pageSortOrder.calendar),
-    ]);
   }
   const whitelistObj: Partial<WhitelistType> = {};
   whitelistParams.forEach((param, index, array) => {
@@ -221,62 +194,3 @@ export const getGlobals = (): AppThunk<Promise<void>> => async (dispatch) => {
     notify({ title: `Failed to get global settings: ${error}` });
   }
 };
-
-export const setPage =
-  (page: Page): AppThunk<void> =>
-  (dispatch, getState) => {
-    const state = getState();
-    const appPage = selectPage(state);
-    const loading = selectLoading(state);
-    const urlSet = selectURLSet(state);
-    const linkedFavorites = selectLinkedFavorites(state);
-    const urlGuide = selectURLGuide(state);
-    const urlUpdate = selectURLUpdate(state);
-    if (page !== appPage && !loading && is<Page>(page)) {
-      dispatch(triggerTransition());
-      setTimeout(() => {
-        dispatch([setMainSearch(""), setAppPage(page)]);
-        if (arrayIncludes(mainPages, page)) {
-          dispatch([
-            setMainSort(pageSort[page]),
-            setMainSortOrder(pageSortOrder[page]),
-          ]);
-        }
-        document.documentElement.scrollTop = 0;
-      }, 90);
-      document.title = `KeycapLendar: ${pageTitle[page]}`;
-      if (urlSet.value) {
-        dispatch(setURLSet("id", ""));
-      }
-      if (urlGuide) {
-        dispatch(setURLGuide(""));
-      }
-      if (urlUpdate) {
-        dispatch(setURLUpdate(""));
-      }
-      if (linkedFavorites.array.length > 0) {
-        dispatch(setLinkedFavorites({ array: [], displayName: "" }));
-      }
-      const newUrl = createURL(
-        { pathname: `/${page}` },
-        (params) => {
-          params.delete("page");
-          const pageParams = [
-            "keysetId",
-            "keysetAlias",
-            "keysetName",
-            "guideId",
-            "updateId",
-            "favoritesId",
-          ];
-          pageParams.forEach((param) => {
-            if (params.has(param)) {
-              params.delete(param);
-            }
-          });
-        },
-        true
-      );
-      history.push(newUrl);
-    }
-  };

@@ -12,10 +12,10 @@ import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { DateTime } from "luxon";
 import LazyLoad from "react-lazy-load";
+import { useHistory } from "react-router-dom";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
-import { useAppDispatch, useAppSelector } from "@h";
+import { useAppSelector } from "@h";
 import { mainPages, pageIcons, pageTitle } from "@s/common/constants";
-import { setPage } from "@s/common/thunks";
 import type { MainPage } from "@s/common/types";
 import { selectRecentSetById } from "@s/history";
 import { pageConditions, selectLinkedFavorites, selectSetById } from "@s/main";
@@ -44,8 +44,6 @@ export const RecentSetCard = ({
   recentSetId,
   selected,
 }: RecentSetCardProps) => {
-  const dispatch = useAppDispatch();
-
   const recentSet = useAppSelector((state) =>
     selectRecentSetById(state, recentSetId)
   );
@@ -53,6 +51,8 @@ export const RecentSetCard = ({
   if (!recentSet) {
     return null;
   }
+
+  const history = useHistory();
 
   const { deleted, id } = recentSet;
   const currentSet = useAppSelector((state) => selectSetById(state, id));
@@ -181,7 +181,7 @@ export const RecentSetCard = ({
                     key={page}
                     icon={pageIcons[page]}
                     label={title}
-                    onClick={() => dispatch(setPage(page))}
+                    onClick={() => history.push(`/${page}`)}
                     outlined
                   />
                 );

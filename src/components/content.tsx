@@ -16,7 +16,7 @@ import { ContentUsers } from "@c/users";
 import { useAppSelector } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
-import { usePage } from "@h/use-page";
+import usePage from "@h/use-page";
 import { mainPages } from "@s/common/constants";
 import { selectUser } from "@s/user";
 import { arrayIncludes, closeModal, openModal } from "@s/util/functions";

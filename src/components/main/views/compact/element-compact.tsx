@@ -14,7 +14,7 @@ import { SkeletonCompact } from "@c/main/views/compact/skeleton-compact";
 import { withTooltip } from "@c/util/hocs";
 import { useAppSelector } from "@h";
 import useDevice from "@h/use-device";
-import { selectPage } from "@s/common";
+import usePage from "@h/use-page";
 import { selectSetById } from "@s/main";
 import { getSetDetails } from "@s/main/functions";
 import { clearSearchParams, createURL, iconObject } from "@s/util/functions";
@@ -41,11 +41,13 @@ export const ElementCompact = ({
   if (!set) {
     return null;
   }
-  const { live, subtitle } = getSetDetails(set, { month: "MMM" });
 
-  const page = useAppSelector(selectPage);
   const device = useDevice();
   const useLink = device === "desktop";
+
+  const page = usePage();
+
+  const { live, subtitle } = getSetDetails(set, { month: "MMM" });
 
   if (loading) {
     return <SkeletonCompact icon={set.shipped || live} />;

@@ -14,8 +14,8 @@ import {
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
+import { useHistory } from "react-router-dom";
 import { confirm } from "~/app/dialog-queue";
-import { history } from "~/app/history";
 import { notify } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
 import { ModalCreate, ModalEdit } from "@c/guides/admin/modal-entry";
@@ -50,6 +50,8 @@ type ContentGuidesProps = {
 };
 
 export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
+  const history = useHistory();
+
   const dispatch = useAppDispatch();
 
   const getEntries = () => dispatch(getEntriesThunk());

@@ -20,7 +20,7 @@ import { SkeletonCard } from "@c/main/views/card/skeleton-card";
 import { withTooltip } from "@c/util/hocs";
 import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
-import { selectPage } from "@s/common";
+import usePage from "@h/use-page";
 import { selectSetById } from "@s/main";
 import { getSetDetails } from "@s/main/functions";
 import {
@@ -65,6 +65,11 @@ export const ElementCard = ({
 }: ElementCardProps) => {
   const dispatch = useAppDispatch();
 
+  const device = useDevice();
+  const useLink = device === "desktop";
+
+  const page = usePage();
+
   const selectFavorited = useCallback(createSelectSetFavorited(), []);
   const favorited = useAppSelector((state) => selectFavorited(state, setId));
   const selectHidden = useCallback(createSelectSetHidden(), []);
@@ -79,9 +84,6 @@ export const ElementCard = ({
   const { daysLeft, live, subtitle, thisWeek } = getSetDetails(set);
 
   const user = useAppSelector(selectUser);
-  const page = useAppSelector(selectPage);
-  const device = useDevice();
-  const useLink = device === "desktop";
 
   if (loading) {
     return <SkeletonCard icon={set.shipped || live} loggedIn={!!user?.email} />;

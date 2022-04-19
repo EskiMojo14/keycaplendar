@@ -8,16 +8,13 @@ import {
   selectLightTheme,
   selectManualTheme,
 } from "@s/settings";
-import type { Page } from "./types";
 
 export type CommonState = {
-  page: Page;
   systemTheme: "dark" | "light";
   timed: "dark" | "light";
 };
 
 export const initialState: CommonState = {
-  page: "calendar",
   systemTheme: "light",
   timed: "light",
 };
@@ -26,9 +23,6 @@ export const commonSlice = createSlice({
   initialState,
   name: "common",
   reducers: {
-    setAppPage: (state, { payload }: PayloadAction<Page>) => {
-      state.page = payload;
-    },
     setSystemTheme: (state, { payload }: PayloadAction<boolean>) => {
       state.systemTheme = payload ? "dark" : "light";
     },
@@ -39,10 +33,8 @@ export const commonSlice = createSlice({
 });
 
 export const {
-  actions: { setAppPage, setSystemTheme, setTimed },
+  actions: { setSystemTheme, setTimed },
 } = commonSlice;
-
-export const selectPage = (state: RootState) => state.common.page;
 
 export const selectSystemTheme = (state: RootState) => state.common.systemTheme;
 

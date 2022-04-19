@@ -11,3 +11,5 @@ export const usePage = () => {
   useDebugValue(page);
   return page;
 };
+
+export default usePage;

@@ -23,7 +23,7 @@ import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
 import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
-import { selectPage } from "@s/common";
+import usePage from "@h/use-page";
 import { mainPages } from "@s/common/constants";
 import { selectSearch, selectSetById, setSearch } from "@s/main";
 import type { SetType } from "@s/main/types";
@@ -77,15 +77,16 @@ export const DrawerDetails = ({
 }: DrawerDetailsProps) => {
   const dispatch = useAppDispatch();
 
+  const device = useDevice();
+
+  const page = usePage();
+
   const selectFavorited = useCallback(createSelectSetFavorited(), []);
   const favorited = useAppSelector((state) => selectFavorited(state, setId));
   const selectHidden = useCallback(createSelectSetHidden(), []);
   const hidden = useAppSelector((state) => selectHidden(state, setId));
   const selectBought = useCallback(createSelectSetBought(), []);
   const bought = useAppSelector((state) => selectBought(state, setId));
-
-  const device = useDevice();
-  const page = useAppSelector(selectPage);
 
   const view = useAppSelector(selectView);
 

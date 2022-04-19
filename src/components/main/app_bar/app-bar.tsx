@@ -15,7 +15,7 @@ import { withTooltip } from "@c/util/hocs";
 import { useAppSelector } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
-import { selectPage } from "@s/common";
+import usePage from "@h/use-page";
 import { pageTitle } from "@s/common/constants";
 import { selectLinkedFavorites, selectLoading } from "@s/main";
 import { selectView } from "@s/settings";
@@ -46,10 +46,12 @@ export const AppBar = ({
   openShare,
 }: AppBarProps) => {
   const device = useDevice();
-  const view = useAppSelector(selectView);
+
   const bottomNav = useBottomNav();
 
-  const page = useAppSelector(selectPage);
+  const page = usePage();
+
+  const view = useAppSelector(selectView);
 
   const user = useAppSelector(selectUser);
 

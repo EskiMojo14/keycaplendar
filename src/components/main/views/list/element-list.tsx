@@ -15,7 +15,7 @@ import { SkeletonList } from "@c/main/views/list/skeleton-list";
 import { withTooltip } from "@c/util/hocs";
 import { useAppSelector } from "@h";
 import useDevice from "@h/use-device";
-import { selectPage } from "@s/common";
+import usePage from "@h/use-page";
 import { selectSetById } from "@s/main";
 import { getSetDetails } from "@s/main/functions";
 import {
@@ -48,11 +48,12 @@ export const ElementList = ({
     return null;
   }
 
-  const { daysLeft, live, subtitle, thisWeek } = getSetDetails(set);
-
-  const page = useAppSelector(selectPage);
   const device = useDevice();
   const useLink = device === "desktop";
+
+  const page = usePage();
+
+  const { daysLeft, live, subtitle, thisWeek } = getSetDetails(set);
 
   if (loading) {
     return <SkeletonList icon={set.shipped || live} />;

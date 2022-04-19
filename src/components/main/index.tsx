@@ -4,7 +4,7 @@ import { DrawerAppContent } from "@rmwc/drawer";
 import { Fab } from "@rmwc/fab";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import classNames from "classnames";
-import { history } from "~/app/history";
+import { useHistory } from "react-router-dom";
 import { Footer } from "@c/common/footer";
 import { DialogDelete } from "@c/main/admin/dialog-delete";
 import { ModalCreate, ModalEdit } from "@c/main/admin/modal-entry";
@@ -18,7 +18,7 @@ import { useAppDispatch, useAppSelector } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import useLocatedSelector from "@h/use-located-selector";
-import { selectPage } from "@s/common";
+import usePage from "@h/use-page";
 import {
   selectInitialLoad,
   selectLinkedFavorites,
@@ -43,13 +43,16 @@ type ContentMainProps = {
 };
 
 export const ContentMain = ({ openNav }: ContentMainProps) => {
+  const history = useHistory();
+
   const dispatch = useAppDispatch();
 
   const device = useDevice();
   const bottomNav = useBottomNav();
-  const view = useAppSelector(selectView);
 
-  const page = useAppSelector(selectPage);
+  const page = usePage();
+
+  const view = useAppSelector(selectView);
 
   const user = useAppSelector(selectUser);
 

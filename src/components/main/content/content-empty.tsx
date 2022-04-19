@@ -1,12 +1,12 @@
 import { Typography } from "@rmwc/typography";
 import { useAppSelector } from "@h";
-import { selectPage } from "@s/common";
+import usePage from "@h/use-page";
 import { selectFavorites, selectHidden } from "@s/user";
 import emptyImg from "@m/empty.svg";
 import "./content-empty.scss";
 
 export const ContentEmpty = () => {
-  const page = useAppSelector(selectPage);
+  const page = usePage();
 
   const favorites = useAppSelector(selectFavorites);
   const hidden = useAppSelector(selectHidden);
