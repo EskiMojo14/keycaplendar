@@ -72,7 +72,7 @@ export const RecentSetCard = ({
       return keysetPages;
     }
     return [];
-  }, [currentSet]);
+  }, [currentSet, linkedFavorites.array, favorites, bought, hidden]);
 
   return (
     <Card
