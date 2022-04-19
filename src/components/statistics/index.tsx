@@ -21,9 +21,9 @@ import {
   SegmentedButtonSegment,
 } from "@c/util/segmented-button";
 import { useAppDispatch, useAppSelector } from "@h";
+import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import { pageTitle } from "@s/common/constants";
-import { selectBottomNav } from "@s/settings";
 import {
   selectData,
   selectLoading,
@@ -63,7 +63,7 @@ type ContentStatisticsProps = {
 export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
   const dispatch = useAppDispatch();
   const device = useDevice();
-  const bottomNav = useAppSelector(selectBottomNav);
+  const bottomNav = useBottomNav();
 
   const statisticsTab = useAppSelector(selectTab);
   const loading = useAppSelector(selectLoading);

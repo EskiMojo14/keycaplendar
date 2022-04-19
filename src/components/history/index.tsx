@@ -21,6 +21,7 @@ import { Footer } from "@c/common/footer";
 import { DialogSales } from "@c/main/dialog-sales";
 import { DrawerDetails } from "@c/main/drawer-details";
 import { useAppDispatch, useAppSelector } from "@h";
+import useBottomNav from "@h/use-bottom-nav";
 import { pageTitle } from "@s/common/constants";
 import {
   processedActionsAdapter,
@@ -34,7 +35,6 @@ import {
 import { historyTabs } from "@s/history/constants";
 import { getData } from "@s/history/thunks";
 import { selectAllSets } from "@s/main";
-import { selectBottomNav } from "@s/settings";
 import {
   capitalise,
   closeModal,
@@ -56,7 +56,7 @@ type ContentHistoryProps = {
 export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
   const dispatch = useAppDispatch();
 
-  const bottomNav = useAppSelector(selectBottomNav);
+  const bottomNav = useBottomNav();
 
   const allSets = useAppSelector(selectAllSets);
 

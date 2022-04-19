@@ -36,9 +36,9 @@ import {
 } from "@c/util/data-table-pagination";
 import { withTooltip } from "@c/util/hocs";
 import { useAppDispatch, useAppSelector } from "@h";
+import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import { pageTitle } from "@s/common/constants";
-import { selectBottomNav } from "@s/settings";
 import {
   selectLoading,
   selectNextPageToken,
@@ -79,7 +79,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
   const dispatch = useAppDispatch();
 
   const device = useDevice();
-  const bottomNav = useAppSelector(selectBottomNav);
+  const bottomNav = useBottomNav();
 
   const view = useAppSelector(selectView);
   const loading = useAppSelector(selectLoading);

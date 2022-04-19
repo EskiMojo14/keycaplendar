@@ -18,6 +18,7 @@ import { Footer } from "@c/common/footer";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
 import { useAppDispatch, useAppSelector } from "@h";
+import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import {
   getActions as getActionsThunk,
@@ -28,7 +29,6 @@ import {
 } from "@s/audit";
 import { filterActions } from "@s/audit/functions";
 import { pageTitle } from "@s/common/constants";
-import { selectBottomNav } from "@s/settings";
 import { closeModal, openModal } from "@s/util/functions";
 import { AuditEntry } from "./audit-entry";
 import { DrawerAuditFilter } from "./drawer-audit-filter";
@@ -55,7 +55,7 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
   }, []);
 
   const device = useDevice();
-  const bottomNav = useAppSelector(selectBottomNav);
+  const bottomNav = useBottomNav();
 
   const loading = useAppSelector(selectLoading);
   const actions = useAppSelector(selectActions);

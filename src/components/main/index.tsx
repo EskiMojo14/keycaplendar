@@ -15,6 +15,7 @@ import { ContentGrid } from "@c/main/content/content-grid";
 import ContentSkeleton from "@c/main/content/content-skeleton";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { useAppDispatch, useAppSelector } from "@h";
+import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import { selectPage } from "@s/common";
 import {
@@ -26,7 +27,7 @@ import {
 } from "@s/main";
 import { blankKeyset, blankPreset } from "@s/main/constants";
 import type { PresetType, SetType } from "@s/main/types";
-import { selectBottomNav, selectView } from "@s/settings";
+import { selectView } from "@s/settings";
 import { selectUser } from "@s/user";
 import { closeModal, createURL, openModal } from "@s/util/functions";
 import { DialogDeleteFilterPreset } from "./dialog-delete-filter-preset";
@@ -44,7 +45,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   const dispatch = useAppDispatch();
 
   const device = useDevice();
-  const bottomNav = useAppSelector(selectBottomNav);
+  const bottomNav = useBottomNav();
   const view = useAppSelector(selectView);
 
   const page = useAppSelector(selectPage);

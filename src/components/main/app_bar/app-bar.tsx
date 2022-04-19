@@ -13,11 +13,12 @@ import classNames from "classnames";
 import { AppBarIndent } from "@c/util/app-bar-indent";
 import { withTooltip } from "@c/util/hocs";
 import { useAppSelector } from "@h";
+import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import { selectPage } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { selectLinkedFavorites, selectLoading } from "@s/main";
-import { selectBottomNav, selectView } from "@s/settings";
+import { selectView } from "@s/settings";
 import { viewIcons } from "@s/settings/constants";
 import { selectUser } from "@s/user";
 import { iconObject, useBoolStates } from "@s/util/functions";
@@ -46,7 +47,7 @@ export const AppBar = ({
 }: AppBarProps) => {
   const device = useDevice();
   const view = useAppSelector(selectView);
-  const bottomNav = useAppSelector(selectBottomNav);
+  const bottomNav = useBottomNav();
 
   const page = useAppSelector(selectPage);
 

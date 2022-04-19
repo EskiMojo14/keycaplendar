@@ -13,6 +13,7 @@ import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { DateTime } from "luxon";
 import { useAppDispatch, useAppSelector } from "@h";
+import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import { selectPage } from "@s/common";
 import {
@@ -26,7 +27,6 @@ import { setPage as setMainPage } from "@s/common/thunks";
 import type { Page } from "@s/common/types";
 import firestore from "@s/firebase/firestore";
 import { selectLinkedFavorites } from "@s/main";
-import { selectBottomNav } from "@s/settings";
 import {
   selectBought,
   selectFavorites,
@@ -47,7 +47,7 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
   const dispatch = useAppDispatch();
 
   const device = useDevice();
-  const bottomNav = useAppSelector(selectBottomNav);
+  const bottomNav = useBottomNav();
 
   const appPage = useAppSelector(selectPage);
 

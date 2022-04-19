@@ -12,6 +12,7 @@ import ImageAppBar from "@c/images/app-bar";
 import ImageItem from "@c/images/image-item";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { useAppDispatch, useAppSelector } from "@h";
+import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import {
   selectCurrentFolder,
@@ -20,7 +21,6 @@ import {
   selectImagesByUsage,
 } from "@s/images";
 import { getFolders, listAll } from "@s/images/thunks";
-import { selectBottomNav } from "@s/settings";
 import {
   addOrRemove,
   closeModal,
@@ -49,7 +49,7 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
   const dispatch = useAppDispatch();
   const device = useDevice();
 
-  const bottomNav = useAppSelector(selectBottomNav);
+  const bottomNav = useBottomNav();
 
   const currentFolder = useAppSelector(selectCurrentFolder);
 

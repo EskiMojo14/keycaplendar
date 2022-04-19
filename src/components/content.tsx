@@ -13,10 +13,10 @@ import { ContentStatistics } from "@c/statistics";
 import { ContentUpdates } from "@c/updates";
 import { ContentUsers } from "@c/users";
 import { useAppSelector } from "@h";
+import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import { selectPage } from "@s/common";
 import { mainPages } from "@s/common/constants";
-import { selectBottomNav } from "@s/settings";
 import { selectUser } from "@s/user";
 import { arrayIncludes, closeModal, openModal } from "@s/util/functions";
 import "./content.scss";
@@ -26,7 +26,7 @@ type ContentProps = HTMLAttributes<HTMLDivElement>;
 export const Content = ({ className, ...props }: ContentProps) => {
   const device = useDevice();
 
-  const bottomNav = useAppSelector(selectBottomNav);
+  const bottomNav = useBottomNav();
 
   const user = useAppSelector(selectUser);
 

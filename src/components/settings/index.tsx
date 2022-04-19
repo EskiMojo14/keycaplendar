@@ -39,11 +39,11 @@ import {
   SegmentedButtonSegment,
 } from "@c/util/segmented-button";
 import { useAppDispatch, useAppSelector } from "@h";
+import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import { pageTitle } from "@s/common/constants";
 import firebase from "@s/firebase";
 import {
-  selectBottomNav,
   selectSettings,
   selectShareNameLoading,
   selectSyncSettings,
@@ -89,7 +89,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
     manualTheme,
     toTimeTheme,
   } = useAppSelector(selectSettings);
-  const bottomNavSetting = useAppSelector(selectBottomNav);
+  const bottomNavSetting = useBottomNav();
   const device = useDevice();
   const syncSettings = useAppSelector(selectSyncSettings);
 

@@ -16,11 +16,11 @@ import {
   SegmentedButtonSegment,
 } from "@c/util/segmented-button";
 import { useAppDispatch, useAppSelector } from "@h";
+import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import { pageTitle } from "@s/common/constants";
 import { selectCurrentFolder, selectFolders, selectLoading } from "@s/images";
 import { setFolder } from "@s/images/thunks";
-import { selectBottomNav } from "@s/settings";
 import { iconObject, useBoolStates } from "@s/util/functions";
 import { Delete, PermMedia } from "@i";
 
@@ -43,7 +43,7 @@ export const ImageAppBar = ({
 
   const device = useDevice();
 
-  const bottomNav = useAppSelector(selectBottomNav);
+  const bottomNav = useBottomNav();
   const loading = useAppSelector(selectLoading);
 
   const currentFolder = useAppSelector(selectCurrentFolder);

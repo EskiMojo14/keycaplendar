@@ -22,6 +22,7 @@ import { ModalCreate, ModalEdit } from "@c/guides/admin/modal-entry";
 import { AppBarIndent } from "@c/util/app-bar-indent";
 import { withTooltip } from "@c/util/hocs";
 import { useAppDispatch, useAppSelector } from "@h";
+import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import { pageTitle } from "@s/common/constants";
 import firestore from "@s/firebase/firestore";
@@ -35,7 +36,6 @@ import {
   setURLEntry,
 } from "@s/guides";
 import { getEntries as getEntriesThunk } from "@s/guides/thunks";
-import { selectBottomNav } from "@s/settings";
 import { selectUser } from "@s/user";
 import { closeModal, createURL, openModal } from "@s/util/functions";
 import { selectFromState } from "@s/util/thunks";
@@ -56,7 +56,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
 
   const device = useDevice();
 
-  const bottomNav = useAppSelector(selectBottomNav);
+  const bottomNav = useBottomNav();
 
   const user = useAppSelector(selectUser);
 

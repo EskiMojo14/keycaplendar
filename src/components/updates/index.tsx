@@ -16,9 +16,9 @@ import { DialogDelete } from "@c/updates/admin/dialog-delete";
 import { ModalCreate, ModalEdit } from "@c/updates/admin/modal-entry";
 import { AppBarIndent } from "@c/util/app-bar-indent";
 import { useAppDispatch, useAppSelector } from "@h";
+import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import { pageTitle } from "@s/common/constants";
-import { selectBottomNav } from "@s/settings";
 import { selectEntryIds, selectLoading, selectURLEntry } from "@s/updates";
 import { getEntries as getEntriesThunk } from "@s/updates/thunks";
 import { selectUser } from "@s/user";
@@ -37,7 +37,7 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
 
   const device = useDevice();
 
-  const bottomNav = useAppSelector(selectBottomNav);
+  const bottomNav = useBottomNav();
 
   const user = useAppSelector(selectUser);
 
