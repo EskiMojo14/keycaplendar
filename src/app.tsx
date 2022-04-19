@@ -6,6 +6,7 @@ import classNames from "classnames";
 import { Router } from "react-router";
 import { Route, Switch } from "react-router-dom";
 import { dialogQueue } from "~/app/dialog-queue";
+import { history } from "~/app/history";
 import { notify, snackbarQueue } from "~/app/snackbar-queue";
 import { Content } from "@c/content";
 import { PrivacyPolicy } from "@c/pages/legal/privacy";
@@ -24,7 +25,6 @@ import {
   setCurrentPreset,
 } from "@s/main";
 import { testSets } from "@s/main/thunks";
-import { history } from "@s/router";
 import {
   selectCookies,
   selectDensity,

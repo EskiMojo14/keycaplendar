@@ -1,4 +1,5 @@
 import { is } from "typescript-is";
+import { history } from "~/app/history";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import firestore from "@s/firebase/firestore";
@@ -34,7 +35,6 @@ import {
 import type { whitelistShipped } from "@s/main/constants";
 import { getData, setWhitelistMerge } from "@s/main/thunks";
 import type { WhitelistType } from "@s/main/types";
-import { history } from "@s/router";
 import { setStatisticsTab } from "@s/statistics/thunks";
 import type { StatsTab } from "@s/statistics/types";
 import {

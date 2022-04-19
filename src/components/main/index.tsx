@@ -4,6 +4,7 @@ import { DrawerAppContent } from "@rmwc/drawer";
 import { Fab } from "@rmwc/fab";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import classNames from "classnames";
+import { history } from "~/app/history";
 import { Footer } from "@c/common/footer";
 import { DialogDelete } from "@c/main/admin/dialog-delete";
 import { ModalCreate, ModalEdit } from "@c/main/admin/modal-entry";
@@ -25,7 +26,6 @@ import {
 } from "@s/main";
 import { blankKeyset, blankPreset } from "@s/main/constants";
 import type { PresetType, SetType } from "@s/main/types";
-import { history } from "@s/router";
 import { selectBottomNav, selectView } from "@s/settings";
 import { selectUser } from "@s/user";
 import { closeModal, createURL, openModal } from "@s/util/functions";

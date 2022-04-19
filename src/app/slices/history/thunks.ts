@@ -1,10 +1,10 @@
 import isEqual from "lodash.isequal";
 import { is } from "typescript-is";
+import { history } from "~/app/history";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import { auditProperties } from "@s/audit/constants";
 import firebase from "@s/firebase";
-import { history } from "@s/router";
 import { createURL } from "@s/util/functions";
 import { selectTab, setLoading, setProcessedActions, setTab } from ".";
 import type {
