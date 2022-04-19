@@ -1,5 +1,4 @@
 import {
-  createDraftSafeSelector,
   createEntityAdapter,
   createSelector,
   createSlice,
@@ -20,7 +19,7 @@ import {
   sortHiddenCheck,
 } from "@s/main/constants";
 import { partialPreset } from "@s/main/constructors";
-import { getPageName, selectLocation } from "@s/router";
+import { getLocatedSelectors, getPageName, selectLocation } from "@s/router";
 import {
   selectBought,
   selectFavorites,
@@ -639,32 +638,13 @@ export const selectSetGroups = createSelector(
   }
 );
 
-export const selectSetGroupTitles = createDraftSafeSelector(
-  selectSetGroups,
-  (state) => state.ids
-);
-
-export const selectSetGroupMap = createDraftSafeSelector(
-  selectSetGroups,
-  (state) => state.entities
-);
-
-export const selectAllSetGroups = createDraftSafeSelector(
-  selectSetGroupTitles,
-  selectSetGroupMap,
-  (ids, entities) => ids.map((id) => entities[id]!)
-);
-
-export const selectSetGroupByTitle = createDraftSafeSelector(
-  selectSetGroupMap,
-  (_: unknown, id: EntityId) => id,
-  (entities, id) => entities[id]
-);
-
-export const selectSetGroupTotal = createDraftSafeSelector(
-  selectSetGroupTitles,
-  (ids) => ids.length
-);
+export const {
+  selectAll: selectAllSetGroups,
+  selectById: selectSetGroupByTitle,
+  selectEntities: selectSetGroupMap,
+  selectIds: selectSetGroupTitles,
+  selectTotal: selectSetGroupTotal,
+} = getLocatedSelectors(selectSetGroups);
 
 export const selectSortHiddenSets = createSelector(
   selectAllSetGroups,
