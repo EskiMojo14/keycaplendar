@@ -17,6 +17,7 @@ import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { useAppDispatch, useAppSelector } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
+import useLocatedSelector from "@h/use-located-selector";
 import { selectPage } from "@s/common";
 import {
   selectInitialLoad,
@@ -53,7 +54,9 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   const user = useAppSelector(selectUser);
 
   const initialLoad = useAppSelector(selectInitialLoad);
-  const contentBool = useAppSelector((state) => !!selectSetGroupTotal(state));
+  const contentBool = useLocatedSelector(
+    (state, location) => !!selectSetGroupTotal(state, location)
+  );
   const urlSet = useAppSelector(selectURLKeyset);
   const linkedFavorites = useAppSelector(selectLinkedFavorites);
 

@@ -1,4 +1,5 @@
 import {
+  createDraftSafeSelector,
   createEntityAdapter,
   createSelector,
   createSlice,
@@ -6,6 +7,7 @@ import {
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
+import { history } from "~/app/history";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk, RootState } from "~/app/store";
 import { mainPages } from "@s/common/constants";
@@ -18,6 +20,7 @@ import {
   sortHiddenCheck,
 } from "@s/main/constants";
 import { partialPreset } from "@s/main/constructors";
+import { getPageName, selectLocation } from "@s/router";
 import {
   selectBought,
   selectFavorites,
@@ -32,6 +35,7 @@ import {
   arrayIncludes,
   hasKey,
   normalise,
+  objectFromEntries,
   removeDuplicates,
   replaceFunction,
 } from "@s/util/functions";
@@ -279,13 +283,14 @@ export const selectURLKeyset = createSelector(
  * @returns Object with page keys, containing a boolean of if that set would be shown on the page.
  */
 
-export const pageConditions = (
+export const pageCondition = (
   set: SetType,
   favorites: EntityId[],
   bought: EntityId[],
   hidden: EntityId[],
-  linkedFavorites: MainState["linkedFavorites"]
-): Record<typeof mainPages[number], boolean> => {
+  linkedFavorites: MainState["linkedFavorites"],
+  page: typeof mainPages[number]
+): boolean => {
   const today = DateTime.utc();
   const yesterday = today.minus({ days: 1 });
   const startDate = DateTime.fromISO(set.gbLaunch, {
@@ -297,30 +302,85 @@ export const pageConditions = (
     minute: 59,
     second: 59,
   });
-  return {
-    archive: true,
-    bought: bought.includes(set.id),
-    calendar:
-      startDate > today ||
-      (startDate <= today && (endDate >= yesterday || !set.gbEnd)),
-    favorites:
-      linkedFavorites.array.length > 0
+  switch (page) {
+    case "archive": {
+      return true;
+    }
+    case "bought": {
+      return bought.includes(set.id);
+    }
+    case "calendar":
+      return (
+        startDate > today ||
+        (startDate <= today && (endDate >= yesterday || !set.gbEnd))
+      );
+    case "favorites":
+      return linkedFavorites.array.length > 0
         ? linkedFavorites.array.includes(set.id)
-        : favorites.includes(set.id),
-    hidden: hidden.includes(set.id),
-    ic: !set.gbLaunch || set.gbLaunch.includes("Q"),
-    live: startDate <= today && (endDate >= yesterday || !set.gbEnd),
-    previous: !!(endDate && endDate <= yesterday),
-    timeline: !!(set.gbLaunch && !set.gbLaunch.includes("Q")),
-  };
+        : favorites.includes(set.id);
+    case "hidden": {
+      return hidden.includes(set.id);
+    }
+    case "ic": {
+      return !set.gbLaunch || set.gbLaunch.includes("Q");
+    }
+    case "live": {
+      return startDate <= today && (endDate >= yesterday || !set.gbEnd);
+    }
+    case "previous": {
+      return !!(endDate && endDate <= yesterday);
+    }
+    case "timeline": {
+      return !!(set.gbLaunch && !set.gbLaunch.includes("Q"));
+    }
+  }
 };
 
-// avoid circular import
-export const selectPage = (state: RootState) => state.common.page;
+/**
+ * Tests whether a set would be shown on each page.
+ * @param set Set to be tested.
+ * @param favorites Array of set IDs which are favorited.
+ * @param bought Array of set IDs which are bought.
+ * @param hidden Array of set IDs which are hidden.
+ * @returns Object with page keys, containing a boolean of if that set would be shown on the page.
+ */
+
+export const pageConditions = (
+  set: SetType,
+  favorites: EntityId[],
+  bought: EntityId[],
+  hidden: EntityId[],
+  linkedFavorites: MainState["linkedFavorites"]
+) =>
+  objectFromEntries<Record<typeof mainPages[number], boolean>>(
+    mainPages.map((page) => [
+      page,
+      pageCondition(set, favorites, bought, hidden, linkedFavorites, page),
+    ])
+  );
+
+export const selectSetsByPage = createSelector(
+  selectAllSets,
+  selectFavorites,
+  selectBought,
+  selectHidden,
+  selectLinkedFavorites,
+  (sets, favorites, bought, hidden, linkedFavorites) =>
+    sets.reduce<Record<typeof mainPages[number], SetType[]>>((acc, set) => {
+      mainPages.forEach((page) => {
+        if (
+          pageCondition(set, favorites, bought, hidden, linkedFavorites, page)
+        ) {
+          acc[page].push(set);
+        }
+      });
+      return acc;
+    }, objectFromEntries(mainPages.map((page) => [page, []])))
+);
 
 export const selectFilteredSets = createSelector(
-  selectPage,
-  selectAllSets,
+  selectLocation,
+  selectSetsByPage,
   selectSearch,
   selectWhitelist,
   selectFavorites,
@@ -328,20 +388,28 @@ export const selectFilteredSets = createSelector(
   selectHidden,
   selectUser,
   selectInitialLoad,
-  selectLinkedFavorites,
   (
-    page,
-    sets,
+    location,
+    setsByPage,
     search,
     whitelist,
     favorites,
     bought,
     hidden,
     user,
-    initialLoad,
-    linkedFavorites
+    initialLoad
   ) => {
     if (initialLoad) {
+      return [];
+    }
+
+    const page = getPageName(location.pathname);
+
+    let sets: SetType[] = [];
+
+    if (arrayIncludes(mainPages, page)) {
+      ({ [page]: sets } = setsByPage);
+    } else {
       return [];
     }
 
@@ -349,7 +417,7 @@ export const selectFilteredSets = createSelector(
 
     const hiddenBool = (set: SetType) => {
       if (
-        showAllPages.includes(page) ||
+        arrayIncludes(showAllPages, page) ||
         (whitelist.hidden === "all" && user.email)
       ) {
         return true;
@@ -361,15 +429,6 @@ export const selectFilteredSets = createSelector(
       } else {
         return !hidden.includes(set.id);
       }
-    };
-
-    const pageBool = (set: SetType): boolean => {
-      if (arrayIncludes(mainPages, page)) {
-        return pageConditions(set, favorites, bought, hidden, linkedFavorites)[
-          page
-        ];
-      }
-      return false;
     };
 
     const vendorBool = (set: SetType) => {
@@ -451,8 +510,7 @@ export const selectFilteredSets = createSelector(
     };
 
     return sets.filter(
-      (set) =>
-        hiddenBool(set) && pageBool(set) && filterBool(set) && searchBool(set)
+      (set) => hiddenBool(set) && filterBool(set) && searchBool(set)
     );
   }
 );
@@ -464,10 +522,11 @@ export const selectFilteredSetsIds = createSelector(
 
 export const selectSetGroups = createSelector(
   selectFilteredSets,
-  selectPage,
+  selectLocation,
   selectSort,
   selectSortOrder,
-  (sets, page, sort, sortOrder) => {
+  (sets, location, sort, sortOrder) => {
+    const page = getPageName(location.pathname);
     const createSetGroups = (sets: SetType[]): string[] => {
       if (arrayIncludes(dateSorts, sort)) {
         return sets
@@ -593,13 +652,32 @@ export const selectSetGroups = createSelector(
   }
 );
 
-export const {
-  selectAll: selectAllSetGroups,
-  selectById: selectSetGroupByTitle,
-  selectEntities: selectSetGroupMap,
-  selectIds: selectSetGroupTitles,
-  selectTotal: selectSetGroupTotal,
-} = setGroupAdapter.getSelectors(selectSetGroups);
+export const selectSetGroupTitles = createDraftSafeSelector(
+  selectSetGroups,
+  (state) => state.ids
+);
+
+export const selectSetGroupMap = createDraftSafeSelector(
+  selectSetGroups,
+  (state) => state.entities
+);
+
+export const selectAllSetGroups = createDraftSafeSelector(
+  selectSetGroupTitles,
+  selectSetGroupMap,
+  (ids, entities) => ids.map((id) => entities[id]!)
+);
+
+export const selectSetGroupByTitle = createDraftSafeSelector(
+  selectSetGroupMap,
+  (_: unknown, id: EntityId) => id,
+  (entities, id) => entities[id]
+);
+
+export const selectSetGroupTotal = createDraftSafeSelector(
+  selectSetGroupTitles,
+  (ids) => ids.length
+);
 
 export const selectSortHiddenSets = createSelector(
   selectAllSetGroups,
@@ -618,14 +696,18 @@ export const setupHiddenSetsListener = (startListening: AppStartListening) =>
     effect: (action, { getState }) => {
       notify({
         title: `${selectSortHiddenSets(
-          getState()
+          getState(),
+          history.location
         )} sets hidden due to sort setting.`,
       });
     },
     predicate: (action, state): action is ReturnType<typeof setSort> =>
       setSort.match(action) &&
-      sortHiddenCheck[selectSort(state)].includes(selectPage(state)) &&
-      selectSortHiddenSets(state) > 0,
+      arrayIncludes(
+        sortHiddenCheck[selectSort(state)],
+        getPageName(history.location.pathname)
+      ) &&
+      selectSortHiddenSets(state, history.location) > 0,
   });
 
 export const selectAllDesigners = createSelector(selectAllSets, (sets) =>

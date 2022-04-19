@@ -12,10 +12,10 @@ import classNames from "classnames";
 import debounce from "lodash.debounce";
 import { Autocomplete, AutocompleteMobile } from "@c/util/autocomplete";
 import { useAppDispatch, useAppSelector } from "@h";
+import useLocatedSelector from "@h/use-located-selector";
 import BEMHelper from "@s/common/bem-helper";
 import { selectSearch, selectSearchTerms } from "@s/main";
 import { setSearch as setSearchInState } from "@s/main/thunks";
-
 import "./search-bar.scss";
 
 const bemClasses = new BEMHelper("search-bar");
@@ -30,7 +30,7 @@ export const SearchBarPersistent = () => {
   );
 
   const searchFromState = useAppSelector(selectSearch);
-  const searchTerms = useAppSelector(selectSearchTerms);
+  const searchTerms = useLocatedSelector(selectSearchTerms);
 
   const [search, setSearch] = useState(searchFromState);
   useEffect(() => {
@@ -121,7 +121,7 @@ export const SearchBarModal = ({
   );
 
   const searchFromState = useAppSelector(selectSearch);
-  const searchTerms = useAppSelector(selectSearchTerms);
+  const searchTerms = useLocatedSelector(selectSearchTerms);
 
   const [search, setSearch] = useState(searchFromState);
   useEffect(() => {
@@ -261,7 +261,7 @@ export const SearchAppBar = ({ close, open, openBar }: SearchAppBarProps) => {
   );
 
   const searchFromState = useAppSelector(selectSearch);
-  const searchTerms = useAppSelector(selectSearchTerms);
+  const searchTerms = useLocatedSelector(selectSearchTerms);
 
   const [search, setSearch] = useState(searchFromState);
   useEffect(() => {

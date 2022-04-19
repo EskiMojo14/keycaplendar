@@ -17,7 +17,6 @@ import {
   selectAllSets,
   selectCurrentPreset,
   selectDefaultPreset,
-  selectPage,
   selectPresetById,
   selectURLWhitelist,
   selectWhitelist,
@@ -35,6 +34,7 @@ import {
   whitelistParams,
 } from "@s/main/constants";
 import { addLastDate } from "@s/main/functions";
+import { getPageName } from "@s/router";
 import {
   deleteUserPreset,
   selectAllUserPresets,
@@ -221,11 +221,14 @@ export const testSets = (): AppThunk<void> => (dispatch, getState) => {
 
 export const setSort =
   (sort: SortType, clearUrl = true): AppThunk<void> =>
-  (dispatch, getState) => {
-    const page = selectPage(getState());
+  (dispatch) => {
+    const page = getPageName(history.location.pathname);
     document.documentElement.scrollTop = 0;
     let sortOrder: SortOrderType = "ascending";
-    if (arrayIncludes(dateSorts, sort) && reverseSortDatePages.includes(page)) {
+    if (
+      arrayIncludes(dateSorts, sort) &&
+      arrayIncludes(reverseSortDatePages, page)
+    ) {
       sortOrder = "descending";
     }
     if (arrayIncludes(allSorts, sort)) {

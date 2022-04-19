@@ -9,6 +9,7 @@ import ElementImage from "@c/main/views/image-list/element-image";
 import ElementList from "@c/main/views/list/element-list";
 import { SkeletonBlock } from "@c/util/skeleton-block";
 import { useAppSelector } from "@h";
+import useLocatedSelector from "@h/use-located-selector";
 import { selectAllSetGroups, selectLoading } from "@s/main";
 import { selectView } from "@s/settings";
 import "./content-grid.scss";
@@ -31,7 +32,7 @@ export const ContentGrid = ({
 }: ContentGridProps) => {
   const view = useAppSelector(selectView);
 
-  const setGroups = useAppSelector(selectAllSetGroups);
+  const setGroups = useLocatedSelector(selectAllSetGroups);
   const loading = useAppSelector(selectLoading);
 
   const createGroup = (sets: EntityId[]) => {
