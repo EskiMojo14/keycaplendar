@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import type { HTMLAttributes } from "react";
 import { DrawerAppContent } from "@rmwc/drawer";
 import classNames from "classnames";
+import { Route, Switch } from "react-router-dom";
 import { ContentAudit } from "@c/audit";
 import { DrawerNav } from "@c/common/drawer-nav";
 import { ContentGuides } from "@c/guides";
@@ -15,7 +16,7 @@ import { ContentUsers } from "@c/users";
 import { useAppSelector } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
-import { selectPage } from "@s/common";
+import { usePage } from "@h/use-page";
 import { mainPages } from "@s/common/constants";
 import { selectUser } from "@s/user";
 import { arrayIncludes, closeModal, openModal } from "@s/util/functions";
@@ -30,7 +31,7 @@ export const Content = ({ className, ...props }: ContentProps) => {
 
   const user = useAppSelector(selectUser);
 
-  const page = useAppSelector(selectPage);
+  const page = usePage();
 
   const [navOpen, setNavOpen] = useState(false);
   const [navEdited, setNavEdited] = useState(false);
@@ -56,32 +57,6 @@ export const Content = ({ className, ...props }: ContentProps) => {
     }
   }, [device, navEdited]);
 
-  const InnerContent = useMemo(() => {
-    if (arrayIncludes(mainPages, page)) {
-      return ContentMain;
-    }
-    switch (page) {
-      case "statistics":
-        return ContentStatistics;
-      case "history":
-        return ContentHistory;
-      case "audit":
-        return user.isAdmin && ContentAudit;
-      case "users":
-        return user.isAdmin && ContentUsers;
-      case "images":
-        return user.isAdmin && ContentImages;
-      case "guides":
-        return ContentGuides;
-      case "updates":
-        return ContentUpdates;
-      case "settings":
-        return ContentSettings;
-      default:
-        return null;
-    }
-  }, [page]);
-
   return (
     <div
       className={classNames(className, page, "app-container", {
@@ -95,7 +70,44 @@ export const Content = ({ className, ...props }: ContentProps) => {
     >
       <DrawerNav close={closeNav} open={navOpen} />
       <DrawerAppContent>
-        {InnerContent && <InnerContent openNav={openNav} />}
+        <Switch>
+          <Route path={mainPages.map((page) => `/${page}`)}>
+            <ContentMain openNav={openNav} />
+          </Route>
+          <Route path="/statistics">
+            <ContentStatistics openNav={openNav} />
+          </Route>
+          <Route path="/history">
+            <ContentHistory openNav={openNav} />
+          </Route>
+          {user.isAdmin && (
+            <Route path="/audit">
+              <ContentAudit openNav={openNav} />
+            </Route>
+          )}
+          {user.isAdmin && (
+            <Route path="/users">
+              <ContentUsers openNav={openNav} />
+            </Route>
+          )}
+          {user.isAdmin && (
+            <Route path="/images">
+              <ContentImages openNav={openNav} />
+            </Route>
+          )}
+          <Route path="/guides">
+            <ContentGuides openNav={openNav} />
+          </Route>
+          <Route path="/updates">
+            <ContentUpdates openNav={openNav} />
+          </Route>
+          <Route path="/settings">
+            <ContentSettings openNav={openNav} />
+          </Route>
+          <Route exact path="/">
+            <ContentMain openNav={openNav} />
+          </Route>
+        </Switch>
       </DrawerAppContent>
     </div>
   );
