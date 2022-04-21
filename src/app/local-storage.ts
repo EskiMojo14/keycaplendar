@@ -40,7 +40,7 @@ const idWhitelist = <W extends WhitelistDef>(whitelist: W) => whitelist;
 
 const persistWhitelist = idWhitelist({
   common: ["systemTheme"],
-  main: ["presets", "sort", "sortOrder", "whitelist"],
+  main: ["presets", "sorts", "whitelist"],
   settings: true,
   user: true,
 });

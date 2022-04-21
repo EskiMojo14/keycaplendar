@@ -11,11 +11,11 @@ import { notify } from "~/app/snackbar-queue";
 import type { AppThunk, RootState } from "~/app/store";
 import type { AppStartListening } from "@mw/listener";
 import { mainPages } from "@s/common/constants";
+import type { MainPage } from "@s/common/types";
 import {
   arraySorts,
   dateSorts,
-  pageSort,
-  pageSortOrder,
+  defaultSorts,
   showAllPages,
   sortHiddenCheck,
 } from "@s/main/constants";
@@ -70,8 +70,7 @@ export type MainState = {
     currentPreset: EntityId;
   };
   search: string;
-  sort: SortType;
-  sortOrder: SortOrderType;
+  sorts: Record<MainPage, { sort: SortType; sortOrder: SortOrderType }>;
   transition: boolean;
   urlSet: {
     prop: "alias" | "id" | "name";
@@ -90,8 +89,7 @@ export const initialState: MainState = {
     currentPreset: "default",
   }),
   search: "",
-  sort: "gbLaunch",
-  sortOrder: "ascending",
+  sorts: defaultSorts,
   transition: false,
   urlSet: {
     prop: "id",
@@ -164,11 +162,31 @@ export const mainSlice = createSlice({
     setSet: (state, { payload }: PayloadAction<SetType>) => {
       keysetAdapter.setOne(state.keysets, payload);
     },
-    setSort: (state, { payload }: PayloadAction<SortType>) => {
-      state.sort = payload;
+    setSort: {
+      prepare: (page: MainPage, sort: SortType) => ({
+        payload: { page, sort },
+      }),
+      reducer: (
+        state,
+        {
+          payload: { page, sort },
+        }: PayloadAction<{ page: MainPage; sort: SortType }>
+      ) => {
+        state.sorts[page].sort = sort;
+      },
     },
-    setSortOrder: (state, { payload }: PayloadAction<SortOrderType>) => {
-      state.sortOrder = payload;
+    setSortOrder: {
+      prepare: (page: MainPage, sortOrder: SortOrderType) => ({
+        payload: { page, sortOrder },
+      }),
+      reducer: (
+        state,
+        {
+          payload: { page, sortOrder },
+        }: PayloadAction<{ page: MainPage; sortOrder: SortOrderType }>
+      ) => {
+        state.sorts[page].sortOrder = sortOrder;
+      },
     },
     setTransition: (state, { payload }: PayloadAction<boolean>) => {
       state.transition = payload;
@@ -230,9 +248,42 @@ export const selectLoading = (state: RootState) => state.main.loading;
 
 export const selectInitialLoad = (state: RootState) => state.main.initialLoad;
 
-export const selectSort = (state: RootState) => state.main.sort;
+export const selectSortsMap = (state: RootState) => state.main.sorts;
 
-export const selectSortOrder = (state: RootState) => state.main.sortOrder;
+export const selectSortsByPage = createSelector(
+  selectSortsMap,
+  (state: RootState, page: MainPage) => page,
+  (sortsMap, page) => sortsMap[page]
+);
+
+export const selectSortByPage = createSelector(
+  selectSortsByPage,
+  (sorts) => sorts.sort
+);
+
+export const selectSortOrderByPage = createSelector(
+  selectSortsByPage,
+  (sorts) => sorts.sortOrder
+);
+
+export const selectSorts = createSelector(
+  selectSortsMap,
+  selectLocation,
+  (sortsMap, location) => {
+    const page = getPageName(location.pathname);
+    if (arrayIncludes(mainPages, page)) {
+      return sortsMap[page];
+    }
+    return sortsMap.calendar;
+  }
+);
+
+export const selectSort = createSelector(selectSorts, (sorts) => sorts.sort);
+
+export const selectSortOrder = createSelector(
+  selectSorts,
+  (sorts) => sorts.sortOrder
+);
 
 export const selectURLSet = (state: RootState) => state.main.urlSet;
 
@@ -569,10 +620,10 @@ export const selectSetGroups = createSelector(
         }
       });
       const defaultSort = arrayIncludes(mainPages, page)
-        ? pageSort[page]
+        ? defaultSorts[page].sort
         : "icDate";
       const defaultSortOrder = arrayIncludes(mainPages, page)
-        ? pageSortOrder[page]
+        ? defaultSorts[page].sortOrder
         : "descending";
       const dateSort = (
         a: SetType,
@@ -671,7 +722,7 @@ export const setupHiddenSetsListener = (startListening: AppStartListening) =>
     predicate: (action, state): action is ReturnType<typeof setSort> =>
       setSort.match(action) &&
       arrayIncludes(
-        sortHiddenCheck[selectSort(state)],
+        sortHiddenCheck[selectSort(state, history.location)],
         getPageName(history.location.pathname)
       ) &&
       selectSortHiddenSets(state, history.location) > 0,

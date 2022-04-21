@@ -1,5 +1,6 @@
 import produce from "immer";
 import { createStore } from "~/app/store";
+import type { MainPage } from "@s/common/types";
 import {
   deleteAppPreset,
   deleteSet,
@@ -13,8 +14,8 @@ import {
   selectLoading,
   selectSearch,
   selectSetById,
-  selectSort,
-  selectSortOrder,
+  selectSortByPage,
+  selectSortOrderByPage,
   selectTransition,
   selectURLSet,
   selectURLWhitelist,
@@ -61,17 +62,19 @@ it("sets loading", () => {
   expect(response).toBe(true);
 });
 
+const page: MainPage = "timeline";
+
 it("sets sort", () => {
   const sort: SortType = "profile";
-  store.dispatch(setSort(sort));
-  const response = selectSort(store.getState());
+  store.dispatch(setSort(page, sort));
+  const response = selectSortByPage(store.getState(), page);
   expect(response).toBe(sort);
 });
 
 it("sets sort order", () => {
   const sortOrder: SortOrderType = "ascending";
-  store.dispatch(setSortOrder(sortOrder));
-  const response = selectSortOrder(store.getState());
+  store.dispatch(setSortOrder(page, sortOrder));
+  const response = selectSortOrderByPage(store.getState(), page);
   expect(response).toBe(sortOrder);
 });
 

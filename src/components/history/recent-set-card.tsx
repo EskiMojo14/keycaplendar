@@ -17,7 +17,7 @@ import { useAppDispatch, useAppSelector } from "@h";
 import { mainPages, pageIcons, pageTitle } from "@s/common/constants";
 import { selectRecentSetById } from "@s/history";
 import { pageConditions, selectLinkedFavorites, selectSetById } from "@s/main";
-import { setPage } from "@s/router/thunks";
+import { push } from "@s/router";
 import { selectBought, selectFavorites, selectHidden } from "@s/user";
 import {
   arrayIncludes,
@@ -172,7 +172,7 @@ export const RecentSetCard = ({
                     key={page}
                     icon={pageIcons[page]}
                     label={title}
-                    onClick={() => dispatch(setPage(`/${page}`))}
+                    onClick={() => dispatch(push(`/${page}`))}
                     outlined
                   />
                 );

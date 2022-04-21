@@ -25,7 +25,8 @@ import {
   setCurrentPreset,
 } from "@s/main";
 import { testSets } from "@s/main/thunks";
-import { addRouterListener, setupLocationChangeListener } from "@s/router";
+import { addRouterListener } from "@s/router";
+import { setupLocationChangeListener } from "@s/router/listeners";
 import {
   selectCookies,
   selectDensity,

@@ -1,6 +1,7 @@
 import { ListDivider } from "@rmwc/list";
 import { Menu, MenuItem } from "@rmwc/menu";
-import { useAppDispatch, useAppSelector } from "@h";
+import { useAppDispatch } from "@h";
+import useLocatedSelector from "@h/use-located-selector";
 import usePage from "@h/use-page";
 import { selectSort, selectSortOrder } from "@s/main";
 import { allSorts, sortBlacklist, sortNames } from "@s/main/constants";
@@ -20,8 +21,9 @@ export const MenuSort = ({ onClose, open }: MenuSortProps) => {
 
   const page = usePage();
 
-  const sort = useAppSelector(selectSort);
-  const sortOrder = useAppSelector(selectSortOrder);
+  const sort = useLocatedSelector(selectSort);
+  const sortOrder = useLocatedSelector(selectSortOrder);
+
   return (
     <Menu anchorCorner="bottomLeft" onClose={onClose} open={open}>
       {allSorts.map((key) =>

@@ -49,30 +49,46 @@ export const blankKeyset: SetType = {
 
 /** Default sorts for each page. */
 
-export const pageSort: Record<MainPage, SortType> = {
-  archive: "profile",
-  bought: "profile",
-  calendar: "gbLaunch",
-  favorites: "profile",
-  hidden: "profile",
-  ic: "icDate",
-  live: "gbEnd",
-  previous: "gbEnd",
-  timeline: "gbLaunch",
-};
-
-/** Default sort orders for each page. */
-
-export const pageSortOrder: Record<MainPage, SortOrderType> = {
-  archive: "ascending",
-  bought: "ascending",
-  calendar: "ascending",
-  favorites: "ascending",
-  hidden: "ascending",
-  ic: "descending",
-  live: "ascending",
-  previous: "descending",
-  timeline: "ascending",
+export const defaultSorts: Record<
+  MainPage,
+  { sort: SortType; sortOrder: SortOrderType }
+> = {
+  archive: {
+    sort: "profile",
+    sortOrder: "ascending",
+  },
+  bought: {
+    sort: "profile",
+    sortOrder: "ascending",
+  },
+  calendar: {
+    sort: "gbLaunch",
+    sortOrder: "ascending",
+  },
+  favorites: {
+    sort: "profile",
+    sortOrder: "ascending",
+  },
+  hidden: {
+    sort: "profile",
+    sortOrder: "ascending",
+  },
+  ic: {
+    sort: "icDate",
+    sortOrder: "descending",
+  },
+  live: {
+    sort: "gbEnd",
+    sortOrder: "ascending",
+  },
+  previous: {
+    sort: "gbEnd",
+    sortOrder: "descending",
+  },
+  timeline: {
+    sort: "gbLaunch",
+    sortOrder: "ascending",
+  },
 };
 
 /** Pages where hidden setting is ignored. */

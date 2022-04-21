@@ -11,7 +11,7 @@ import type {
   EntityState,
 } from "@reduxjs/toolkit";
 import type { Action, History, Location } from "history";
-import type { AppDispatch, RootState } from "~/app/store";
+import type { RootState } from "~/app/store";
 import { allPages, pageTitle } from "@s/common/constants";
 import type { Page } from "@s/common/types";
 import { arrayIncludes, objectEntries } from "@s/util/functions";
@@ -34,21 +34,6 @@ export const getPageTitle = (pathname: string) => {
   const page = getPageName(pathname);
   return page && pageTitle[page];
 };
-
-export const locationChange = createAction(
-  "router/locationChange",
-  (location: Location, action: Action) => ({ payload: { action, location } })
-);
-
-export const setupLocationChangeListener = (
-  listen: History["listen"],
-  dispatch: AppDispatch
-) =>
-  listen((location, action) => {
-    const title = getPageTitle(location.pathname);
-    document.title = title ? `KeycapLendar: ${title}` : "KeycapLendar";
-    dispatch(locationChange(location, action));
-  });
 
 const idKeys = <Keys extends [keyof History, ...(keyof History)[]]>(
   ...keys: Keys
@@ -89,8 +74,19 @@ export const addRouterListener = (history: History) =>
     matcher: isAnyOf(...Object.values(actionCreators)),
   });
 
+export const locationChange = createAction(
+  "router/locationChange",
+  (location: Location, action: Action) => ({ payload: { action, location } })
+);
+
 export const selectLocation = (state: RootState, location: Location) =>
   location;
+
+export const selectPage = (state: RootState, location: Location) =>
+  getPageName(location.pathname);
+
+export const selectPageTitle = (state: RootState, location: Location) =>
+  getPageTitle(location.pathname);
 
 export interface EntityLocatedSelectors<T, V> {
   selectAll: (state: V, location: Location) => T[];

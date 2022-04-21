@@ -26,7 +26,7 @@ import {
 import type { Page } from "@s/common/types";
 import firestore from "@s/firebase/firestore";
 import { selectLinkedFavorites } from "@s/main";
-import { setPage as setPageThunk } from "@s/router/thunks";
+import { push } from "@s/router";
 import {
   selectBought,
   selectFavorites,
@@ -61,7 +61,7 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
   const linkedFavorites = useAppSelector(selectLinkedFavorites);
 
   const setPage = (page: `/${Page}`) => {
-    dispatch(setPageThunk(page));
+    dispatch(push(page));
     if (!dismissible) {
       close();
     }

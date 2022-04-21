@@ -1,6 +1,6 @@
 import { useDebugValue, useMemo } from "react";
 import { useLocation } from "react-router-dom";
-import { getPageName } from "@s/router";
+import { getPageName, getPageTitle } from "@s/router";
 
 export const usePage = () => {
   const location = useLocation();
@@ -10,6 +10,16 @@ export const usePage = () => {
   );
   useDebugValue(page);
   return page;
+};
+
+export const usePageTitle = () => {
+  const location = useLocation();
+  const pageTitle = useMemo(
+    () => getPageTitle(location.pathname),
+    [location.pathname]
+  );
+  useDebugValue(pageTitle);
+  return pageTitle;
 };
 
 export default usePage;

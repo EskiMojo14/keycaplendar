@@ -17,13 +17,7 @@ import {
   setURLWhitelist,
   updatePreset,
 } from "@s/main";
-import {
-  allSorts,
-  pageSort,
-  pageSortOrder,
-  sortBlacklist,
-  whitelistParams,
-} from "@s/main/constants";
+import { allSorts, sortBlacklist, whitelistParams } from "@s/main/constants";
 import type { whitelistShipped } from "@s/main/constants";
 import { getData, setWhitelistMerge } from "@s/main/thunks";
 import type { WhitelistType } from "@s/main/types";
@@ -56,29 +50,20 @@ export const getURLQuery = (): AppThunk<void> => (dispatch, getState) => {
       (pageQuery === "favorites" && params.has("favoritesId"))
     ) {
       if (arrayIncludes(mainPages, pageQuery)) {
-        if (pageQuery === "calendar") {
-          dispatch([
-            setMainSort(pageSort[pageQuery]),
-            setMainSortOrder(pageSortOrder[pageQuery]),
-          ]);
-        } else {
-          const sortQuery = params.get("sort");
-          const sortOrderQuery = params.get("sortOrder");
-          dispatch([
-            setMainSort(
-              arrayIncludes(allSorts, sortQuery) &&
-                !arrayIncludes(sortBlacklist[sortQuery], pageQuery)
-                ? sortQuery
-                : pageSort[pageQuery]
-            ),
-            setMainSortOrder(
-              sortOrderQuery &&
-                (sortOrderQuery === "ascending" ||
-                  sortOrderQuery === "descending")
-                ? sortOrderQuery
-                : pageSortOrder[pageQuery]
-            ),
-          ]);
+        const sortQuery = params.get("sort");
+        const sortOrderQuery = params.get("sortOrder");
+        if (
+          sortQuery &&
+          arrayIncludes(allSorts, sortQuery) &&
+          !arrayIncludes(sortBlacklist[sortQuery], pageQuery)
+        ) {
+          dispatch(setMainSort(pageQuery, sortQuery));
+        }
+        if (
+          sortOrderQuery &&
+          (sortOrderQuery === "ascending" || sortOrderQuery === "descending")
+        ) {
+          dispatch(setMainSortOrder(pageQuery, sortOrderQuery));
         }
       }
     }

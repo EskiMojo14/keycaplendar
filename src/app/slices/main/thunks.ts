@@ -4,6 +4,7 @@ import { is } from "typescript-is";
 import { history } from "~/app/history";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
+import type { MainPage } from "@s/common/types";
 import firestore from "@s/firebase/firestore";
 import type { UserId } from "@s/firebase/types";
 import {
@@ -222,7 +223,7 @@ export const testSets = (): AppThunk<void> => (dispatch, getState) => {
 export const setSort =
   (sort: SortType, clearUrl = true): AppThunk<void> =>
   (dispatch) => {
-    const page = getPageName(history.location.pathname);
+    const page = getPageName(history.location.pathname) as MainPage;
     document.documentElement.scrollTop = 0;
     let sortOrder: SortOrderType = "ascending";
     if (
@@ -232,7 +233,7 @@ export const setSort =
       sortOrder = "descending";
     }
     if (arrayIncludes(allSorts, sort)) {
-      dispatch([_setSort(sort), _setSortOrder(sortOrder)]);
+      dispatch([_setSort(page, sort), _setSortOrder(page, sortOrder)]);
     }
     if (clearUrl) {
       const params = new URLSearchParams(window.location.search);
@@ -252,8 +253,9 @@ export const setSort =
 export const setSortOrder =
   (sortOrder: SortOrderType, clearUrl = true): AppThunk<void> =>
   (dispatch) => {
+    const page = getPageName(history.location.pathname) as MainPage;
     document.documentElement.scrollTop = 0;
-    dispatch(_setSortOrder(sortOrder));
+    dispatch(_setSortOrder(page, sortOrder));
     if (clearUrl) {
       const params = new URLSearchParams(window.location.search);
       if (params.has("sortOrder")) {
