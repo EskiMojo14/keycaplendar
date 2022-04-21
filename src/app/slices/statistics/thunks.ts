@@ -1,8 +1,8 @@
 import { DateTime } from "luxon";
-import { history } from "~/app/history";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import firebase from "@s/firebase";
+import { push } from "@s/router";
 import { createURL, ordinal } from "@s/util/functions";
 import { selectTab, setLoading, setStatisticsData, setStatsTab } from ".";
 import type { StatsTab } from "./types";
@@ -25,7 +25,7 @@ export const setStatisticsTab =
           },
           true
         );
-        history.push(newUrl);
+        dispatch(push(newUrl));
       }
     }
   };

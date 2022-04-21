@@ -17,7 +17,6 @@ import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import { selectTheme, selectTimed, setSystemTheme, setTimed } from "@s/common";
 import { allPages } from "@s/common/constants";
-import { setupCommonHistoryListener } from "@s/common/router";
 import { getGlobals, getURLQuery } from "@s/common/thunks";
 import firebase from "@s/firebase";
 import {
@@ -26,6 +25,7 @@ import {
   setCurrentPreset,
 } from "@s/main";
 import { testSets } from "@s/main/thunks";
+import { addRouterListener, setupLocationChangeListener } from "@s/router";
 import {
   selectCookies,
   selectDensity,
@@ -42,9 +42,10 @@ import "./app.scss";
 export const App = () => {
   const dispatch = useAppDispatch();
   useEffect(
-    () => setupCommonHistoryListener(history.listen, history.push, dispatch),
-    [history.listen, history.push, dispatch]
+    () => setupLocationChangeListener(history.listen, dispatch),
+    [history.listen, dispatch]
   );
+  useEffect(() => dispatch(addRouterListener(history)), [history]);
 
   const device = useDevice();
   const theme = useAppSelector(selectTheme);

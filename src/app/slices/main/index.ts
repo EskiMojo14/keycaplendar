@@ -9,6 +9,7 @@ import { is } from "typescript-is";
 import { history } from "~/app/history";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk, RootState } from "~/app/store";
+import type { AppStartListening } from "@mw/listener";
 import { mainPages } from "@s/common/constants";
 import {
   arraySorts,
@@ -47,7 +48,6 @@ import type {
   SortType,
   WhitelistType,
 } from "./types";
-import type { AppStartListening } from "~/app/middleware/listener";
 
 export const keysetAdapter = createEntityAdapter<SetType>({
   sortComparer: alphabeticalSortPropCurried("colorway"),

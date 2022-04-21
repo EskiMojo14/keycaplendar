@@ -34,7 +34,7 @@ import {
   whitelistParams,
 } from "@s/main/constants";
 import { addLastDate } from "@s/main/functions";
-import { getPageName } from "@s/router";
+import { getPageName, push } from "@s/router";
 import {
   deleteUserPreset,
   selectAllUserPresets,
@@ -69,7 +69,7 @@ export const setWhitelistMerge =
           },
           true
         );
-        history.push(newUrl);
+        dispatch(push(newUrl));
       }
     }
   };
@@ -93,7 +93,7 @@ export const setWhitelist =
         const newUrl = createURL({}, (params) => {
           whitelistParams.forEach((param) => params.delete(param));
         });
-        history.push(newUrl);
+        dispatch(push(newUrl));
       }
     }
   };
@@ -244,7 +244,7 @@ export const setSort =
           },
           true
         );
-        history.push(newUrl);
+        dispatch(push(newUrl));
       }
     }
   };
@@ -264,7 +264,7 @@ export const setSortOrder =
           },
           true
         );
-        history.push(newUrl);
+        dispatch(push(newUrl));
       }
     }
   };

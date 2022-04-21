@@ -3,6 +3,7 @@
     "baseUrl": ".",
     "paths": {
       "@s/*": ["src/app/slices/*"],
+      "@mw/*": ["src/app/middleware/*"],
       "@h": ["src/app/hooks/index.ts"],
       "@h/*": ["src/app/hooks/*"],
       "@c/*": ["src/components/*"],

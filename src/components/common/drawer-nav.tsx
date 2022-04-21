@@ -12,8 +12,7 @@ import {
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { DateTime } from "luxon";
-import { useHistory } from "react-router-dom";
-import { useAppSelector } from "@h";
+import { useAppDispatch, useAppSelector } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import usePage from "@h/use-page";
@@ -27,6 +26,7 @@ import {
 import type { Page } from "@s/common/types";
 import firestore from "@s/firebase/firestore";
 import { selectLinkedFavorites } from "@s/main";
+import { setPage as setPageThunk } from "@s/router/thunks";
 import {
   selectBought,
   selectFavorites,
@@ -44,7 +44,7 @@ type DrawerNavProps = {
 };
 
 export const DrawerNav = ({ close, open }: DrawerNavProps) => {
-  const history = useHistory();
+  const dispatch = useAppDispatch();
 
   const device = useDevice();
   const dismissible = device === "desktop";
@@ -61,7 +61,7 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
   const linkedFavorites = useAppSelector(selectLinkedFavorites);
 
   const setPage = (page: `/${Page}`) => {
-    history.push(page);
+    dispatch(setPageThunk(page));
     if (!dismissible) {
       close();
     }

@@ -2,12 +2,12 @@ import type { AnyAction } from "@reduxjs/toolkit";
 import { createSelector } from "@reduxjs/toolkit";
 import pick from "lodash.pick";
 import type { RootState } from "~/app/store";
+import type { AppStartListening } from "@mw/listener";
 import { initialState as common } from "@s/common";
 import { initialState as main } from "@s/main";
 import { selectCookies } from "@s/settings";
 import { objectEntries, objectFromEntries } from "@s/util/functions";
 import type { ObjectEntries } from "@s/util/types";
-import type { AppStartListening } from "~/app/middleware/listener";
 
 type WhitelistDef = {
   [K in keyof RootState]?:

@@ -156,6 +156,9 @@
       "@s/(.*)": [
         "<rootDir>/src/app/slices/$1"
       ],
+      "@mw/(.*)": [
+        "<rootDir>/src/app/middleware/$1"
+      ],
       "@h": [
         "<rootDir>/src/app/hooks/index.ts"
       ],

@@ -14,7 +14,6 @@ import {
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
-import { useHistory } from "react-router-dom";
 import { confirm } from "~/app/dialog-queue";
 import { notify } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
@@ -36,6 +35,7 @@ import {
   setURLEntry,
 } from "@s/guides";
 import { getEntries as getEntriesThunk } from "@s/guides/thunks";
+import { push } from "@s/router";
 import { selectUser } from "@s/user";
 import { closeModal, createURL, openModal } from "@s/util/functions";
 import { selectFromState } from "@s/util/thunks";
@@ -50,8 +50,6 @@ type ContentGuidesProps = {
 };
 
 export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
-  const history = useHistory();
-
   const dispatch = useAppDispatch();
 
   const getEntries = () => dispatch(getEntriesThunk());
@@ -93,7 +91,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
         },
         true
       );
-      history.push(newUrl);
+      dispatch(push(newUrl));
     }
   };
   const closeDetail = () => {

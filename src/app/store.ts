@@ -2,6 +2,7 @@ import { reduxBatch } from "@manaflair/redux-batch";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import type { Action, AnyAction, UnsubscribeListener } from "@reduxjs/toolkit";
 import { loadState } from "~/app/local-storage";
+import listenerMiddleware from "@mw/listener";
 import audit from "@s/audit";
 import common from "@s/common";
 import guides from "@s/guides";
@@ -13,7 +14,6 @@ import statistics from "@s/statistics";
 import updates from "@s/updates";
 import user from "@s/user";
 import users from "@s/users";
-import listenerMiddleware from "~/app/middleware/listener";
 
 const reducer = combineReducers({
   audit,

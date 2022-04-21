@@ -4,7 +4,6 @@ import { DrawerAppContent } from "@rmwc/drawer";
 import { Fab } from "@rmwc/fab";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import classNames from "classnames";
-import { useHistory } from "react-router-dom";
 import { Footer } from "@c/common/footer";
 import { DialogDelete } from "@c/main/admin/dialog-delete";
 import { ModalCreate, ModalEdit } from "@c/main/admin/modal-entry";
@@ -28,6 +27,7 @@ import {
 } from "@s/main";
 import { blankKeyset, blankPreset } from "@s/main/constants";
 import type { PresetType, SetType } from "@s/main/types";
+import { push } from "@s/router";
 import { selectView } from "@s/settings";
 import { selectUser } from "@s/user";
 import { closeModal, createURL, openModal } from "@s/util/functions";
@@ -43,8 +43,6 @@ type ContentMainProps = {
 };
 
 export const ContentMain = ({ openNav }: ContentMainProps) => {
-  const history = useHistory();
-
   const dispatch = useAppDispatch();
 
   const device = useDevice();
@@ -115,7 +113,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
             },
             true
           );
-          history.push(newUrl);
+          dispatch(push(newUrl));
         }
       }
     };
