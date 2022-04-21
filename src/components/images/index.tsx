@@ -12,6 +12,7 @@ import ImageAppBar from "@c/images/app-bar";
 import ImageItem from "@c/images/image-item";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { useAppDispatch, useAppSelector } from "@h";
+import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import {
@@ -27,7 +28,6 @@ import {
   hasKey,
   openModal,
   removeDuplicates,
-  useBoolStates,
 } from "@s/util/functions";
 import { DialogDelete } from "./dialog-delete";
 import { DrawerDetails } from "./drawer-details";
@@ -65,7 +65,10 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
   const [detailOpen, setDetailOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [closeDelete, openDelete] = useBoolStates(setDeleteOpen);
+  const [closeDelete, openDelete] = useBoolStates(
+    setDeleteOpen,
+    "setDeleteOpen"
+  );
 
   useEffect(() => {
     if (images.length === 0) {

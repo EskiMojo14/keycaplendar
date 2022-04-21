@@ -16,12 +16,13 @@ import {
   SegmentedButtonSegment,
 } from "@c/util/segmented-button";
 import { useAppDispatch, useAppSelector } from "@h";
+import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import { pageTitle } from "@s/common/constants";
 import { selectCurrentFolder, selectFolders, selectLoading } from "@s/images";
 import { setFolder } from "@s/images/thunks";
-import { iconObject, useBoolStates } from "@s/util/functions";
+import { iconObject } from "@s/util/functions";
 import { Delete, PermMedia } from "@i";
 
 export type ImageAppBarProps = {
@@ -49,7 +50,10 @@ export const ImageAppBar = ({
   const currentFolder = useAppSelector(selectCurrentFolder);
   const folders = useAppSelector(selectFolders);
   const [folderMenuOpen, setFolderMenuOpen] = useState(false);
-  const [closeFolderMenu, openFolderMenu] = useBoolStates(setFolderMenuOpen);
+  const [closeFolderMenu, openFolderMenu] = useBoolStates(
+    setFolderMenuOpen,
+    "setFolderMenuOpen"
+  );
   const contextual = !!checkedImages;
   const tooltipAlign = bottomNav ? "top" : "bottom";
   return (

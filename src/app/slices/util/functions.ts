@@ -480,19 +480,6 @@ export const closeModal = () => {
 };
 
 /**
- * Takes a function and returns two callbacks, calling it with boolean parameters.
- * @param func A function to be called with boolean parameters. Typically a `useState` set function.
- * @returns An tuple of callbacks, the first being `func(false)` and the second being `func(true)`.
- */
-
-export const useBoolStates = <T>(
-  func: (bool: boolean) => T
-): [setFalse: () => T, setTrue: () => T] => [
-  () => func(false),
-  () => func(true),
-];
-
-/**
  * Takes an array of set objects, and returns a month range of the specfied property, in the specified format (uses Luxon).
  * @param sets Array of set objects to be checked.
  * @param prop Property of set to be used.

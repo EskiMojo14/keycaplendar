@@ -13,6 +13,7 @@ import classNames from "classnames";
 import { AppBarIndent } from "@c/util/app-bar-indent";
 import { withTooltip } from "@c/util/hocs";
 import { useAppSelector } from "@h";
+import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import usePage from "@h/use-page";
@@ -21,7 +22,7 @@ import { selectLinkedFavorites, selectLoading } from "@s/main";
 import { selectView } from "@s/settings";
 import { viewIcons } from "@s/settings/constants";
 import { selectUser } from "@s/user";
-import { iconObject, useBoolStates } from "@s/util/functions";
+import { iconObject } from "@s/util/functions";
 import { Share } from "@i";
 import { MenuSort } from "./menu-sort";
 import { MenuView } from "./menu-view";
@@ -60,10 +61,10 @@ export const AppBar = ({
   const linkedFavorites = useAppSelector(selectLinkedFavorites);
 
   const [sortOpen, setSortOpen] = useState(false);
-  const [closeSort, openSort] = useBoolStates(setSortOpen);
+  const [closeSort, openSort] = useBoolStates(setSortOpen, "setSortOpen");
 
   const [viewOpen, setViewOpen] = useState(false);
-  const [closeView, openView] = useBoolStates(setViewOpen);
+  const [closeView, openView] = useBoolStates(setViewOpen, "setViewOpen");
 
   const [searchOpen, setSearchOpen] = useState(false);
   const openSearch = () => {
@@ -75,7 +76,7 @@ export const AppBar = ({
   };
 
   const [moreOpen, setMoreOpen] = useState(false);
-  const [closeMore, openMore] = useBoolStates(setMoreOpen);
+  const [closeMore, openMore] = useBoolStates(setMoreOpen, "setMoreOpen");
 
   const tooltipAlign = bottomNav ? "top" : "bottom";
 

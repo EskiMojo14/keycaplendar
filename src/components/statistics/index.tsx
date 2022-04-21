@@ -21,6 +21,7 @@ import {
   SegmentedButtonSegment,
 } from "@c/util/segmented-button";
 import { useAppDispatch, useAppSelector } from "@h";
+import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import { pageTitle } from "@s/common/constants";
@@ -36,12 +37,7 @@ import {
 import { statsTabs } from "@s/statistics/constants";
 import { getData, setStatisticsTab } from "@s/statistics/thunks";
 import type { StatisticsType } from "@s/statistics/types";
-import {
-  capitalise,
-  hasKey,
-  iconObject,
-  useBoolStates,
-} from "@s/util/functions";
+import { capitalise, hasKey, iconObject } from "@s/util/functions";
 import {
   Category,
   DateRange,
@@ -73,7 +69,8 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
 
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const [closeCategoryDialog, openCategoryDialog] = useBoolStates(
-    setCategoryDialogOpen
+    setCategoryDialogOpen,
+    "setCategoryDialogOpen"
   );
 
   useEffect(() => {

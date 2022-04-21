@@ -36,6 +36,7 @@ import {
 } from "@c/util/data-table-pagination";
 import { withTooltip } from "@c/util/hocs";
 import { useAppDispatch, useAppSelector } from "@h";
+import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import { pageTitle } from "@s/common/constants";
@@ -63,7 +64,6 @@ import {
 } from "@s/users/constants";
 import { paginateUsers } from "@s/users/functions";
 import { getUsers } from "@s/users/thunks";
-import { useBoolStates } from "@s/util/functions";
 import { UserCard } from "./user-card";
 import { UserRow } from "./user-row";
 import "./index.scss";
@@ -107,9 +107,15 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
   const [deletedUser, setDeletedUser] = useState<EntityId>("");
 
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
-  const [closeViewMenu, openViewMenu] = useBoolStates(setViewMenuOpen);
+  const [closeViewMenu, openViewMenu] = useBoolStates(
+    setViewMenuOpen,
+    "setViewMenuOpen"
+  );
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
-  const [closeSortMenu, openSortMenu] = useBoolStates(setSortMenuOpen);
+  const [closeSortMenu, openSortMenu] = useBoolStates(
+    setSortMenuOpen,
+    "setSortMenuOpen"
+  );
 
   useEffect(() => {
     if (total === 0) {

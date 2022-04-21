@@ -39,6 +39,7 @@ import {
   SegmentedButtonSegment,
 } from "@c/util/segmented-button";
 import { useAppDispatch, useAppSelector } from "@h";
+import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import { pageTitle } from "@s/common/constants";
@@ -63,7 +64,6 @@ import {
 import { selectShareName, selectUser, setUser } from "@s/user";
 import { createDebouncedSyncShareName } from "@s/user/thunks";
 import { userRoleIcons } from "@s/users/constants";
-import { useBoolStates } from "@s/util/functions";
 import { DialogDelete } from "./dialog-delete";
 import "./index.scss";
 
@@ -114,8 +114,10 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
   };
 
   const [deleteDialogOpen, setDialogDeleteOpen] = useState(false);
-  const [closeDeleteDialog, openDeleteDialog] =
-    useBoolStates(setDialogDeleteOpen);
+  const [closeDeleteDialog, openDeleteDialog] = useBoolStates(
+    setDialogDeleteOpen,
+    "setDialogDeleteOpen"
+  );
   const signOut = async () => {
     try {
       await firebase.auth().signOut();
