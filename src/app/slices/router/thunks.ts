@@ -43,8 +43,8 @@ export const setPage =
           setMainSort(pageSort[page]),
           setMainSortOrder(pageSortOrder[page]),
         ]);
-        dispatch(push(location));
       }
+      dispatch(push(location));
       document.documentElement.scrollTop = 0;
     }, 90);
     document.title = `KeycapLendar: ${pageTitle[page]}`;
