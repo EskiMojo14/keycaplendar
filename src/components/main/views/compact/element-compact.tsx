@@ -86,7 +86,7 @@ export const ElementCompact = ({
     );
   return (
     <ListItem
-      onClick={() => (!selected ? details(set.id) : closeDetails())}
+      onClick={() => (!selected ? details(set.alias) : closeDetails())}
       selected={selected}
     >
       {liveIndicator}

@@ -106,7 +106,7 @@ export const ElementImage = ({
     <Ripple>
       <ImageListItem
         className={classNames("image-list-item", { selected })}
-        onClick={() => (!selected ? details(set.id) : closeDetails())}
+        onClick={() => (!selected ? details(set.alias) : closeDetails())}
       >
         <div className="container">
           <div className="link-icon-container">
