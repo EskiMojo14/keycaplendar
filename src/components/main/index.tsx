@@ -21,9 +21,9 @@ import useDevice from "@h/use-device";
 import useLocatedSelector from "@h/use-located-selector";
 import usePage from "@h/use-page";
 import {
-  selectInitialLoad,
   selectKeysetByString,
   selectLinkedFavorites,
+  selectLoading,
   selectSetGroupTotal,
 } from "@s/main";
 import { blankKeyset, blankPreset } from "@s/main/constants";
@@ -55,7 +55,8 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
 
   const user = useAppSelector(selectUser);
 
-  const initialLoad = useAppSelector(selectInitialLoad);
+  const loading = useAppSelector(selectLoading);
+
   const contentBool = useLocatedSelector(
     (state, location) => !!selectSetGroupTotal(state, location)
   );
@@ -76,7 +77,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
     setFilterOpen(false);
   };
   const closeDetails = () => {
-    if (!initialLoad) {
+    if (!(!contentBool && loading)) {
       closeModal();
       dispatch(push(`/${page}`));
     }
@@ -269,18 +270,19 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
     </ConditionalWrapper>
   );
 
-  const content = initialLoad ? (
-    <ContentSkeleton />
-  ) : contentBool ? (
-    <ContentGrid
-      closeDetails={closeDetails}
-      details={openDetails}
-      detailSet={urlSet?.id}
-      edit={openEdit}
-    />
-  ) : (
-    <ContentEmpty />
-  );
+  const content =
+    !contentBool && loading ? (
+      <ContentSkeleton />
+    ) : contentBool ? (
+      <ContentGrid
+        closeDetails={closeDetails}
+        details={openDetails}
+        detailSet={urlSet?.id}
+        edit={openEdit}
+      />
+    ) : (
+      <ContentEmpty />
+    );
 
   const drawerOpen = (urlSet || filterOpen) && device === "desktop";
   const wrapperClasses = classNames("main", view, {

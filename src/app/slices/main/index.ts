@@ -74,7 +74,6 @@ export const setGroupAdapter = createEntityAdapter<SetGroup>({
 });
 
 export type MainState = {
-  initialLoad: boolean;
   keysets: EntityState<SetType>;
   linkedFavorites: { array: EntityId[]; displayName: string };
   loading: boolean;
@@ -89,7 +88,6 @@ export type MainState = {
 };
 
 export const initialState: MainState = {
-  initialLoad: true,
   keysets: keysetAdapter.getInitialState(),
   linkedFavorites: { array: [], displayName: "" },
   loading: true,
@@ -153,9 +151,6 @@ export const mainSlice = createSlice({
       { payload }: PayloadAction<"default" | (EntityId & Record<never, never>)>
     ) => {
       state.presets.currentPreset = payload;
-    },
-    setInitialLoad: (state, { payload }: PayloadAction<boolean>) => {
-      state.initialLoad = payload;
     },
     setLinkedFavorites: (
       state,
@@ -222,7 +217,6 @@ export const {
     setAllSets,
     setAppPresets,
     setCurrentPreset,
-    setInitialLoad,
     setLinkedFavorites,
     setLoading,
     setSearch,
@@ -238,8 +232,6 @@ export const {
 export const selectTransition = (state: RootState) => state.main.transition;
 
 export const selectLoading = (state: RootState) => state.main.loading;
-
-export const selectInitialLoad = (state: RootState) => state.main.initialLoad;
 
 export const selectSortsMap = (state: RootState) => state.main.sorts;
 
@@ -432,7 +424,6 @@ export const selectFilteredSets = createSelector(
   selectBought,
   selectHidden,
   selectUser,
-  selectInitialLoad,
   (
     page,
     setMap,
@@ -443,13 +434,8 @@ export const selectFilteredSets = createSelector(
     linkedFavorites,
     bought,
     hidden,
-    user,
-    initialLoad
+    user
   ) => {
-    if (initialLoad) {
-      return [];
-    }
-
     if (!arrayIncludes(mainPages, page)) {
       return [];
     }

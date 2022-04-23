@@ -23,7 +23,6 @@ import {
   selectWhitelist,
   setAllSets,
   setCurrentPreset,
-  setInitialLoad,
   setLoading,
   setURLWhitelist,
   upsertAppPreset,
@@ -156,7 +155,7 @@ export const getData = (): AppThunk<Promise<void>> => async (dispatch) => {
       }
     });
 
-    dispatch([setAllSets(sets), setInitialLoad(false), setLoading(false)]);
+    dispatch([setAllSets(sets), setLoading(false)]);
 
     dispatch(applyInitialPreset());
   } catch (error) {
