@@ -28,7 +28,7 @@ import {
 } from "@s/main";
 import { blankKeyset, blankPreset } from "@s/main/constants";
 import type { PresetType, SetType } from "@s/main/types";
-import { push } from "@s/router";
+import { replace } from "@s/router";
 import { selectView } from "@s/settings";
 import { selectUser } from "@s/user";
 import { closeModal, openModal } from "@s/util/functions";
@@ -79,7 +79,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   const closeDetails = () => {
     if (!(!contentBool && loading)) {
       closeModal();
-      dispatch(push(`/${page}`));
+      dispatch(replace(`/${page}`));
     }
   };
   const openFilter = () => {
@@ -99,7 +99,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   };
   const openDetails = (set: EntityId) => {
     const open = () => {
-      dispatch(push(`/${page}/${set}`));
+      dispatch(replace(`/${page}/${set}`));
     };
     if (filterOpen) {
       closeFilter();

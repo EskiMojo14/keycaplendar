@@ -35,9 +35,9 @@ import {
   selectLoading,
 } from "@s/guides";
 import { getEntries as getEntriesThunk } from "@s/guides/thunks";
-import { push } from "@s/router";
+import { replace } from "@s/router";
 import { selectUser } from "@s/user";
-import { closeModal, createURL, openModal } from "@s/util/functions";
+import { closeModal, openModal } from "@s/util/functions";
 import { selectFromState } from "@s/util/thunks";
 import { EntriesList } from "./entries-list";
 import { GuideEntry } from "./guide-entry";
@@ -76,12 +76,10 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   }, []);
 
   const openDetail = (entry: EntityId) => {
-    dispatch(
-      push(createURL({ pathname: `/guides/${entry}` }, undefined, true))
-    );
+    dispatch(replace(`/guides/${entry}`));
   };
   const closeDetail = () => {
-    dispatch(push(createURL({ pathname: "/guides" }, undefined, true)));
+    dispatch(replace("/guides"));
   };
 
   useEffect(() => {
