@@ -12,7 +12,6 @@ import {
   setSort as setMainSort,
   setSortOrder as setMainSortOrder,
   setTransition,
-  setURLSet,
   setURLWhitelist,
   updatePreset,
 } from "@s/main";
@@ -110,22 +109,6 @@ export const getURLQuery = (): AppThunk<void> => (dispatch, getState) => {
       );
     }
   });
-  if (params.has("keysetId")) {
-    const keysetId = params.get("keysetId");
-    if (keysetId) {
-      dispatch(setURLSet("id", keysetId));
-    }
-  } else if (params.has("keysetAlias")) {
-    const keysetAlias = params.get("keysetAlias");
-    if (keysetAlias) {
-      dispatch(setURLSet("alias", keysetAlias));
-    }
-  } else if (params.has("keysetName")) {
-    const keysetName = params.get("keysetName");
-    if (keysetName) {
-      dispatch(setURLSet("name", keysetName));
-    }
-  }
   if (params.has("statisticsTab")) {
     const urlTab = params.get("statisticsTab");
     if (urlTab && is<StatsTab>(urlTab)) {

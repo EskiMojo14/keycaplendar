@@ -650,11 +650,11 @@ export const createURL = <ReturnLocation extends boolean = false>(
  * @param except Keys to keep
  * @example
  * const params = new URLSearchParams("foo=1&bar=2");
- * clearSearchParams(params, ["bar"]);
+ * clearSearchParamsExcept(params, ["bar"]);
  * console.log(params.toString()) // "bar=2"
  */
 
-export const clearSearchParams = (
+export const clearSearchParamsExcept = (
   params: URLSearchParams,
   except: string[] = []
 ) => {

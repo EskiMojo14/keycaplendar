@@ -39,7 +39,6 @@ import { toggleBought, toggleFavorite, toggleHidden } from "@s/user/thunks";
 import {
   alphabeticalSortProp,
   arrayIncludes,
-  clearSearchParams,
   createURL,
   iconObject,
   ordinal,
@@ -62,7 +61,7 @@ type DrawerDetailsProps = {
   close: () => void;
   open: boolean;
   openSales: (set: EntityId) => void;
-  set: EntityId;
+  set: EntityId | undefined;
   delete?: (set: SetType) => void;
   edit?: (set: EntityId) => void;
 };
@@ -73,7 +72,7 @@ export const DrawerDetails = ({
   edit,
   open,
   openSales,
-  set: setId,
+  set: setId = "",
 }: DrawerDetailsProps) => {
   const dispatch = useAppDispatch();
 
@@ -98,10 +97,7 @@ export const DrawerDetails = ({
 
   const copyLink = async () => {
     if (set) {
-      const url = createURL({ pathname: "/" }, (params) => {
-        clearSearchParams(params);
-        params.set("keysetAlias", set.alias);
-      });
+      const url = createURL({ pathname: `/calendar/${set.alias}`, search: "" });
       try {
         await navigator.clipboard.writeText(url.href);
         notify({ title: "Copied URL to clipboard." });

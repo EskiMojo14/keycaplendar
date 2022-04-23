@@ -17,7 +17,7 @@ import useDevice from "@h/use-device";
 import usePage from "@h/use-page";
 import { selectSetById } from "@s/main";
 import { getSetDetails } from "@s/main/functions";
-import { clearSearchParams, createURL, iconObject } from "@s/util/functions";
+import { createURL, iconObject } from "@s/util/functions";
 import { CheckCircle, NewReleases, Share } from "@i";
 import "./element-compact.scss";
 
@@ -54,10 +54,7 @@ export const ElementCompact = ({
   }
 
   const copyShareLink = async () => {
-    const url = createURL({ pathname: "/" }, (params) => {
-      clearSearchParams(params);
-      params.set("keysetAlias", set.alias);
-    });
+    const url = createURL({ pathname: `/calendar/${set.alias}`, search: "" });
     try {
       await navigator.clipboard.writeText(url.href);
       notify({ title: "Copied URL to clipboard." });

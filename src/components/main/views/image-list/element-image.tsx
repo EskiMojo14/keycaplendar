@@ -20,12 +20,7 @@ import { useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import { selectSetById } from "@s/main";
 import { getSetDetails } from "@s/main/functions";
-import {
-  clearSearchParams,
-  createURL,
-  iconObject,
-  pluralise,
-} from "@s/util/functions";
+import { createURL, iconObject, pluralise } from "@s/util/functions";
 import { CheckCircle, NewReleases, Share } from "@i";
 import "./element-image.scss";
 
@@ -62,10 +57,7 @@ export const ElementImage = ({
   }
 
   const copyShareLink = async () => {
-    const url = createURL({ pathname: "/" }, (params) => {
-      clearSearchParams(params);
-      params.set("keysetAlias", set.alias);
-    });
+    const url = createURL({ pathname: `/calendar/${set.alias}`, search: "" });
     try {
       await navigator.clipboard.writeText(url.href);
       notify({ title: "Copied URL to clipboard." });

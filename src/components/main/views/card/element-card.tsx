@@ -29,12 +29,7 @@ import {
   selectUser,
 } from "@s/user";
 import { toggleFavorite, toggleHidden } from "@s/user/thunks";
-import {
-  clearSearchParams,
-  createURL,
-  iconObject,
-  pluralise,
-} from "@s/util/functions";
+import { createURL, iconObject, pluralise } from "@s/util/functions";
 import {
   CheckCircle,
   Edit,
@@ -90,10 +85,7 @@ export const ElementCard = ({
   }
 
   const copyShareLink = async () => {
-    const url = createURL({ pathname: "/" }, (params) => {
-      clearSearchParams(params);
-      params.set("keysetAlias", set.alias);
-    });
+    const url = createURL({ pathname: `/calendar/${set.alias}`, search: "" });
     try {
       await navigator.clipboard.writeText(url.href);
       notify({ title: "Copied URL to clipboard." });

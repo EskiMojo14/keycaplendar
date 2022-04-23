@@ -16,7 +16,7 @@ import { useAppDispatch, useAppSelector } from "@h";
 import { selectEntryById, selectFilteredTag, setFilteredTag } from "@s/guides";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
 import { selectUser } from "@s/user";
-import { clearSearchParams, createURL, iconObject } from "@s/util/functions";
+import { createURL, iconObject } from "@s/util/functions";
 import { Delete, Edit, Share } from "@i";
 import "./guide-entry.scss";
 
@@ -42,10 +42,7 @@ export const GuideEntry = ({
     dispatch(setFilteredTag(filteredTag === tag ? "" : tag));
 
   const copyLink = async () => {
-    const url = createURL(
-      { pathname: `/guides/${entryId}` },
-      clearSearchParams
-    );
+    const url = createURL({ pathname: `/guides/${entryId}`, search: "" });
     try {
       await navigator.clipboard.writeText(url.href);
       notify({ title: "Copied URL to clipboard." });

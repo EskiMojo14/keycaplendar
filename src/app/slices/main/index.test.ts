@@ -17,7 +17,6 @@ import {
   selectSortByPage,
   selectSortOrderByPage,
   selectTransition,
-  selectURLSet,
   selectURLWhitelist,
   selectWhitelist,
   setAllSets,
@@ -30,7 +29,6 @@ import {
   setSort,
   setSortOrder,
   setTransition,
-  setURLSet,
   setURLWhitelist,
   upsertAppPreset,
 } from "@s/main";
@@ -98,13 +96,6 @@ it("deletes a set", () => {
   store.dispatch(deleteSet(blankKeyset.id));
   const response = selectSetById(store.getState(), blankKeyset.id);
   expect(response).toBeUndefined();
-});
-
-it("sets URL set", () => {
-  const val = { prop: "id", value: "test" } as const;
-  store.dispatch(setURLSet(val.prop, val.value));
-  const response = selectURLSet(store.getState());
-  expect(response).toEqual(val);
 });
 
 it("sets search", () => {

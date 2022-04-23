@@ -15,7 +15,7 @@ import {
   createDebouncedSyncFavoritesId,
   createDebouncedSyncShareName,
 } from "@s/user/thunks";
-import { clearSearchParams, createURL } from "@s/util/functions";
+import { createURL } from "@s/util/functions";
 import "./dialog-share-favorites.scss";
 
 type DialogShareFavoritesProps = {
@@ -62,8 +62,7 @@ export const DialogShareFavorites = ({
 
   const url = useMemo(
     () =>
-      createURL({ pathname: "/favorites" }, (params) => {
-        clearSearchParams(params);
+      createURL({ pathname: "/favorites", search: "" }, (params) => {
         params.set("favoritesId", favoritesId);
       }),
     [favoritesId]

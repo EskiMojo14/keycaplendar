@@ -5,6 +5,7 @@ import {
 } from "@reduxjs/toolkit";
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import { DateTime } from "luxon";
+import { matchPath } from "react-router-dom";
 import { is } from "typescript-is";
 import { history } from "~/app/history";
 import { notify } from "~/app/snackbar-queue";
@@ -25,6 +26,7 @@ import {
   getPageName,
   navigationMatcher,
   selectLocation,
+  selectPage,
 } from "@s/router";
 import {
   selectBought,
@@ -77,10 +79,6 @@ export type MainState = {
   search: string;
   sorts: Record<MainPage, { sort: SortType; sortOrder: SortOrderType }>;
   transition: boolean;
-  urlSet: {
-    prop: "alias" | "id" | "name";
-    value: string;
-  };
   urlWhitelist: Partial<WhitelistType>;
   whitelist: WhitelistType;
 };
@@ -96,10 +94,6 @@ export const initialState: MainState = {
   search: "",
   sorts: defaultSorts,
   transition: false,
-  urlSet: {
-    prop: "id",
-    value: "",
-  },
   urlWhitelist: {},
   whitelist: {
     bought: false,
@@ -117,11 +111,8 @@ export const initialState: MainState = {
 export const mainSlice = createSlice({
   extraReducers: (builder) => {
     builder.addMatcher(navigationMatcher, (state) => {
-      ({
-        linkedFavorites: state.linkedFavorites,
-        search: state.search,
-        urlSet: state.urlSet,
-      } = initialState);
+      ({ linkedFavorites: state.linkedFavorites, search: state.search } =
+        initialState);
     });
   },
   initialState,
@@ -205,22 +196,6 @@ export const mainSlice = createSlice({
     setTransition: (state, { payload }: PayloadAction<boolean>) => {
       state.transition = payload;
     },
-    setURLSet: {
-      prepare: (prop: "alias" | "id" | "name", value: string) => ({
-        payload: { prop, value },
-      }),
-      reducer: (
-        state,
-        {
-          payload,
-        }: PayloadAction<{
-          prop: "alias" | "id" | "name";
-          value: string;
-        }>
-      ) => {
-        state.urlSet = payload;
-      },
-    },
     setURLWhitelist: (
       state,
       { payload }: PayloadAction<Partial<WhitelistType>>
@@ -250,7 +225,6 @@ export const {
     setSort,
     setSortOrder,
     setTransition,
-    setURLSet,
     setURLWhitelist,
     upsertAppPreset,
   },
@@ -282,9 +256,8 @@ export const selectSortOrderByPage = createSelector(
 
 export const selectSorts = createSelector(
   selectSortsMap,
-  selectLocation,
-  (sortsMap, location) => {
-    const page = getPageName(location.pathname);
+  selectPage,
+  (sortsMap, page) => {
     if (arrayIncludes(mainPages, page)) {
       return sortsMap[page];
     }
@@ -298,8 +271,6 @@ export const selectSortOrder = createSelector(
   selectSorts,
   (sorts) => sorts.sortOrder
 );
-
-export const selectURLSet = (state: RootState) => state.main.urlSet;
 
 export const selectSearch = (state: RootState) => state.main.search;
 
@@ -322,18 +293,23 @@ export const {
 } = keysetAdapter.getSelectors((state: RootState) => state.main.keysets);
 
 export const selectURLKeyset = createSelector(
+  selectLocation,
   selectAllSets,
   selectSetMap,
-  selectURLSet,
-  (allSets, setMap, { prop, value }) => {
-    if (!value) {
-      return undefined;
-    } else if (prop === "id") {
-      return setMap[value];
-    } else if (prop === "name") {
-      return allSets.find((set) => value === `${set.profile} ${set.colorway}`);
+  (location, allSets, setMap) => {
+    const result = matchPath<{ page: string; keyset?: string }>(
+      location.pathname,
+      "/:page/:keyset"
+    );
+    const keyset = result?.params.keyset;
+    if (keyset) {
+      return (
+        setMap[keyset] ?? // /:id
+        allSets.find((set) => set.alias === keyset) ?? // /:alias
+        allSets.find((set) => keyset === `${set.profile} ${set.colorway}`) // /:profile%20:colorway
+      );
     } else {
-      return allSets.find((set) => set[prop] === value);
+      return undefined;
     }
   }
 );
@@ -410,7 +386,7 @@ export const selectSetsByPage = createSelector(selectAllSets, (sets) =>
 );
 
 export const selectFilteredSets = createSelector(
-  selectLocation,
+  selectPage,
   selectSetMap,
   selectSetsByPage,
   selectSearch,
@@ -422,7 +398,7 @@ export const selectFilteredSets = createSelector(
   selectUser,
   selectInitialLoad,
   (
-    location,
+    page,
     setMap,
     setsByPage,
     search,
@@ -438,7 +414,6 @@ export const selectFilteredSets = createSelector(
       return [];
     }
 
-    const page = getPageName(location.pathname);
     if (!arrayIncludes(mainPages, page)) {
       return [];
     }
@@ -573,11 +548,10 @@ export const selectFilteredSetsIds = createSelector(
 
 export const selectSetGroups = createSelector(
   selectFilteredSets,
-  selectLocation,
+  selectPage,
   selectSort,
   selectSortOrder,
-  (sets, location, sort, sortOrder) => {
-    const page = getPageName(location.pathname);
+  (sets, page, sort, sortOrder) => {
     const createSetGroups = (sets: SetType[]): string[] => {
       if (arrayIncludes(dateSorts, sort)) {
         return sets

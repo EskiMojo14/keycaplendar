@@ -24,7 +24,7 @@ import useDevice from "@h/use-device";
 import { selectEntryById, selectFilteredTag, setFilteredTag } from "@s/guides";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
 import { selectUser } from "@s/user";
-import { clearSearchParams, createURL, iconObject } from "@s/util/functions";
+import { createURL, iconObject } from "@s/util/functions";
 import { Delete, Edit, Share } from "@i";
 import "./modal-detail.scss";
 
@@ -39,7 +39,7 @@ type ModalCreateProps = {
 export const ModalDetail = ({
   delete: deleteFn,
   edit,
-  entryId,
+  entryId = "",
   onClose,
   open,
 }: ModalCreateProps) => {
@@ -49,9 +49,8 @@ export const ModalDetail = ({
 
   const user = useAppSelector(selectUser);
 
-  const entry = useAppSelector((state) =>
-    selectEntryById(state, entryId ?? "")
-  );
+  const entry = useAppSelector((state) => selectEntryById(state, entryId));
+
   const filteredTag = useAppSelector(selectFilteredTag);
 
   const useDrawer = device !== "mobile";
@@ -60,10 +59,7 @@ export const ModalDetail = ({
     dispatch(setFilteredTag(filteredTag === tag ? "" : tag));
 
   const copyLink = async () => {
-    const url = createURL(
-      { pathname: `/guides/${entryId}` },
-      clearSearchParams
-    );
+    const url = createURL({ pathname: `/guides/${entryId}`, search: "" });
     try {
       await navigator.clipboard.writeText(url.href);
       notify({ title: "Copied URL to clipboard." });

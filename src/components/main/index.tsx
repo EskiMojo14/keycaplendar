@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { EntityId } from "@reduxjs/toolkit";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { Fab } from "@rmwc/fab";
@@ -15,6 +15,7 @@ import ContentSkeleton from "@c/main/content/content-skeleton";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { useAppDispatch, useAppSelector } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
+import useDelayedValue from "@h/use-delayed-value";
 import useDevice from "@h/use-device";
 import useLocatedSelector from "@h/use-located-selector";
 import usePage from "@h/use-page";
@@ -23,14 +24,13 @@ import {
   selectLinkedFavorites,
   selectSetGroupTotal,
   selectURLKeyset,
-  setURLSet,
 } from "@s/main";
 import { blankKeyset, blankPreset } from "@s/main/constants";
 import type { PresetType, SetType } from "@s/main/types";
 import { push } from "@s/router";
 import { selectView } from "@s/settings";
 import { selectUser } from "@s/user";
-import { closeModal, createURL, openModal } from "@s/util/functions";
+import { closeModal, openModal } from "@s/util/functions";
 import { DialogDeleteFilterPreset } from "./dialog-delete-filter-preset";
 import { DialogSales } from "./dialog-sales";
 import { DialogShareFavorites } from "./dialog-share-favorites";
@@ -58,11 +58,12 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   const contentBool = useLocatedSelector(
     (state, location) => !!selectSetGroupTotal(state, location)
   );
-  const urlSet = useAppSelector(selectURLKeyset);
+
+  const originalUrlSet = useLocatedSelector(selectURLKeyset);
+  const urlSet = useDelayedValue(originalUrlSet, 300, { delayed: [undefined] });
+
   const linkedFavorites = useAppSelector(selectLinkedFavorites);
 
-  const [detailsOpen, setDetailsOpen] = useState(false);
-  const [detailSet, setDetailSet] = useState<EntityId>("");
   const [filterOpen, setFilterOpen] = useState(false);
   const closeFilter = () => {
     closeModal();
@@ -70,52 +71,26 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   };
   const closeDetails = () => {
     closeModal();
-    setDetailsOpen(false);
-    setTimeout(() => setDetailSet(""), 300);
+    dispatch(push(`/${page}`));
   };
   const openFilter = () => {
     const open = () => {
       if (filterOpen && device === "desktop") {
         closeFilter();
       } else {
-        if (device !== "desktop" || view === "compact") {
-          openModal();
-        }
         setFilterOpen(true);
       }
     };
-    if (detailsOpen) {
+    if (urlSet) {
       closeDetails();
       setTimeout(() => open(), 300);
     } else {
       open();
     }
   };
-  const openDetails = (set: EntityId, clearUrl = true) => {
+  const openDetails = (set: EntityId) => {
     const open = () => {
-      if (device !== "desktop" || view === "compact") {
-        openModal();
-      }
-      setDetailsOpen(true);
-      setDetailSet(set);
-
-      if (clearUrl) {
-        if (urlSet) {
-          dispatch(setURLSet("id", ""));
-        }
-        const params = new URLSearchParams(window.location.search);
-        const keysetParams = ["keysetId", "keysetAlias", "keysetName"];
-        if (keysetParams.some((param) => params.has(param))) {
-          const newUrl = createURL(
-            {},
-            (params) => {
-              keysetParams.forEach((param) => params.delete(param));
-            },
-            true
-          );
-          dispatch(push(newUrl));
-        }
-      }
+      dispatch(push(`/${page}/${set}`));
     };
     if (filterOpen) {
       closeFilter();
@@ -124,12 +99,6 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
       open();
     }
   };
-
-  useEffect(() => {
-    if (urlSet) {
-      openDetails(urlSet.id, false);
-    }
-  }, [urlSet]);
 
   const [salesOpen, setSalesOpen] = useState(false);
   const [salesSet, setSalesSet] = useState<EntityId>("");
@@ -298,14 +267,14 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
     <ContentGrid
       closeDetails={closeDetails}
       details={openDetails}
-      detailSet={detailSet}
+      detailSet={urlSet?.id}
       edit={openEdit}
     />
   ) : (
     <ContentEmpty />
   );
 
-  const drawerOpen = (detailsOpen || filterOpen) && device === "desktop";
+  const drawerOpen = (urlSet || filterOpen) && device === "desktop";
   const wrapperClasses = classNames("main", view, {
     "drawer-open": drawerOpen,
     "extended-app-bar": view === "card" && !bottomNav && contentBool,
@@ -330,9 +299,9 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
           close={closeDetails}
           delete={openDeleteDialog}
           edit={openEdit}
-          open={detailsOpen}
+          open={!!originalUrlSet}
           openSales={openSales}
-          set={detailSet}
+          set={urlSet?.id}
         />
         <BoolWrapper
           condition={device === "desktop"}

@@ -20,7 +20,7 @@ import "./view-list.scss";
 type ContentGridProps = {
   closeDetails: () => void;
   details: (set: EntityId) => void;
-  detailSet: EntityId;
+  detailSet: EntityId | undefined;
   edit: (set: EntityId) => void;
 };
 

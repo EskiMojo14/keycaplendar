@@ -19,12 +19,7 @@ import { useAppDispatch, useAppSelector } from "@h";
 import { selectEntryById } from "@s/updates";
 import { pinEntry } from "@s/updates/thunks";
 import { selectUser } from "@s/user";
-import {
-  clearSearchParams,
-  createURL,
-  iconObject,
-  ordinal,
-} from "@s/util/functions";
+import { createURL, iconObject, ordinal } from "@s/util/functions";
 import { Delete, Edit, PushPin, Share } from "@i";
 import "./update-entry.scss";
 
@@ -52,10 +47,11 @@ export const UpdateEntry = ({
 
   if (entry) {
     const copyLink = async () => {
-      const url = createURL(
-        { hash: entryId?.toString(), pathname: "/updates" },
-        clearSearchParams
-      );
+      const url = createURL({
+        hash: entryId?.toString(),
+        pathname: "/updates",
+        search: "",
+      });
       try {
         await navigator.clipboard.writeText(url.href);
         notify({ title: "Copied URL to clipboard." });
