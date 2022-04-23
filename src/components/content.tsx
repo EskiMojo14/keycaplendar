@@ -17,8 +17,7 @@ import { useAppSelector } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import usePage from "@h/use-page";
-import { mainPages } from "@s/common/constants";
-import { routes } from "@s/router/constants";
+import { mainPages, routes } from "@s/router/constants";
 import { selectUser } from "@s/user";
 import { arrayIncludes, closeModal, openModal } from "@s/util/functions";
 import "./content.scss";
@@ -102,11 +101,11 @@ export const Content = ({ className, ...props }: ContentProps) => {
           <Route path={routes.settings}>
             <ContentSettings openNav={openNav} />
           </Route>
-          <Route path={mainPages.map((page) => `/${page}`)}>
+          <Route path={mainPages.map((page) => routes[page])}>
             <ContentMain openNav={openNav} />
           </Route>
           <Route exact path={"/"}>
-            <Redirect to={routes.calendar.replace("/:id?", "")} />
+            <Redirect to={routes.calendar.replace("/:keyset?", "")} />
           </Route>
         </Switch>
       </DrawerAppContent>

@@ -4,6 +4,7 @@ import { DrawerAppContent } from "@rmwc/drawer";
 import { Fab } from "@rmwc/fab";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import classNames from "classnames";
+import { useParams } from "react-router-dom";
 import { Footer } from "@c/common/footer";
 import { DialogDelete } from "@c/main/admin/dialog-delete";
 import { ModalCreate, ModalEdit } from "@c/main/admin/modal-entry";
@@ -21,9 +22,9 @@ import useLocatedSelector from "@h/use-located-selector";
 import usePage from "@h/use-page";
 import {
   selectInitialLoad,
+  selectKeysetByString,
   selectLinkedFavorites,
   selectSetGroupTotal,
-  selectURLKeyset,
 } from "@s/main";
 import { blankKeyset, blankPreset } from "@s/main/constants";
 import type { PresetType, SetType } from "@s/main/types";
@@ -59,7 +60,12 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
     (state, location) => !!selectSetGroupTotal(state, location)
   );
 
-  const originalUrlSet = useLocatedSelector(selectURLKeyset);
+  const { keyset = "" } = useParams<{ keyset?: string }>();
+
+  const originalUrlSet = useAppSelector((state) =>
+    selectKeysetByString(state, keyset)
+  );
+
   const urlSet = useDelayedValue(originalUrlSet, 300, { delayed: [undefined] });
 
   const linkedFavorites = useAppSelector(selectLinkedFavorites);

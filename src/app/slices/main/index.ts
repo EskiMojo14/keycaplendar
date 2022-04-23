@@ -3,7 +3,12 @@ import {
   createSelector,
   createSlice,
 } from "@reduxjs/toolkit";
-import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
+import type {
+  Dictionary,
+  EntityId,
+  EntityState,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import { DateTime } from "luxon";
 import { matchPath } from "react-router-dom";
 import { is } from "typescript-is";
@@ -292,22 +297,53 @@ export const {
   selectTotal: selectSetTotal,
 } = keysetAdapter.getSelectors((state: RootState) => state.main.keysets);
 
+export const selectSetsByAlias = createSelector(selectAllSets, (allSets) =>
+  allSets.reduce<Dictionary<SetType>>((dict, set) => {
+    dict[set.alias] = set;
+    return dict;
+  }, {})
+);
+
+export const selectSetsByName = createSelector(selectAllSets, (allSets) =>
+  allSets.reduce<Dictionary<SetType>>((dict, set) => {
+    dict[`${set.profile} ${set.colorway}`] = set;
+    return dict;
+  }, {})
+);
+
+export const findKeysetByString = (
+  string: string,
+  setMap: Dictionary<SetType>,
+  setsByAlias: Dictionary<SetType>,
+  setsByName: Dictionary<SetType>
+) =>
+  string
+    ? setMap[string] ?? // /:id
+      setsByAlias[string] ?? // /:alias
+      setsByName[string] // /:profile%20:colorway
+    : undefined;
+
+export const selectKeysetByString = createSelector(
+  (_: unknown, string: string) => string,
+  selectSetMap,
+  selectSetsByAlias,
+  selectSetsByName,
+  findKeysetByString
+);
+
 export const selectURLKeyset = createSelector(
   selectLocation,
-  selectAllSets,
   selectSetMap,
-  (location, allSets, setMap) => {
+  selectSetsByAlias,
+  selectSetsByName,
+  (location, setMap, setsByAlias, setsByName) => {
     const result = matchPath<{ page: string; keyset?: string }>(
       location.pathname,
       "/:page/:keyset"
     );
     const keyset = result?.params.keyset;
     if (keyset) {
-      return (
-        setMap[keyset] ?? // /:id
-        allSets.find((set) => set.alias === keyset) ?? // /:alias
-        allSets.find((set) => keyset === `${set.profile} ${set.colorway}`) // /:profile%20:colorway
-      );
+      return findKeysetByString(keyset, setMap, setsByAlias, setsByName);
     } else {
       return undefined;
     }
