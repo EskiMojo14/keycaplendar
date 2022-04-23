@@ -106,7 +106,7 @@ export const Content = ({ className, ...props }: ContentProps) => {
             <ContentMain openNav={openNav} />
           </Route>
           <Route exact path={"/"}>
-            <Redirect to={routes.calendar} />
+            <Redirect to={routes.calendar.replace("/:id?", "")} />
           </Route>
         </Switch>
       </DrawerAppContent>
