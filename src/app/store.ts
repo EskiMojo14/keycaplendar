@@ -9,11 +9,13 @@ import guides from "@s/guides";
 import history from "@s/history";
 import images from "@s/images";
 import main from "@s/main";
+import { createRouterMiddleware } from "@s/router/middleware";
 import settings from "@s/settings";
 import statistics from "@s/statistics";
 import updates from "@s/updates";
 import user from "@s/user";
 import users from "@s/users";
+import { history as historyInstance } from "./history";
 
 const reducer = combineReducers({
   audit,
@@ -45,7 +47,9 @@ const _createStore = (preloadedState?: Partial<RootState>) =>
       getDefaultMiddleware({
         immutableCheck: false,
         serializableCheck: false,
-      }).prepend(listenerMiddleware),
+      })
+        .prepend(listenerMiddleware)
+        .concat(createRouterMiddleware(historyInstance)),
     preloadedState,
     reducer,
   });

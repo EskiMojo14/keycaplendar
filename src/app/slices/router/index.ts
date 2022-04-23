@@ -1,5 +1,4 @@
 import {
-  addListener,
   createAction,
   createDraftSafeSelector,
   isAnyOf,
@@ -10,11 +9,11 @@ import type {
   EntityId,
   EntityState,
 } from "@reduxjs/toolkit";
-import type { Action, History, Location } from "history";
-import type { AppDispatch, RootState } from "~/app/store";
+import type { History, Location } from "history";
+import type { RootState } from "~/app/store";
 import { allPages, pageTitle } from "@s/common/constants";
 import type { Page } from "@s/common/types";
-import { arrayIncludes, createURL, objectEntries } from "@s/util/functions";
+import { arrayIncludes, createURL } from "@s/util/functions";
 import type { UnionToTuple } from "@s/util/types";
 
 export const getPageName = (pathname: string): Page => {
@@ -61,42 +60,14 @@ export const actionCreators = Object.fromEntries(
 
 export const { go, goBack, goForward, push, replace } = actionCreators;
 
-export const addRouterListener = (history: History) =>
-  addListener({
-    effect: (action) => {
-      objectEntries(actionCreators).forEach(([key, actionCreator]) => {
-        if (actionCreator.match(action)) {
-          // @ts-expect-error heh
-          history[key](...action.payload);
-        }
-      });
-    },
-    matcher: isAnyOf(
-      ...(Object.values(actionCreators) as UnionToTuple<
-        ActionCreators[keyof ActionCreators]
-      >)
-    ),
-  });
-
-export const locationChange = createAction(
-  "router/locationChange",
-  (location: Location, action: Action) => ({ payload: { action, location } })
-);
-
 export const navigationMatcher = isAnyOf(
   ...(Object.values(actionCreators) as UnionToTuple<
     ActionCreators[keyof ActionCreators]
-  >),
-  locationChange
+  >)
 );
 
-export const setupLocationChangeListener = (
-  history: History,
-  dispatch: AppDispatch
-) =>
-  history.listen((location, action) => {
-    dispatch(locationChange(location, action));
-
+export const setupLocationChangeListener = (history: History) =>
+  history.listen((location) => {
     const title = getPageTitle(location.pathname);
     document.title = title ? `KeycapLendar: ${title}` : "KeycapLendar";
     document.documentElement.scrollTop = 0;
@@ -115,7 +86,7 @@ export const setupLocationChangeListener = (
         },
         true
       );
-      dispatch(push(newUrl));
+      history.push(newUrl);
     }
   });
 
