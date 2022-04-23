@@ -31,7 +31,7 @@ import type { GuideId } from "@s/firebase/types";
 import {
   selectEntries,
   selectEntryById,
-  selectEntryTotal,
+  selectEntryMap,
   selectLoading,
 } from "@s/guides";
 import { getEntries as getEntriesThunk } from "@s/guides/thunks";
@@ -61,14 +61,16 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   const user = useAppSelector(selectUser);
 
   const loading = useAppSelector(selectLoading);
-  const total = useAppSelector(selectEntryTotal);
   const entries = useAppSelector(selectEntries);
+  const entryMap = useAppSelector(selectEntryMap);
 
   const { id } = useParams<{ id?: string }>();
-  const urlEntry = useDelayedValue(id, 300, { delayed: [undefined] });
+  const urlEntry = useDelayedValue(id && id in entryMap ? id : undefined, 300, {
+    delayed: [undefined],
+  });
 
   useEffect(() => {
-    if (total === 0) {
+    if (entries.length === 0) {
       getEntries();
     }
   }, []);

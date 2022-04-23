@@ -23,7 +23,6 @@ import type { WhitelistType } from "@s/main/types";
 import { getPageName } from "@s/router";
 import { setStatisticsTab } from "@s/statistics/thunks";
 import type { StatsTab } from "@s/statistics/types";
-import { setURLEntry as setURLUpdate } from "@s/updates";
 import { getLinkedFavorites } from "@s/user/thunks";
 import { arrayIncludes } from "@s/util/functions";
 import { mainPages, urlPages } from "./constants";
@@ -137,12 +136,6 @@ export const getURLQuery = (): AppThunk<void> => (dispatch, getState) => {
     const urlTab = params.get("historyTab");
     if (urlTab && is<HistoryTab>(urlTab)) {
       dispatch(setHistoryTab(urlTab));
-    }
-  }
-  if (params.has("updateId")) {
-    const updateId = params.get("updateId");
-    if (updateId) {
-      dispatch(setURLUpdate(updateId));
     }
   }
   if (params.has("favoritesId")) {

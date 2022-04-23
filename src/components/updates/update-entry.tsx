@@ -11,11 +11,12 @@ import { Icon } from "@rmwc/icon";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { DateTime } from "luxon";
+import { useLocation } from "react-router-dom";
 import { notify } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import { CustomReactMarkdown } from "@c/util/react-markdown";
 import { useAppDispatch, useAppSelector } from "@h";
-import { selectEntryById, selectURLEntry } from "@s/updates";
+import { selectEntryById } from "@s/updates";
 import { pinEntry } from "@s/updates/thunks";
 import { selectUser } from "@s/user";
 import {
@@ -30,7 +31,7 @@ import "./update-entry.scss";
 type UpdateEntryProps = {
   delete: (entry: EntityId) => void;
   edit: (entry: EntityId) => void;
-  entryId: EntityId;
+  entryId: EntityId | undefined;
 };
 
 export const UpdateEntry = ({
@@ -42,16 +43,19 @@ export const UpdateEntry = ({
 
   const user = useAppSelector(selectUser);
 
-  const entry = useAppSelector((state) => selectEntryById(state, entryId));
+  const entry = useAppSelector((state) =>
+    selectEntryById(state, entryId ?? "")
+  );
 
-  const urlEntry = useAppSelector(selectURLEntry);
+  const { hash } = useLocation();
+  const urlEntry = hash.substring(1);
 
   if (entry) {
     const copyLink = async () => {
-      const url = createURL({ pathname: "/updates" }, (params) => {
-        clearSearchParams(params);
-        params.set("updateId", `${entryId}`);
-      });
+      const url = createURL(
+        { hash: entryId?.toString(), pathname: "/updates" },
+        clearSearchParams
+      );
       try {
         await navigator.clipboard.writeText(url.href);
         notify({ title: "Copied URL to clipboard." });
@@ -78,7 +82,7 @@ export const UpdateEntry = ({
             className={classNames({ secondary: entry.pinned })}
             icon={iconObject(<PushPin />)}
             label={entry.pinned ? "Unpin" : "Pin"}
-            onClick={() => dispatch(pinEntry(entryId))}
+            onClick={() => entryId && dispatch(pinEntry(entryId))}
           />
           <CardActionButton
             icon={iconObject(<Share />)}
@@ -90,14 +94,14 @@ export const UpdateEntry = ({
           {withTooltip(
             <CardActionIcon
               icon={iconObject(<Edit />)}
-              onClick={() => edit(entryId)}
+              onClick={() => entryId && edit(entryId)}
             />,
             "Edit"
           )}
           {withTooltip(
             <CardActionIcon
               icon={iconObject(<Delete />)}
-              onClick={() => deleteFn(entryId)}
+              onClick={() => entryId && deleteFn(entryId)}
             />,
             "Delete"
           )}

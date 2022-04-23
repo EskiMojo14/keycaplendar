@@ -1,7 +1,6 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
-import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
+import type { EntityState, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { navigationMatcher } from "@s/router";
 import { alphabeticalSortPropCurried } from "@s/util/functions";
 import type { UpdateEntryType } from "./types";
 
@@ -20,25 +19,16 @@ const updateEntryAdapter = createEntityAdapter<UpdateEntryType>({
 });
 
 type UpdatesState = {
-  entries: EntityState<UpdateEntryType> & {
-    urlEntry: EntityId;
-  };
+  entries: EntityState<UpdateEntryType>;
   loading: boolean;
 };
 
 export const initialState: UpdatesState = {
-  entries: updateEntryAdapter.getInitialState({ urlEntry: "" }),
+  entries: updateEntryAdapter.getInitialState(),
   loading: false,
 };
 
 export const updatesSlice = createSlice({
-  extraReducers: (builder) => {
-    builder.addMatcher(navigationMatcher, (state) => {
-      ({
-        entries: { urlEntry: state.entries.urlEntry },
-      } = initialState);
-    });
-  },
   initialState,
   name: "updates",
   reducers: {
@@ -48,14 +38,11 @@ export const updatesSlice = createSlice({
     setLoading: (state, { payload }: PayloadAction<boolean>) => {
       state.loading = payload;
     },
-    setURLEntry: (state, { payload }: PayloadAction<EntityId>) => {
-      state.entries.urlEntry = payload;
-    },
   },
 });
 
 export const {
-  actions: { setEntries, setLoading, setURLEntry },
+  actions: { setEntries, setLoading },
 } = updatesSlice;
 
 export const selectLoading = (state: RootState) => state.updates.loading;
@@ -69,8 +56,5 @@ export const {
 } = updateEntryAdapter.getSelectors<RootState>(
   (state) => state.updates.entries
 );
-
-export const selectURLEntry = (state: RootState) =>
-  state.updates.entries.urlEntry;
 
 export default updatesSlice.reducer;

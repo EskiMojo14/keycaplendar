@@ -11,6 +11,7 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
+import { useLocation } from "react-router-dom";
 import { Footer } from "@c/common/footer";
 import { DialogDelete } from "@c/updates/admin/dialog-delete";
 import { ModalCreate, ModalEdit } from "@c/updates/admin/modal-entry";
@@ -19,7 +20,7 @@ import { useAppDispatch, useAppSelector } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import { pageTitle } from "@s/common/constants";
-import { selectEntryIds, selectLoading, selectURLEntry } from "@s/updates";
+import { selectEntryIds, selectEntryMap, selectLoading } from "@s/updates";
 import { getEntries as getEntriesThunk } from "@s/updates/thunks";
 import { selectUser } from "@s/user";
 import { closeModal, openModal } from "@s/util/functions";
@@ -43,7 +44,10 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
 
   const loading = useAppSelector(selectLoading);
   const entries = useAppSelector(selectEntryIds);
-  const urlEntry = useAppSelector(selectURLEntry);
+  const entryMap = useAppSelector(selectEntryMap);
+
+  const { hash } = useLocation();
+  const urlEntry = hash.substring(1) in entryMap ? hash.substring(1) : "";
 
   useEffect(() => {
     if (entries.length === 0) {
@@ -56,15 +60,17 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
       const element = document.getElementById(`update-entry-${urlEntry}`);
       const topBar = document.querySelector<HTMLElement>(".mdc-top-app-bar");
       if (element) {
+        const top =
+          element.getBoundingClientRect().top +
+          window.pageYOffset -
+          ((topBar?.offsetHeight ?? 0) + 16);
         setTimeout(() => {
-          element.scrollIntoView();
-          if (topBar) {
-            document.documentElement.scrollTop -= topBar.offsetHeight + 16;
-          }
+          window.scrollTo({ behavior: "smooth", top });
         }, 1000);
       }
     }
-  }, [entries]);
+  }, [entryMap, urlEntry]);
+
   const [createOpen, setCreateOpen] = useState(false);
   const openCreate = () => {
     setCreateOpen(true);
