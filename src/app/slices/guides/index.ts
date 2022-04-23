@@ -6,6 +6,7 @@ import {
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
 import { visibilityVals } from "@s/guides/constants";
+import { navigationMatcher } from "@s/router";
 import {
   alphabeticalSort,
   alphabeticalSortPropCurried,
@@ -41,6 +42,13 @@ export const initialState: GuidesState = {
 };
 
 export const guidesSlice = createSlice({
+  extraReducers: (builder) => {
+    builder.addMatcher(navigationMatcher, (state) => {
+      ({
+        entries: { urlEntry: state.entries.urlEntry },
+      } = initialState);
+    });
+  },
   initialState,
   name: "guides",
   reducers: {

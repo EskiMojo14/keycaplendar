@@ -20,7 +20,12 @@ import {
   sortHiddenCheck,
 } from "@s/main/constants";
 import { partialPreset } from "@s/main/constructors";
-import { getLocatedSelectors, getPageName, selectLocation } from "@s/router";
+import {
+  getLocatedSelectors,
+  getPageName,
+  navigationMatcher,
+  selectLocation,
+} from "@s/router";
 import {
   selectBought,
   selectFavorites,
@@ -110,6 +115,15 @@ export const initialState: MainState = {
 };
 
 export const mainSlice = createSlice({
+  extraReducers: (builder) => {
+    builder.addMatcher(navigationMatcher, (state) => {
+      ({
+        linkedFavorites: state.linkedFavorites,
+        search: state.search,
+        urlSet: state.urlSet,
+      } = initialState);
+    });
+  },
   initialState,
   name: "main",
   reducers: {

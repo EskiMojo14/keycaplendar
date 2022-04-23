@@ -1,6 +1,7 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
+import { navigationMatcher } from "@s/router";
 import { alphabeticalSortPropCurried } from "@s/util/functions";
 import type { UpdateEntryType } from "./types";
 
@@ -31,6 +32,13 @@ export const initialState: UpdatesState = {
 };
 
 export const updatesSlice = createSlice({
+  extraReducers: (builder) => {
+    builder.addMatcher(navigationMatcher, (state) => {
+      ({
+        entries: { urlEntry: state.entries.urlEntry },
+      } = initialState);
+    });
+  },
   initialState,
   name: "updates",
   reducers: {

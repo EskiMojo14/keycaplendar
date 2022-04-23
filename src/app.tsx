@@ -25,8 +25,7 @@ import {
   setCurrentPreset,
 } from "@s/main";
 import { testSets } from "@s/main/thunks";
-import { addRouterListener } from "@s/router";
-import { setupLocationChangeListener } from "@s/router/listeners";
+import { addRouterListener, setupLocationChangeListener } from "@s/router";
 import {
   selectCookies,
   selectDensity,
@@ -43,8 +42,8 @@ import "./app.scss";
 export const App = () => {
   const dispatch = useAppDispatch();
   useEffect(
-    () => setupLocationChangeListener(history.listen, dispatch),
-    [history.listen, dispatch]
+    () => setupLocationChangeListener(history, dispatch),
+    [history, dispatch]
   );
   useEffect(() => dispatch(addRouterListener(history)), [history]);
 

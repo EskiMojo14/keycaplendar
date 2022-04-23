@@ -11,10 +11,11 @@ import type {
   EntityState,
 } from "@reduxjs/toolkit";
 import type { Action, History, Location } from "history";
-import type { RootState } from "~/app/store";
+import type { AppDispatch, RootState } from "~/app/store";
 import { allPages, pageTitle } from "@s/common/constants";
 import type { Page } from "@s/common/types";
-import { arrayIncludes, objectEntries } from "@s/util/functions";
+import { arrayIncludes, createURL, objectEntries } from "@s/util/functions";
+import type { UnionToTuple } from "@s/util/types";
 
 export const getPageName = (pathname: string): Page => {
   if (pathname === "/") {
@@ -70,14 +71,60 @@ export const addRouterListener = (history: History) =>
         }
       });
     },
-    // @ts-expect-error object values doesn't give a tuple
-    matcher: isAnyOf(...Object.values(actionCreators)),
+    matcher: isAnyOf(
+      ...(Object.values(actionCreators) as UnionToTuple<
+        ActionCreators[keyof ActionCreators]
+      >)
+    ),
   });
 
 export const locationChange = createAction(
   "router/locationChange",
   (location: Location, action: Action) => ({ payload: { action, location } })
 );
+
+export const navigationMatcher = isAnyOf(
+  ...(Object.values(actionCreators) as UnionToTuple<
+    ActionCreators[keyof ActionCreators]
+  >),
+  locationChange
+);
+
+export const setupLocationChangeListener = (
+  history: History,
+  dispatch: AppDispatch
+) =>
+  history.listen((location, action) => {
+    dispatch(locationChange(location, action));
+
+    const title = getPageTitle(location.pathname);
+    document.title = title ? `KeycapLendar: ${title}` : "KeycapLendar";
+    document.documentElement.scrollTop = 0;
+    const pageParams = [
+      "keysetId",
+      "keysetAlias",
+      "keysetName",
+      "guideId",
+      "updateId",
+      "favoritesId",
+    ];
+    const params = new URLSearchParams(history.location.search);
+    if (pageParams.some((param) => params.has(param))) {
+      const newUrl = createURL(
+        {},
+        (params) => {
+          params.delete("page");
+          pageParams.forEach((param) => {
+            if (params.has(param)) {
+              params.delete(param);
+            }
+          });
+        },
+        true
+      );
+      dispatch(push(newUrl));
+    }
+  });
 
 export const selectLocation = (state: RootState, location: Location) =>
   location;
