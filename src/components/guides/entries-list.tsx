@@ -30,7 +30,7 @@ import { Article } from "@i";
 import "./entries-list.scss";
 
 type EntriesDrawerProps = {
-  detailEntry: EntityId;
+  detailEntry: EntityId | undefined;
   openEntry: (entry: EntityId) => void;
 };
 

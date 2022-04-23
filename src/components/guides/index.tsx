@@ -14,6 +14,7 @@ import {
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
+import { useParams } from "react-router-dom";
 import { confirm } from "~/app/dialog-queue";
 import { notify } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
@@ -22,6 +23,7 @@ import { AppBarIndent } from "@c/util/app-bar-indent";
 import { withTooltip } from "@c/util/hocs";
 import { useAppDispatch, useAppSelector } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
+import useDelayedValue from "@h/use-delayed-value";
 import useDevice from "@h/use-device";
 import { pageTitle } from "@s/common/constants";
 import firestore from "@s/firebase/firestore";
@@ -31,8 +33,6 @@ import {
   selectEntryById,
   selectEntryTotal,
   selectLoading,
-  selectURLEntry,
-  setURLEntry,
 } from "@s/guides";
 import { getEntries as getEntriesThunk } from "@s/guides/thunks";
 import { push } from "@s/router";
@@ -63,7 +63,9 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   const loading = useAppSelector(selectLoading);
   const total = useAppSelector(selectEntryTotal);
   const entries = useAppSelector(selectEntries);
-  const urlEntry = useAppSelector(selectURLEntry);
+
+  const { id } = useParams<{ id?: string }>();
+  const urlEntry = useDelayedValue(id, 300, { delayed: [undefined] });
 
   useEffect(() => {
     if (total === 0) {
@@ -71,41 +73,17 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
     }
   }, []);
 
-  const [detailEntry, setDetailEntry] = useState<EntityId>("");
-  const [detailOpen, setDetailOpen] = useState(false);
   const openDetail = (entry: EntityId) => {
-    setDetailEntry(entry);
-    if (device !== "desktop") {
-      setDetailOpen(true);
-      openModal();
-    }
-    if (urlEntry) {
-      dispatch(setURLEntry(""));
-    }
-    const params = new URLSearchParams(window.location.search);
-    if (params.has("guideId")) {
-      const newUrl = createURL(
-        {},
-        (params) => {
-          params.delete("guideId");
-        },
-        true
-      );
-      dispatch(push(newUrl));
-    }
+    dispatch(
+      push(createURL({ pathname: `/guides/${entry}` }, undefined, true))
+    );
   };
   const closeDetail = () => {
-    setDetailOpen(false);
-    setTimeout(() => {
-      setDetailEntry("");
-    }, 300);
-    closeModal();
+    dispatch(push(createURL({ pathname: "/guides" }, undefined, true)));
   };
 
   useEffect(() => {
-    if (urlEntry) {
-      openDetail(urlEntry);
-    } else if (device === "desktop") {
+    if (!urlEntry && device === "desktop") {
       openDetail("Di1F9XkWTG2M9qbP2ZcN");
     }
   }, [entries, urlEntry]);
@@ -128,7 +106,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
       setEditEntry(entry);
       openModal();
     };
-    if (detailOpen && device !== "desktop") {
+    if (urlEntry && device !== "desktop") {
       closeDetail();
       setTimeout(() => open(), 300);
     } else {
@@ -223,14 +201,14 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   const content =
     device === "desktop" ? (
       <div className="guides-container">
-        <EntriesList detailEntry={detailEntry} openEntry={openDetail} />
+        <EntriesList detailEntry={urlEntry} openEntry={openDetail} />
         <div className="main drawer-margin">
           <div className="guide-container">
-            {detailEntry ? (
+            {urlEntry ? (
               <GuideEntry
                 delete={openDelete}
                 edit={openEdit}
-                entryId={detailEntry}
+                entryId={urlEntry}
               />
             ) : (
               <div className="empty-container">
@@ -250,13 +228,13 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
     ) : (
       <div className="guides-container">
         <div className="main">
-          <EntriesList detailEntry={detailEntry} openEntry={openDetail} />
+          <EntriesList detailEntry={urlEntry} openEntry={openDetail} />
           <ModalDetail
             delete={openDelete}
             edit={openEdit}
-            entryId={detailEntry}
+            entryId={urlEntry}
             onClose={closeDetail}
-            open={detailOpen}
+            open={!!id}
           />
           <Footer />
         </div>

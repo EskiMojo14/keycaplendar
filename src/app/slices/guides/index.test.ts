@@ -4,12 +4,10 @@ import {
   selectEntries,
   selectFilteredTag,
   selectLoading,
-  selectURLEntry,
   selectVisibilityMap,
   setEntries,
   setFilteredTag,
   setLoading,
-  setURLEntry,
 } from "@s/guides";
 import type { GuideEntryType } from "@s/guides/types";
 
@@ -51,12 +49,6 @@ it("sets guides array, tags, and visibility map", () => {
     editor: [],
   };
   expect(visibilityMap).toEqual(expectedVisibilityMap);
-});
-
-it("sets URL entry ID", () => {
-  store.dispatch(setURLEntry(string));
-  const response = selectURLEntry(store.getState());
-  expect(response).toBe(string);
 });
 
 it("sets filtered tag", () => {

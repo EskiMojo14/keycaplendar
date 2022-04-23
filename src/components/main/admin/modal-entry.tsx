@@ -496,7 +496,7 @@ export const ModalEntry = ({
           <div className="banner-text">Make sure to read the entry guide.</div>
           <div className="banner-button">
             <a
-              href="/guides?guideId=JLB4xxfx52NJmmnbvbzO"
+              href="/guides/JLB4xxfx52NJmmnbvbzO"
               rel="noopener noreferrer"
               target="_blank"
             >

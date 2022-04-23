@@ -16,7 +16,6 @@ import { NotFound } from "@c/pages/not-found";
 import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import { selectTheme, selectTimed, setSystemTheme, setTimed } from "@s/common";
-import { allPages } from "@s/common/constants";
 import { getGlobals, getURLQuery } from "@s/common/thunks";
 import firebase from "@s/firebase";
 import {
@@ -26,6 +25,7 @@ import {
 } from "@s/main";
 import { testSets } from "@s/main/thunks";
 import { addRouterListener, setupLocationChangeListener } from "@s/router";
+import { routes } from "@s/router/constants";
 import {
   selectCookies,
   selectDensity,
@@ -167,10 +167,7 @@ export const App = () => {
         </Route>
         <Route component={PrivacyPolicy} path="/privacy" />
         <Route component={TermsOfService} path="/terms" />
-        <Route
-          exact
-          path={["/", ...allPages.map((page: string) => `/${page}`)]}
-        >
+        <Route exact path={["/", ...Object.values(routes)]}>
           <div
             className={classNames("app", {
               [`density-${density}`]: device === "desktop",

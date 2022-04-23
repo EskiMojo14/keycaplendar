@@ -42,10 +42,10 @@ export const GuideEntry = ({
     dispatch(setFilteredTag(filteredTag === tag ? "" : tag));
 
   const copyLink = async () => {
-    const url = createURL({ pathname: "/guides" }, (params) => {
-      clearSearchParams(params);
-      params.set("guideId", `${entryId}`);
-    });
+    const url = createURL(
+      { pathname: `/guides/${entryId}` },
+      clearSearchParams
+    );
     try {
       await navigator.clipboard.writeText(url.href);
       notify({ title: "Copied URL to clipboard." });

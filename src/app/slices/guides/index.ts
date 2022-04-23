@@ -6,7 +6,6 @@ import {
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
 import { visibilityVals } from "@s/guides/constants";
-import { navigationMatcher } from "@s/router";
 import {
   alphabeticalSort,
   alphabeticalSortPropCurried,
@@ -26,29 +25,18 @@ const guideEntryAdapter = createEntityAdapter<GuideEntryType>({
 });
 
 type GuidesState = {
-  entries: EntityState<GuideEntryType> & {
-    urlEntry: EntityId;
-  };
+  entries: EntityState<GuideEntryType>;
   filteredTag: string;
   loading: boolean;
 };
 
 export const initialState: GuidesState = {
-  entries: guideEntryAdapter.getInitialState({
-    urlEntry: "",
-  }),
+  entries: guideEntryAdapter.getInitialState(),
   filteredTag: "",
   loading: false,
 };
 
 export const guidesSlice = createSlice({
-  extraReducers: (builder) => {
-    builder.addMatcher(navigationMatcher, (state) => {
-      ({
-        entries: { urlEntry: state.entries.urlEntry },
-      } = initialState);
-    });
-  },
   initialState,
   name: "guides",
   reducers: {
@@ -61,14 +49,11 @@ export const guidesSlice = createSlice({
     setLoading: (state, { payload }: PayloadAction<boolean>) => {
       state.loading = payload;
     },
-    setURLEntry: (state, { payload }: PayloadAction<EntityId>) => {
-      state.entries.urlEntry = payload;
-    },
   },
 });
 
 export const {
-  actions: { setEntries, setFilteredTag, setLoading, setURLEntry },
+  actions: { setEntries, setFilteredTag, setLoading },
 } = guidesSlice;
 
 export const selectLoading = (state: RootState) => state.guides.loading;
@@ -82,9 +67,6 @@ export const {
 } = guideEntryAdapter.getSelectors<RootState>((state) => state.guides.entries);
 
 export const selectFilteredTag = (state: RootState) => state.guides.filteredTag;
-
-export const selectURLEntry = (state: RootState) =>
-  state.guides.entries.urlEntry;
 
 export const selectAllTags = createSelector(selectEntries, (entries) =>
   alphabeticalSort(removeDuplicates(entries.map((entry) => entry.tags).flat(1)))

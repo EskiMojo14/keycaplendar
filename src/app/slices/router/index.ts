@@ -104,7 +104,6 @@ export const setupLocationChangeListener = (
       "keysetId",
       "keysetAlias",
       "keysetName",
-      "guideId",
       "updateId",
       "favoritesId",
     ];

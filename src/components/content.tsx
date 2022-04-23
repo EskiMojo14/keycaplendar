@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { HTMLAttributes } from "react";
 import { DrawerAppContent } from "@rmwc/drawer";
 import classNames from "classnames";
-import { Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import { ContentAudit } from "@c/audit";
 import { DrawerNav } from "@c/common/drawer-nav";
 import { ContentGuides } from "@c/guides";
@@ -18,6 +18,7 @@ import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import usePage from "@h/use-page";
 import { mainPages } from "@s/common/constants";
+import { routes } from "@s/router/constants";
 import { selectUser } from "@s/user";
 import { arrayIncludes, closeModal, openModal } from "@s/util/functions";
 import "./content.scss";
@@ -71,41 +72,41 @@ export const Content = ({ className, ...props }: ContentProps) => {
       <DrawerNav close={closeNav} open={navOpen} />
       <DrawerAppContent>
         <Switch>
-          <Route path={mainPages.map((page) => `/${page}`)}>
-            <ContentMain openNav={openNav} />
-          </Route>
-          <Route path="/statistics">
+          <Route path={routes.statistics}>
             <ContentStatistics openNav={openNav} />
           </Route>
-          <Route path="/history">
+          <Route path={routes.history}>
             <ContentHistory openNav={openNav} />
           </Route>
           {user.isAdmin && (
-            <Route path="/audit">
+            <Route path={routes.audit}>
               <ContentAudit openNav={openNav} />
             </Route>
           )}
           {user.isAdmin && (
-            <Route path="/users">
+            <Route path={routes.users}>
               <ContentUsers openNav={openNav} />
             </Route>
           )}
           {user.isAdmin && (
-            <Route path="/images">
+            <Route path={routes.images}>
               <ContentImages openNav={openNav} />
             </Route>
           )}
-          <Route path="/guides">
+          <Route path={routes.guides}>
             <ContentGuides openNav={openNav} />
           </Route>
-          <Route path="/updates">
+          <Route path={routes.updates}>
             <ContentUpdates openNav={openNav} />
           </Route>
-          <Route path="/settings">
+          <Route path={routes.settings}>
             <ContentSettings openNav={openNav} />
           </Route>
-          <Route exact path="/">
+          <Route path={mainPages.map((page) => `/${page}`)}>
             <ContentMain openNav={openNav} />
+          </Route>
+          <Route exact path={"/"}>
+            <Redirect to={routes.calendar} />
           </Route>
         </Switch>
       </DrawerAppContent>

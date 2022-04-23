@@ -31,7 +31,7 @@ import "./modal-detail.scss";
 type ModalCreateProps = {
   delete: (entry: EntityId) => void;
   edit: (entry: EntityId) => void;
-  entryId: EntityId;
+  entryId: EntityId | undefined;
   onClose: () => void;
   open: boolean;
 };
@@ -49,7 +49,9 @@ export const ModalDetail = ({
 
   const user = useAppSelector(selectUser);
 
-  const entry = useAppSelector((state) => selectEntryById(state, entryId));
+  const entry = useAppSelector((state) =>
+    selectEntryById(state, entryId ?? "")
+  );
   const filteredTag = useAppSelector(selectFilteredTag);
 
   const useDrawer = device !== "mobile";
@@ -58,10 +60,10 @@ export const ModalDetail = ({
     dispatch(setFilteredTag(filteredTag === tag ? "" : tag));
 
   const copyLink = async () => {
-    const url = createURL({ pathname: "/guides" }, (params) => {
-      clearSearchParams(params);
-      params.set("guideId", `${entryId}`);
-    });
+    const url = createURL(
+      { pathname: `/guides/${entryId}` },
+      clearSearchParams
+    );
     try {
       await navigator.clipboard.writeText(url.href);
       notify({ title: "Copied URL to clipboard." });
@@ -81,14 +83,14 @@ export const ModalDetail = ({
         {withTooltip(
           <IconButton
             icon={iconObject(<Edit />)}
-            onClick={() => edit(entryId)}
+            onClick={() => entryId && edit(entryId)}
           />,
           "Edit"
         )}
         {withTooltip(
           <IconButton
             icon={iconObject(<Delete />)}
-            onClick={() => deleteFn(entryId)}
+            onClick={() => entryId && deleteFn(entryId)}
           />,
           "Delete"
         )}
@@ -105,14 +107,14 @@ export const ModalDetail = ({
         {withTooltip(
           <TopAppBarActionItem
             icon={iconObject(<Edit />)}
-            onClick={() => edit(entryId)}
+            onClick={() => entryId && edit(entryId)}
           />,
           "Edit"
         )}
         {withTooltip(
           <TopAppBarActionItem
             icon={iconObject(<Delete />)}
-            onClick={() => edit(entryId)}
+            onClick={() => entryId && edit(entryId)}
           />,
           "Delete"
         )}
