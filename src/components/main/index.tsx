@@ -76,8 +76,10 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
     setFilterOpen(false);
   };
   const closeDetails = () => {
-    closeModal();
-    dispatch(push(`/${page}`));
+    if (!initialLoad) {
+      closeModal();
+      dispatch(push(`/${page}`));
+    }
   };
   const openFilter = () => {
     const open = () => {
@@ -87,7 +89,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
         setFilterOpen(true);
       }
     };
-    if (urlSet) {
+    if (originalUrlSet) {
       closeDetails();
       setTimeout(() => open(), 300);
     } else {

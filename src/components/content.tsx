@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { HTMLAttributes } from "react";
 import { DrawerAppContent } from "@rmwc/drawer";
 import classNames from "classnames";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import { ContentAudit } from "@c/audit";
 import { DrawerNav } from "@c/common/drawer-nav";
 import { ContentGuides } from "@c/guides";
@@ -103,9 +103,6 @@ export const Content = ({ className, ...props }: ContentProps) => {
           </Route>
           <Route path={mainPages.map((page) => routes[page])}>
             <ContentMain openNav={openNav} />
-          </Route>
-          <Route exact path={"/"}>
-            <Redirect to={routes.calendar.replace("/:keyset?", "")} />
           </Route>
         </Switch>
       </DrawerAppContent>

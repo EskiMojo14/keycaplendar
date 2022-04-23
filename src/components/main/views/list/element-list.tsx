@@ -109,7 +109,13 @@ export const ElementList = ({
       );
   return (
     <ListItem
-      onClick={() => (!selected ? details(set.alias) : closeDetails())}
+      onClick={() => {
+        if (!selected) {
+          details(set.alias);
+        } else {
+          closeDetails();
+        }
+      }}
       selected={selected}
     >
       <LazyLoad

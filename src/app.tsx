@@ -4,7 +4,7 @@ import { DialogQueue } from "@rmwc/dialog";
 import { SnackbarQueue } from "@rmwc/snackbar";
 import classNames from "classnames";
 import { Router } from "react-router";
-import { Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import { dialogQueue } from "~/app/dialog-queue";
 import { history } from "~/app/history";
 import { notify, snackbarQueue } from "~/app/snackbar-queue";
@@ -163,7 +163,7 @@ export const App = () => {
         </Route>
         <Route component={PrivacyPolicy} path="/privacy" />
         <Route component={TermsOfService} path="/terms" />
-        <Route exact path={["/", ...Object.values(routes)]}>
+        <Route path={Object.values(routes)}>
           <div
             className={classNames("app", {
               [`density-${density}`]: device === "desktop",
@@ -176,6 +176,9 @@ export const App = () => {
             <DialogQueue dialogs={dialogQueue.dialogs} />
             <Portal />
           </div>
+        </Route>
+        <Route exact path="/">
+          <Redirect to={routes.calendar.replace("/:keyset?", "")} />
         </Route>
         <Route component={NotFound} />
       </Switch>

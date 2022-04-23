@@ -5,7 +5,7 @@ import { objectEntries } from "@s/util/functions";
 
 export const createRouterMiddleware =
   (history: History): Middleware =>
-  (store) =>
+  () =>
   (next) =>
   (action) => {
     if (navigationMatcher(action)) {

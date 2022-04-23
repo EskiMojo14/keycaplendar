@@ -198,7 +198,13 @@ export const ElementCard = ({
           className={classNames("content", {
             "mdc-card__primary-action--selected": selected,
           })}
-          onClick={() => (!selected ? details(set.alias) : closeDetails())}
+          onClick={() => {
+            if (!selected) {
+              details(set.alias);
+            } else {
+              closeDetails();
+            }
+          }}
         >
           <div className="media-container">
             <LazyLoad
