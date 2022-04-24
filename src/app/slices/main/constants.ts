@@ -124,12 +124,12 @@ export const sortNames: Record<SortType, string> = {
 /** Pages to *not* show specified sort on. */
 
 export const sortBlacklist: Record<SortType, Page[]> = {
-  designer: [],
-  gbEnd: ["ic"],
+  designer: ["calendar"],
+  gbEnd: ["calendar", "ic"],
   gbLaunch: ["ic"],
-  icDate: [],
-  profile: [],
-  vendor: [],
+  icDate: ["calendar"],
+  profile: ["calendar"],
+  vendor: ["calendar"],
 };
 
 /** Pages to check for hidden sets due to sort. */

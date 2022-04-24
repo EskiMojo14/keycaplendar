@@ -220,54 +220,26 @@ export const testSets = (): AppThunk<void> => (dispatch, getState) => {
 };
 
 export const setSort =
-  (sort: SortType, clearUrl = true): AppThunk<void> =>
+  (sort: SortType): AppThunk<void> =>
   (dispatch) => {
     const page = getPageName(history.location.pathname) as MainPage;
     document.documentElement.scrollTop = 0;
-    let sortOrder: SortOrderType = "ascending";
-    if (
+    const sortOrder: SortOrderType =
       arrayIncludes(dateSorts, sort) &&
       arrayIncludes(reverseSortDatePages, page)
-    ) {
-      sortOrder = "descending";
-    }
+        ? "descending"
+        : "ascending";
     if (arrayIncludes(allSorts, sort)) {
       dispatch([_setSort(page, sort), _setSortOrder(page, sortOrder)]);
-    }
-    if (clearUrl) {
-      const params = new URLSearchParams(window.location.search);
-      if (params.has("sort")) {
-        const newUrl = createURL(
-          {},
-          (params) => {
-            params.delete("sort");
-          },
-          true
-        );
-        dispatch(push(newUrl));
-      }
     }
   };
 
 export const setSortOrder =
-  (sortOrder: SortOrderType, clearUrl = true): AppThunk<void> =>
+  (sortOrder: SortOrderType): AppThunk<void> =>
   (dispatch) => {
     const page = getPageName(history.location.pathname) as MainPage;
     document.documentElement.scrollTop = 0;
     dispatch(_setSortOrder(page, sortOrder));
-    if (clearUrl) {
-      const params = new URLSearchParams(window.location.search);
-      if (params.has("sortOrder")) {
-        const newUrl = createURL(
-          {},
-          (params) => {
-            params.delete("sortOrder");
-          },
-          true
-        );
-        dispatch(push(newUrl));
-      }
-    }
   };
 
 export const setSearch =

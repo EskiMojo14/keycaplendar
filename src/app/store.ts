@@ -84,6 +84,6 @@ export type AppStore = ReturnType<typeof createStore>;
 
 export type AppDispatch = AppStore["dispatch"];
 
-export const store = createStore(loadState());
+export const store = createStore(loadState(historyInstance));
 
 export default store;

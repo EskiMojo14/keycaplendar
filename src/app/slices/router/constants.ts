@@ -18,15 +18,20 @@ export const routes = {
   users: "/users",
 };
 
-export const mainPages: (keyof typeof routes)[] = [
+const idPageList = <
+  Pages extends [keyof typeof routes, ...(keyof typeof routes)[]]
+>(
+  ...pages: Pages
+) => pages;
+
+export const mainPages = idPageList(
   "archive",
   "bought",
   "calendar",
   "favorites",
-  "guides",
   "hidden",
   "ic",
   "live",
   "previous",
-  "timeline",
-];
+  "timeline"
+);

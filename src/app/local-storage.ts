@@ -1,12 +1,23 @@
 import type { AnyAction } from "@reduxjs/toolkit";
 import { createSelector } from "@reduxjs/toolkit";
+import type { History } from "history";
+import produce from "immer";
 import pick from "lodash.pick";
 import type { RootState } from "~/app/store";
 import type { AppStartListening } from "@mw/listener";
 import { initialState as common } from "@s/common";
 import { initialState as main } from "@s/main";
-import { selectCookies } from "@s/settings";
-import { objectEntries, objectFromEntries } from "@s/util/functions";
+import { allSorts, sortBlacklist } from "@s/main/constants";
+import { getPageName } from "@s/router";
+import { mainPages } from "@s/router/constants";
+import { selectCookies, initialState as settings } from "@s/settings";
+import { initialState as user } from "@s/user";
+import {
+  arrayIncludes,
+  createURL,
+  objectEntries,
+  objectFromEntries,
+} from "@s/util/functions";
 import type { ObjectEntries } from "@s/util/types";
 
 type WhitelistDef = {
@@ -25,15 +36,11 @@ type WhitelistedState<Whitelist extends WhitelistDef> = {
 
 /** Make sure that initial state is provided if only part of the state is whitelisted */
 type InitialStates<Whitelist extends WhitelistDef> = {
-  [Key in keyof RootState as Whitelist[Key] extends (keyof RootState[Key])[]
+  [Key in keyof RootState as Whitelist[Key] extends
+    | (keyof RootState[Key])[]
+    | true
     ? Key
     : never]: RootState[Key];
-} & {
-  [Key in keyof RootState as Whitelist[Key] extends true
-    ? Key
-    : Whitelist[Key] extends (keyof RootState[Key])[]
-    ? never
-    : Key]?: RootState[Key];
 };
 
 const idWhitelist = <W extends WhitelistDef>(whitelist: W) => whitelist;
@@ -47,9 +54,16 @@ const persistWhitelist = idWhitelist({
 
 type PersistWhitelist = typeof persistWhitelist;
 
-const initialStates: InitialStates<PersistWhitelist> = { common, main };
+const initialStates: InitialStates<PersistWhitelist> = {
+  common,
+  main,
+  settings,
+  user,
+};
 
-export const hydrateState = (state: WhitelistedState<PersistWhitelist>) =>
+export const hydrateState = (
+  state: WhitelistedState<PersistWhitelist>
+): InitialStates<PersistWhitelist> =>
   objectFromEntries(
     objectEntries(persistWhitelist).map(([key, whitelist]) => [
       key,
@@ -59,13 +73,55 @@ export const hydrateState = (state: WhitelistedState<PersistWhitelist>) =>
     ]) as ObjectEntries<{ [Key in keyof PersistWhitelist]: RootState[Key] }>
   );
 
-export const loadState = () => {
+const paramsToClear = ["sort", "sortOrder"];
+
+export const modifyStateForParams = (
+  state = initialStates,
+  history: History
+) => {
+  const page = getPageName(history.location.pathname);
+  const params = new URLSearchParams(history.location.search);
+
+  if (paramsToClear.some((param) => params.has(param))) {
+    const newUrl = createURL(
+      {},
+      (params) => {
+        paramsToClear.forEach((param) => params.delete(param));
+      },
+      true
+    );
+    history.replace(newUrl);
+  }
+
+  return produce(state, (draftState) => {
+    if (arrayIncludes(mainPages, page)) {
+      const sortQuery = params.get("sort");
+      const sortOrderQuery = params.get("sortOrder");
+      if (
+        sortQuery &&
+        arrayIncludes(allSorts, sortQuery) &&
+        !sortBlacklist[sortQuery].includes(page)
+      ) {
+        draftState.main.sorts[page].sort = sortQuery;
+      }
+      if (
+        sortOrderQuery &&
+        (sortOrderQuery === "ascending" || sortOrderQuery === "descending")
+      ) {
+        draftState.main.sorts[page].sortOrder = sortOrderQuery;
+      }
+    }
+  });
+};
+
+export const loadState = (history: History) => {
   try {
     const serializedState = localStorage.getItem("state");
     if (serializedState === null) {
-      return undefined;
+      return modifyStateForParams(undefined, history);
     }
-    return hydrateState(JSON.parse(serializedState));
+    const hydratedState = hydrateState(JSON.parse(serializedState));
+    return modifyStateForParams(hydratedState, history);
   } catch (err) {
     console.log(err);
     return undefined;

@@ -1,5 +1,4 @@
 import { is } from "typescript-is";
-import { history } from "~/app/history";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import firestore from "@s/firebase/firestore";
@@ -7,21 +6,16 @@ import {
   selectDefaultPreset,
   setAppPresets,
   setCurrentPreset,
-  setSort as setMainSort,
-  setSortOrder as setMainSortOrder,
   setTransition,
   setURLWhitelist,
   updatePreset,
 } from "@s/main";
-import { allSorts, sortBlacklist, whitelistParams } from "@s/main/constants";
+import { whitelistParams } from "@s/main/constants";
 import type { whitelistShipped } from "@s/main/constants";
 import { getData, setWhitelistMerge } from "@s/main/thunks";
 import type { WhitelistType } from "@s/main/types";
-import { getPageName } from "@s/router";
 import { getLinkedFavorites } from "@s/user/thunks";
 import { arrayIncludes } from "@s/util/functions";
-import { mainPages, urlPages } from "./constants";
-import type { Page } from "./types";
 
 export const triggerTransition =
   (delay = 300): AppThunk<void> =>
@@ -34,33 +28,6 @@ export const triggerTransition =
 
 export const getURLQuery = (): AppThunk<void> => (dispatch, getState) => {
   const params = new URLSearchParams(window.location.search);
-  const path = getPageName(history.location.pathname);
-  if (path) {
-    const pageQuery = path || params.get("page");
-    if (
-      arrayIncludes(urlPages, pageQuery) ||
-      (is<Page>(pageQuery) && process.env.NODE_ENV === "development") ||
-      (pageQuery === "favorites" && params.has("favoritesId"))
-    ) {
-      if (arrayIncludes(mainPages, pageQuery)) {
-        const sortQuery = params.get("sort");
-        const sortOrderQuery = params.get("sortOrder");
-        if (
-          sortQuery &&
-          arrayIncludes(allSorts, sortQuery) &&
-          !arrayIncludes(sortBlacklist[sortQuery], pageQuery)
-        ) {
-          dispatch(setMainSort(pageQuery, sortQuery));
-        }
-        if (
-          sortOrderQuery &&
-          (sortOrderQuery === "ascending" || sortOrderQuery === "descending")
-        ) {
-          dispatch(setMainSortOrder(pageQuery, sortOrderQuery));
-        }
-      }
-    }
-  }
   const whitelistObj: Partial<WhitelistType> = {};
   whitelistParams.forEach((param, index, array) => {
     if (params.has(param)) {
