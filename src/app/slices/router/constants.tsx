@@ -16,6 +16,11 @@ import {
   VisibilityOff,
 } from "@i";
 
+/**
+ * Possible routes within the app
+ * Key should be equal to /:key/, e.g. `test` for `/test` or `/test/:param?`
+ */
+
 export const routes = {
   archive: "/archive/:keyset?",
   audit: "/audit",
@@ -34,7 +39,7 @@ export const routes = {
   timeline: "/timeline/:keyset?",
   updates: "/updates",
   users: "/users",
-};
+} as const;
 
 const idPageList = <
   Pages extends [keyof typeof routes, ...(keyof typeof routes)[]]
