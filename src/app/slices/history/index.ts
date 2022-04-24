@@ -62,8 +62,6 @@ export const {
 
 export const selectLoading = (state: RootState) => state.history.loading;
 
-export const selectTab = (state: RootState) => state.history.tab;
-
 export const {
   selectAll: selectProcessedActions,
   selectById: selectProcessedActionById,

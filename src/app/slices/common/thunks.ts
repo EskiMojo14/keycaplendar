@@ -3,8 +3,6 @@ import { history } from "~/app/history";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import firestore from "@s/firebase/firestore";
-import { setHistoryTab } from "@s/history/thunks";
-import type { HistoryTab } from "@s/history/types";
 import {
   selectDefaultPreset,
   setAppPresets,
@@ -113,12 +111,6 @@ export const getURLQuery = (): AppThunk<void> => (dispatch, getState) => {
     const urlTab = params.get("statisticsTab");
     if (urlTab && is<StatsTab>(urlTab)) {
       dispatch(setStatisticsTab(urlTab));
-    }
-  }
-  if (params.has("historyTab")) {
-    const urlTab = params.get("historyTab");
-    if (urlTab && is<HistoryTab>(urlTab)) {
-      dispatch(setHistoryTab(urlTab));
     }
   }
   if (params.has("favoritesId")) {

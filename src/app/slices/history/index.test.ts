@@ -2,14 +2,11 @@ import { createStore } from "~/app/store";
 import {
   selectLoading,
   selectProcessedActions,
-  selectTab,
   setLoading,
   setProcessedActions,
-  setTab,
 } from "@s/history";
-import { processAction, setHistoryTab } from "@s/history/thunks";
+import { processAction } from "@s/history/thunks";
 import type {
-  HistoryTab,
   ProcessedPublicActionType,
   PublicActionType,
 } from "@s/history/types";
@@ -26,8 +23,6 @@ beforeEach(() => {
 afterAll(() => {
   dispatchSpy.mockRestore();
 });
-
-const tab = "changelog";
 
 const action: PublicActionType = {
   action: "updated",
@@ -68,31 +63,10 @@ it("sets loading state", () => {
   expect(response).toBe(true);
 });
 
-it("sets current tab", () => {
-  const tab: HistoryTab = "changelog";
-  store.dispatch(setTab(tab));
-  const response = selectTab(store.getState());
-  expect(response).toBe(tab);
-});
-
 it("sets processed actions array", () => {
   store.dispatch(setProcessedActions([processedAction]));
   const response = selectProcessedActions(store.getState());
   expect(response).toEqual([processedAction]);
-});
-
-describe("setHistoryTab", () => {
-  it("dispatches action to state", () => {
-    setHistoryTab(tab, false)(store.dispatch, store.getState);
-    expect(dispatchSpy).toHaveBeenCalledWith(setTab(tab));
-  });
-  it("doesn't dispatch action if tab is same as in state", () => {
-    setHistoryTab(selectTab(store.getState()), false)(
-      store.dispatch,
-      store.getState
-    );
-    expect(dispatchSpy).not.toHaveBeenCalled();
-  });
 });
 
 describe("processAction", () => {

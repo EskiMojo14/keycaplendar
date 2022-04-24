@@ -4,38 +4,8 @@ import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import { auditProperties } from "@s/audit/constants";
 import firebase from "@s/firebase";
-import { push } from "@s/router";
-import { createURL } from "@s/util/functions";
-import { selectTab, setLoading, setProcessedActions, setTab } from ".";
-import type {
-  HistoryTab,
-  ProcessedPublicActionType,
-  PublicActionType,
-} from "./types";
-
-export const setHistoryTab =
-  (tab: HistoryTab, clearUrl = true): AppThunk<void> =>
-  (dispatch, getState) => {
-    const historyTab = selectTab(getState());
-    console.log(tab, historyTab);
-    if (historyTab !== tab) {
-      document.documentElement.scrollTop = 0;
-      dispatch(setTab(tab));
-    }
-    if (clearUrl) {
-      const params = new URLSearchParams(window.location.search);
-      if (params.has("historyTab")) {
-        const newUrl = createURL(
-          {},
-          (params) => {
-            params.delete("historyTab");
-          },
-          true
-        );
-        dispatch(push(newUrl));
-      }
-    }
-  };
+import { setLoading, setProcessedActions } from ".";
+import type { ProcessedPublicActionType, PublicActionType } from "./types";
 
 export const processAction = (
   action: PublicActionType

@@ -14,6 +14,7 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
+import { useParams } from "react-router-dom";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
 import type { SlideRendererCallback } from "react-swipeable-views-utils";
@@ -29,13 +30,14 @@ import {
   selectProcessedActions,
   selectRecentSetById,
   selectRecentSetsIds,
-  selectTab,
-  setTab,
 } from "@s/history";
 import { historyTabs } from "@s/history/constants";
 import { getData } from "@s/history/thunks";
+import type { HistoryTab } from "@s/history/types";
 import { selectAllSets } from "@s/main";
+import { replace } from "@s/router";
 import {
+  arrayIncludes,
   capitalise,
   closeModal,
   iconObject,
@@ -60,7 +62,14 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
 
   const allSets = useAppSelector(selectAllSets);
 
-  const tab = useAppSelector(selectTab);
+  const { tab } = useParams<{ tab?: HistoryTab }>();
+
+  useEffect(() => {
+    if (!tab || !arrayIncludes(historyTabs, tab)) {
+      dispatch(replace(`/history/recent`));
+    }
+  }, [tab]);
+
   const loading = useAppSelector(selectLoading);
 
   const processedActions = useAppSelector(selectProcessedActions);
@@ -112,7 +121,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
       clearFilter();
     } else {
       setFilterSet(id);
-      dispatch(setTab("changelog"));
+      dispatch(replace("/history/changelog"));
     }
   };
 
@@ -130,8 +139,10 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
     <TopAppBarRow className="tab-row">
       <TopAppBarSection alignStart>
         <TabBar
-          activeTabIndex={historyTabs.indexOf(tab)}
-          onActivate={(e) => dispatch(setTab(historyTabs[e.detail.index]))}
+          activeTabIndex={tab ? historyTabs.indexOf(tab) : 0}
+          onActivate={(e) =>
+            dispatch(replace(`/history/${historyTabs[e.detail.index]}`))
+          }
         >
           {historyTabs.map((tab) => (
             <Tab key={tab}>{capitalise(tab)}</Tab>
@@ -155,7 +166,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
   );
 
   const handleChangeIndex = (index: number) =>
-    dispatch(setTab(historyTabs[index]));
+    dispatch(replace(`/history/${historyTabs[index]}`));
 
   const slideRenderer: SlideRendererCallback = ({ index, key }) => {
     const { [index]: tab } = historyTabs;
@@ -224,7 +235,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
           <DialogSales close={closeSales} open={salesOpen} set={salesSet} />
           <VirtualizeSwipeableViews
             className={classNames(tab, { swiping })}
-            index={historyTabs.indexOf(tab)}
+            index={tab ? historyTabs.indexOf(tab) : 0}
             onChangeIndex={handleChangeIndex}
             onSwitching={() => setSwiping(true)}
             onTransitionEnd={() => setSwiping(false)}
