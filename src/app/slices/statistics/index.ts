@@ -1,7 +1,9 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import produce from "immer";
+import { matchPath } from "react-router-dom";
 import type { RootState } from "~/app/store";
+import { selectLocation } from "@s/router";
 import { categories, properties } from "@s/statistics/constants";
 import { alphabeticalSortPropCurried } from "@s/util/functions";
 import type {
@@ -16,7 +18,6 @@ type StatisticsState = {
   loading: boolean;
   settings: StatisticsType;
   sort: StatisticsSortType;
-  tab: StatsTab;
 };
 
 export const initialState: StatisticsState = {
@@ -182,7 +183,6 @@ export const initialState: StatisticsState = {
     timelines: "total",
     vendors: "total",
   },
-  tab: "summary",
 };
 
 export const statisticsSlice = createSlice({
@@ -221,17 +221,12 @@ export const statisticsSlice = createSlice({
         state.sort[key] = value;
       },
     },
-    setStatsTab: (state, { payload }: PayloadAction<StatsTab>) => {
-      state.tab = payload;
-    },
   },
 });
 
 export const {
-  actions: { setLoading, setStatisticsData, setStatsTab },
+  actions: { setLoading, setStatisticsData },
 } = statisticsSlice;
-
-export const selectTab = (state: RootState) => state.statistics.tab;
 
 export const selectUnsortedData = (state: RootState) => state.statistics.data;
 
@@ -240,6 +235,14 @@ export const selectLoading = (state: RootState) => state.statistics.loading;
 export const selectSettings = (state: RootState) => state.statistics.settings;
 
 export const selectSort = (state: RootState) => state.statistics.sort;
+
+export const selectTab = createSelector(selectLocation, (location) => {
+  const match = matchPath<{ tab: StatsTab }>(
+    location.pathname,
+    "/statistics/:tab"
+  );
+  return match?.params.tab ?? "summary";
+});
 
 export const selectData = createSelector(
   selectTab,

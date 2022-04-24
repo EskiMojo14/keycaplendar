@@ -8,9 +8,10 @@ import {
 } from "@rmwc/dialog";
 import { List, ListItem, ListItemMeta } from "@rmwc/list";
 import { Radio } from "@rmwc/radio";
+import { useParams } from "react-router-dom";
 import { useAppSelector } from "@h";
-import { selectSettings, selectTab, setStatisticsSetting } from "@s/statistics";
-import type { Categories, Properties } from "@s/statistics/types";
+import { selectSettings, setStatisticsSetting } from "@s/statistics";
+import type { Categories, Properties, StatsTab } from "@s/statistics/types";
 import { hasKey } from "@s/util/functions";
 import "./dialog-statistics.scss";
 
@@ -20,7 +21,8 @@ type DialogStatisticsProps = {
 };
 
 export const DialogStatistics = ({ onClose, open }: DialogStatisticsProps) => {
-  const statisticsTab = useAppSelector(selectTab);
+  const { tab: statisticsTab } = useParams<{ tab?: StatsTab }>();
+
   const settings = useAppSelector(selectSettings);
 
   const [statistics, setStatistics] = useState<Categories | Properties>(
@@ -28,7 +30,7 @@ export const DialogStatistics = ({ onClose, open }: DialogStatisticsProps) => {
   );
 
   useEffect(() => {
-    if (open) {
+    if (open && statisticsTab) {
       const key =
         statisticsTab === "duration"
           ? "durationGroup"
@@ -50,7 +52,7 @@ export const DialogStatistics = ({ onClose, open }: DialogStatisticsProps) => {
         : statisticsTab === "timelines"
         ? "timelinesGroup"
         : statisticsTab;
-    if (hasKey(settings, key) && settings[key] !== statistics) {
+    if (key && hasKey(settings, key) && settings[key] !== statistics) {
       setStatisticsSetting(key, statistics);
     }
   };

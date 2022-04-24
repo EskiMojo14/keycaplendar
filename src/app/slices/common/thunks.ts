@@ -18,8 +18,6 @@ import type { whitelistShipped } from "@s/main/constants";
 import { getData, setWhitelistMerge } from "@s/main/thunks";
 import type { WhitelistType } from "@s/main/types";
 import { getPageName } from "@s/router";
-import { setStatisticsTab } from "@s/statistics/thunks";
-import type { StatsTab } from "@s/statistics/types";
 import { getLinkedFavorites } from "@s/user/thunks";
 import { arrayIncludes } from "@s/util/functions";
 import { mainPages, urlPages } from "./constants";
@@ -107,12 +105,6 @@ export const getURLQuery = (): AppThunk<void> => (dispatch, getState) => {
       );
     }
   });
-  if (params.has("statisticsTab")) {
-    const urlTab = params.get("statisticsTab");
-    if (urlTab && is<StatsTab>(urlTab)) {
-      dispatch(setStatisticsTab(urlTab));
-    }
-  }
   if (params.has("favoritesId")) {
     const favoritesId = params.get("favoritesId");
     if (favoritesId) {

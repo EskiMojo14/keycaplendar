@@ -2,33 +2,8 @@ import { DateTime } from "luxon";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import firebase from "@s/firebase";
-import { push } from "@s/router";
-import { createURL, ordinal } from "@s/util/functions";
-import { selectTab, setLoading, setStatisticsData, setStatsTab } from ".";
-import type { StatsTab } from "./types";
-
-export const setStatisticsTab =
-  (tab: StatsTab, clearUrl = true): AppThunk<void> =>
-  (dispatch, getState) => {
-    const statsTab = selectTab(getState());
-    dispatch(setStatsTab(tab));
-    if (statsTab !== tab) {
-      document.documentElement.scrollTop = 0;
-    }
-    if (clearUrl) {
-      const params = new URLSearchParams(window.location.search);
-      if (params.has("statisticsTab")) {
-        const newUrl = createURL(
-          {},
-          (params) => {
-            params.delete("statisticsTab");
-          },
-          true
-        );
-        dispatch(push(newUrl));
-      }
-    }
-  };
+import { ordinal } from "@s/util/functions";
+import { setLoading, setStatisticsData } from ".";
 
 const storage = firebase.storage();
 

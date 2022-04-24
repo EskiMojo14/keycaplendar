@@ -11,6 +11,7 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
+import { useParams } from "react-router-dom";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
 import type { SlideRendererCallback } from "react-swipeable-views-utils";
@@ -24,19 +25,20 @@ import { useAppDispatch, useAppSelector } from "@h";
 import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
+import useLocatedSelector from "@h/use-located-selector";
 import { pageTitle } from "@s/common/constants";
+import { replace } from "@s/router";
 import {
   selectData,
   selectLoading,
   selectSettings,
   selectSort,
-  selectTab,
   setStatisticsSetting,
   setStatisticsSort,
 } from "@s/statistics";
 import { statsTabs } from "@s/statistics/constants";
-import { getData, setStatisticsTab } from "@s/statistics/thunks";
-import type { StatisticsType } from "@s/statistics/types";
+import { getData } from "@s/statistics/thunks";
+import type { StatisticsType, StatsTab } from "@s/statistics/types";
 import { capitalise, hasKey, iconObject } from "@s/util/functions";
 import {
   Category,
@@ -61,9 +63,17 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
   const device = useDevice();
   const bottomNav = useBottomNav();
 
-  const statisticsTab = useAppSelector(selectTab);
+  const { tab: statisticsTab = "" } = useParams<{ tab?: StatsTab }>();
+
+  useEffect(() => {
+    if (!statisticsTab || !statsTabs.includes(statisticsTab)) {
+      dispatch(replace("/statistics/summary"));
+    }
+  }, [statisticsTab]);
+
   const loading = useAppSelector(selectLoading);
-  const statisticsData = useAppSelector(selectData);
+
+  const statisticsData = useLocatedSelector(selectData);
   const settings = useAppSelector(selectSettings);
   const statisticsSort = useAppSelector(selectSort);
 
@@ -80,7 +90,8 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
   }, []);
 
   const handleChangeIndex = (index: number) =>
-    dispatch(setStatisticsTab(statsTabs[index]));
+    dispatch(replace(`/statistics/${statsTabs[index]}`));
+
   const tooltipAlign = bottomNav ? "top" : "bottom";
 
   const categoryButtons = (tab: keyof StatisticsType) =>
@@ -288,9 +299,9 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
     <TopAppBarRow className="tab-row">
       <TopAppBarSection alignStart>
         <TabBar
-          activeTabIndex={statsTabs.indexOf(statisticsTab)}
+          activeTabIndex={statisticsTab ? statsTabs.indexOf(statisticsTab) : 0}
           onActivate={(e) =>
-            dispatch(setStatisticsTab(statsTabs[e.detail.index]))
+            dispatch(replace(`/statistics/${statsTabs[e.detail.index]}`))
           }
         >
           {statsTabs.map((tab) => (
@@ -453,7 +464,7 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
         {categoryDialog}
         <VirtualizeSwipeableViews
           className={statisticsTab}
-          index={statsTabs.indexOf(statisticsTab)}
+          index={statisticsTab ? statsTabs.indexOf(statisticsTab) : 0}
           onChangeIndex={handleChangeIndex}
           slideCount={statsTabs.length}
           slideRenderer={slideRenderer}

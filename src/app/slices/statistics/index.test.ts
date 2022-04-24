@@ -1,3 +1,4 @@
+import type { Location } from "history";
 import produce from "immer";
 import { createStore } from "~/app/store";
 import {
@@ -6,26 +7,16 @@ import {
   selectLoading,
   selectSettings,
   selectSort,
-  selectTab,
   setLoading,
   setStatisticsData,
   setStatisticsSetting,
   setStatisticsSort,
-  setStatsTab,
 } from "@s/statistics";
-import type { StatsTab } from "@s/statistics/types";
 
 let store = createStore();
 
 beforeEach(() => {
   store = createStore();
-});
-
-it("sets tab", () => {
-  const tab: StatsTab = "timelines";
-  store.dispatch(setStatsTab(tab));
-  const response = selectTab(store.getState());
-  expect(response).toBe(tab);
 });
 
 it("sets loading state", () => {
@@ -39,7 +30,9 @@ it("sets statistics data", () => {
     draftStats.timelines.icDate.allProfiles = ["test"];
   });
   store.dispatch(setStatisticsData(modifiedStats));
-  const response = selectData(store.getState());
+  const response = selectData(store.getState(), {
+    pathname: "/statistics/summary",
+  } as Location);
   expect(response).toEqual(modifiedStats);
 });
 
