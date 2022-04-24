@@ -232,9 +232,8 @@ export const DrawerFilter = ({
         if (arrayIncludes(["profile", "region", "vendor"] as const, param)) {
           const plural = `${param}s` as const;
           if (
-            mainWhitelist[plural].length > 1 &&
             mainWhitelist[plural].length !==
-              defaultPreset.whitelist[plural].length
+            defaultPreset.whitelist[plural].length
           ) {
             setSearchParamArray(params, param, mainWhitelist[plural]);
           }
