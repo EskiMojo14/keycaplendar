@@ -42,8 +42,8 @@ import { useAppDispatch, useAppSelector } from "@h";
 import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
-import { pageTitle } from "@s/common/constants";
 import firebase from "@s/firebase";
+import { pageTitle } from "@s/router/constants";
 import {
   selectSettings,
   selectShareNameLoading,

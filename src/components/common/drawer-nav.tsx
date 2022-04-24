@@ -16,24 +16,24 @@ import { useAppDispatch, useAppSelector } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import usePage from "@h/use-page";
+import firestore from "@s/firebase/firestore";
+import { selectLinkedFavorites } from "@s/main";
+import { push } from "@s/router";
 import {
   adminPages,
   pageIcons,
   pageTitle,
   standardPages,
   userPages,
-} from "@s/common/constants";
-import type { Page } from "@s/common/types";
-import firestore from "@s/firebase/firestore";
-import { selectLinkedFavorites } from "@s/main";
-import { push } from "@s/router";
+} from "@s/router/constants";
+import type { Page } from "@s/router/types";
 import {
   selectBought,
   selectFavorites,
   selectHidden,
   selectUser,
 } from "@s/user";
-import { hasKey, iconObject } from "@s/util/functions";
+import { arrayIncludes, hasKey, iconObject } from "@s/util/functions";
 import { AdminPanelSettings, FiberNew, Person } from "@i";
 import logo from "@m/logo.svg";
 import "./drawer-nav.scss";
@@ -134,7 +134,7 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
         handle={
           <ListItem
             className={classNames({
-              "contains-activated": userPages.includes(appPage),
+              "contains-activated": arrayIncludes(userPages, appPage),
             })}
           >
             <ListItemGraphic icon={iconObject(<Person />)} />
@@ -178,7 +178,7 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
         handle={
           <ListItem
             className={classNames({
-              "contains-activated": adminPages.includes(appPage),
+              "contains-activated": arrayIncludes(adminPages, appPage),
             })}
           >
             <ListItemGraphic icon={iconObject(<AdminPanelSettings />)} />

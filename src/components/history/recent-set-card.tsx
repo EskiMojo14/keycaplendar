@@ -14,10 +14,10 @@ import { DateTime } from "luxon";
 import LazyLoad from "react-lazy-load";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { useAppDispatch, useAppSelector } from "@h";
-import { mainPages, pageIcons, pageTitle } from "@s/common/constants";
 import { selectRecentSetById } from "@s/history";
 import { pageConditions, selectLinkedFavorites, selectSetById } from "@s/main";
 import { push } from "@s/router";
+import { mainPages, pageIcons, pageTitle } from "@s/router/constants";
 import { selectBought, selectFavorites, selectHidden } from "@s/user";
 import {
   arrayIncludes,

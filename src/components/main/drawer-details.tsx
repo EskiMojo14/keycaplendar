@@ -24,9 +24,9 @@ import { withTooltip } from "@c/util/hocs";
 import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import usePage from "@h/use-page";
-import { mainPages } from "@s/common/constants";
 import { selectSearch, selectSetById, setSearch } from "@s/main";
 import type { SetType } from "@s/main/types";
+import { mainPages } from "@s/router/constants";
 import { selectView } from "@s/settings";
 import { toggleLichTheme } from "@s/settings/thunks";
 import {

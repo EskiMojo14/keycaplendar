@@ -26,8 +26,8 @@ import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import useLocatedSelector from "@h/use-located-selector";
-import { pageTitle } from "@s/common/constants";
 import { replace } from "@s/router";
+import { pageTitle } from "@s/router/constants";
 import {
   selectData,
   selectLoading,

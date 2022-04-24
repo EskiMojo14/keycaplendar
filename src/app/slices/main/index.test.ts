@@ -1,10 +1,8 @@
 import produce from "immer";
 import { createStore } from "~/app/store";
-import type { MainPage } from "@s/common/types";
 import {
   deleteAppPreset,
   deleteSet,
-  initialState,
   mergeWhitelist,
   selectAllAppPresets,
   selectAllSets,
@@ -18,7 +16,6 @@ import {
   selectSortByPage,
   selectSortOrderByPage,
   selectTransition,
-  selectWhitelist,
   setAllSets,
   setAppPresets,
   setCurrentPreset,
@@ -40,6 +37,7 @@ import type {
   SortType,
   WhitelistType,
 } from "@s/main/types";
+import type { MainPage } from "@s/router/types";
 
 let store = createStore();
 

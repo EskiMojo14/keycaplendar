@@ -4,7 +4,6 @@ import { is } from "typescript-is";
 import { history } from "~/app/history";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
-import type { MainPage } from "@s/common/types";
 import firestore from "@s/firebase/firestore";
 import type { UserId } from "@s/firebase/types";
 import {
@@ -31,6 +30,7 @@ import {
 } from "@s/main/constants";
 import { addLastDate } from "@s/main/functions";
 import { getPageName, replace } from "@s/router";
+import type { MainPage } from "@s/router/types";
 import {
   deleteUserPreset,
   selectAllUserPresets,

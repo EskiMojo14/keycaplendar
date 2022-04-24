@@ -12,17 +12,17 @@ import type {
 } from "@reduxjs/toolkit";
 import type { History, Location } from "history";
 import type { RootState } from "~/app/store";
-import { allPages, pageTitle } from "@s/common/constants";
-import type { Page } from "@s/common/types";
-import { arrayIncludes, objectEntries } from "@s/util/functions";
+import { hasKey, objectEntries } from "@s/util/functions";
 import type { UnionToTuple } from "@s/util/types";
+import { pageTitle, routes } from "./constants";
+import type { Page } from "./types";
 
 export const getPageName = (pathname: string): Page => {
   if (pathname === "/") {
     return "calendar";
   } else {
     const [, page] = pathname.split("/");
-    if (arrayIncludes(allPages, page)) {
+    if (hasKey(routes, page)) {
       return page;
     } else {
       // this won't happen - router directs to 404

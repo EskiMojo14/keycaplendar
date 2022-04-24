@@ -1,4 +1,4 @@
-import type { MainPage, Page } from "@s/common/types";
+import type { MainPage, Page } from "@s/router/types";
 import type {
   PresetType,
   SetType,

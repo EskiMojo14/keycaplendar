@@ -23,7 +23,6 @@ import { DialogSales } from "@c/main/dialog-sales";
 import { DrawerDetails } from "@c/main/drawer-details";
 import { useAppDispatch, useAppSelector } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
-import { pageTitle } from "@s/common/constants";
 import {
   processedActionsAdapter,
   selectLoading,
@@ -36,6 +35,7 @@ import { getData } from "@s/history/thunks";
 import type { HistoryTab } from "@s/history/types";
 import { selectAllSets } from "@s/main";
 import { replace } from "@s/router";
+import { pageTitle } from "@s/router/constants";
 import {
   arrayIncludes,
   capitalise,

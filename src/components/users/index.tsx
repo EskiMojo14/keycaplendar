@@ -39,7 +39,7 @@ import { useAppDispatch, useAppSelector } from "@h";
 import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
-import { pageTitle } from "@s/common/constants";
+import { pageTitle } from "@s/router/constants";
 import {
   selectLoading,
   selectNextPageToken,

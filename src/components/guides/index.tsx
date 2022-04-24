@@ -25,7 +25,6 @@ import { useAppDispatch, useAppSelector } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
 import useDelayedValue from "@h/use-delayed-value";
 import useDevice from "@h/use-device";
-import { pageTitle } from "@s/common/constants";
 import firestore from "@s/firebase/firestore";
 import type { GuideId } from "@s/firebase/types";
 import {
@@ -36,6 +35,7 @@ import {
 } from "@s/guides";
 import { getEntries as getEntriesThunk } from "@s/guides/thunks";
 import { replace } from "@s/router";
+import { pageTitle } from "@s/router/constants";
 import { selectUser } from "@s/user";
 import { closeModal, openModal } from "@s/util/functions";
 import { selectFromState } from "@s/util/thunks";

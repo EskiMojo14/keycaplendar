@@ -19,9 +19,9 @@ import { useAppDispatch, useAppSelector } from "@h";
 import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
-import { pageTitle } from "@s/common/constants";
 import { selectCurrentFolder, selectFolders, selectLoading } from "@s/images";
 import { setFolder } from "@s/images/thunks";
+import { pageTitle } from "@s/router/constants";
 import { iconObject } from "@s/util/functions";
 import { Delete, PermMedia } from "@i";
 

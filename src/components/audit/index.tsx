@@ -28,7 +28,7 @@ import {
   selectLoading,
 } from "@s/audit";
 import { filterActions } from "@s/audit/functions";
-import { pageTitle } from "@s/common/constants";
+import { pageTitle } from "@s/router/constants";
 import { closeModal, openModal } from "@s/util/functions";
 import { AuditEntry } from "./audit-entry";
 import { DrawerAuditFilter } from "./drawer-audit-filter";

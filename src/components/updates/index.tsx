@@ -19,7 +19,7 @@ import { AppBarIndent } from "@c/util/app-bar-indent";
 import { useAppDispatch, useAppSelector } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
-import { pageTitle } from "@s/common/constants";
+import { pageTitle } from "@s/router/constants";
 import { selectEntryIds, selectEntryMap, selectLoading } from "@s/updates";
 import { getEntries as getEntriesThunk } from "@s/updates/thunks";
 import { selectUser } from "@s/user";

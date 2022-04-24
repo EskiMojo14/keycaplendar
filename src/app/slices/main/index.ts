@@ -16,8 +16,6 @@ import { history } from "~/app/history";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk, RootState } from "~/app/store";
 import type { AppStartListening } from "@mw/listener";
-import { mainPages } from "@s/common/constants";
-import type { MainPage } from "@s/common/types";
 import {
   arraySorts,
   dateSorts,
@@ -33,6 +31,8 @@ import {
   selectLocation,
   selectPage,
 } from "@s/router";
+import { mainPages } from "@s/router/constants";
+import type { MainPage } from "@s/router/types";
 import {
   selectBought,
   selectFavorites,
