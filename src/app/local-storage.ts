@@ -128,7 +128,7 @@ export const modifyStateForParams = (
               const plural = `${param}s`;
               const plurals = ["profiles", "regions", "vendors"] as const;
               if (arrayIncludes(plurals, plural)) {
-                state.main.whitelist[plural] = [val.replace("-", " ")];
+                state.main.whitelist[plural] = [val.replace(/-/, " ")];
               }
             } else if (
               param === "profiles" ||
@@ -138,7 +138,7 @@ export const modifyStateForParams = (
             ) {
               const array = val
                 .split(" ")
-                .map((item) => item.replace("-", " "));
+                .map((item) => item.replace(/-/, " "));
               if (param === "shipped") {
                 if (
                   array.every(

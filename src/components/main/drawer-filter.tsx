@@ -26,6 +26,7 @@ import {
   selectAllRegions,
   selectAllVendors,
   selectCurrentPreset,
+  selectDefaultPreset,
   selectWhitelist,
 } from "@s/main";
 import {
@@ -101,6 +102,7 @@ export const DrawerFilter = ({
 
   const preset = useAppSelector(selectCurrentPreset);
   const appPresets = useAppSelector(selectAllAppPresets);
+  const defaultPreset = useAppSelector(selectDefaultPreset);
   const mainWhitelist = useAppSelector(selectWhitelist);
 
   const modified = useMemo(() => {
@@ -233,16 +235,12 @@ export const DrawerFilter = ({
           if (is<string[]>(array) && array.length === 1) {
             params.set(
               param,
-              array.map((item: string) => item.replace(" ", "-")).join(" ")
+              array.map((item: string) => item.replace(/\s/, "-")).join(" ")
             );
-          } else {
-            params.delete(param);
           }
         } else if (param === "vendorMode") {
-          if (mainWhitelist.vendorMode !== "exclude") {
+          if (mainWhitelist.vendorMode !== defaultPreset.whitelist.vendorMode) {
             params.set(param, mainWhitelist[param]);
-          } else {
-            params.delete(param);
           }
         } else if (
           arrayIncludes(
@@ -250,34 +248,32 @@ export const DrawerFilter = ({
             param
           )
         ) {
-          const lengths = {
-            profiles: profiles.length,
-            regions: regions.length,
-            shipped: 2,
-            vendors: 0,
-          };
           if (
             arrayIncludes(["profiles", "regions", "vendors"] as const, param)
           ) {
             if (
               mainWhitelist[param].length > 1 &&
-              mainWhitelist[param].length !== lengths[param]
+              mainWhitelist[param].length !==
+                defaultPreset.whitelist[param].length
             ) {
               params.set(
                 param,
                 mainWhitelist[param]
-                  .map((profile) => profile.replace(" ", "-"))
+                  .map((profile) => profile.replace(/\s/, "-"))
                   .join(" ")
               );
             } else {
               params.delete(param);
             }
           } else {
-            if (mainWhitelist[param].length !== lengths[param]) {
+            if (
+              mainWhitelist[param].length !==
+              defaultPreset.whitelist[param].length
+            ) {
               params.set(
                 param,
                 mainWhitelist[param]
-                  .map((item) => item.replace(" ", "-"))
+                  .map((item) => item.replace(/\s/, "-"))
                   .join(" ")
               );
             } else {
