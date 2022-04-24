@@ -68,8 +68,6 @@ export type WhitelistType = {
   vendorMode: "exclude" | "include";
   /** Array of vendors to either `include` or `exclude`. */
   vendors: string[];
-  /** Array of all keys that have been edited. */
-  edited?: string[];
 };
 
 export type PresetType = {

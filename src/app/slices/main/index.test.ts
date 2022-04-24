@@ -10,6 +10,7 @@ import {
   selectAllSets,
   selectAppPresetById,
   selectCurrentPresetId,
+  selectEditedWhitelist,
   selectLinkedFavorites,
   selectLoading,
   selectSearch,
@@ -17,7 +18,6 @@ import {
   selectSortByPage,
   selectSortOrderByPage,
   selectTransition,
-  selectURLWhitelist,
   selectWhitelist,
   setAllSets,
   setAppPresets,
@@ -29,7 +29,6 @@ import {
   setSort,
   setSortOrder,
   setTransition,
-  setURLWhitelist,
   upsertAppPreset,
 } from "@s/main";
 import { blankKeyset } from "@s/main/constants";
@@ -109,18 +108,7 @@ const whitelist: Partial<WhitelistType> = { profiles: ["test"] };
 
 it("sets partial whitelist", () => {
   store.dispatch(mergeWhitelist(whitelist));
-  const response = selectWhitelist(store.getState());
-  const expected = {
-    ...initialState.whitelist,
-    ...whitelist,
-    edited: Object.keys(whitelist),
-  };
-  expect(response).toEqual(expected);
-});
-
-it("sets URL whitelist", () => {
-  store.dispatch(setURLWhitelist(whitelist));
-  const response = selectURLWhitelist(store.getState());
+  const response = selectEditedWhitelist(store.getState());
   expect(response).toEqual(whitelist);
 });
 

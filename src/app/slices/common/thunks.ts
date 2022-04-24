@@ -3,11 +3,9 @@ import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import firestore from "@s/firebase/firestore";
 import {
-  selectDefaultPreset,
   setAppPresets,
   setCurrentPreset,
   setTransition,
-  setURLWhitelist,
   updatePreset,
 } from "@s/main";
 import { whitelistParams } from "@s/main/constants";
@@ -25,7 +23,7 @@ export const triggerTransition =
     }, delay);
   };
 
-export const getURLQuery = (): AppThunk<void> => (dispatch, getState) => {
+export const getURLQuery = (): AppThunk<void> => (dispatch) => {
   const params = new URLSearchParams(window.location.search);
   const whitelistObj: Partial<WhitelistType> = {};
   whitelistParams.forEach((param, index, array) => {
@@ -61,14 +59,7 @@ export const getURLQuery = (): AppThunk<void> => (dispatch, getState) => {
       }
     }
     if (index === array.length - 1 && Object.keys(whitelistObj).length > 0) {
-      const defaultPreset = selectDefaultPreset(getState());
-      dispatch([setURLWhitelist(whitelistObj), setCurrentPreset("default")]);
-      dispatch(
-        setWhitelistMerge(
-          { ...defaultPreset.whitelist, ...whitelistObj },
-          false
-        )
-      );
+      dispatch([setCurrentPreset("default"), setWhitelistMerge(whitelistObj)]);
     }
   });
   dispatch(getData());

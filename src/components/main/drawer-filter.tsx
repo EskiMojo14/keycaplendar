@@ -104,15 +104,9 @@ export const DrawerFilter = ({
   const mainWhitelist = useAppSelector(selectWhitelist);
 
   const modified = useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { edited, ...whitelist } = mainWhitelist;
-    const {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      whitelist: { edited: presetEdited, ...presetWhitelist },
-    } = preset;
     const equal = isEqual(
-      sortInternalArrays(presetWhitelist),
-      sortInternalArrays(whitelist)
+      sortInternalArrays({ ...preset.whitelist }),
+      sortInternalArrays({ ...mainWhitelist })
     );
     return !equal;
   }, [preset.whitelist, mainWhitelist]);

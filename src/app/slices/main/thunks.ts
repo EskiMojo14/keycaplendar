@@ -14,17 +14,13 @@ import {
   setSortOrder as _setSortOrder,
   deleteAppPreset,
   mergeWhitelist,
+  resetWhitelist,
   selectAllAppPresets,
   selectAllSets,
-  selectCurrentPreset,
-  selectDefaultPreset,
   selectPresetById,
-  selectURLWhitelist,
-  selectWhitelist,
   setAllSets,
   setCurrentPreset,
   setLoading,
-  setURLWhitelist,
   upsertAppPreset,
 } from "@s/main";
 import {
@@ -34,7 +30,7 @@ import {
   whitelistParams,
 } from "@s/main/constants";
 import { addLastDate } from "@s/main/functions";
-import { getPageName, push } from "@s/router";
+import { getPageName, replace } from "@s/router";
 import {
   deleteUserPreset,
   selectAllUserPresets,
@@ -54,81 +50,39 @@ import type {
 } from "./types";
 
 export const setWhitelistMerge =
-  (partialWhitelist: Partial<WhitelistType>, clearUrl = true): AppThunk<void> =>
+  (partialWhitelist: Partial<WhitelistType>): AppThunk<void> =>
   (dispatch) => {
     dispatch(mergeWhitelist(partialWhitelist));
     document.documentElement.scrollTop = 0;
-    if (clearUrl) {
-      dispatch(setURLWhitelist({}));
-      const params = new URLSearchParams(window.location.search);
-      if (whitelistParams.some((param) => params.has(param))) {
-        const newUrl = createURL(
-          {},
-          (params) => {
-            whitelistParams.forEach((param) => params.delete(param));
-          },
-          true
-        );
-        dispatch(push(newUrl));
-      }
+    const params = new URLSearchParams(window.location.search);
+    if (whitelistParams.some((param) => params.has(param))) {
+      const newUrl = createURL(
+        {},
+        (params) => {
+          whitelistParams.forEach((param) => params.delete(param));
+        },
+        true
+      );
+      dispatch(replace(newUrl));
     }
   };
 
 export const setWhitelist =
   <T extends keyof WhitelistType>(
     prop: T,
-    val: WhitelistType[T],
-    clearUrl = true
+    val: WhitelistType[T]
   ): AppThunk<void> =>
-  (dispatch, getState) => {
-    const mainWhitelist = selectWhitelist(getState());
-    if (is<string[]>(mainWhitelist.edited)) {
-      dispatch(mergeWhitelist({ [prop]: val }));
-      document.documentElement.scrollTop = 0;
-    }
-    if (clearUrl) {
-      dispatch(setURLWhitelist({}));
-      const params = new URLSearchParams(window.location.search);
-      if (whitelistParams.some((param) => params.has(param))) {
-        const newUrl = createURL({}, (params) => {
-          whitelistParams.forEach((param) => params.delete(param));
-        });
-        dispatch(push(newUrl));
-      }
+  (dispatch) => {
+    dispatch(mergeWhitelist({ [prop]: val }));
+    document.documentElement.scrollTop = 0;
+    const params = new URLSearchParams(window.location.search);
+    if (whitelistParams.some((param) => params.has(param))) {
+      const newUrl = createURL({}, (params) => {
+        whitelistParams.forEach((param) => params.delete(param));
+      });
+      dispatch(replace(newUrl));
     }
   };
-
-const applyInitialPreset = (): AppThunk<void> => (dispatch, getState) => {
-  const state = getState();
-  const defaultPreset = selectDefaultPreset(state);
-  const currentPreset = selectCurrentPreset(state);
-  const urlWhitelist = selectURLWhitelist(state);
-
-  const params = new URLSearchParams(window.location.search);
-  const noUrlParams =
-    !whitelistParams.some((param) => params.has(param)) &&
-    Object.keys(urlWhitelist).length === 0;
-  if (!currentPreset.name && noUrlParams) {
-    dispatch(setCurrentPreset("default"));
-    dispatch(setWhitelistMerge(defaultPreset.whitelist));
-  } else if (!currentPreset.name && !noUrlParams) {
-    const urlParams = [
-      ...whitelistParams.filter((param) => params.has(param)),
-      ...Object.keys(urlWhitelist),
-    ];
-    dispatch(setCurrentPreset("default"));
-    const partialWhitelist: Partial<WhitelistType> = {};
-    const defaultParams = ["profiles", "regions"] as const;
-    defaultParams.forEach((param) => {
-      if (!urlParams.includes(param)) {
-        ({
-          whitelist: { [param]: partialWhitelist[param] },
-        } = defaultPreset);
-      }
-    });
-    dispatch(setWhitelistMerge(partialWhitelist, false));
-  }
-};
 
 export const getData = (): AppThunk<Promise<void>> => async (dispatch) => {
   dispatch(setLoading(true));
@@ -156,8 +110,6 @@ export const getData = (): AppThunk<Promise<void>> => async (dispatch) => {
     });
 
     dispatch([setAllSets(sets), setLoading(false)]);
-
-    dispatch(applyInitialPreset());
   } catch (error) {
     console.log(`Error getting data: ${error}`);
     notify({ title: `Error getting data: ${error}` });
@@ -261,8 +213,7 @@ export const selectPreset =
   (dispatch, getState) => {
     const preset = selectPresetById(getState(), id);
     if (preset) {
-      dispatch(setCurrentPreset(preset.id));
-      dispatch(setWhitelistMerge(preset.whitelist));
+      dispatch([setCurrentPreset(preset.id), resetWhitelist()]);
     }
   };
 

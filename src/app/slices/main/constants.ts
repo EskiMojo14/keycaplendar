@@ -9,7 +9,6 @@ import type {
 
 export const blankWhitelist: WhitelistType = {
   bought: false,
-  edited: [],
   favorites: false,
   hidden: "unhidden",
   profiles: [],

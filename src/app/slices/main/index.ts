@@ -84,8 +84,7 @@ export type MainState = {
   search: string;
   sorts: Record<MainPage, { sort: SortType; sortOrder: SortOrderType }>;
   transition: boolean;
-  urlWhitelist: Partial<WhitelistType>;
-  whitelist: WhitelistType;
+  whitelist: Partial<WhitelistType>;
 };
 
 export const initialState: MainState = {
@@ -99,18 +98,7 @@ export const initialState: MainState = {
   search: "",
   sorts: defaultSorts,
   transition: false,
-  urlWhitelist: {},
-  whitelist: {
-    bought: false,
-    edited: [],
-    favorites: false,
-    hidden: "unhidden",
-    profiles: [],
-    regions: [],
-    shipped: ["Shipped", "Not shipped"],
-    vendorMode: "exclude",
-    vendors: [],
-  },
+  whitelist: {},
 };
 
 export const mainSlice = createSlice({
@@ -136,11 +124,10 @@ export const mainSlice = createSlice({
       state,
       { payload }: PayloadAction<Partial<WhitelistType>>
     ) => {
-      const edited = removeDuplicates([
-        ...(state.whitelist.edited ?? []),
-        ...Object.keys(payload),
-      ]);
-      state.whitelist = { ...state.whitelist, ...payload, edited };
+      Object.assign(state.whitelist, payload);
+    },
+    resetWhitelist: (state) => {
+      ({ whitelist: state.whitelist } = initialState);
     },
     setAllSets: (state, { payload }: PayloadAction<SetType[]>) => {
       keysetAdapter.setAll(state.keysets, payload);
@@ -201,12 +188,6 @@ export const mainSlice = createSlice({
     setTransition: (state, { payload }: PayloadAction<boolean>) => {
       state.transition = payload;
     },
-    setURLWhitelist: (
-      state,
-      { payload }: PayloadAction<Partial<WhitelistType>>
-    ) => {
-      state.urlWhitelist = payload;
-    },
     upsertAppPreset: (state, { payload }: PayloadAction<PresetType>) => {
       appPresetAdapter.upsertOne(state.presets, payload);
     },
@@ -219,6 +200,7 @@ export const {
     deleteAppPreset,
     deleteSet,
     mergeWhitelist,
+    resetWhitelist,
     setAllSets,
     setAppPresets,
     setCurrentPreset,
@@ -230,7 +212,6 @@ export const {
     setSort,
     setSortOrder,
     setTransition,
-    setURLWhitelist,
     upsertAppPreset,
   },
 } = mainSlice;
@@ -282,10 +263,6 @@ export const selectSearch = (state: RootState) => state.main.search;
 
 export const selectLinkedFavorites = (state: RootState) =>
   state.main.linkedFavorites;
-
-export const selectURLWhitelist = (state: RootState) => state.main.urlWhitelist;
-
-export const selectWhitelist = (state: RootState) => state.main.whitelist;
 
 export const selectCurrentPresetId = (state: RootState) =>
   state.main.presets.currentPreset;
@@ -349,6 +326,111 @@ export const selectURLKeyset = createSelector(
       return undefined;
     }
   }
+);
+
+export const selectAllDesigners = createSelector(selectAllSets, (sets) =>
+  alphabeticalSort(
+    removeDuplicates(sets.map((set) => set.designer ?? []).flat())
+  )
+);
+
+export const selectAllProfiles = createSelector(selectAllSets, (sets) =>
+  alphabeticalSort(removeDuplicates(sets.map((set) => set.profile)))
+);
+
+export const selectAllRegions = createSelector(selectAllSets, (sets) =>
+  alphabeticalSort(
+    removeDuplicates(
+      sets
+        .map((set) =>
+          set.vendors
+            ? set.vendors.map((vendor) => vendor.region.split(", "))
+            : []
+        )
+        .flat(2)
+    )
+  )
+);
+
+export const selectAllVendors = createSelector(selectAllSets, (sets) =>
+  alphabeticalSort(
+    removeDuplicates(
+      sets.map((set) => set.vendors?.map((vendor) => vendor.name) ?? []).flat()
+    )
+  )
+);
+
+export const selectAllVendorRegions = createSelector(selectAllSets, (sets) =>
+  alphabeticalSort(
+    removeDuplicates(
+      sets
+        .map(
+          (set) =>
+            set.vendors?.map((vendor) => [
+              vendor.region,
+              ...vendor.region.split(", "),
+            ]) ?? []
+        )
+        .flat(2)
+    )
+  )
+);
+
+export const selectDefaultPreset = createSelector(
+  selectAllProfiles,
+  selectAllRegions,
+  (profiles, regions) =>
+    partialPreset({
+      id: "default",
+      name: "Default",
+      whitelist: {
+        profiles,
+        regions,
+      },
+    })
+);
+
+export const {
+  selectAll: selectAllAppPresets,
+  selectById: selectAppPresetById,
+  selectEntities: selectAppPresetMap,
+  selectIds: selectAppPresetIds,
+  selectTotal: selectAppPresetTotal,
+} = appPresetAdapter.getSelectors((state: RootState) => state.main.presets);
+
+export const selectCurrentPreset = createSelector(
+  selectAppPresetMap,
+  selectUserPresetMap,
+  selectDefaultPreset,
+  selectCurrentPresetId,
+  (appPresets, userPresets, defaultPreset, currentId) =>
+    currentId === "default"
+      ? defaultPreset
+      : appPresets[currentId] ?? userPresets[currentId] ?? defaultPreset
+);
+
+export const selectEditedWhitelist = (state: RootState) => state.main.whitelist;
+
+export const selectWhitelist = createSelector(
+  selectEditedWhitelist,
+  selectCurrentPreset,
+  selectDefaultPreset,
+  (editedWhitelist, currentPreset, defaultPreset): WhitelistType => ({
+    ...defaultPreset.whitelist,
+    ...currentPreset.whitelist,
+    ...editedWhitelist,
+  })
+);
+
+export const selectPresetById = createSelector(
+  selectAppPresetMap,
+  selectUserPresetMap,
+  selectDefaultPreset,
+  (state: RootState, id: "default" | (EntityId & Record<never, never>)) => id,
+  (appPresets, userPresets, defaultPreset, presetId) =>
+    presetId === "default"
+      ? defaultPreset
+      : appPresets[presetId] ?? userPresets[presetId]
 );
 
 /**
@@ -746,98 +828,6 @@ export const setupHiddenSetsListener = (startListening: AppStartListening) =>
       ) &&
       selectSortHiddenSets(state, history.location) > 0,
   });
-
-export const selectAllDesigners = createSelector(selectAllSets, (sets) =>
-  alphabeticalSort(
-    removeDuplicates(sets.map((set) => set.designer ?? []).flat())
-  )
-);
-
-export const selectAllProfiles = createSelector(selectAllSets, (sets) =>
-  alphabeticalSort(removeDuplicates(sets.map((set) => set.profile)))
-);
-
-export const selectAllRegions = createSelector(selectAllSets, (sets) =>
-  alphabeticalSort(
-    removeDuplicates(
-      sets
-        .map((set) =>
-          set.vendors
-            ? set.vendors.map((vendor) => vendor.region.split(", "))
-            : []
-        )
-        .flat(2)
-    )
-  )
-);
-
-export const selectAllVendors = createSelector(selectAllSets, (sets) =>
-  alphabeticalSort(
-    removeDuplicates(
-      sets.map((set) => set.vendors?.map((vendor) => vendor.name) ?? []).flat()
-    )
-  )
-);
-
-export const selectAllVendorRegions = createSelector(selectAllSets, (sets) =>
-  alphabeticalSort(
-    removeDuplicates(
-      sets
-        .map(
-          (set) =>
-            set.vendors?.map((vendor) => [
-              vendor.region,
-              ...vendor.region.split(", "),
-            ]) ?? []
-        )
-        .flat(2)
-    )
-  )
-);
-
-export const selectDefaultPreset = createSelector(
-  selectAllProfiles,
-  selectAllRegions,
-  (profiles, regions) =>
-    partialPreset({
-      id: "default",
-      name: "Default",
-      whitelist: {
-        profiles,
-        regions,
-      },
-    })
-);
-
-export const {
-  selectAll: selectAllAppPresets,
-  selectById: selectAppPresetById,
-  selectEntities: selectAppPresetMap,
-  selectIds: selectAppPresetIds,
-  selectTotal: selectAppPresetTotal,
-} = appPresetAdapter.getSelectors((state: RootState) => state.main.presets);
-
-export const selectCurrentPreset = createSelector(
-  selectAppPresetMap,
-  selectUserPresetMap,
-  selectDefaultPreset,
-  selectCurrentPresetId,
-  (appPresets, userPresets, defaultPreset, currentId) =>
-    currentId === "default"
-      ? defaultPreset
-      : appPresets[currentId] ?? userPresets[currentId] ?? defaultPreset
-);
-
-export const selectPresetById = createSelector(
-  selectAppPresetMap,
-  selectUserPresetMap,
-  selectDefaultPreset,
-  (state: RootState, id: "default" | (EntityId & Record<never, never>)) => id,
-  (appPresets, userPresets, defaultPreset, presetId) =>
-    presetId === "default"
-      ? defaultPreset
-      : appPresets[presetId] ?? userPresets[presetId]
-);
 
 export const selectSearchTerms = createSelector(
   selectFilteredSets,
