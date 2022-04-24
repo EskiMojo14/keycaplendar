@@ -24,7 +24,7 @@ import {
   setCurrentPreset,
 } from "@s/main";
 import { testSets } from "@s/main/thunks";
-import { setupLocationChangeListener } from "@s/router";
+import { addRouterListener, setupLocationChangeListener } from "@s/router";
 import { routes } from "@s/router/constants";
 import {
   selectCookies,
@@ -42,6 +42,7 @@ import "./app.scss";
 export const App = () => {
   const dispatch = useAppDispatch();
   useEffect(() => setupLocationChangeListener(history), [history]);
+  useEffect(() => dispatch(addRouterListener(history)), [history]);
 
   const device = useDevice();
   const theme = useAppSelector(selectTheme);

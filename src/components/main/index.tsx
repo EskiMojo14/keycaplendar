@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { EntityId } from "@reduxjs/toolkit";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { Fab } from "@rmwc/fab";
@@ -20,9 +20,11 @@ import useDelayedValue from "@h/use-delayed-value";
 import useDevice from "@h/use-device";
 import useLocatedSelector from "@h/use-located-selector";
 import usePage from "@h/use-page";
+import { useSearchParams } from "@h/use-search-params";
 import {
   selectKeysetByString,
   selectLinkedFavorites,
+  selectLinkedFavoritesLoading,
   selectLoading,
   selectSetGroupTotal,
 } from "@s/main";
@@ -31,6 +33,7 @@ import type { PresetType, SetType } from "@s/main/types";
 import { replace } from "@s/router";
 import { selectView } from "@s/settings";
 import { selectUser } from "@s/user";
+import { getLinkedFavorites } from "@s/user/thunks";
 import { closeModal, openModal } from "@s/util/functions";
 import { DialogDeleteFilterPreset } from "./dialog-delete-filter-preset";
 import { DialogSales } from "./dialog-sales";
@@ -50,6 +53,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   const bottomNav = useBottomNav();
 
   const page = usePage();
+  const params = useSearchParams();
 
   const view = useAppSelector(selectView);
 
@@ -70,6 +74,16 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   const urlSet = useDelayedValue(originalUrlSet, 300, { delayed: [undefined] });
 
   const linkedFavorites = useAppSelector(selectLinkedFavorites);
+  const linkedFavoritesLoading = useAppSelector(selectLinkedFavoritesLoading);
+  useEffect(() => {
+    if (
+      page === "favorites" &&
+      params.has("favoritesId") &&
+      linkedFavorites.array.length === 0
+    ) {
+      dispatch(getLinkedFavorites(params.get("favoritesId") ?? ""));
+    }
+  }, [linkedFavorites, page, params]);
 
   const [filterOpen, setFilterOpen] = useState(false);
   const closeFilter = () => {
@@ -271,7 +285,8 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   );
 
   const content =
-    !contentBool && loading ? (
+    (!contentBool && loading) ||
+    (page === "favorites" && linkedFavoritesLoading) ? (
       <ContentSkeleton />
     ) : contentBool ? (
       <ContentGrid

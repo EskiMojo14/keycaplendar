@@ -1,4 +1,5 @@
 import {
+  addListener,
   createAction,
   createDraftSafeSelector,
   isAnyOf,
@@ -13,7 +14,7 @@ import type { History, Location } from "history";
 import type { RootState } from "~/app/store";
 import { allPages, pageTitle } from "@s/common/constants";
 import type { Page } from "@s/common/types";
-import { arrayIncludes, createURL } from "@s/util/functions";
+import { arrayIncludes, objectEntries } from "@s/util/functions";
 import type { UnionToTuple } from "@s/util/types";
 
 export const getPageName = (pathname: string): Page => {
@@ -66,28 +67,23 @@ export const navigationMatcher = isAnyOf(
   >)
 );
 
+export const addRouterListener = (history: History) =>
+  addListener({
+    effect: (action) => {
+      for (const [key, actionCreator] of objectEntries(actionCreators)) {
+        if (actionCreator.match(action)) {
+          // @ts-expect-error heh
+          history[key](...action.payload);
+        }
+      }
+    },
+    matcher: navigationMatcher,
+  });
+
 export const setupLocationChangeListener = (history: History) =>
   history.listen((location) => {
     const title = getPageTitle(location.pathname);
     document.title = title ? `KeycapLendar: ${title}` : "KeycapLendar";
-    document.documentElement.scrollTop = 0;
-    const pageParams = ["favoritesId"];
-    const params = new URLSearchParams(history.location.search);
-    if (pageParams.some((param) => params.has(param))) {
-      const newUrl = createURL(
-        {},
-        (params) => {
-          params.delete("page");
-          pageParams.forEach((param) => {
-            if (params.has(param)) {
-              params.delete(param);
-            }
-          });
-        },
-        true
-      );
-      history.push(newUrl);
-    }
   });
 
 export const selectLocation = (state: RootState, location: Location) =>

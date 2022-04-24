@@ -76,6 +76,7 @@ export const setGroupAdapter = createEntityAdapter<SetGroup>({
 export type MainState = {
   keysets: EntityState<SetType>;
   linkedFavorites: { array: EntityId[]; displayName: string };
+  linkedFavoritesLoading: boolean;
   loading: boolean;
   presets: EntityState<PresetType> & {
     currentPreset: EntityId;
@@ -90,6 +91,7 @@ export type MainState = {
 export const initialState: MainState = {
   keysets: keysetAdapter.getInitialState(),
   linkedFavorites: { array: [], displayName: "" },
+  linkedFavoritesLoading: false,
   loading: true,
   presets: appPresetAdapter.getInitialState({
     currentPreset: "default",
@@ -158,6 +160,9 @@ export const mainSlice = createSlice({
     ) => {
       state.linkedFavorites = payload;
     },
+    setLinkedFavoritesLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.linkedFavoritesLoading = payload;
+    },
     setLoading: (state, { payload }: PayloadAction<boolean>) => {
       state.loading = payload;
     },
@@ -218,6 +223,7 @@ export const {
     setAppPresets,
     setCurrentPreset,
     setLinkedFavorites,
+    setLinkedFavoritesLoading,
     setLoading,
     setSearch,
     setSet,
@@ -232,6 +238,9 @@ export const {
 export const selectTransition = (state: RootState) => state.main.transition;
 
 export const selectLoading = (state: RootState) => state.main.loading;
+
+export const selectLinkedFavoritesLoading = (state: RootState) =>
+  state.main.linkedFavoritesLoading;
 
 export const selectSortsMap = (state: RootState) => state.main.sorts;
 
@@ -558,7 +567,7 @@ export const selectFilteredSets = createSelector(
     };
 
     return sets.filter(
-      (set) => hiddenBool(set) && filterBool(set) && searchBool(set)
+      (set) => set && hiddenBool(set) && filterBool(set) && searchBool(set)
     );
   }
 );

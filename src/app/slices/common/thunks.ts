@@ -14,7 +14,6 @@ import { whitelistParams } from "@s/main/constants";
 import type { whitelistShipped } from "@s/main/constants";
 import { getData, setWhitelistMerge } from "@s/main/thunks";
 import type { WhitelistType } from "@s/main/types";
-import { getLinkedFavorites } from "@s/user/thunks";
 import { arrayIncludes } from "@s/util/functions";
 
 export const triggerTransition =
@@ -72,12 +71,6 @@ export const getURLQuery = (): AppThunk<void> => (dispatch, getState) => {
       );
     }
   });
-  if (params.has("favoritesId")) {
-    const favoritesId = params.get("favoritesId");
-    if (favoritesId) {
-      dispatch(getLinkedFavorites(favoritesId));
-    }
-  }
   dispatch(getData());
 };
 

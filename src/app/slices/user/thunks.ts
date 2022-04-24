@@ -7,7 +7,11 @@ import type { AppDispatch, AppThunk, BatchTuple } from "~/app/store";
 import firebase from "@s/firebase";
 import firestore from "@s/firebase/firestore";
 import type { UserId } from "@s/firebase/types";
-import { setLinkedFavorites, updatePreset } from "@s/main";
+import {
+  setLinkedFavorites,
+  setLinkedFavoritesLoading,
+  updatePreset,
+} from "@s/main";
 import type { PresetType } from "@s/main/types";
 import { setShareNameLoading } from "@s/settings";
 import { setSyncSettings, settingFns } from "@s/settings/thunks";
@@ -277,9 +281,10 @@ export const getLinkedFavorites =
   async (dispatch) => {
     const cloudFn = firebase.functions().httpsCallable("getFavorites");
     try {
+      dispatch(setLinkedFavoritesLoading(true));
       const { data } = await cloudFn({ id });
       if (hasKey(data, "array") && is<string[]>(data.array)) {
-        dispatch(setLinkedFavorites(data));
+        dispatch([setLinkedFavorites(data), setLinkedFavoritesLoading(false)]);
       }
     } catch (error) {
       console.log(error);
