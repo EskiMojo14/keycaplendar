@@ -26,7 +26,7 @@ import "./update-entry.scss";
 type UpdateEntryProps = {
   delete: (entry: EntityId) => void;
   edit: (entry: EntityId) => void;
-  entryId: EntityId | undefined;
+  entryId: EntityId;
 };
 
 export const UpdateEntry = ({
@@ -38,9 +38,7 @@ export const UpdateEntry = ({
 
   const user = useAppSelector(selectUser);
 
-  const entry = useAppSelector((state) =>
-    selectEntryById(state, entryId ?? "")
-  );
+  const entry = useAppSelector((state) => selectEntryById(state, entryId));
 
   const { hash } = useLocation();
   const urlEntry = hash.substring(1);
@@ -48,7 +46,7 @@ export const UpdateEntry = ({
   if (entry) {
     const copyLink = async () => {
       const url = createURL({
-        hash: entryId?.toString(),
+        hash: entryId.toString(),
         pathname: "/updates",
         search: "",
       });
@@ -90,14 +88,14 @@ export const UpdateEntry = ({
           {withTooltip(
             <CardActionIcon
               icon={iconObject(<Edit />)}
-              onClick={() => entryId && edit(entryId)}
+              onClick={() => edit(entryId)}
             />,
             "Edit"
           )}
           {withTooltip(
             <CardActionIcon
               icon={iconObject(<Delete />)}
-              onClick={() => entryId && deleteFn(entryId)}
+              onClick={() => deleteFn(entryId)}
             />,
             "Delete"
           )}
