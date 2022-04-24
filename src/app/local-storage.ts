@@ -7,7 +7,12 @@ import type { RootState } from "~/app/store";
 import type { AppStartListening } from "@mw/listener";
 import { initialState as common } from "@s/common";
 import { initialState as main } from "@s/main";
-import { allSorts, sortBlacklist } from "@s/main/constants";
+import {
+  allSorts,
+  sortBlacklist,
+  whitelistParams,
+  whitelistShipped,
+} from "@s/main/constants";
 import { getPageName } from "@s/router";
 import { mainPages } from "@s/router/constants";
 import { selectCookies, initialState as settings } from "@s/settings";
@@ -73,7 +78,7 @@ export const hydrateState = (
     ]) as ObjectEntries<{ [Key in keyof PersistWhitelist]: RootState[Key] }>
   );
 
-const paramsToClear = ["sort", "sortOrder"];
+const paramsToClear = ["sort", "sortOrder", ...whitelistParams];
 
 export const modifyStateForParams = (
   state = initialStates,
@@ -110,6 +115,51 @@ export const modifyStateForParams = (
       ) {
         draftState.main.sorts[page].sortOrder = sortOrderQuery;
       }
+
+      whitelistParams.forEach((param) => {
+        if (params.has(param)) {
+          const val = params.get(param);
+          if (val) {
+            if (
+              param === "profile" ||
+              param === "region" ||
+              param === "vendor"
+            ) {
+              const plural = `${param}s`;
+              const plurals = ["profiles", "regions", "vendors"] as const;
+              if (arrayIncludes(plurals, plural)) {
+                state.main.whitelist[plural] = [val.replace("-", " ")];
+              }
+            } else if (
+              param === "profiles" ||
+              param === "shipped" ||
+              param === "vendors" ||
+              param === "regions"
+            ) {
+              const array = val
+                .split(" ")
+                .map((item) => item.replace("-", " "));
+              if (param === "shipped") {
+                if (
+                  array.every(
+                    (string): string is typeof whitelistShipped[number] =>
+                      arrayIncludes(whitelistShipped, string)
+                  )
+                ) {
+                  state.main.whitelist[param] = array;
+                }
+              } else {
+                state.main.whitelist[param] = array;
+              }
+            } else if (
+              param === "vendorMode" &&
+              (val === "include" || val === "exclude")
+            ) {
+              state.main.whitelist[param] = val;
+            }
+          }
+        }
+      });
     }
   });
 };

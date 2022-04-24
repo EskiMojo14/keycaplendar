@@ -16,14 +16,14 @@ import { NotFound } from "@c/pages/not-found";
 import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import { selectTheme, selectTimed, setSystemTheme, setTimed } from "@s/common";
-import { getGlobals, getURLQuery } from "@s/common/thunks";
+import { getGlobals } from "@s/common/thunks";
 import firebase from "@s/firebase";
 import {
   selectDefaultPreset,
   selectTransition,
   setCurrentPreset,
 } from "@s/main";
-import { testSets } from "@s/main/thunks";
+import { getData, testSets } from "@s/main/thunks";
 import { addRouterListener, setupLocationChangeListener } from "@s/router";
 import { routes } from "@s/router/constants";
 import {
@@ -96,7 +96,7 @@ export const App = () => {
   const defaultPreset = useAppSelector(selectDefaultPreset);
 
   useEffect(() => {
-    dispatch([getURLQuery(), checkStorage(), getGlobals()]);
+    dispatch([getData(), checkStorage(), getGlobals()]);
 
     const checkThemeListener = (e: MediaQueryListEvent) => {
       e.preventDefault();
