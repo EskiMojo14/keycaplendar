@@ -46,6 +46,7 @@ import {
   createURL,
   hasKey,
   iconObject,
+  setSearchParamArray,
 } from "@s/util/functions";
 import {
   Favorite,
@@ -230,13 +231,12 @@ export const DrawerFilter = ({
       whitelistParams.forEach((param) => {
         if (arrayIncludes(["profile", "region", "vendor"] as const, param)) {
           const plural = `${param}s` as const;
-          const whitelist = mainWhitelist;
-          const { [plural]: array } = whitelist;
-          if (is<string[]>(array) && array.length === 1) {
-            params.set(
-              param,
-              array.map((item: string) => item.replace(/\s/, "-")).join(" ")
-            );
+          if (
+            mainWhitelist[plural].length > 1 &&
+            mainWhitelist[plural].length !==
+              defaultPreset.whitelist[plural].length
+          ) {
+            setSearchParamArray(params, param, mainWhitelist[plural]);
           }
         } else if (param === "vendorMode") {
           if (mainWhitelist.vendorMode !== defaultPreset.whitelist.vendorMode) {
@@ -249,35 +249,13 @@ export const DrawerFilter = ({
           )
         ) {
           if (
-            arrayIncludes(["profiles", "regions", "vendors"] as const, param)
+            !arrayIncludes(["profiles", "regions", "vendors"] as const, param)
           ) {
-            if (
-              mainWhitelist[param].length > 1 &&
-              mainWhitelist[param].length !==
-                defaultPreset.whitelist[param].length
-            ) {
-              params.set(
-                param,
-                mainWhitelist[param]
-                  .map((profile) => profile.replace(/\s/, "-"))
-                  .join(" ")
-              );
-            } else {
-              params.delete(param);
-            }
-          } else {
             if (
               mainWhitelist[param].length !==
               defaultPreset.whitelist[param].length
             ) {
-              params.set(
-                param,
-                mainWhitelist[param]
-                  .map((item) => item.replace(/\s/, "-"))
-                  .join(" ")
-              );
-            } else {
-              params.delete(param);
+              setSearchParamArray(params, param, mainWhitelist[param]);
             }
           }
         }

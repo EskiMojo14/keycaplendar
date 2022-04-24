@@ -123,22 +123,13 @@ export const modifyStateForParams = (
             if (
               param === "profile" ||
               param === "region" ||
-              param === "vendor"
-            ) {
-              const plural = `${param}s`;
-              const plurals = ["profiles", "regions", "vendors"] as const;
-              if (arrayIncludes(plurals, plural)) {
-                state.main.whitelist[plural] = [val.replace(/-/, " ")];
-              }
-            } else if (
+              param === "vendor" ||
               param === "profiles" ||
               param === "shipped" ||
               param === "vendors" ||
               param === "regions"
             ) {
-              const array = val
-                .split(" ")
-                .map((item) => item.replace(/-/, " "));
+              const array = params.getAll(param);
               if (param === "shipped") {
                 if (
                   array.every(
@@ -149,7 +140,11 @@ export const modifyStateForParams = (
                   state.main.whitelist[param] = array;
                 }
               } else {
-                state.main.whitelist[param] = array;
+                state.main.whitelist[
+                  arrayIncludes(["profile", "region", "vendor"] as const, param)
+                    ? (`${param}s` as const)
+                    : param
+                ] = array;
               }
             } else if (
               param === "vendorMode" &&

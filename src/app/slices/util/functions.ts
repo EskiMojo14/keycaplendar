@@ -666,6 +666,28 @@ export const clearSearchParamsExcept = (
 };
 
 /**
+ * Loops through an array to set all values.
+ * @param params Params object to mutate
+ * @param name param name
+ * @param array array of values to set
+ * @example
+ * const params = new URLSearchParams();
+ * setSearchParamArray(params, "foo", ["bar", "baz"]);
+ * console.log(params.toString()) // "foo=bar&foo=baz"
+ */
+
+export const setSearchParamArray = (
+  params: URLSearchParams,
+  name: string,
+  array: string[]
+) => {
+  params.delete(name);
+  for (const value of array) {
+    params.append(name, value);
+  }
+};
+
+/**
  * Creates a function that fills in any partial object with given defaults.
  * @param defaults
  * @returns fill func

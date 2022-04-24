@@ -158,11 +158,11 @@ export const whitelistShipped = ["Shipped", "Not shipped"] as const;
 
 export const whitelistParams = [
   "profile",
-  "profiles",
+  "profiles", // legacy
   "shipped",
   "region",
-  "regions",
+  "regions", // legacy
   "vendorMode",
   "vendor",
-  "vendors",
+  "vendors", // legacy
 ] as const;
