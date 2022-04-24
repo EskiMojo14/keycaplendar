@@ -241,21 +241,12 @@ export const DrawerFilter = ({
           if (mainWhitelist.vendorMode !== defaultPreset.whitelist.vendorMode) {
             params.set(param, mainWhitelist[param]);
           }
-        } else if (
-          arrayIncludes(
-            ["profiles", "shipped", "regions", "vendors"] as const,
-            param
-          )
-        ) {
+        } else if (param === "shipped") {
           if (
-            !arrayIncludes(["profiles", "regions", "vendors"] as const, param)
+            mainWhitelist[param].length !==
+            defaultPreset.whitelist[param].length
           ) {
-            if (
-              mainWhitelist[param].length !==
-              defaultPreset.whitelist[param].length
-            ) {
-              setSearchParamArray(params, param, mainWhitelist[param]);
-            }
+            setSearchParamArray(params, param, mainWhitelist[param]);
           }
         }
       });
