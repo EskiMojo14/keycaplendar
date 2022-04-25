@@ -15,8 +15,9 @@ import { CustomReactMarkdown } from "@c/util/react-markdown";
 import { useAppDispatch, useAppSelector } from "@h";
 import { selectEntryById, selectFilteredTag, setFilteredTag } from "@s/guides";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
+import { createURL } from "@s/router/functions";
 import { selectUser } from "@s/user";
-import { createURL, iconObject } from "@s/util/functions";
+import { iconObject } from "@s/util/functions";
 import { Delete, Edit, Share } from "@i";
 import "./guide-entry.scss";
 

@@ -27,6 +27,7 @@ import usePage from "@h/use-page";
 import { selectSearch, selectSetById, setSearch } from "@s/main";
 import type { SetType } from "@s/main/types";
 import { mainPages } from "@s/router/constants";
+import { createURL } from "@s/router/functions";
 import { selectView } from "@s/settings";
 import { toggleLichTheme } from "@s/settings/thunks";
 import {
@@ -39,7 +40,6 @@ import { toggleBought, toggleFavorite, toggleHidden } from "@s/user/thunks";
 import {
   alphabeticalSortProp,
   arrayIncludes,
-  createURL,
   iconObject,
   ordinal,
   removeDuplicates,

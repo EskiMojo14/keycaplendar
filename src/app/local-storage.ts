@@ -15,11 +15,11 @@ import {
 } from "@s/main/constants";
 import { getPageName } from "@s/router";
 import { mainPages } from "@s/router/constants";
+import { createURL } from "@s/router/functions";
 import { selectCookies, initialState as settings } from "@s/settings";
 import { initialState as user } from "@s/user";
 import {
   arrayIncludes,
-  createURL,
   objectEntries,
   objectFromEntries,
 } from "@s/util/functions";

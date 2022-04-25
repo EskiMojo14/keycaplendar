@@ -20,7 +20,8 @@ import { useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import { selectSetById } from "@s/main";
 import { getSetDetails } from "@s/main/functions";
-import { createURL, iconObject, pluralise } from "@s/util/functions";
+import { createURL } from "@s/router/functions";
+import { iconObject, pluralise } from "@s/util/functions";
 import { CheckCircle, NewReleases, Share } from "@i";
 import "./element-image.scss";
 

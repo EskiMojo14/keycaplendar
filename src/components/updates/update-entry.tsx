@@ -16,10 +16,11 @@ import { notify } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import { CustomReactMarkdown } from "@c/util/react-markdown";
 import { useAppDispatch, useAppSelector } from "@h";
+import { createURL } from "@s/router/functions";
 import { selectEntryById } from "@s/updates";
 import { pinEntry } from "@s/updates/thunks";
 import { selectUser } from "@s/user";
-import { createURL, iconObject, ordinal } from "@s/util/functions";
+import { iconObject, ordinal } from "@s/util/functions";
 import { Delete, Edit, PushPin, Share } from "@i";
 import "./update-entry.scss";
 

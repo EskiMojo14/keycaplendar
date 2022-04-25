@@ -37,16 +37,15 @@ import {
 import { partialPreset } from "@s/main/constructors";
 import { selectPreset, setWhitelist } from "@s/main/thunks";
 import type { PresetType } from "@s/main/types";
+import { createURL, setSearchParamArray } from "@s/router/functions";
 import { selectView } from "@s/settings";
 import { selectAllUserPresets, selectUser } from "@s/user";
 import {
   addOrRemove,
   alphabeticalSort,
   arrayIncludes,
-  createURL,
   hasKey,
   iconObject,
-  setSearchParamArray,
 } from "@s/util/functions";
 import {
   Favorite,

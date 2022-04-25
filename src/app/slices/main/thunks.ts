@@ -30,6 +30,7 @@ import {
 } from "@s/main/constants";
 import { addLastDate } from "@s/main/functions";
 import { getPageName, replace } from "@s/router";
+import { createURL } from "@s/router/functions";
 import type { MainPage } from "@s/router/types";
 import {
   deleteUserPreset,
@@ -38,7 +39,7 @@ import {
   upsertUserPreset,
 } from "@s/user";
 import { addUserPreset } from "@s/user/thunks";
-import { arrayIncludes, createURL, objectEntries } from "@s/util/functions";
+import { arrayIncludes, objectEntries } from "@s/util/functions";
 import type { Overwrite } from "@s/util/types";
 import type {
   PresetType,

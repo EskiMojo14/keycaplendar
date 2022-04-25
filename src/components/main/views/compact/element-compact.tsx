@@ -17,7 +17,8 @@ import useDevice from "@h/use-device";
 import usePage from "@h/use-page";
 import { selectSetById } from "@s/main";
 import { getSetDetails } from "@s/main/functions";
-import { createURL, iconObject } from "@s/util/functions";
+import { createURL } from "@s/router/functions";
+import { iconObject } from "@s/util/functions";
 import { CheckCircle, NewReleases, Share } from "@i";
 import "./element-compact.scss";
 

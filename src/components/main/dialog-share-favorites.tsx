@@ -9,13 +9,13 @@ import { Typography } from "@rmwc/typography";
 import { nanoid } from "nanoid";
 import { notify } from "~/app/snackbar-queue";
 import { useAppDispatch, useAppSelector } from "@h";
+import { createURL } from "@s/router/functions";
 import { selectShareNameLoading, setShareNameLoading } from "@s/settings";
 import { selectFavoritesId, selectShareName, setFavoritesId } from "@s/user";
 import {
   createDebouncedSyncFavoritesId,
   createDebouncedSyncShareName,
 } from "@s/user/thunks";
-import { createURL } from "@s/util/functions";
 import "./dialog-share-favorites.scss";
 
 type DialogShareFavoritesProps = {

@@ -23,8 +23,9 @@ import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import { selectEntryById, selectFilteredTag, setFilteredTag } from "@s/guides";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
+import { createURL } from "@s/router/functions";
 import { selectUser } from "@s/user";
-import { createURL, iconObject } from "@s/util/functions";
+import { iconObject } from "@s/util/functions";
 import { Delete, Edit, Share } from "@i";
 import "./modal-detail.scss";
 
