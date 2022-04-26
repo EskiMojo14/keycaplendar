@@ -1,4 +1,5 @@
 import {
+  createDraftSafeSelector,
   createEntityAdapter,
   createSelector,
   createSlice,
@@ -11,11 +12,12 @@ import type {
 } from "@reduxjs/toolkit";
 import { DateTime } from "luxon";
 import { matchPath } from "react-router-dom";
-import { is } from "typescript-is";
 import { history } from "~/app/history";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk, RootState } from "~/app/store";
 import type { AppStartListening } from "@mw/listener";
+// eslint-disable-next-line import/no-cycle
+import { getGlobals } from "@s/common";
 import {
   arraySorts,
   dateSorts,
@@ -24,6 +26,7 @@ import {
   sortHiddenCheck,
 } from "@s/main/constants";
 import { partialPreset } from "@s/main/constructors";
+import { updatePreset as _updatePreset } from "@s/main/functions";
 import {
   getLocatedSelectors,
   getPageName,
@@ -103,10 +106,17 @@ export const initialState: MainState = {
 
 export const mainSlice = createSlice({
   extraReducers: (builder) => {
-    builder.addMatcher(navigationMatcher, (state) => {
-      ({ linkedFavorites: state.linkedFavorites, search: state.search } =
-        initialState);
-    });
+    builder
+      .addCase(
+        getGlobals.fulfilled,
+        (state, { payload: { filterPresets } }) => {
+          appPresetAdapter.setAll(state.presets, filterPresets as PresetType[]);
+        }
+      )
+      .addMatcher(navigationMatcher, (state) => {
+        ({ linkedFavorites: state.linkedFavorites, search: state.search } =
+          initialState);
+      });
   },
   initialState,
   name: "main",
@@ -338,7 +348,7 @@ export const selectAllProfiles = createSelector(selectAllSets, (sets) =>
   alphabeticalSort(removeDuplicates(sets.map((set) => set.profile)))
 );
 
-export const selectAllRegions = createSelector(selectAllSets, (sets) =>
+export const selectAllRegions = createDraftSafeSelector(selectAllSets, (sets) =>
   alphabeticalSort(
     removeDuplicates(
       sets
@@ -853,17 +863,6 @@ export default mainSlice.reducer;
 export const updatePreset =
   (preset: OldPresetType | PresetType): AppThunk<PresetType> =>
   (dispatch, getState) => {
-    const allRegions = selectAllRegions(getState());
-    const regions = preset.whitelist.regions ?? allRegions;
-    const bought = !!preset.whitelist.bought ?? false;
-    const hidden = is<boolean>(preset.whitelist.hidden)
-      ? preset.whitelist.hidden
-        ? "hidden"
-        : "unhidden"
-      : preset.whitelist.hidden;
-    const updatedPreset: PresetType = {
-      ...preset,
-      whitelist: { ...preset.whitelist, bought, hidden, regions },
-    };
-    return updatedPreset;
+    const regions = selectAllRegions(getState());
+    return _updatePreset(preset, { regions });
   };

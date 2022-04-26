@@ -1,10 +1,12 @@
 import { useEffect } from "react";
+import type { SerializedError } from "@reduxjs/toolkit";
 import { Portal } from "@rmwc/base";
 import { DialogQueue } from "@rmwc/dialog";
 import { SnackbarQueue } from "@rmwc/snackbar";
 import classNames from "classnames";
 import { Router } from "react-router";
 import { Redirect, Route, Switch } from "react-router-dom";
+import { typeGuard } from "tsafe";
 import { dialogQueue } from "~/app/dialog-queue";
 import { history } from "~/app/history";
 import { notify, snackbarQueue } from "~/app/snackbar-queue";
@@ -15,8 +17,13 @@ import { Login } from "@c/pages/login";
 import { NotFound } from "@c/pages/not-found";
 import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
-import { selectTheme, selectTimed, setSystemTheme, setTimed } from "@s/common";
-import { getGlobals } from "@s/common/thunks";
+import {
+  getGlobals,
+  selectTheme,
+  selectTimed,
+  setSystemTheme,
+  setTimed,
+} from "@s/common";
 import firebase from "@s/firebase";
 import {
   selectDefaultPreset,
@@ -26,6 +33,7 @@ import {
 import { getData, testSets } from "@s/main/thunks";
 import { addRouterListener, setupLocationChangeListener } from "@s/router";
 import { routes } from "@s/router/constants";
+import { handleLegacyParams } from "@s/router/functions";
 import {
   selectCookies,
   selectDensity,
@@ -36,9 +44,8 @@ import { acceptCookies, checkStorage } from "@s/settings/thunks";
 import { resetUser, setUser } from "@s/user";
 import { getUserPreferences } from "@s/user/thunks";
 import { Interval } from "@s/util/constructors";
-import { isBetweenTimes } from "@s/util/functions";
+import { hasKey, isBetweenTimes } from "@s/util/functions";
 import "./app.scss";
-import { handleLegacyParams } from "@s/router/functions";
 
 export const App = () => {
   const dispatch = useAppDispatch();
@@ -97,7 +104,22 @@ export const App = () => {
   const defaultPreset = useAppSelector(selectDefaultPreset);
 
   useEffect(() => {
-    dispatch([getData(), checkStorage(), getGlobals()]);
+    dispatch([getData(), checkStorage()]);
+
+    const fetchGlobals = async () => {
+      try {
+        await dispatch(getGlobals()).unwrap();
+      } catch (e) {
+        let message = "Failed to get global settings";
+        if (typeGuard<SerializedError>(e, hasKey(e, "message"))) {
+          message += `: ${e.message}`;
+        }
+        console.log(message, e);
+        notify({ title: message });
+      }
+    };
+
+    fetchGlobals();
 
     const checkThemeListener = (e: MediaQueryListEvent) => {
       e.preventDefault();

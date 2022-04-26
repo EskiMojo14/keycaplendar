@@ -1,7 +1,8 @@
+import produce from "immer";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
 import { ordinal } from "@s/util/functions";
-import type { SetType } from "./types";
+import type { OldPresetType, PresetType, SetType } from "./types";
 
 const oneDay = 24 * 60 * 60 * 1000;
 
@@ -85,3 +86,17 @@ export const getSetDetails = (
 
   return { daysLeft, live, subtitle, thisWeek };
 };
+
+export const updatePreset = (
+  preset: OldPresetType | PresetType,
+  { regions }: { regions: string[] }
+) =>
+  produce(preset, (draftPreset) => {
+    draftPreset.whitelist.regions ??= regions;
+    draftPreset.whitelist.bought ??= false;
+    if (typeof draftPreset.whitelist.hidden === "boolean") {
+      draftPreset.whitelist.hidden = draftPreset.whitelist.hidden
+        ? "hidden"
+        : "unhidden";
+    }
+  }) as PresetType;
