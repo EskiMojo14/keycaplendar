@@ -44,6 +44,7 @@ import { GuideEntry } from "./guide-entry";
 import { ModalDetail } from "./modal-detail";
 import emptyImg from "@m/empty.svg";
 import "./index.scss";
+import { useSearchParams } from "@h/use-search-params";
 
 type ContentGuidesProps = {
   openNav: () => void;
@@ -68,6 +69,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   const urlEntry = useDelayedValue(id && id in entryMap ? id : undefined, 300, {
     delayed: [undefined],
   });
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (entries.length === 0) {
@@ -83,10 +85,10 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   };
 
   useEffect(() => {
-    if (!urlEntry && device === "desktop") {
-      openDetail("Di1F9XkWTG2M9qbP2ZcN");
+    if (!id && !searchParams.has("guideId") && device === "desktop") {
+      openDetail("Di1F9XkWTG2M9qbP2ZcN"); // open welcome guide if none currently open
     }
-  }, [entries, urlEntry]);
+  }, [entries, urlEntry, searchParams]);
 
   const [createOpen, setCreateOpen] = useState(false);
   const openCreate = () => {

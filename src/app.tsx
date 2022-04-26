@@ -38,6 +38,7 @@ import { getUserPreferences } from "@s/user/thunks";
 import { Interval } from "@s/util/constructors";
 import { isBetweenTimes } from "@s/util/functions";
 import "./app.scss";
+import { handleLegacyParams } from "@s/router/functions";
 
 export const App = () => {
   const dispatch = useAppDispatch();
@@ -188,3 +189,5 @@ export const App = () => {
 };
 
 export default App;
+
+handleLegacyParams(history);

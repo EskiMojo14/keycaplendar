@@ -1,3 +1,7 @@
+import type { History } from "history";
+import { getPageName } from "@s/router";
+import { mainPages } from "@s/router/constants";
+import { arrayIncludes } from "@s/util/functions";
 import type { WritableKeys } from "@s/util/types";
 
 /**
@@ -68,5 +72,77 @@ export const setSearchParamArray = (
   params.delete(name);
   for (const value of array) {
     params.append(name, value);
+  }
+};
+
+/**
+ * Convert old params to new path.
+ * @param history
+ */
+export const handleLegacyParams = (history: History) => {
+  const params = new URLSearchParams(history.location.search);
+  if (params.has("page")) {
+    const newUrl = createURL(
+      { pathname: `${params.get("page")}` },
+      (params) => {
+        params.delete("page");
+      },
+      true
+    );
+    history.replace(newUrl);
+  }
+  const page = getPageName(history.location.pathname);
+  const keysetParams = ["keysetId", "keysetAlias", "keysetName"];
+  for (const keysetParam of keysetParams) {
+    if (arrayIncludes(mainPages, page) && params.has(keysetParam)) {
+      const newUrl = createURL(
+        { pathname: `${page}/${params.get(keysetParam)}` },
+        (params) => {
+          params.delete(keysetParam);
+        },
+        true
+      );
+      history.replace(newUrl);
+    }
+  }
+  if (page === "statistics" && params.has("statisticsTab")) {
+    const newUrl = createURL(
+      { pathname: `${page}/${params.get("statisticsTab")}` },
+      (params) => {
+        params.delete("statisticsTab");
+      },
+      true
+    );
+    history.replace(newUrl);
+  }
+  if (page === "history" && params.has("historyTab")) {
+    const newUrl = createURL(
+      { pathname: `${page}/${params.get("historyTab")}` },
+      (params) => {
+        params.delete("historyTab");
+      },
+      true
+    );
+    history.replace(newUrl);
+  }
+  if (page === "guides" && params.has("guideId")) {
+    const newUrl = createURL(
+      { pathname: `${page}/${params.get("guideId")}` },
+      (params) => {
+        params.delete("guideId");
+      },
+      true
+    );
+    history.replace(newUrl);
+  }
+  if (page === "updates" && params.has("updateId")) {
+    const newUrl = createURL(
+      { hash: `${params.get("updateId")}`, pathname: `${page}` },
+      (params) => {
+        params.delete("updateId");
+      },
+      true
+    );
+    history.replace(newUrl);
   }
 };
