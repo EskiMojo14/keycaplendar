@@ -25,6 +25,7 @@ import { useAppDispatch, useAppSelector } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
 import useDelayedValue from "@h/use-delayed-value";
 import useDevice from "@h/use-device";
+import { useSearchParams } from "@h/use-search-params";
 import firestore from "@s/firebase/firestore";
 import type { GuideId } from "@s/firebase/types";
 import {
@@ -44,7 +45,6 @@ import { GuideEntry } from "./guide-entry";
 import { ModalDetail } from "./modal-detail";
 import emptyImg from "@m/empty.svg";
 import "./index.scss";
-import { useSearchParams } from "@h/use-search-params";
 
 type ContentGuidesProps = {
   openNav: () => void;
