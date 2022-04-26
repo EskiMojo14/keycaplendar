@@ -1,49 +1,17 @@
 import { createStore } from "~/app/store";
 import {
-  deleteAction,
-  selectActions,
   selectFilterAction,
   selectFilterUser,
   selectLength,
-  setAllActions,
   setFilterAction,
   setFilterUser,
   setLength,
 } from "@s/audit";
-import type { ActionType } from "@s/audit/types";
-
-const blankAction: ActionType = {
-  action: "created",
-  after: {},
-  before: {},
-  changelogId: "",
-  documentId: "",
-  timestamp: "",
-  user: {
-    displayName: "",
-    email: "",
-  },
-};
 
 let store = createStore();
 
 beforeEach(() => {
   store = createStore();
-});
-
-it("sets all actions array", () => {
-  store.dispatch(setAllActions([blankAction]));
-  const response = selectActions(store.getState());
-  expect(response).toEqual([blankAction]);
-});
-
-it("deletes an action", () => {
-  store.dispatch(setAllActions([blankAction]));
-  const check = selectActions(store.getState());
-  expect(check).toEqual([blankAction]);
-  store.dispatch(deleteAction(blankAction.changelogId));
-  const response = selectActions(store.getState());
-  expect(response).toEqual([]);
 });
 
 it("sets filter action type", () => {

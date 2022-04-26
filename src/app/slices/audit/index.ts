@@ -3,8 +3,13 @@ import {
   createEntityAdapter,
   createSelector,
   createSlice,
+  isAnyOf,
+  isFulfilled,
+  isPending,
+  isRejected,
 } from "@reduxjs/toolkit";
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
+import type { AnyAsyncThunk } from "@reduxjs/toolkit/dist/matchers";
 import isEqual from "lodash.isequal";
 import type { RootState } from "~/app/store";
 import { auditProperties } from "@s/audit/constants";
@@ -17,117 +22,6 @@ import {
   removeDuplicates,
 } from "@s/util/functions";
 import type { ActionType } from "./types";
-
-const actionAdapter = createEntityAdapter<ActionType>({
-  selectId: ({ changelogId }) => changelogId,
-  sortComparer: alphabeticalSortPropCurried("timestamp", true),
-});
-
-export type AuditState = {
-  actions: EntityState<ActionType>;
-  filter: {
-    action: "created" | "deleted" | "none" | "updated";
-    user: string;
-  };
-  length: number;
-  loadingId: string;
-};
-
-export const initialState: AuditState = {
-  actions: actionAdapter.getInitialState(),
-  filter: { action: "none", user: "all" },
-  length: 50,
-  loadingId: "",
-};
-
-/* eslint-disable no-use-before-define */
-export const auditSlice = createSlice({
-  extraReducers: (builder) => {
-    builder
-      .addCase(getActions.pending, (state, { meta: { requestId } }) => {
-        state.loadingId = requestId;
-      })
-      .addCase(
-        getActions.fulfilled,
-        (state, { meta: { requestId }, payload }) => {
-          actionAdapter.setAll(state.actions, payload);
-          if (state.loadingId === requestId) {
-            state.loadingId = "";
-          }
-        }
-      )
-      .addCase(getActions.rejected, (state, { meta: { requestId } }) => {
-        if (state.loadingId === requestId) {
-          state.loadingId = "";
-        }
-      })
-      .addCase(deleteAction.fulfilled, (state, { meta: { arg } }) => {
-        actionAdapter.removeOne(state.actions, arg);
-      });
-  },
-  initialState,
-  name: "audit",
-  reducers: {
-    removeAction: (state, { payload }: PayloadAction<EntityId>) => {
-      actionAdapter.removeOne(state.actions, payload);
-    },
-    setAllActions: (state, { payload }: PayloadAction<ActionType[]>) => {
-      actionAdapter.setAll(state.actions, payload);
-    },
-    setFilterAction: (
-      state,
-      { payload }: PayloadAction<"created" | "deleted" | "none" | "updated">
-    ) => {
-      state.filter.action = payload;
-    },
-    setFilterUser: (state, { payload }: PayloadAction<string>) => {
-      state.filter.user = payload;
-    },
-    setLength: (state, { payload }: PayloadAction<number>) => {
-      state.length = payload;
-    },
-  },
-});
-/* eslint-enable no-use-before-define */
-
-export const {
-  actions: {
-    removeAction,
-    setAllActions,
-    setFilterAction,
-    setFilterUser,
-    setLength,
-  },
-} = auditSlice;
-
-export const selectLoading = (state: RootState) => !!state.audit.loadingId;
-
-export const selectFilter = (state: RootState) => state.audit.filter;
-
-export const selectFilterAction = (state: RootState) =>
-  state.audit.filter.action;
-
-export const selectFilterUser = (state: RootState) => state.audit.filter.user;
-
-export const selectLength = (state: RootState) => state.audit.length;
-
-export const {
-  selectAll: selectActions,
-  selectById: selectActionById,
-  selectEntities: selectActionMap,
-  selectIds: selectActionIds,
-  selectTotal: selectActionTotal,
-} = actionAdapter.getSelectors<RootState>((state) => state.audit.actions);
-
-export const selectUsers = createSelector(selectActions, (actions) =>
-  alphabeticalSort(
-    removeDuplicates(actions.map(({ user: { nickname } }) => nickname)).filter(
-      (str): str is string => !!str
-    )
-  )
-);
-
-export default auditSlice.reducer;
 
 export const processAction = ({
   after,
@@ -163,6 +57,7 @@ export const getActions = createAsyncThunk<
   const querySnapshot = await firestore
     .collection("changelog")
     .orderBy("timestamp", "desc")
+    // eslint-disable-next-line no-use-before-define
     .limit(length ?? selectLength(getState()))
     .get();
 
@@ -193,3 +88,109 @@ export const deleteAction = createAsyncThunk(
       .doc(id as ChangelogId)
       .delete()
 );
+
+const idAsyncThunks = <AsyncThunks extends [AnyAsyncThunk, ...AnyAsyncThunk[]]>(
+  ...thunks: AsyncThunks
+) => thunks;
+
+const loadingAsyncThunks = idAsyncThunks(getActions);
+
+const actionAdapter = createEntityAdapter<ActionType>({
+  selectId: ({ changelogId }) => changelogId,
+  sortComparer: alphabeticalSortPropCurried("timestamp", true),
+});
+
+export type AuditState = {
+  actions: EntityState<ActionType>;
+  filter: {
+    action: "created" | "deleted" | "none" | "updated";
+    user: string;
+  };
+  length: number;
+  loadingId: string;
+};
+
+export const initialState: AuditState = {
+  actions: actionAdapter.getInitialState(),
+  filter: { action: "none", user: "all" },
+  length: 50,
+  loadingId: "",
+};
+
+export const auditSlice = createSlice({
+  extraReducers: (builder) => {
+    builder
+      .addCase(getActions.fulfilled, (state, { payload }) => {
+        actionAdapter.setAll(state.actions, payload);
+      })
+      .addCase(deleteAction.fulfilled, (state, { meta: { arg } }) => {
+        actionAdapter.removeOne(state.actions, arg);
+      })
+      .addMatcher(
+        isPending(...loadingAsyncThunks),
+        (state, { meta: { requestId } }) => {
+          state.loadingId = requestId;
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          isFulfilled(...loadingAsyncThunks),
+          isRejected(...loadingAsyncThunks)
+        ),
+        (state, { meta: { requestId } }) => {
+          if (state.loadingId === requestId) {
+            state.loadingId = "";
+          }
+        }
+      );
+  },
+  initialState,
+  name: "audit",
+  reducers: {
+    setFilterAction: (
+      state,
+      { payload }: PayloadAction<"created" | "deleted" | "none" | "updated">
+    ) => {
+      state.filter.action = payload;
+    },
+    setFilterUser: (state, { payload }: PayloadAction<string>) => {
+      state.filter.user = payload;
+    },
+    setLength: (state, { payload }: PayloadAction<number>) => {
+      state.length = payload;
+    },
+  },
+});
+
+export const {
+  actions: { setFilterAction, setFilterUser, setLength },
+} = auditSlice;
+
+export const selectLoading = (state: RootState) => !!state.audit.loadingId;
+
+export const selectFilter = (state: RootState) => state.audit.filter;
+
+export const selectFilterAction = (state: RootState) =>
+  state.audit.filter.action;
+
+export const selectFilterUser = (state: RootState) => state.audit.filter.user;
+
+export const selectLength = (state: RootState) => state.audit.length;
+
+export const {
+  selectAll: selectActions,
+  selectById: selectActionById,
+  selectEntities: selectActionMap,
+  selectIds: selectActionIds,
+  selectTotal: selectActionTotal,
+} = actionAdapter.getSelectors<RootState>((state) => state.audit.actions);
+
+export const selectUsers = createSelector(selectActions, (actions) =>
+  alphabeticalSort(
+    removeDuplicates(actions.map(({ user: { nickname } }) => nickname)).filter(
+      (str): str is string => !!str
+    )
+  )
+);
+
+export default auditSlice.reducer;
