@@ -61,7 +61,9 @@ export const actionCreators = Object.fromEntries(
 
 export const { go, goBack, goForward, push, replace } = actionCreators;
 
-export const navigationMatcher = isAnyOf(
+export const navigationMatcher = isAnyOf(go, goBack, goForward, push);
+
+export const allNavigationMatcher = isAnyOf(
   ...(Object.values(actionCreators) as UnionToTuple<
     ActionCreators[keyof ActionCreators]
   >)
@@ -77,7 +79,7 @@ export const addRouterListener = (history: History) =>
         }
       }
     },
-    matcher: navigationMatcher,
+    matcher: allNavigationMatcher,
   });
 
 export const setupLocationChangeListener = (history: History) =>
