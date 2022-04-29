@@ -22,8 +22,9 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
+import { confirm } from "~/app/dialog-queue";
+import { notify } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
-import { DialogDelete } from "@c/users/dialog-delete";
 import {
   DataTablePagination,
   DataTablePaginationButton,
@@ -39,6 +40,7 @@ import { useAppDispatch, useAppSelector } from "@h";
 import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
+import firebase from "@s/firebase";
 import { pageTitle } from "@s/router/constants";
 import {
   selectLoading,
@@ -47,9 +49,11 @@ import {
   selectReverseSort,
   selectRowsPerPage,
   selectSort,
+  selectUserById,
   selectUserIds,
   selectUserTotal,
   selectView,
+  setLoading,
   setPage,
   setRowsPerPage,
   setSort,
@@ -64,6 +68,7 @@ import {
 } from "@s/users/constants";
 import { paginateUsers } from "@s/users/functions";
 import { getUsers } from "@s/users/thunks";
+import { selectFromState } from "@s/util/thunks";
 import { UserCard } from "./user-card";
 import { UserRow } from "./user-row";
 import "./index.scss";
@@ -103,9 +108,6 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
     [ids, page, rowsPerPage]
   );
 
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [deletedUser, setDeletedUser] = useState<EntityId>("");
-
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
   const [closeViewMenu, openViewMenu] = useBoolStates(
     setViewMenuOpen,
@@ -123,15 +125,44 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
     }
   }, []);
 
-  const openDeleteDialog = (user: EntityId) => {
-    setDeleteOpen(true);
-    setDeletedUser(user);
-  };
-  const closeDeleteDialog = () => {
-    setDeleteOpen(false);
-    setTimeout(() => {
-      setDeletedUser("");
-    }, 75);
+  const openDeleteDialog = (id: EntityId) => {
+    const user = dispatch(
+      selectFromState((state) => selectUserById(state, id))
+    );
+    if (user) {
+      confirm({
+        acceptLabel: "Delete",
+        body: `Are you sure you want to delete the user ${user.displayName}?`,
+        className: "mdc-dialog--delete-confirm",
+        onClose: async (e) => {
+          switch (e.detail.action) {
+            case "accept": {
+              dispatch(setLoading(true));
+              const deleteUser = firebase
+                .functions()
+                .httpsCallable("deleteUser");
+              try {
+                const result = await deleteUser(user);
+
+                if (result.data.error) {
+                  notify({ title: result.data.error });
+                  dispatch(setLoading(false));
+                } else {
+                  notify({
+                    title: `User ${user?.displayName} successfully deleted.`,
+                  });
+                  dispatch(getUsers());
+                }
+              } catch (error) {
+                notify({ title: `Error deleting user: ${error}` });
+                dispatch(setLoading(false));
+              }
+            }
+          }
+        },
+        title: "Delete User",
+      });
+    }
   };
 
   const sortMenu = (view === "card" || device !== "desktop") && (
@@ -408,11 +439,6 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
               )}
             </div>
           </div>
-          <DialogDelete
-            onClose={closeDeleteDialog}
-            open={deleteOpen}
-            userId={deletedUser}
-          />
         </div>
         <Footer />
       </div>
