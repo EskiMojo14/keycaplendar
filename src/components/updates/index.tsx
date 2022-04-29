@@ -12,18 +12,27 @@ import {
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
 import { useLocation } from "react-router-dom";
+import { confirm } from "~/app/dialog-queue";
+import { notify } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
-import { DialogDelete } from "@c/updates/admin/dialog-delete";
 import { ModalCreate, ModalEdit } from "@c/updates/admin/modal-entry";
 import { AppBarIndent } from "@c/util/app-bar-indent";
 import { useAppDispatch, useAppSelector } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
+import firestore from "@s/firebase/firestore";
+import type { UpdateId } from "@s/firebase/types";
 import { pageTitle } from "@s/router/constants";
-import { selectEntryIds, selectEntryMap, selectLoading } from "@s/updates";
+import {
+  selectEntryById,
+  selectEntryIds,
+  selectEntryMap,
+  selectLoading,
+} from "@s/updates";
 import { getEntries as getEntriesThunk } from "@s/updates/thunks";
 import { selectUser } from "@s/user";
 import { closeModal, openModal } from "@s/util/functions";
+import { selectFromState } from "@s/util/thunks";
 import { UpdateEntry } from "./update-entry";
 import "./index.scss";
 
@@ -96,19 +105,35 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
     closeModal();
   };
 
-  const [deleteEntry, setDeleteEntry] = useState<EntityId>("");
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const openDelete = (entry: EntityId) => {
-    setDeleteOpen(true);
-    setDeleteEntry(entry);
-    openModal();
-  };
-  const closeDelete = () => {
-    setDeleteOpen(false);
-    setTimeout(() => {
-      setDeleteEntry("");
-    }, 300);
-    closeModal();
+  const openDelete = (id: EntityId) => {
+    const entry = dispatch(
+      selectFromState((state) => selectEntryById(state, id))
+    );
+    if (entry) {
+      confirm({
+        acceptLabel: "Delete",
+        body: `Are you sure you want to delete the update entry "${entry.title}"? This cannot be undone.`,
+        className: "mdc-dialog--delete-confirm",
+        onClose: async (e) => {
+          switch (e.detail.action) {
+            case "accept": {
+              try {
+                await firestore
+                  .collection("updates")
+                  .doc(id as UpdateId)
+                  .delete();
+                notify({ title: "Successfully deleted entry." });
+                getEntries();
+              } catch (error) {
+                console.log(`Failed to delete entry: ${error}`);
+                notify({ title: `Failed to delete entry: ${error}` });
+              }
+            }
+          }
+        },
+        title: `Delete "${entry.title}"`,
+      });
+    }
   };
 
   const indent = user.isAdmin && bottomNav && <AppBarIndent />;
@@ -131,12 +156,6 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
         getEntries={getEntries}
         onClose={closeEdit}
         open={editOpen}
-      />
-      <DialogDelete
-        entryId={deleteEntry}
-        getEntries={getEntries}
-        onClose={closeDelete}
-        open={deleteOpen}
       />
     </>
   );
