@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import type { ChangeEvent } from "react";
+import type { EntityId } from "@reduxjs/toolkit";
 import { Button } from "@rmwc/button";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
@@ -73,7 +74,7 @@ const sortInternalArrays = <S extends Record<any, any>>(obj: S): S =>
 
 type DrawerFilterProps = {
   close: () => void;
-  deletePreset: (preset: PresetType) => void;
+  deletePreset: (preset: EntityId) => void;
   open: boolean;
   openPreset: (preset: PresetType) => void;
 };
@@ -172,7 +173,7 @@ export const DrawerFilter = ({
 
   const deletePreset = () => {
     if (preset.id !== "default") {
-      deleteFn(preset);
+      deleteFn(preset.id);
     }
   };
 

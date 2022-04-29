@@ -5,6 +5,7 @@ import { Fab } from "@rmwc/fab";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import classNames from "classnames";
 import { useParams } from "react-router-dom";
+import { confirm } from "~/app/dialog-queue";
 import { Footer } from "@c/common/footer";
 import { DialogDelete } from "@c/main/admin/dialog-delete";
 import { ModalCreate, ModalEdit } from "@c/main/admin/modal-entry";
@@ -26,16 +27,18 @@ import {
   selectLinkedFavorites,
   selectLinkedFavoritesLoading,
   selectLoading,
+  selectPresetById,
   selectSetGroupTotal,
 } from "@s/main";
 import { blankKeyset, blankPreset } from "@s/main/constants";
+import { deleteGlobalPreset, deletePreset } from "@s/main/thunks";
 import type { PresetType, SetType } from "@s/main/types";
 import { replace } from "@s/router";
 import { selectView } from "@s/settings";
 import { selectUser } from "@s/user";
 import { getLinkedFavorites } from "@s/user/thunks";
 import { closeModal, openModal } from "@s/util/functions";
-import { DialogDeleteFilterPreset } from "./dialog-delete-filter-preset";
+import { selectFromState } from "@s/util/thunks";
 import { DialogSales } from "./dialog-sales";
 import { DialogShareFavorites } from "./dialog-share-favorites";
 import { DrawerDetails } from "./drawer-details";
@@ -199,13 +202,32 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
     setTimeout(() => setFilterPreset(blankPreset), 300);
   };
 
-  const [deleteFilterPresetOpen, setDeleteFilterPresetOpen] = useState(false);
-  const [deleteFilterPreset, setDeleteFilterPreset] = useState(blankPreset);
-  const openDeleteFilterPreset = (preset: PresetType) => {
+  const openDeleteFilterPreset = (id: EntityId) => {
     const open = () => {
-      openModal();
-      setDeleteFilterPresetOpen(true);
-      setDeleteFilterPreset(preset);
+      const preset = dispatch(
+        selectFromState((state) => selectPresetById(state, id))
+      );
+      if (preset) {
+        confirm({
+          acceptLabel: "Delete",
+          body: `Are you sure you want to delete the${
+            preset.global ? " global" : ""
+          } filter preset "${preset.name}"?`,
+          className: "mdc-dialog--delete-confirm",
+          onClose: async (e) => {
+            switch (e.detail.action) {
+              case "accept": {
+                dispatch(
+                  preset.global
+                    ? deleteGlobalPreset(preset.id)
+                    : deletePreset(preset.id)
+                );
+              }
+            }
+          },
+          title: `Delete "${preset.name}"`,
+        });
+      }
     };
     if (filterOpen && (view === "compact" || device !== "desktop")) {
       closeFilter();
@@ -213,11 +235,6 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
     } else {
       open();
     }
-  };
-  const closeDeleteFilterPreset = () => {
-    closeModal();
-    setDeleteFilterPresetOpen(false);
-    setTimeout(() => setDeleteFilterPreset(blankPreset), 300);
   };
 
   const [shareOpen, setShareOpen] = useState(false);
@@ -242,11 +259,6 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
         close={closeFilterPreset}
         open={filterPresetOpen}
         preset={filterPreset}
-      />
-      <DialogDeleteFilterPreset
-        close={closeDeleteFilterPreset}
-        open={deleteFilterPresetOpen}
-        preset={deleteFilterPreset}
       />
     </>
   );
