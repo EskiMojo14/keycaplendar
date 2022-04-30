@@ -15,7 +15,7 @@ import {
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { useParams } from "react-router-dom";
-import { confirm } from "~/app/dialog-queue";
+import { confirmDelete } from "~/app/dialog-queue";
 import { notify } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
 import { ModalCreate, ModalEdit } from "@c/guides/admin/modal-entry";
@@ -123,34 +123,28 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
     closeModal();
   };
 
-  const openDelete = (id: EntityId) => {
+  const openDelete = async (id: EntityId) => {
     const entry = dispatch(
       selectFromState((state) => selectEntryById(state, id))
     );
     if (entry) {
-      confirm({
-        acceptLabel: "Delete",
+      const confirmed = await confirmDelete({
         body: `Are you sure you want to delete the guide entry "${entry.title}"? This cannot be undone.`,
-        className: "mdc-dialog--delete-confirm",
-        onClose: async (e) => {
-          switch (e.detail.action) {
-            case "accept": {
-              try {
-                await firestore
-                  .collection("guides")
-                  .doc(id as GuideId)
-                  .delete();
-                notify({ title: "Successfully deleted entry." });
-                getEntries();
-              } catch (error) {
-                console.log(`Failed to delete entry: ${error}`);
-                notify({ title: `Failed to delete entry: ${error}` });
-              }
-            }
-          }
-        },
         title: `Delete "${entry.title}"`,
       });
+      if (confirmed) {
+        try {
+          await firestore
+            .collection("guides")
+            .doc(id as GuideId)
+            .delete();
+          notify({ title: "Successfully deleted entry." });
+          getEntries();
+        } catch (error) {
+          console.log(`Failed to delete entry: ${error}`);
+          notify({ title: `Failed to delete entry: ${error}` });
+        }
+      }
     }
   };
 

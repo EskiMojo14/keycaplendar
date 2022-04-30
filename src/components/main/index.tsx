@@ -5,7 +5,7 @@ import { Fab } from "@rmwc/fab";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import classNames from "classnames";
 import { useParams } from "react-router-dom";
-import { confirm } from "~/app/dialog-queue";
+import { confirmDelete } from "~/app/dialog-queue";
 import { Footer } from "@c/common/footer";
 import { DialogDelete } from "@c/main/admin/dialog-delete";
 import { ModalCreate, ModalEdit } from "@c/main/admin/modal-entry";
@@ -203,30 +203,24 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   };
 
   const openDeleteFilterPreset = (id: EntityId) => {
-    const open = () => {
+    const open = async () => {
       const preset = dispatch(
         selectFromState((state) => selectPresetById(state, id))
       );
       if (preset) {
-        confirm({
-          acceptLabel: "Delete",
+        const confirmed = await confirmDelete({
           body: `Are you sure you want to delete the${
             preset.global ? " global" : ""
           } filter preset "${preset.name}"?`,
-          className: "mdc-dialog--delete-confirm",
-          onClose: async (e) => {
-            switch (e.detail.action) {
-              case "accept": {
-                dispatch(
-                  preset.global
-                    ? deleteGlobalPreset(preset.id)
-                    : deletePreset(preset.id)
-                );
-              }
-            }
-          },
           title: `Delete "${preset.name}"`,
         });
+        if (confirmed) {
+          dispatch(
+            preset.global
+              ? deleteGlobalPreset(preset.id)
+              : deletePreset(preset.id)
+          );
+        }
       }
     };
     if (filterOpen && (view === "compact" || device !== "desktop")) {

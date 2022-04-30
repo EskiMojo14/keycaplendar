@@ -12,7 +12,7 @@ import {
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
 import { useLocation } from "react-router-dom";
-import { confirm } from "~/app/dialog-queue";
+import { confirmDelete } from "~/app/dialog-queue";
 import { notify } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
 import { ModalCreate, ModalEdit } from "@c/updates/admin/modal-entry";
@@ -105,34 +105,28 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
     closeModal();
   };
 
-  const openDelete = (id: EntityId) => {
+  const openDelete = async (id: EntityId) => {
     const entry = dispatch(
       selectFromState((state) => selectEntryById(state, id))
     );
     if (entry) {
-      confirm({
-        acceptLabel: "Delete",
+      const confirmed = await confirmDelete({
         body: `Are you sure you want to delete the update entry "${entry.title}"? This cannot be undone.`,
-        className: "mdc-dialog--delete-confirm",
-        onClose: async (e) => {
-          switch (e.detail.action) {
-            case "accept": {
-              try {
-                await firestore
-                  .collection("updates")
-                  .doc(id as UpdateId)
-                  .delete();
-                notify({ title: "Successfully deleted entry." });
-                getEntries();
-              } catch (error) {
-                console.log(`Failed to delete entry: ${error}`);
-                notify({ title: `Failed to delete entry: ${error}` });
-              }
-            }
-          }
-        },
         title: `Delete "${entry.title}"`,
       });
+      if (confirmed) {
+        try {
+          await firestore
+            .collection("updates")
+            .doc(id as UpdateId)
+            .delete();
+          notify({ title: "Successfully deleted entry." });
+          getEntries();
+        } catch (error) {
+          console.log(`Failed to delete entry: ${error}`);
+          notify({ title: `Failed to delete entry: ${error}` });
+        }
+      }
     }
   };
 

@@ -22,7 +22,7 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
-import { confirm } from "~/app/dialog-queue";
+import { confirmDelete } from "~/app/dialog-queue";
 import { notify } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
 import {
@@ -125,43 +125,35 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
     }
   }, []);
 
-  const openDeleteDialog = (id: EntityId) => {
+  const openDeleteDialog = async (id: EntityId) => {
     const user = dispatch(
       selectFromState((state) => selectUserById(state, id))
     );
     if (user) {
-      confirm({
-        acceptLabel: "Delete",
+      const confirmed = await confirmDelete({
         body: `Are you sure you want to delete the user ${user.displayName}?`,
-        className: "mdc-dialog--delete-confirm",
-        onClose: async (e) => {
-          switch (e.detail.action) {
-            case "accept": {
-              dispatch(setLoading(true));
-              const deleteUser = firebase
-                .functions()
-                .httpsCallable("deleteUser");
-              try {
-                const result = await deleteUser(user);
-
-                if (result.data.error) {
-                  notify({ title: result.data.error });
-                  dispatch(setLoading(false));
-                } else {
-                  notify({
-                    title: `User ${user?.displayName} successfully deleted.`,
-                  });
-                  dispatch(getUsers());
-                }
-              } catch (error) {
-                notify({ title: `Error deleting user: ${error}` });
-                dispatch(setLoading(false));
-              }
-            }
-          }
-        },
         title: "Delete User",
       });
+      if (confirmed) {
+        dispatch(setLoading(true));
+        const deleteUser = firebase.functions().httpsCallable("deleteUser");
+        try {
+          const result = await deleteUser(user);
+
+          if (result.data.error) {
+            notify({ title: result.data.error });
+            dispatch(setLoading(false));
+          } else {
+            notify({
+              title: `User ${user?.displayName} successfully deleted.`,
+            });
+            dispatch(getUsers());
+          }
+        } catch (error) {
+          notify({ title: `Error deleting user: ${error}` });
+          dispatch(setLoading(false));
+        }
+      }
     }
   };
 

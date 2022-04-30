@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import type { EntityId } from "@reduxjs/toolkit";
 import { Button } from "@rmwc/button";
 import { Checkbox } from "@rmwc/checkbox";
@@ -24,7 +23,7 @@ import classNames from "classnames";
 import isEqual from "lodash.isequal";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
-import { confirm } from "~/app/dialog-queue";
+import { confirmDelete } from "~/app/dialog-queue";
 import { notify } from "~/app/snackbar-queue";
 import { useAppDispatch, useAppSelector } from "@h";
 import { deleteAction, selectActionById } from "@s/audit";
@@ -42,29 +41,20 @@ export const AuditEntry = ({ actionId }: AuditEntryProps) => {
 
   const action = useAppSelector((state) => selectActionById(state, actionId));
 
-  const openDeleteDialog = useCallback(
-    () =>
-      confirm({
-        acceptLabel: "Delete",
-        body: `Are you sure you want to delete the changelog entry with the ID ${action?.changelogId}?`,
-        className: "mdc-dialog--delete-confirm",
-        onClose: async (e) => {
-          switch (e.detail.action) {
-            case "accept": {
-              try {
-                await dispatch(deleteAction(actionId)).unwrap();
-
-                notify({ title: "Successfully deleted changelog entry." });
-              } catch (error) {
-                notify({ title: `Error deleting changelog entry: ${error}` });
-              }
-            }
-          }
-        },
-        title: "Delete Action",
-      }),
-    [action]
-  );
+  const openDeleteDialog = async () => {
+    const confirmed = await confirmDelete({
+      body: `Are you sure you want to delete the changelog entry with the ID ${action?.changelogId}?`,
+      title: "Delete Action",
+    });
+    if (confirmed) {
+      try {
+        await dispatch(deleteAction(actionId)).unwrap();
+        notify({ title: "Successfully deleted changelog entry." });
+      } catch (error) {
+        notify({ title: `Error deleting changelog entry: ${error}` });
+      }
+    }
+  };
 
   if (action) {
     const timestamp = DateTime.fromISO(action.timestamp);
