@@ -9,7 +9,6 @@ import { confirmDelete } from "~/app/dialog-queue";
 import { notify } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
 import { ModalCreate, ModalEdit } from "@c/main/admin/modal-entry";
-import { SnackbarDeleted } from "@c/main/admin/snackbar-deleted";
 import { AppBar } from "@c/main/app_bar/app-bar";
 import { ContentEmpty } from "@c/main/content/content-empty";
 import { ContentGrid } from "@c/main/content/content-grid";
@@ -33,15 +32,21 @@ import {
   selectPresetById,
   selectSetById,
   selectSetGroupTotal,
+  setSet,
 } from "@s/main";
-import { blankKeyset, blankPreset } from "@s/main/constants";
+import { blankPreset } from "@s/main/constants";
 import { deleteGlobalPreset, deletePreset } from "@s/main/thunks";
-import type { PresetType } from "@s/main/types";
+import type { PresetType, SetType } from "@s/main/types";
 import { replace } from "@s/router";
 import { selectView } from "@s/settings";
 import { selectUser } from "@s/user";
 import { getLinkedFavorites } from "@s/user/thunks";
-import { closeModal, openModal } from "@s/util/functions";
+import {
+  batchStorageDelete,
+  closeModal,
+  getStorageFolders,
+  openModal,
+} from "@s/util/functions";
 import { selectFromState } from "@s/util/thunks";
 import { DialogSales } from "./dialog-sales";
 import { DialogShareFavorites } from "./dialog-share-favorites";
@@ -164,16 +169,63 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
     setTimeout(() => setEditSet(""), 300);
   };
 
-  const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState(false);
-  const [deletedSet, setDeletedSet] = useState(blankKeyset);
-
-  const openDeleteSnackbar = () => {
-    setDeleteSnackbarOpen(true);
-  };
-
-  const closeDeleteSnackbar = () => {
-    setDeleteSnackbarOpen(false);
-    setTimeout(() => setDeletedSet(blankKeyset), 300);
+  const openDeleteSnackbar = ({ id, ...set }: SetType) => {
+    const deleteImages = async (name: string) => {
+      try {
+        const folders = await getStorageFolders();
+        const allImages = folders.map((folder) => `${folder}/${name}`);
+        await batchStorageDelete(allImages);
+        notify({ title: "Successfully deleted thumbnails." });
+      } catch (error) {
+        notify({ title: `Failed to delete thumbnails: ${error}` });
+        console.log(error);
+      }
+    };
+    const recreateEntry = async () => {
+      try {
+        await firestore
+          .collection("keysets")
+          .doc(id as KeysetId)
+          .set(
+            {
+              ...set,
+              gbLaunch: set.gbMonth ? set.gbLaunch.slice(0, 7) : set.gbLaunch,
+              latestEditor: user.id,
+            },
+            { merge: true }
+          );
+        console.log("Document recreated with ID: ", id);
+        notify({ title: "Entry successfully recreated." });
+        dispatch(setSet({ id, ...set }));
+      } catch (error) {
+        console.error("Error recreating document: ", error);
+        notify({ title: `Error recreating document: ${error}` });
+      }
+    };
+    notify({
+      actions: [
+        {
+          label: "Undo",
+          onClick: recreateEntry,
+        },
+      ],
+      dismissesOnAction: true,
+      onClose: (e) => {
+        switch (e.detail.reason) {
+          case "action":
+            return;
+          default: {
+            const fileNameRegex = /keysets%2F(.*)\?/;
+            const regexMatch = set.image.match(fileNameRegex);
+            if (regexMatch) {
+              const [, imageName] = regexMatch;
+              deleteImages(imageName);
+            }
+          }
+        }
+      },
+      title: `${set.profile} ${set.colorway} has been deleted.`,
+    });
   };
 
   const openDeleteDialog = async (id: EntityId) => {
@@ -192,8 +244,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
             .set({
               latestEditor: user.id,
             } as KeysetDoc);
-          setDeletedSet(set);
-          openDeleteSnackbar();
+          openDeleteSnackbar(set);
           dispatch(deleteSet(set.id));
         } catch (error) {
           console.error("Error deleting document: ", error);
@@ -279,16 +330,6 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
     </>
   );
 
-  const deleteElements = user.isEditor && (
-    <>
-      <SnackbarDeleted
-        close={closeDeleteSnackbar}
-        open={deleteSnackbarOpen}
-        set={deletedSet}
-      />
-    </>
-  );
-
   const editorElements = (user.isEditor || user.isDesigner) && (
     <ConditionalWrapper
       condition={device === "desktop"}
@@ -302,7 +343,6 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
       />
       <ModalCreate onClose={closeCreate} open={createOpen} />
       <ModalEdit onClose={closeEdit} open={editOpen} set={editSet} />
-      {deleteElements}
     </ConditionalWrapper>
   );
 

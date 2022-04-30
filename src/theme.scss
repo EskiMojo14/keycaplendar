@@ -1444,18 +1444,13 @@ $overlay-values: (
     );
     @include snackbar.label-ink-color(map-get($variables, surface));
     &__action:not(:disabled) {
-      color: if(
+      $color: if(
         $dark,
         darken(map-get($variables, primary), 25%),
         map-get($variables, primary)
       );
-      @include ripple.states(
-        if(
-          $dark,
-          darken(map-get($variables, primary), 25%),
-          map-get($variables, primary)
-        )
-      );
+      color: $color;
+      @include ripple.states($color);
     }
   }
 
