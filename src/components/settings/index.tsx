@@ -31,6 +31,7 @@ import type { IconOptions } from "@rmwc/types";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
+import { confirmDelete } from "~/app/dialog-queue";
 import { notify } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
 import { TimePicker } from "@c/util/pickers/time-picker";
@@ -39,7 +40,6 @@ import {
   SegmentedButtonSegment,
 } from "@c/util/segmented-button";
 import { useAppDispatch, useAppSelector } from "@h";
-import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import firebase from "@s/firebase";
@@ -64,7 +64,6 @@ import {
 import { selectShareName, selectUser, setUser } from "@s/user";
 import { createDebouncedSyncShareName } from "@s/user/thunks";
 import { userRoleIcons } from "@s/users/constants";
-import { DialogDelete } from "./dialog-delete";
 import "./index.scss";
 
 type ContentSettingsProps = {
@@ -113,11 +112,6 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
     }
   };
 
-  const [deleteDialogOpen, setDialogDeleteOpen] = useState(false);
-  const [closeDeleteDialog, openDeleteDialog] = useBoolStates(
-    setDialogDeleteOpen,
-    "setDialogDeleteOpen"
-  );
   const signOut = async () => {
     try {
       await firebase.auth().signOut();
@@ -127,8 +121,47 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
       notify({ title: `Error signing out: ${error}` });
     }
   };
+
+  const openDeleteDialog = async () => {
+    const confirmed = await confirmDelete({
+      body: "Are you sure you want to delete your account and all associated information? You will lose all information stored in the database, such as presets and favorites. This cannot be undone.",
+      title: "Delete account",
+    });
+    if (confirmed) {
+      const deleteFn = firebase.functions().httpsCallable("deleteOwnUser");
+      try {
+        const result = await deleteFn();
+        if (result.data.error) {
+          const {
+            data: { error },
+          } = result;
+          notify({ title: `Failed to delete account: ${error}` });
+          console.log(
+            `Failed to delete account: ${error}. Please contact keycaplendar@gmail.com if this issue reoccurs.`
+          );
+        } else if (result.data[0]?.error || result.data[1]?.error) {
+          const error = result.data[0]?.error || result.data[1]?.error;
+          notify({ title: `Failed to delete account: ${error}` });
+          console.log(
+            `Failed to delete account: ${error}. Please contact keycaplendar@gmail.com if this issue reoccurs.`
+          );
+        } else {
+          close();
+          notify({ title: "Account deleted." });
+          signOut();
+        }
+      } catch (error) {
+        notify({ title: `Failed to delete account: ${error}` });
+        console.log(
+          `Failed to delete account: ${error}. Please contact keycaplendar@gmail.com if this issue reoccurs.`
+        );
+      }
+    }
+  };
+
   const selectApplyTheme = (e: ChangeEvent<HTMLSelectElement>) =>
     dispatch(setApplyTheme(e.target.value.toLowerCase()));
+
   const permissionIcon = user.isAdmin
     ? userRoleIcons.admin
     : user.isEditor
@@ -259,13 +292,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
       </Card>
     </div>
   );
-  const deleteUserDialog = user.email && (
-    <DialogDelete
-      close={closeDeleteDialog}
-      open={deleteDialogOpen}
-      signOut={signOut}
-    />
-  );
+
   const bottomNavOptions = device === "mobile" && (
     <div className="settings-group">
       <div className="subheader">
@@ -507,7 +534,6 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
       </div>
       <Footer />
       {bottomNavSetting && <TopAppBarFixedAdjust />}
-      {deleteUserDialog}
     </>
   );
 };
