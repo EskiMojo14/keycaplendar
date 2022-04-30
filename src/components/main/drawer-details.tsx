@@ -25,7 +25,6 @@ import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import usePage from "@h/use-page";
 import { selectSearch, selectSetById, setSearch } from "@s/main";
-import type { SetType } from "@s/main/types";
 import { mainPages } from "@s/router/constants";
 import { createURL } from "@s/router/functions";
 import { selectView } from "@s/settings";
@@ -62,7 +61,7 @@ type DrawerDetailsProps = {
   open: boolean;
   openSales: (set: EntityId) => void;
   set: EntityId | undefined;
-  delete?: (set: SetType) => void;
+  delete?: (set: EntityId) => void;
   edit?: (set: EntityId) => void;
 };
 
@@ -313,7 +312,7 @@ export const DrawerDetails = ({
             danger
             icon={iconObject(<Delete />)}
             label="Delete"
-            onClick={set ? () => deleteSet(set) : undefined}
+            onClick={() => deleteSet(setId)}
             outlined
           />
         )}

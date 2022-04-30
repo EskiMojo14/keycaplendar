@@ -6,8 +6,8 @@ import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import classNames from "classnames";
 import { useParams } from "react-router-dom";
 import { confirmDelete } from "~/app/dialog-queue";
+import { notify } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
-import { DialogDelete } from "@c/main/admin/dialog-delete";
 import { ModalCreate, ModalEdit } from "@c/main/admin/modal-entry";
 import { SnackbarDeleted } from "@c/main/admin/snackbar-deleted";
 import { AppBar } from "@c/main/app_bar/app-bar";
@@ -22,17 +22,21 @@ import useDevice from "@h/use-device";
 import useLocatedSelector from "@h/use-located-selector";
 import usePage from "@h/use-page";
 import { useSearchParams } from "@h/use-search-params";
+import firestore from "@s/firebase/firestore";
+import type { KeysetDoc, KeysetId } from "@s/firebase/types";
 import {
+  deleteSet,
   selectKeysetByString,
   selectLinkedFavorites,
   selectLinkedFavoritesLoading,
   selectLoading,
   selectPresetById,
+  selectSetById,
   selectSetGroupTotal,
 } from "@s/main";
 import { blankKeyset, blankPreset } from "@s/main/constants";
 import { deleteGlobalPreset, deletePreset } from "@s/main/thunks";
-import type { PresetType, SetType } from "@s/main/types";
+import type { PresetType } from "@s/main/types";
 import { replace } from "@s/router";
 import { selectView } from "@s/settings";
 import { selectUser } from "@s/user";
@@ -160,17 +164,8 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
     setTimeout(() => setEditSet(""), 300);
   };
 
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState(false);
-  const [deleteSet, setDeleteSet] = useState(blankKeyset);
-  const openDeleteDialog = (set: SetType) => {
-    closeDetails();
-    setDeleteDialogOpen(true);
-    setDeleteSet(set);
-  };
-  const closeDeleteDialog = () => {
-    setDeleteDialogOpen(false);
-  };
+  const [deletedSet, setDeletedSet] = useState(blankKeyset);
 
   const openDeleteSnackbar = () => {
     setDeleteSnackbarOpen(true);
@@ -178,7 +173,34 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
 
   const closeDeleteSnackbar = () => {
     setDeleteSnackbarOpen(false);
-    setTimeout(() => setDeleteSet(blankKeyset), 300);
+    setTimeout(() => setDeletedSet(blankKeyset), 300);
+  };
+
+  const openDeleteDialog = async (id: EntityId) => {
+    closeDetails();
+    const set = dispatch(selectFromState((state) => selectSetById(state, id)));
+    if (set) {
+      const confirmed = await confirmDelete({
+        body: `Are you sure you want to delete the entry for ${set.profile} ${set.colorway}?`,
+        title: `Delete ${set.profile} ${set.colorway}`,
+      });
+      if (confirmed) {
+        try {
+          await firestore
+            .collection("keysets")
+            .doc(set.id as KeysetId)
+            .set({
+              latestEditor: user.id,
+            } as KeysetDoc);
+          setDeletedSet(set);
+          openDeleteSnackbar();
+          dispatch(deleteSet(set.id));
+        } catch (error) {
+          console.error("Error deleting document: ", error);
+          notify({ title: `Error deleting document: ${error}` });
+        }
+      }
+    }
   };
 
   const [filterPresetOpen, setFilterPresetOpen] = useState(false);
@@ -259,16 +281,10 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
 
   const deleteElements = user.isEditor && (
     <>
-      <DialogDelete
-        close={closeDeleteDialog}
-        open={deleteDialogOpen}
-        openSnackbar={openDeleteSnackbar}
-        set={deleteSet}
-      />
       <SnackbarDeleted
         close={closeDeleteSnackbar}
         open={deleteSnackbarOpen}
-        set={deleteSet}
+        set={deletedSet}
       />
     </>
   );
