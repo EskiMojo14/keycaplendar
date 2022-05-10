@@ -13,7 +13,6 @@ import {
   selectFilterAction,
   selectFilterUser,
   selectLength,
-  selectLoading,
   selectUsers,
   setFilterAction,
   setFilterUser,
@@ -33,13 +32,13 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
 
   const device = useDevice();
 
-  const loading = useAppSelector(selectLoading);
   const auditLength = useAppSelector(selectLength);
   const filterAction = useAppSelector(selectFilterAction);
   const filterUser = useAppSelector(selectFilterUser);
 
-  const { users = [] } = useGetActionsQuery(auditLength, {
-    selectFromResult: ({ data }) => ({
+  const { users = [], isFetching } = useGetActionsQuery(auditLength, {
+    selectFromResult: ({ data, isFetching }) => ({
+      isFetching,
       users: data && selectUsers(data),
     }),
   });
@@ -74,7 +73,7 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
     );
   const handleLengthChange = (e: ChangeEvent<HTMLInputElement>) => {
     const length = parseInt(e.target.value);
-    if (!loading && length >= 50 && length % 50 === 0 && length <= 250) {
+    if (!isFetching && length >= 50 && length % 50 === 0 && length <= 250) {
       dispatch(setLength(length));
     }
   };
@@ -98,6 +97,7 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
           </div>
           <div className="slider-container">
             <Slider
+              disabled={isFetching}
               discrete
               displayMarkers
               max={250}
@@ -111,6 +111,7 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
               value={auditLength}
             />
             <TextField
+              disabled={isFetching}
               max={250}
               min={50}
               onChange={handleLengthChange}

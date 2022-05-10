@@ -40,12 +40,12 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
   const length = useAppSelector(selectLength);
   const {
     actions = [],
-    isLoading,
+    isFetching,
     refetch,
   } = useGetActionsQuery(length, {
-    selectFromResult: ({ data, isLoading }) => ({
+    selectFromResult: ({ data, isFetching }) => ({
       actions: data && selectActions(data),
-      isLoading,
+      isFetching,
     }),
   });
 
@@ -75,7 +75,7 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
     setFilterOpen(false);
   };
 
-  const refreshButton = isLoading ? (
+  const refreshButton = isFetching ? (
     <CircularProgress />
   ) : (
     withTooltip(

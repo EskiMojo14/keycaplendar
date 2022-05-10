@@ -25,11 +25,11 @@ import { DateTime } from "luxon";
 import { is } from "typescript-is";
 import { confirmDelete } from "~/app/dialog-queue";
 import { notify } from "~/app/snackbar-queue";
-import { useAppDispatch, useAppSelector } from "@h";
+import { useAppSelector } from "@h";
 import {
-  deleteAction,
   selectActionById,
   selectLength,
+  useDeleteActionMutation,
   useGetActionsQuery,
 } from "@s/audit";
 import { auditProperties } from "@s/audit/constants";
@@ -42,12 +42,14 @@ type AuditEntryProps = {
 };
 
 export const AuditEntry = ({ actionId }: AuditEntryProps) => {
-  const dispatch = useAppDispatch();
   const length = useAppSelector(selectLength);
   const { action } = useGetActionsQuery(length, {
     selectFromResult: ({ data }) => ({
       action: data && selectActionById(data, actionId),
     }),
+  });
+  const [deleteAction] = useDeleteActionMutation({
+    selectFromResult: () => ({}),
   });
 
   if (!action) {
@@ -60,12 +62,8 @@ export const AuditEntry = ({ actionId }: AuditEntryProps) => {
       title: "Delete Action",
     });
     if (confirmed) {
-      try {
-        await dispatch(deleteAction(actionId)).unwrap();
-        notify({ title: "Successfully deleted changelog entry." });
-      } catch (error) {
-        notify({ title: `Error deleting changelog entry: ${error}` });
-      }
+      await deleteAction(actionId).unwrap();
+      notify({ title: "Successfully deleted changelog entry." });
     }
   };
 

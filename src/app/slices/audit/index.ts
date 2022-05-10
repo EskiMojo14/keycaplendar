@@ -1,15 +1,9 @@
 import {
-  createAsyncThunk,
   createEntityAdapter,
   createSelector,
   createSlice,
-  isAnyOf,
-  isFulfilled,
-  isPending,
-  isRejected,
 } from "@reduxjs/toolkit";
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
-import type { AnyAsyncThunk } from "@reduxjs/toolkit/dist/matchers";
 import isEqual from "lodash.isequal";
 import type { RootState } from "~/app/store";
 import type { AppStartListening } from "@mw/listener";
@@ -60,7 +54,29 @@ export const processAction = ({
 
 export const auditApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    deleteAction: builder.mutation<void, EntityId>({
+      invalidatesTags: (_, __, id) => [{ id, type: "Audit" as const }],
+      queryFn: async (id) => {
+        try {
+          return {
+            data: await firestore
+              .collection("changelog")
+              .doc(id as ChangelogId)
+              .delete(),
+          };
+        } catch (error) {
+          return { error };
+        }
+      },
+    }),
     getActions: builder.query<EntityState<ActionType>, number>({
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.ids.map((id) => ({ id, type: "Audit" as const })),
+              { id: "LIST", type: "Audit" as const },
+            ]
+          : [{ id: "LIST", type: "Audit" as const }],
       queryFn: async (length) => {
         try {
           const querySnapshot = await firestore
@@ -101,110 +117,35 @@ export const auditApi = baseApi.injectEndpoints({
   overrideExisting: true,
 });
 
-export const { useGetActionsQuery } = auditApi;
+export const { useDeleteActionMutation, useGetActionsQuery } = auditApi;
 
 export const setupAuditListeners = combineListeners(
   (startListening: AppStartListening) => [
     ...createErrorMessagesListeners(
       auditApi.endpoints,
       {
-        getActions: "Failed to get audit actions",
+        deleteAction: "Failed to delete audit entry",
+        getActions: "Failed to get audit entries",
       },
       startListening
     ),
   ]
 );
 
-export const getActions = createAsyncThunk<
-  ActionType[],
-  number | undefined,
-  { state: RootState }
->("audit/getActions", async (length, { getState }) => {
-  const querySnapshot = await firestore
-    .collection("changelog")
-    .orderBy("timestamp", "desc")
-    // eslint-disable-next-line no-use-before-define
-    .limit(length ?? selectLength(getState()))
-    .get();
-
-  const actions: ActionType[] = [];
-  querySnapshot.forEach((doc) => {
-    const data = doc.data();
-    const action = data.before?.profile
-      ? data.after?.profile
-        ? "updated"
-        : "deleted"
-      : "created";
-    actions.push({
-      ...data,
-      action,
-      changelogId: doc.id,
-    });
-  });
-
-  alphabeticalSortProp(actions, "timestamp", true);
-  return actions.map(processAction);
-});
-
-export const deleteAction = createAsyncThunk(
-  "audit/deleteAction",
-  async (id: EntityId) =>
-    await firestore
-      .collection("changelog")
-      .doc(id as ChangelogId)
-      .delete()
-);
-
-const idAsyncThunks = <AsyncThunks extends [AnyAsyncThunk, ...AnyAsyncThunk[]]>(
-  ...thunks: AsyncThunks
-) => thunks;
-
-const loadingAsyncThunks = idAsyncThunks(getActions);
-
 export type AuditState = {
-  actions: EntityState<ActionType>;
   filter: {
     action: "created" | "deleted" | "none" | "updated";
     user: string;
   };
   length: number;
-  loadingId: string;
 };
 
 export const initialState: AuditState = {
-  actions: actionAdapter.getInitialState(),
   filter: { action: "none", user: "all" },
   length: 50,
-  loadingId: "",
 };
 
 export const auditSlice = createSlice({
-  extraReducers: (builder) => {
-    builder
-      .addCase(getActions.fulfilled, (state, { payload }) => {
-        actionAdapter.setAll(state.actions, payload);
-      })
-      .addCase(deleteAction.fulfilled, (state, { meta: { arg } }) => {
-        actionAdapter.removeOne(state.actions, arg);
-      })
-      .addMatcher(
-        isPending(...loadingAsyncThunks),
-        (state, { meta: { requestId } }) => {
-          state.loadingId = requestId;
-        }
-      )
-      .addMatcher(
-        isAnyOf(
-          isFulfilled(...loadingAsyncThunks),
-          isRejected(...loadingAsyncThunks)
-        ),
-        (state, { meta: { requestId } }) => {
-          if (state.loadingId === requestId) {
-            state.loadingId = "";
-          }
-        }
-      );
-  },
   initialState,
   name: "audit",
   reducers: {
@@ -226,8 +167,6 @@ export const auditSlice = createSlice({
 export const {
   actions: { setFilterAction, setFilterUser, setLength },
 } = auditSlice;
-
-export const selectLoading = (state: RootState) => !!state.audit.loadingId;
 
 export const selectFilter = (state: RootState) => state.audit.filter;
 
