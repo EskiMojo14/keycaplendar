@@ -17,7 +17,7 @@ import { notify } from "~/app/snackbar-queue";
 import type { AppThunk, RootState } from "~/app/store";
 import type { AppStartListening } from "@mw/listener";
 // eslint-disable-next-line import/no-cycle
-import { getGlobals } from "@s/common";
+import { commonApi } from "@s/common";
 import {
   arraySorts,
   dateSorts,
@@ -107,8 +107,8 @@ export const initialState: MainState = {
 export const mainSlice = createSlice({
   extraReducers: (builder) => {
     builder
-      .addCase(
-        getGlobals.fulfilled,
+      .addMatcher(
+        commonApi.endpoints.getGlobals.matchFulfilled,
         (state, { payload: { filterPresets } }) => {
           appPresetAdapter.setAll(state.presets, filterPresets as PresetType[]);
         }

@@ -1,14 +1,12 @@
-import {
-  createAsyncThunk,
-  createSelector,
-  createSlice,
-} from "@reduxjs/toolkit";
+import { createSelector, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import produce from "immer";
 import type { RootState } from "~/app/store";
+import { combineListeners } from "@mw/listener/functions";
+import baseApi from "@s/api";
+import { createErrorMessagesListeners } from "@s/api/functions";
 import firestore from "@s/firebase/firestore";
 import type { GlobalDoc } from "@s/firebase/types";
-// reducers are built lazily so this *should* be okay
 // eslint-disable-next-line import/no-cycle
 import { selectAllRegions } from "@s/main";
 import { updatePreset } from "@s/main/functions";
@@ -19,6 +17,43 @@ import {
   selectLightTheme,
   selectManualTheme,
 } from "@s/settings";
+
+export const commonApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    getGlobals: build.query<GlobalDoc, void>({
+      queryFn: async (_, { getState }) => {
+        try {
+          const doc = await firestore.collection("app").doc("globals").get();
+          const data = doc.data();
+          if (data === undefined) {
+            throw new Error("Data returned undefined");
+          }
+          const regions = selectAllRegions(getState() as RootState);
+          return {
+            data: produce(data, (draftData) => {
+              draftData.filterPresets = draftData.filterPresets.map((preset) =>
+                updatePreset(preset, { regions })
+              );
+            }),
+          };
+        } catch (error) {
+          return { error };
+        }
+      },
+    }),
+  }),
+  overrideExisting: true,
+});
+
+export const { useGetGlobalsQuery } = commonApi;
+
+export const setupCommonListeners = combineListeners((startListening) => [
+  ...createErrorMessagesListeners(
+    commonApi.endpoints,
+    { getGlobals: "Failed to get global settings" },
+    startListening
+  ),
+]);
 
 export type CommonState = {
   systemTheme: "dark" | "light";
@@ -89,21 +124,3 @@ export const selectTheme = createSelector(
 );
 
 export default commonSlice.reducer;
-
-export const getGlobals = createAsyncThunk<
-  GlobalDoc,
-  void,
-  { state: RootState }
->("common/getGlobals", async (_, { getState }) => {
-  const doc = await firestore.collection("app").doc("globals").get();
-  const data = doc.data();
-  if (data === undefined) {
-    throw new Error("Data returned undefined");
-  }
-  const regions = selectAllRegions(getState());
-  return produce(data, (draftData) => {
-    draftData.filterPresets = draftData.filterPresets.map((preset) =>
-      updatePreset(preset, { regions })
-    );
-  });
-});

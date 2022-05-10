@@ -53,8 +53,8 @@ export const processAction = ({
 };
 
 export const auditApi = baseApi.injectEndpoints({
-  endpoints: (builder) => ({
-    deleteAction: builder.mutation<void, EntityId>({
+  endpoints: (build) => ({
+    deleteAction: build.mutation<void, EntityId>({
       invalidatesTags: (_, __, id) => [{ id, type: "Audit" as const }],
       queryFn: async (id) => {
         try {
@@ -69,7 +69,7 @@ export const auditApi = baseApi.injectEndpoints({
         }
       },
     }),
-    getActions: builder.query<EntityState<ActionType>, number>({
+    getActions: build.query<EntityState<ActionType>, number>({
       providesTags: (result) =>
         result
           ? [
