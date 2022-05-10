@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import type { ChangeEvent } from "react";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
@@ -6,12 +6,10 @@ import { Select } from "@rmwc/select";
 import { Slider } from "@rmwc/slider";
 import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
-import { notify } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import {
-  getActions as getActionsThunk,
   selectFilterAction,
   selectFilterUser,
   selectLength,
@@ -20,6 +18,7 @@ import {
   setFilterAction,
   setFilterUser,
   setLength,
+  useGetActionsQuery,
 } from "@s/audit";
 import { arrayIncludes } from "@s/util/functions";
 import "./drawer-audit-filter.scss";
@@ -38,18 +37,12 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
   const auditLength = useAppSelector(selectLength);
   const filterAction = useAppSelector(selectFilterAction);
   const filterUser = useAppSelector(selectFilterUser);
-  const users = useAppSelector(selectUsers);
 
-  const getActions = useCallback(
-    async (length?: number) => {
-      try {
-        await dispatch(getActionsThunk(length)).unwrap();
-      } catch (err) {
-        notify({ title: `Error getting data: ${err}` });
-      }
-    },
-    [dispatch]
-  );
+  const { users = [] } = useGetActionsQuery(auditLength, {
+    selectFromResult: ({ data }) => ({
+      users: data && selectUsers(data),
+    }),
+  });
 
   const userOptions = useMemo(
     () => [
@@ -81,11 +74,8 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
     );
   const handleLengthChange = (e: ChangeEvent<HTMLInputElement>) => {
     const length = parseInt(e.target.value);
-    if (!loading) {
+    if (!loading && length >= 50 && length % 50 === 0 && length <= 250) {
       dispatch(setLength(length));
-      if (length >= 50 && length % 50 === 0 && length <= 250) {
-        getActions(length);
-      }
     }
   };
 
@@ -112,11 +102,6 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
               displayMarkers
               max={250}
               min={50}
-              onChange={() => {
-                if (!loading) {
-                  getActions();
-                }
-              }}
               onInput={(e) => {
                 if (e.detail.value !== auditLength) {
                   dispatch(setLength(e.detail.value));

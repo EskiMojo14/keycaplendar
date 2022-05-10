@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Card } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -13,19 +13,17 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
-import { notify } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
-import { useAppDispatch, useAppSelector } from "@h";
+import { useAppSelector } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import {
-  getActions as getActionsThunk,
   selectActions,
-  selectActionTotal,
   selectFilter,
-  selectLoading,
+  selectLength,
+  useGetActionsQuery,
 } from "@s/audit";
 import { filterActions } from "@s/audit/functions";
 import { pageTitle } from "@s/router/constants";
@@ -39,26 +37,21 @@ type ContentAuditProps = {
 };
 
 export const ContentAudit = ({ openNav }: ContentAuditProps) => {
-  const dispatch = useAppDispatch();
-  const total = useAppSelector(selectActionTotal);
-  const getActions = useCallback(async () => {
-    try {
-      await dispatch(getActionsThunk()).unwrap();
-    } catch (err) {
-      notify({ title: `Error getting data: ${err}` });
-    }
-  }, [dispatch]);
-  useEffect(() => {
-    if (total === 0) {
-      getActions();
-    }
-  }, []);
+  const length = useAppSelector(selectLength);
+  const {
+    actions = [],
+    isLoading,
+    refetch,
+  } = useGetActionsQuery(length, {
+    selectFromResult: ({ data, isLoading }) => ({
+      actions: data && selectActions(data),
+      isLoading,
+    }),
+  });
 
   const device = useDevice();
   const bottomNav = useBottomNav();
 
-  const loading = useAppSelector(selectLoading);
-  const actions = useAppSelector(selectActions);
   const filter = useAppSelector(selectFilter);
   const filteredActions = useMemo(
     () => filterActions(actions, filter),
@@ -82,11 +75,11 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
     setFilterOpen(false);
   };
 
-  const refreshButton = loading ? (
+  const refreshButton = isLoading ? (
     <CircularProgress />
   ) : (
     withTooltip(
-      <TopAppBarActionItem icon="refresh" onClick={() => getActions()} />,
+      <TopAppBarActionItem icon="refresh" onClick={refetch} />,
       "Refresh",
       { align: bottomNav ? "top" : "bottom" }
     )

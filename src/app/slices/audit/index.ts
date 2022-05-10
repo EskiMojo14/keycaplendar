@@ -12,6 +12,10 @@ import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import type { AnyAsyncThunk } from "@reduxjs/toolkit/dist/matchers";
 import isEqual from "lodash.isequal";
 import type { RootState } from "~/app/store";
+import type { AppStartListening } from "@mw/listener";
+import { combineListeners } from "@mw/listener/functions";
+import baseApi from "@s/api";
+import { createErrorMessagesListeners } from "@s/api/functions";
 import { auditProperties } from "@s/audit/constants";
 import firestore from "@s/firebase/firestore";
 import type { ChangelogId } from "@s/firebase/types";
@@ -22,6 +26,11 @@ import {
   removeDuplicates,
 } from "@s/util/functions";
 import type { ActionType } from "./types";
+
+const actionAdapter = createEntityAdapter<ActionType>({
+  selectId: ({ changelogId }) => changelogId,
+  sortComparer: alphabeticalSortPropCurried("timestamp", true),
+});
 
 export const processAction = ({
   after,
@@ -48,6 +57,63 @@ export const processAction = ({
     before,
   };
 };
+
+export const auditApi = baseApi.injectEndpoints({
+  endpoints: (builder) => ({
+    getActions: builder.query<EntityState<ActionType>, number>({
+      queryFn: async (length) => {
+        try {
+          const querySnapshot = await firestore
+            .collection("changelog")
+            .orderBy("timestamp", "desc")
+            // eslint-disable-next-line no-use-before-define
+            .limit(length)
+            .get();
+
+          const actions: ActionType[] = [];
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const action = data.before?.profile
+              ? data.after?.profile
+                ? "updated"
+                : "deleted"
+              : "created";
+            actions.push({
+              ...data,
+              action,
+              changelogId: doc.id,
+            });
+          });
+
+          alphabeticalSortProp(actions, "timestamp", true);
+          return {
+            data: actionAdapter.setAll(
+              actionAdapter.getInitialState(),
+              actions.map(processAction)
+            ),
+          };
+        } catch (error) {
+          return { error };
+        }
+      },
+    }),
+  }),
+  overrideExisting: true,
+});
+
+export const { useGetActionsQuery } = auditApi;
+
+export const setupAuditListeners = combineListeners(
+  (startListening: AppStartListening) => [
+    ...createErrorMessagesListeners(
+      auditApi.endpoints,
+      {
+        getActions: "Failed to get audit actions",
+      },
+      startListening
+    ),
+  ]
+);
 
 export const getActions = createAsyncThunk<
   ActionType[],
@@ -94,11 +160,6 @@ const idAsyncThunks = <AsyncThunks extends [AnyAsyncThunk, ...AnyAsyncThunk[]]>(
 ) => thunks;
 
 const loadingAsyncThunks = idAsyncThunks(getActions);
-
-const actionAdapter = createEntityAdapter<ActionType>({
-  selectId: ({ changelogId }) => changelogId,
-  sortComparer: alphabeticalSortPropCurried("timestamp", true),
-});
 
 export type AuditState = {
   actions: EntityState<ActionType>;
@@ -183,7 +244,7 @@ export const {
   selectEntities: selectActionMap,
   selectIds: selectActionIds,
   selectTotal: selectActionTotal,
-} = actionAdapter.getSelectors<RootState>((state) => state.audit.actions);
+} = actionAdapter.getSelectors();
 
 export const selectUsers = createSelector(selectActions, (actions) =>
   alphabeticalSort(

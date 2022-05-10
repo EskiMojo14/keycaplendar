@@ -3,6 +3,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import type { Action, AnyAction, UnsubscribeListener } from "@reduxjs/toolkit";
 import { loadState } from "~/app/local-storage";
 import listenerMiddleware from "@mw/listener";
+import api from "@s/api";
 import audit from "@s/audit";
 import common from "@s/common";
 import guides from "@s/guides";
@@ -17,6 +18,7 @@ import users from "@s/users";
 import { history as historyInstance } from "./history";
 
 const reducer = combineReducers({
+  [api.reducerPath]: api.reducer,
   audit,
   common,
   guides,
@@ -42,11 +44,13 @@ export type AppThunk<ReturnType> = (
 const _createStore = (preloadedState?: Partial<RootState>) =>
   configureStore({
     enhancers: (enhancers) => [reduxBatch, ...enhancers, reduxBatch],
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({
+    middleware: (gDM) =>
+      gDM({
         immutableCheck: false,
         serializableCheck: false,
-      }).prepend(listenerMiddleware),
+      })
+        .prepend(listenerMiddleware)
+        .concat(api.middleware),
     preloadedState,
     reducer,
   });
