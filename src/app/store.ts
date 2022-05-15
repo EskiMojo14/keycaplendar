@@ -10,6 +10,7 @@ import guides from "@s/guides";
 import history from "@s/history";
 import images from "@s/images";
 import main from "@s/main";
+import { reducer as router } from "@s/router";
 import settings from "@s/settings";
 import statistics from "@s/statistics";
 import updates from "@s/updates";
@@ -25,6 +26,7 @@ const reducer = combineReducers({
   history,
   images,
   main,
+  router,
   settings,
   statistics,
   updates,

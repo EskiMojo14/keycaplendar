@@ -47,7 +47,10 @@ import "./app.scss";
 
 export const App = () => {
   const dispatch = useAppDispatch();
-  useEffect(() => setupLocationChangeListener(history), [history]);
+  useEffect(
+    () => setupLocationChangeListener(history, dispatch),
+    [history, dispatch]
+  );
   useEffect(() => dispatch(addRouterListener(history)), [history]);
 
   const device = useDevice();

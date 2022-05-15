@@ -2,6 +2,7 @@ import {
   addListener,
   createAction,
   createDraftSafeSelector,
+  createSlice,
   isAnyOf,
 } from "@reduxjs/toolkit";
 import type {
@@ -9,13 +10,64 @@ import type {
   Dictionary,
   EntityId,
   EntityState,
+  PayloadAction,
 } from "@reduxjs/toolkit";
-import type { History, Location } from "history";
-import type { RootState } from "~/app/store";
+import type { Action, History, Location } from "history";
+import type { AppDispatch, RootState } from "~/app/store";
 import { hasKey, objectEntries } from "@s/util/functions";
 import type { UnionToTuple } from "@s/util/types";
 import { pageTitle, routes } from "./constants";
 import type { Page } from "./types";
+
+const searchToQueryObject = (search: string) => {
+  const queryObj: Dictionary<string[]> = {};
+
+  new URLSearchParams(search).forEach((val, key) => {
+    queryObj[key] ??= [];
+    queryObj[key]?.push(val);
+  });
+
+  console.log(search, queryObj);
+
+  return queryObj;
+};
+
+type RouterState = {
+  action: Action | "";
+  location: Location & { query: Dictionary<string[]> };
+};
+
+export const routerSlice = createSlice({
+  initialState: {
+    action: "",
+    location: {},
+  } as unknown as RouterState,
+  name: "router",
+  reducers: {
+    locationChange: {
+      prepare: (location: Location, action: Action | "") => ({
+        payload: {
+          action,
+          location: {
+            ...location,
+            query: searchToQueryObject(location.search),
+          },
+        },
+      }),
+      reducer: (_, { payload }: PayloadAction<RouterState>) => payload,
+    },
+  },
+});
+
+export const {
+  actions: { locationChange },
+  reducer,
+} = routerSlice;
+
+export const selectLocationFromState = (state: RootState) =>
+  state.router.location;
+
+export const selectActionFromState = (state: RootState) => state.router.action;
 
 export const getPageName = (pathname: string): Page => {
   if (pathname === "/") {
@@ -82,11 +134,17 @@ export const addRouterListener = (history: History) =>
     matcher: allNavigationMatcher,
   });
 
-export const setupLocationChangeListener = (history: History) =>
-  history.listen((location) => {
+export const setupLocationChangeListener = (
+  history: History,
+  dispatch: AppDispatch
+) => {
+  dispatch(locationChange(history.location, ""));
+  return history.listen((location, action) => {
+    dispatch(locationChange(location, action));
     const title = getPageTitle(location.pathname);
     document.title = title ? `KeycapLendar: ${title}` : "KeycapLendar";
   });
+};
 
 export const selectLocation = (state: RootState, location: Location) =>
   location;
