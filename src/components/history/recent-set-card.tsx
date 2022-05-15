@@ -172,7 +172,9 @@ export const RecentSetCard = ({
                     key={page}
                     icon={pageIcons[page]}
                     label={title}
-                    onClick={() => dispatch(push(`/${page}`))}
+                    onClick={() =>
+                      dispatch(push(`/${page}/${currentSet?.alias}`))
+                    }
                     outlined
                   />
                 );
