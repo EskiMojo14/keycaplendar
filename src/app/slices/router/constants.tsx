@@ -29,7 +29,7 @@ export const routes = {
   favorites: "/favorites/:keyset?",
   guides: "/guides/:id?",
   hidden: "/hidden/:keyset?",
-  history: "/history/:tab?",
+  history: "/history/:tab?/:keyset?",
   ic: "/ic/:keyset?",
   images: "/images",
   live: "/live/:keyset?",

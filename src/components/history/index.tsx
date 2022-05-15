@@ -23,25 +23,23 @@ import { DialogSales } from "@c/main/dialog-sales";
 import { DrawerDetails } from "@c/main/drawer-details";
 import { useAppDispatch, useAppSelector } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
+import useDelayedValue from "@h/use-delayed-value";
 import {
   processedActionsAdapter,
   selectLoading,
   selectProcessedActions,
-  selectRecentSetById,
   selectRecentSetsIds,
 } from "@s/history";
 import { historyTabs } from "@s/history/constants";
 import { getData } from "@s/history/thunks";
 import type { HistoryTab } from "@s/history/types";
-import { selectAllSets } from "@s/main";
+import { selectAllSets, selectKeysetByString } from "@s/main";
 import { replace } from "@s/router";
 import { pageTitle } from "@s/router/constants";
 import {
   arrayIncludes,
   capitalise,
-  closeModal,
   iconObject,
-  openModal,
   truncate,
 } from "@s/util/functions";
 import { FilterVariantRemove } from "@i";
@@ -62,11 +60,22 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
 
   const allSets = useAppSelector(selectAllSets);
 
-  const { tab } = useParams<{ tab?: HistoryTab }>();
+  const { keyset = "", tab } =
+    useParams<{ keyset?: string; tab?: HistoryTab }>();
+
+  const originalUrlSet = useAppSelector((state) =>
+    selectKeysetByString(state, keyset)
+  );
+
+  const urlSet = useDelayedValue(originalUrlSet, 300, { delayed: [undefined] });
+
+  const openDetails = (set: EntityId) =>
+    dispatch(replace(`/history/recent/${set}`));
+  const closeDetails = () => dispatch(replace(`/history/${tab}`));
 
   useEffect(() => {
     if (!tab || !arrayIncludes(historyTabs, tab)) {
-      dispatch(replace(`/history/recent`));
+      dispatch(replace("/history/recent"));
     }
   }, [tab]);
 
@@ -83,19 +92,6 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
     }
   }, []);
 
-  const [detailSet, setDetailSet] = useState<EntityId>("");
-  const [detailsOpen, setDetailsOpen] = useState(false);
-  const openDetails = (set: EntityId) => {
-    openModal();
-    setDetailSet(set);
-    setDetailsOpen(true);
-  };
-  const closeDetails = () => {
-    closeModal();
-    setDetailsOpen(false);
-    setTimeout(() => setDetailSet(""), 300);
-  };
-
   const [salesSet, setSalesSet] = useState<EntityId>("");
   const [salesOpen, setSalesOpen] = useState(false);
   const openSales = (set: EntityId) => {
@@ -107,32 +103,24 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
     setTimeout(() => setSalesSet(""), 300);
   };
 
-  const [filterSetId, setFilterSet] = useState<EntityId>("");
-  const filterSet = useAppSelector((state) =>
-    selectRecentSetById(state, filterSetId)
-  );
-
-  const clearFilter = () => {
-    setFilterSet("");
-  };
+  const clearFilter = () => dispatch(replace(`/history/${tab}`));
 
   const filterChangelog = (id: EntityId) => {
-    if (id === filterSetId) {
+    if (id === originalUrlSet?.id) {
       clearFilter();
     } else {
-      setFilterSet(id);
-      dispatch(replace("/history/changelog"));
+      dispatch(replace(`/history/changelog/${id}`));
     }
   };
 
   const filteredActions = useMemo(
     () =>
-      filterSetId
+      originalUrlSet?.id
         ? processedActions
-            .filter((action) => action.documentId === filterSetId)
+            .filter((action) => action.documentId === originalUrlSet?.id)
             .map(processedActionsAdapter.selectId)
         : processedActions.map(processedActionsAdapter.selectId),
-    [filterSetId, processedActions]
+    [originalUrlSet?.id, processedActions]
   );
 
   const tabRow = (
@@ -140,9 +128,16 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
       <TopAppBarSection alignStart>
         <TabBar
           activeTabIndex={tab ? historyTabs.indexOf(tab) : 0}
-          onActivate={(e) =>
-            dispatch(replace(`/history/${historyTabs[e.detail.index]}`))
-          }
+          onActivate={(e) => {
+            const { [e.detail.index]: newTab } = historyTabs;
+            dispatch(
+              replace(
+                `/history/${newTab}${
+                  newTab === "changelog" && keyset ? `/${keyset}` : ""
+                }`
+              )
+            );
+          }}
         >
           {historyTabs.map((tab) => (
             <Tab key={tab}>{capitalise(tab)}</Tab>
@@ -152,11 +147,14 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
     </TopAppBarRow>
   );
 
-  const clearFilterButton = filterSet && (
+  const clearFilterButton = originalUrlSet && (
     <TopAppBarSection alignEnd>
       <div className="clear-filter">
         <Chip
-          label={truncate(filterSet.title, 20)}
+          label={truncate(
+            `${originalUrlSet.profile} ${originalUrlSet.colorway}`,
+            20
+          )}
           onTrailingIconInteraction={clearFilter}
           trailingIcon={iconObject(<FilterVariantRemove />)}
           trailingIconRemovesChip={false}
@@ -192,10 +190,9 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
             <RecentSetCard
               key={recentSet}
               filterChangelog={filterChangelog}
-              filtered={recentSet === filterSetId}
               openDetails={openDetails}
               recentSetId={recentSet}
-              selected={recentSet === detailSet}
+              selected={recentSet === urlSet?.id}
             />
           ))}
         </div>
@@ -228,9 +225,9 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
         >
           <DrawerDetails
             close={closeDetails}
-            open={detailsOpen}
+            open={!!originalUrlSet && tab === "recent"}
             openSales={openSales}
-            set={detailSet}
+            set={urlSet?.id}
           />
           <DialogSales close={closeSales} open={salesOpen} set={salesSet} />
           <VirtualizeSwipeableViews

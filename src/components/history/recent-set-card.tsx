@@ -25,12 +25,11 @@ import {
   objectKeys,
   ordinal,
 } from "@s/util/functions";
-import { FilterVariantRemove, ImageNotSupported } from "@i";
+import { ImageNotSupported } from "@i";
 import "./recent-set-card.scss";
 
 type RecentSetCardProps = {
   filterChangelog: (set: EntityId) => void;
-  filtered: boolean;
   openDetails: (set: EntityId) => void;
   recentSetId: EntityId;
   selected: boolean;
@@ -38,7 +37,6 @@ type RecentSetCardProps = {
 
 export const RecentSetCard = ({
   filterChangelog,
-  filtered,
   openDetails,
   recentSetId,
   selected,
@@ -152,8 +150,8 @@ export const RecentSetCard = ({
       </ConditionalWrapper>
       <div className="filter-button-container">
         <Button
-          icon={filtered ? iconObject(<FilterVariantRemove />) : "filter_list"}
-          label={filtered ? "Clear filter" : "Filter changelog"}
+          icon="filter_list"
+          label="Filter changelog"
           onClick={() => filterChangelog(recentSetId)}
           outlined
         />
