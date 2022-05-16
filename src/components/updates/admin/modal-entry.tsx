@@ -26,9 +26,12 @@ import { DatePicker } from "@c/util/pickers/date-picker";
 import { CustomReactMarkdown, CustomReactMde } from "@c/util/react-markdown";
 import { useAppSelector } from "@h";
 import useDevice from "@h/use-device";
-import firestore from "@s/firebase/firestore";
-import type { UpdateId } from "@s/firebase/types";
-import { selectEntryById } from "@s/updates";
+import {
+  selectEntryById,
+  useCreateEntryMutation,
+  useGetUpdatesQuery,
+  useUpdateEntryMutation,
+} from "@s/updates";
 import { partialUpdate } from "@s/updates/constructors";
 import { UpdateEntrySchema } from "@s/updates/schemas";
 import type { UpdateEntryType } from "@s/updates/types";
@@ -220,27 +223,23 @@ export const ModalEntry = ({
   );
 };
 
-type ModalCreateProps = Omit<ModalEntryProps, "name" | "onSubmit"> & {
-  getEntries: () => void;
-};
+type ModalCreateProps = Omit<ModalEntryProps, "name" | "onSubmit">;
 
-export const ModalCreate = ({
-  getEntries,
-  onClose,
-  open,
-}: ModalCreateProps) => {
+export const ModalCreate = ({ onClose, open }: ModalCreateProps) => {
   const { nickname: name } = useAppSelector(selectUser);
+  const [createEntry] = useCreateEntryMutation({
+    selectFromResult: () => ({}),
+  });
   const saveEntry = async (entry: UpdateEntryType) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, ...data } = entry;
     const result = UpdateEntrySchema.omit({ id: true }).safeParse(data);
     if (result.success) {
       try {
-        const docRef = await firestore.collection("updates").add(result.data);
-        console.log("Document written with ID: ", docRef.id);
+        const docId = await createEntry(data).unwrap();
+        console.log("Document written with ID: ", docId);
         notify({ title: "Entry written successfully." });
         onClose();
-        getEntries();
       } catch (error) {
         console.error("Error adding document: ", error);
         notify({ title: `Error adding document: ${error}` });
@@ -252,35 +251,27 @@ export const ModalCreate = ({
 
 type ModalEditProps = Omit<ModalEntryProps, "name" | "onSubmit"> & {
   entryId: EntityId;
-  getEntries: () => void;
 };
 
-export const ModalEdit = ({
-  entryId,
-  getEntries,
-  onClose,
-  open,
-}: ModalEditProps) => {
+export const ModalEdit = ({ entryId, onClose, open }: ModalEditProps) => {
   const { nickname: name } = useAppSelector(selectUser);
-  const entry = useAppSelector((state) => selectEntryById(state, entryId));
+  const { entry } = useGetUpdatesQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      entry: data && selectEntryById(data, entryId),
+    }),
+  });
+  const [updateEntry] = useUpdateEntryMutation({
+    selectFromResult: () => ({}),
+  });
   const saveEntry = async (entry: UpdateEntryType) => {
     const result = UpdateEntrySchema.safeParse(entry);
     if (result.success) {
-      const {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        data: { id, ...data },
-      } = result;
       try {
-        await firestore
-          .collection("updates")
-          .doc(entryId as UpdateId)
-          .set(data);
+        await updateEntry(result.data).unwrap();
         notify({ title: "Entry edited successfully." });
         onClose();
-        getEntries();
       } catch (error) {
         console.error("Error adding document: ", error);
-        notify({ title: `Error adding document: ${error}` });
       }
     }
   };

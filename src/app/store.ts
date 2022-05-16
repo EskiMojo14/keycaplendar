@@ -13,7 +13,6 @@ import main from "@s/main";
 import { reducer as router } from "@s/router";
 import settings from "@s/settings";
 import statistics from "@s/statistics";
-import updates from "@s/updates";
 import user from "@s/user";
 import users from "@s/users";
 import { history as historyInstance } from "./history";
@@ -29,7 +28,6 @@ const reducer = combineReducers({
   router,
   settings,
   statistics,
-  updates,
   user,
   users,
 });

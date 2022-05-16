@@ -5,6 +5,7 @@ import type { AppDispatch, RootState } from "~/app/store";
 import { setupAuditListeners } from "@s/audit";
 import { setupCommonListeners } from "@s/common";
 import { setupHiddenSetsListener } from "@s/main";
+import { setupUpdateListeners } from "@s/updates";
 
 export const listenerMiddleware = createListenerMiddleware();
 
@@ -25,5 +26,7 @@ setupHiddenSetsListener(startAppListening);
 setupAuditListeners(startAppListening);
 
 setupCommonListeners(startAppListening);
+
+setupUpdateListeners(startAppListening);
 
 export default listenerMiddleware.middleware;

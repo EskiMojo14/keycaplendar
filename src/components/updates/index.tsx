@@ -17,22 +17,18 @@ import { notify } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
 import { ModalCreate, ModalEdit } from "@c/updates/admin/modal-entry";
 import { AppBarIndent } from "@c/util/app-bar-indent";
-import { useAppDispatch, useAppSelector } from "@h";
+import { useAppSelector } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
-import firestore from "@s/firebase/firestore";
-import type { UpdateId } from "@s/firebase/types";
 import { pageTitle } from "@s/router/constants";
 import {
-  selectEntryById,
   selectEntryIds,
   selectEntryMap,
-  selectLoading,
+  useDeleteEntryMutation,
+  useGetUpdatesQuery,
 } from "@s/updates";
-import { getEntries as getEntriesThunk } from "@s/updates/thunks";
 import { selectUser } from "@s/user";
 import { closeModal, openModal } from "@s/util/functions";
-import { selectFromState } from "@s/util/thunks";
 import { UpdateEntry } from "./update-entry";
 import "./index.scss";
 
@@ -41,28 +37,23 @@ type ContentUpdatesProps = {
 };
 
 export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
-  const dispatch = useAppDispatch();
-
-  const getEntries = () => dispatch(getEntriesThunk());
-
   const device = useDevice();
 
   const bottomNav = useBottomNav();
 
   const user = useAppSelector(selectUser);
 
-  const loading = useAppSelector(selectLoading);
-  const entries = useAppSelector(selectEntryIds);
-  const entryMap = useAppSelector(selectEntryMap);
+  const { entries, entryMap, loading } = useGetUpdatesQuery(undefined, {
+    selectFromResult: ({ data, isFetching }) => ({
+      entries: data && selectEntryIds(data),
+      entryMap: data && selectEntryMap(data),
+      loading: isFetching,
+    }),
+  });
 
   const { hash } = useLocation();
-  const urlEntry = hash.substring(1) in entryMap ? hash.substring(1) : "";
-
-  useEffect(() => {
-    if (entries.length === 0) {
-      getEntries();
-    }
-  }, []);
+  const urlEntry =
+    entryMap && hash.substring(1) in entryMap ? hash.substring(1) : "";
 
   useEffect(() => {
     if (urlEntry) {
@@ -105,10 +96,12 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
     closeModal();
   };
 
+  const [deleteEntry] = useDeleteEntryMutation({
+    selectFromResult: () => ({}),
+  });
+
   const openDelete = async (id: EntityId) => {
-    const entry = dispatch(
-      selectFromState((state) => selectEntryById(state, id))
-    );
+    const { [id]: entry } = entryMap ?? {};
     if (entry) {
       const confirmed = await confirmDelete({
         body: `Are you sure you want to delete the update entry "${entry.title}"? This cannot be undone.`,
@@ -116,15 +109,10 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
       });
       if (confirmed) {
         try {
-          await firestore
-            .collection("updates")
-            .doc(id as UpdateId)
-            .delete();
+          await deleteEntry(id).unwrap();
           notify({ title: "Successfully deleted entry." });
-          getEntries();
         } catch (error) {
-          console.log(`Failed to delete entry: ${error}`);
-          notify({ title: `Failed to delete entry: ${error}` });
+          console.log(error);
         }
       }
     }
@@ -140,17 +128,8 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
         label={device === "desktop" ? "Create" : undefined}
         onClick={openCreate}
       />
-      <ModalCreate
-        getEntries={getEntries}
-        onClose={closeCreate}
-        open={createOpen}
-      />
-      <ModalEdit
-        entryId={editEntry}
-        getEntries={getEntries}
-        onClose={closeEdit}
-        open={editOpen}
-      />
+      <ModalCreate onClose={closeCreate} open={createOpen} />
+      <ModalEdit entryId={editEntry} onClose={closeEdit} open={editOpen} />
     </>
   );
   return (
@@ -175,7 +154,7 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
       <div className="content-container">
         <div className="main extended-app-bar">
           <div className="update-container">
-            {entries.map((entryId) => (
+            {entries?.map((entryId) => (
               <UpdateEntry
                 key={entryId}
                 delete={openDelete}
