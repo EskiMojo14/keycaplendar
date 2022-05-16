@@ -27,7 +27,10 @@ const updateEntryAdapter = createEntityAdapter<UpdateEntryType>({
 export const updateApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     createEntry: build.mutation<UpdateId, Omit<UpdateEntryType, "id">>({
-      invalidatesTags: () => [{ id: "LIST", type: "Update" as const }],
+      invalidatesTags: () => [
+        { id: "LIST", type: "Update" as const },
+        { id: "NEW", type: "Update" as const },
+      ],
       queryFn: async (entry) => {
         try {
           const docRef = await firestore.collection("updates").add(entry);
@@ -40,7 +43,10 @@ export const updateApi = baseApi.injectEndpoints({
       },
     }),
     deleteEntry: build.mutation<void, EntityId>({
-      invalidatesTags: (_, __, id) => [{ id, type: "Update" as const }],
+      invalidatesTags: (_, __, id) => [
+        { id, type: "Update" as const },
+        { id: "NEW", type: "Update" as const },
+      ],
       queryFn: async (id) => {
         try {
           return {
@@ -55,6 +61,7 @@ export const updateApi = baseApi.injectEndpoints({
       },
     }),
     getNewUpdate: build.query<boolean, void>({
+      providesTags: () => [{ id: "NEW", type: "Update" as const }],
       queryFn: async () => {
         const lastWeek = DateTime.utc().minus({ days: 7 });
         try {
