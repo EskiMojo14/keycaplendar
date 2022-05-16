@@ -27,8 +27,6 @@ const searchToQueryObject = (search: string) => {
     queryObj[key]?.push(val);
   });
 
-  console.log(search, queryObj);
-
   return queryObj;
 };
 
