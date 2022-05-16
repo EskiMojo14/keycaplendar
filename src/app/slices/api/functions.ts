@@ -15,13 +15,15 @@ export const createErrorMessagesListeners = <
   errorMessagesByEndpoint: Record<keyof Endpoints, string>,
   startListening: AppStartListening
 ) =>
-  Object.entries(errorMessagesByEndpoint).map(([endpoint, errorMessage]) =>
-    startListening({
-      effect: ({ error }) => {
-        if (error.name !== "ConditionError") {
-          notify({ title: errorMessage });
-        }
-      },
-      matcher: endpoints[endpoint].matchRejected,
-    })
-  );
+  Object.entries(errorMessagesByEndpoint)
+    .filter(([, val]) => val)
+    .map(([endpoint, errorMessage]) =>
+      startListening({
+        effect: ({ error }) => {
+          if (error.name !== "ConditionError") {
+            notify({ title: errorMessage });
+          }
+        },
+        matcher: endpoints[endpoint].matchRejected,
+      })
+    );

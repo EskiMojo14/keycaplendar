@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import {
@@ -11,12 +11,10 @@ import {
 } from "@rmwc/list";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
-import { DateTime } from "luxon";
 import { useAppDispatch, useAppSelector } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import usePage from "@h/use-page";
-import firestore from "@s/firebase/firestore";
 import { selectLinkedFavorites } from "@s/main";
 import { push } from "@s/router";
 import {
@@ -27,6 +25,7 @@ import {
   userPages,
 } from "@s/router/constants";
 import type { Page } from "@s/router/types";
+import { useGetNewUpdateQuery } from "@s/updates";
 import {
   selectBought,
   selectFavorites,
@@ -76,30 +75,21 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
     hidden: hidden.length,
   };
 
-  const [newUpdate, setNewUpdate] = useState(false);
-
-  const checkForUpdates = async () => {
-    const lastWeek = DateTime.utc().minus({ days: 7 });
-    try {
-      const querySnapshot = await firestore
-        .collection("updates")
-        .orderBy("date", "desc")
-        .limit(1)
-        .get();
-      querySnapshot.forEach((doc) => {
-        const date = DateTime.fromISO(doc.data().date, { zone: "utc" });
-        if (date >= lastWeek) {
-          setNewUpdate(true);
-        }
-      });
-    } catch (error) {
-      console.log("Failed to check for updates", error);
+  const { newUpdate = false, newUpdateError } = useGetNewUpdateQuery(
+    undefined,
+    {
+      selectFromResult: ({ data, error }) => ({
+        newUpdate: data,
+        newUpdateError: error,
+      }),
     }
-  };
+  );
 
   useEffect(() => {
-    checkForUpdates();
-  }, []);
+    if (newUpdateError) {
+      console.log(newUpdateError);
+    }
+  }, [newUpdateError]);
 
   const newUpdateIcon = newUpdate && (
     <ListItemMeta icon={iconObject(<FiberNew />)} />

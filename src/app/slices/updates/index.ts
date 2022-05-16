@@ -1,5 +1,6 @@
 import { createEntityAdapter } from "@reduxjs/toolkit";
 import type { EntityId, EntityState } from "@reduxjs/toolkit";
+import { DateTime } from "luxon";
 import type { AppStartListening } from "@mw/listener";
 import { combineListeners } from "@mw/listener/functions";
 import baseApi from "@s/api";
@@ -48,6 +49,30 @@ export const updateApi = baseApi.injectEndpoints({
               .doc(id as UpdateId)
               .delete(),
           };
+        } catch (error) {
+          return { error };
+        }
+      },
+    }),
+    getNewUpdate: build.query<boolean, void>({
+      queryFn: async () => {
+        const lastWeek = DateTime.utc().minus({ days: 7 });
+        try {
+          let data = false;
+          const querySnapshot = await firestore
+            .collection("updates")
+            .orderBy("date", "desc")
+            .limit(1)
+            .get();
+
+          querySnapshot.forEach((doc) => {
+            const date = DateTime.fromISO(doc.data().date, { zone: "utc" });
+            if (date >= lastWeek) {
+              data = true;
+            }
+          });
+
+          return { data };
         } catch (error) {
           return { error };
         }
@@ -127,6 +152,7 @@ export const updateApi = baseApi.injectEndpoints({
 export const {
   useCreateEntryMutation,
   useDeleteEntryMutation,
+  useGetNewUpdateQuery,
   useGetUpdatesQuery,
   usePinEntryMutation,
   useUpdateEntryMutation,
@@ -139,6 +165,7 @@ export const setupUpdateListeners = combineListeners(
       {
         createEntry: "Failed to create update entry",
         deleteEntry: "Failed to delete update entry",
+        getNewUpdate: "",
         getUpdates: "Failed to get update entries",
         pinEntry: "Failed to pin entry",
         updateEntry: "Failed to update entry",
