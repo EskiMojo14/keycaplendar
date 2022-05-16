@@ -12,7 +12,7 @@ import {
   alphabeticalSortPropCurried,
   removeDuplicates,
 } from "@s/util/functions";
-import type { HistoryTab, ProcessedPublicActionType, RecentSet } from "./types";
+import type { ProcessedPublicActionType, RecentSet } from "./types";
 
 export const processedActionsAdapter =
   createEntityAdapter<ProcessedPublicActionType>({
@@ -28,13 +28,11 @@ export const recentSetsAdapter = createEntityAdapter<RecentSet>({
 type HistoryState = {
   loading: boolean;
   processedActions: EntityState<ProcessedPublicActionType>;
-  tab: HistoryTab;
 };
 
 export const initialState: HistoryState = {
   loading: false,
   processedActions: processedActionsAdapter.getInitialState(),
-  tab: "recent",
 };
 
 export const historySlice = createSlice({
@@ -50,14 +48,11 @@ export const historySlice = createSlice({
     ) => {
       processedActionsAdapter.setAll(state.processedActions, payload);
     },
-    setTab: (state, { payload }: PayloadAction<HistoryTab>) => {
-      state.tab = payload;
-    },
   },
 });
 
 export const {
-  actions: { setLoading, setProcessedActions, setTab },
+  actions: { setLoading, setProcessedActions },
 } = historySlice;
 
 export const selectLoading = (state: RootState) => state.history.loading;
