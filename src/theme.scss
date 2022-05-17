@@ -137,7 +137,7 @@
       }
     }
     .mdc-chip {
-      @include chips.fill-color-accessible(
+      @include chips.fill-color(
         mix(
           map-get($theme, on-surface),
           if(
@@ -148,10 +148,6 @@
           12%
         )
       );
-      @include chips.selected-ink-color(map-get($theme, primary));
-      &[disabled] {
-        @include chips.ink-color(map-get($theme, text-disabled));
-      }
     }
     .mdc-typography--overline,
     .mdc-typography--caption {
@@ -306,7 +302,7 @@
     &-drawer.mdc-drawer {
       @include drawer.surface-fill-color(transparent);
       .mdc-chip {
-        @include chips.fill-color-accessible(
+        @include chips.fill-color(
           mix(map-get($theme, on-surface), map-get($theme, background), 12%)
         );
         @include chips.selected-ink-color(map-get($theme, primary));
@@ -320,7 +316,7 @@
           map-get($theme, surface)
         );
         .mdc-chip {
-          @include chips.fill-color-accessible(
+          @include chips.fill-color(
             mix(
               map-get($theme, on-surface),
               if(
@@ -725,9 +721,12 @@
   }
 
   .mdc-chip {
-    @include chips.fill-color-accessible(
+    @include chips.fill-color(
       mix(map-get($theme, on-surface), map-get($theme, surface), 12%)
     );
+    @include chips.ink-color(map-get($theme, text-high));
+    @include chips.leading-icon-color(map-get($theme, text-high));
+    @include chips.trailing-icon-color(map-get($theme, text-high));
     @include chips.selected-ink-color(map-get($theme, primary));
     &[disabled] {
       @include chips.ink-color(map-get($theme, text-disabled));
@@ -766,7 +765,7 @@
     @include dialog.content-ink-color(map-get($theme, text-medium));
     color: map-get($theme, text-high);
     .mdc-chip {
-      @include chips.fill-color-accessible(
+      @include chips.fill-color(
         mix(
           map-get($theme, on-surface),
           if(
@@ -781,13 +780,17 @@
   }
 
   .mdc-drawer {
-    @include drawer.fill-color-accessible(
+    @include drawer.surface-fill-color(
       if(
         $dark,
         themes.overlay-elevation(map-get($theme, surface), 16),
         map-get($theme, surface)
       )
     );
+    @include drawer.title-ink-color(map-get($theme, text-high));
+    @include drawer.subtitle-ink-color(map-get($theme, text-medium));
+    @include drawer.item-text-ink-color(map-get($theme, text-high));
+    @include drawer.item-icon-ink-color(map-get($theme, text-medium));
     @include drawer.item-activated-icon-ink-color(map-get($theme, primary));
     @include drawer.item-activated-text-ink-color(map-get($theme, primary));
     @include drawer.scrim-fill-color(rgba(map-get($theme, on-surface), 0.32));
@@ -810,7 +813,7 @@
           map-get($theme, surface)
         )};
       .mdc-chip {
-        @include chips.fill-color-accessible(
+        @include chips.fill-color(
           mix(
             map-get($theme, on-surface),
             if(
@@ -903,7 +906,7 @@
       }
     }
     .mdc-chip {
-      @include chips.fill-color-accessible(
+      @include chips.fill-color(
         mix(
           map-get($theme, on-surface),
           if(
@@ -1376,7 +1379,7 @@
       }
     }
     .mdc-chip {
-      @include chips.fill-color-accessible(
+      @include chips.fill-color(
         mix(
           map-get($theme, on-surface),
           if(
@@ -1387,6 +1390,14 @@
           12%
         )
       );
+      $ink-color: if(
+        $dark,
+        map-get($variables, text-high),
+        rgba(map-get($variables, on-primary), 0.87)
+      );
+      @include chips.ink-color($ink-color);
+      @include chips.leading-icon-color($ink-color);
+      @include chips.trailing-icon-color($ink-color);
     }
     .search-bar {
       &--persistent .search-bar__field.mdc-text-field {

@@ -104,9 +104,11 @@
             }
             .mint {
               background-color: palette.$teal-50;
-              color: rgba(black, 0.87);
-              @include radio.unchecked-stroke-color(rgba(black, 0.6));
-              @include ripple.states(black);
+              color: rgba(palette.$brown-900, 0.87);
+              @include radio.unchecked-stroke-color(
+                rgba(palette.$brown-900, 0.6)
+              );
+              @include ripple.states(palette.$brown-900);
             }
             .sepia {
               background-color: #e2dfd6;
@@ -147,8 +149,8 @@
               @include radio.ink-color(palette.$deep-orange-200);
             }
             .mint {
-              @include radio.checked-stroke-color(#96000f);
-              @include radio.ink-color(#96000f);
+              @include radio.checked-stroke-color(palette.$brown-400);
+              @include radio.ink-color(palette.$brown-400);
             }
             .ocean,
             .deep-ocean {
