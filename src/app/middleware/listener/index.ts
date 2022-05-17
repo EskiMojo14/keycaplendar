@@ -4,6 +4,7 @@ import { setupPersistListener } from "~/app/local-storage";
 import type { AppDispatch, RootState } from "~/app/store";
 import { setupAuditListeners } from "@s/audit";
 import { setupCommonListeners } from "@s/common";
+import { setupGuideListeners } from "@s/guides";
 import { setupHiddenSetsListener } from "@s/main";
 import { setupUpdateListeners } from "@s/updates";
 
@@ -26,6 +27,8 @@ setupHiddenSetsListener(startAppListening);
 setupAuditListeners(startAppListening);
 
 setupCommonListeners(startAppListening);
+
+setupGuideListeners(startAppListening);
 
 setupUpdateListeners(startAppListening);
 

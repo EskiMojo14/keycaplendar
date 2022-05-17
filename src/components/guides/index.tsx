@@ -26,20 +26,16 @@ import useBottomNav from "@h/use-bottom-nav";
 import useDelayedValue from "@h/use-delayed-value";
 import useDevice from "@h/use-device";
 import { useSearchParams } from "@h/use-search-params";
-import firestore from "@s/firebase/firestore";
-import type { GuideId } from "@s/firebase/types";
 import {
   selectEntries,
-  selectEntryById,
   selectEntryMap,
-  selectLoading,
+  useDeleteGuideEntryMutation,
+  useGetGuideEntriesQuery,
 } from "@s/guides";
-import { getEntries as getEntriesThunk } from "@s/guides/thunks";
 import { replace } from "@s/router";
 import { pageTitle } from "@s/router/constants";
 import { selectUser } from "@s/user";
 import { closeModal, openModal } from "@s/util/functions";
-import { selectFromState } from "@s/util/thunks";
 import { EntriesList } from "./entries-list";
 import { GuideEntry } from "./guide-entry";
 import { ModalDetail } from "./modal-detail";
@@ -53,7 +49,16 @@ type ContentGuidesProps = {
 export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   const dispatch = useAppDispatch();
 
-  const getEntries = () => dispatch(getEntriesThunk());
+  const { entries, entryMap, loading, refetch } = useGetGuideEntriesQuery(
+    undefined,
+    {
+      selectFromResult: ({ data, isFetching }) => ({
+        entries: data && selectEntries(data),
+        entryMap: data && selectEntryMap(data),
+        loading: isFetching,
+      }),
+    }
+  );
 
   const device = useDevice();
 
@@ -61,21 +66,15 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
 
   const user = useAppSelector(selectUser);
 
-  const loading = useAppSelector(selectLoading);
-  const entries = useAppSelector(selectEntries);
-  const entryMap = useAppSelector(selectEntryMap);
-
   const { id } = useParams<{ id?: string }>();
-  const urlEntry = useDelayedValue(id && id in entryMap ? id : undefined, 300, {
-    delayed: [undefined],
-  });
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    if (entries.length === 0) {
-      getEntries();
+  const urlEntry = useDelayedValue(
+    id && entryMap && id in entryMap ? id : undefined,
+    300,
+    {
+      delayed: [undefined],
     }
-  }, []);
+  );
+  const searchParams = useSearchParams();
 
   const openDetail = (entry: EntityId) => {
     dispatch(replace(`/guides/${entry}`));
@@ -123,10 +122,12 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
     closeModal();
   };
 
+  const [deleteEntry] = useDeleteGuideEntryMutation({
+    selectFromResult: () => ({}),
+  });
+
   const openDelete = async (id: EntityId) => {
-    const entry = dispatch(
-      selectFromState((state) => selectEntryById(state, id))
-    );
+    const { [id]: entry } = entryMap ?? {};
     if (entry) {
       const confirmed = await confirmDelete({
         body: `Are you sure you want to delete the guide entry "${entry.title}"? This cannot be undone.`,
@@ -134,15 +135,10 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
       });
       if (confirmed) {
         try {
-          await firestore
-            .collection("guides")
-            .doc(id as GuideId)
-            .delete();
+          await deleteEntry(id).unwrap();
           notify({ title: "Successfully deleted entry." });
-          getEntries();
         } catch (error) {
-          console.log(`Failed to delete entry: ${error}`);
-          notify({ title: `Failed to delete entry: ${error}` });
+          console.log(error);
         }
       }
     }
@@ -154,7 +150,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
       <CircularProgress />
     ) : (
       withTooltip(
-        <TopAppBarActionItem icon="refresh" onClick={() => getEntries()} />,
+        <TopAppBarActionItem icon="refresh" onClick={() => refetch()} />,
         "Refresh"
       )
     ));
@@ -171,17 +167,8 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
         label={device === "desktop" ? "Create" : undefined}
         onClick={openCreate}
       />
-      <ModalCreate
-        getEntries={getEntries}
-        onClose={closeCreate}
-        open={createOpen}
-      />
-      <ModalEdit
-        entryId={editEntry}
-        getEntries={getEntries}
-        onClose={closeEdit}
-        open={editOpen}
-      />
+      <ModalCreate onClose={closeCreate} open={createOpen} />
+      <ModalEdit entryId={editEntry} onClose={closeEdit} open={editOpen} />
     </>
   );
 

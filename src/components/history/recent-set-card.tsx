@@ -46,12 +46,7 @@ export const RecentSetCard = ({
   const recentSet = useAppSelector((state) =>
     selectRecentSetById(state, recentSetId)
   );
-
-  if (!recentSet) {
-    return null;
-  }
-
-  const { deleted, id } = recentSet;
+  const { deleted, id = "" } = recentSet ?? {};
   const currentSet = useAppSelector((state) => selectSetById(state, id));
   const favorites = useAppSelector(selectFavorites);
   const bought = useAppSelector(selectBought);
@@ -71,6 +66,10 @@ export const RecentSetCard = ({
     }
     return [];
   }, [currentSet, linkedFavorites.array, favorites, bought, hidden]);
+
+  if (!recentSet) {
+    return null;
+  }
 
   return (
     <Card

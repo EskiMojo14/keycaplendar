@@ -13,7 +13,12 @@ import { notify } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import { CustomReactMarkdown } from "@c/util/react-markdown";
 import { useAppDispatch, useAppSelector } from "@h";
-import { selectEntryById, selectFilteredTag, setFilteredTag } from "@s/guides";
+import {
+  selectEntryById,
+  selectFilteredTag,
+  setFilteredTag,
+  useGetGuideEntriesQuery,
+} from "@s/guides";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
 import { createURL } from "@s/router/functions";
 import { selectUser } from "@s/user";
@@ -36,8 +41,17 @@ export const GuideEntry = ({
 
   const user = useAppSelector(selectUser);
 
-  const entry = useAppSelector((state) => selectEntryById(state, entryId));
   const filteredTag = useAppSelector(selectFilteredTag);
+
+  const { entry } = useGetGuideEntriesQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      entry: data && selectEntryById(data, entryId),
+    }),
+  });
+
+  if (!entry) {
+    return null;
+  }
 
   const setFilter = (tag: string) =>
     dispatch(setFilteredTag(filteredTag === tag ? "" : tag));
@@ -88,7 +102,7 @@ export const GuideEntry = ({
       </CardActionIcons>
     </CardActions>
   );
-  return entry ? (
+  return (
     <Card className="guide-entry">
       <div className="title">
         <Typography tag="h3" use="overline">
@@ -124,5 +138,5 @@ export const GuideEntry = ({
       </div>
       {buttons}
     </Card>
-  ) : null;
+  );
 };

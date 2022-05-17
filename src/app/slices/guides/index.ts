@@ -5,6 +5,13 @@ import {
 } from "@reduxjs/toolkit";
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
+import type { AppStartListening } from "@mw/listener";
+import { combineListeners } from "@mw/listener/functions";
+import baseApi from "@s/api";
+import { createErrorMessagesListeners } from "@s/api/functions";
+import firebase from "@s/firebase";
+import firestore from "@s/firebase/firestore";
+import type { GuideId } from "@s/firebase/types";
 import { visibilityVals } from "@s/guides/constants";
 import {
   alphabeticalSort,
@@ -24,39 +31,125 @@ const guideEntryAdapter = createEntityAdapter<GuideEntryType>({
   ),
 });
 
+const getGuides = firebase.functions().httpsCallable("getGuides");
+
+export const guideApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    createGuideEntry: build.mutation<GuideId, Omit<GuideEntryType, "id">>({
+      invalidatesTags: () => [{ id: "LIST", type: "Guide" as const }],
+      queryFn: async (entry) => {
+        try {
+          const docRef = await firestore.collection("guides").add(entry);
+          return {
+            data: docRef.id,
+          };
+        } catch (error) {
+          return { error };
+        }
+      },
+    }),
+    deleteGuideEntry: build.mutation<void, EntityId>({
+      invalidatesTags: (_, __, id) => [{ id, type: "Guide" as const }],
+      queryFn: async (id) => {
+        try {
+          return {
+            data: await firestore
+              .collection("guides")
+              .doc(id as GuideId)
+              .delete(),
+          };
+        } catch (error) {
+          return { error };
+        }
+      },
+    }),
+    getGuideEntries: build.query<EntityState<GuideEntryType>, void>({
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.ids.map((id) => ({ id, type: "Guide" as const })),
+              { id: "LIST", type: "Guide" as const },
+            ]
+          : [{ id: "LIST", type: "Guide" as const }],
+      queryFn: async () => {
+        try {
+          return {
+            data: guideEntryAdapter.setAll(
+              guideEntryAdapter.getInitialState(),
+              (await getGuides()).data
+            ),
+          };
+        } catch (error) {
+          return { error };
+        }
+      },
+    }),
+    updateGuideEntry: build.mutation<void, GuideEntryType>({
+      invalidatesTags: (_, __, { id }) => [{ id, type: "Guide" as const }],
+      queryFn: async ({ id, ...entry }) => {
+        try {
+          return {
+            data: await firestore
+              .collection("guides")
+              .doc(id as GuideId)
+              .set(entry),
+          };
+        } catch (error) {
+          return { error };
+        }
+      },
+    }),
+  }),
+  overrideExisting: true,
+});
+
+export const {
+  useCreateGuideEntryMutation,
+  useDeleteGuideEntryMutation,
+  useGetGuideEntriesQuery,
+  useUpdateGuideEntryMutation,
+} = guideApi;
+
+export const setupGuideListeners = combineListeners(
+  (startListening: AppStartListening) => [
+    ...createErrorMessagesListeners(
+      guideApi.endpoints,
+      {
+        createGuideEntry: "Failed to create guide entry",
+        deleteGuideEntry: "Failed to delete guide entry",
+        getGuideEntries: "Failed to get guide entries",
+        updateGuideEntry: "Failed to update entry",
+      },
+      startListening
+    ),
+  ]
+);
+
 type GuidesState = {
-  entries: EntityState<GuideEntryType>;
   filteredTag: string;
-  loading: boolean;
 };
 
 export const initialState: GuidesState = {
-  entries: guideEntryAdapter.getInitialState(),
   filteredTag: "",
-  loading: false,
 };
 
 export const guidesSlice = createSlice({
   initialState,
   name: "guides",
   reducers: {
-    setEntries: (state, { payload }: PayloadAction<GuideEntryType[]>) => {
-      guideEntryAdapter.setAll(state.entries, payload);
-    },
     setFilteredTag: (state, { payload }: PayloadAction<string>) => {
       state.filteredTag = payload;
-    },
-    setLoading: (state, { payload }: PayloadAction<boolean>) => {
-      state.loading = payload;
     },
   },
 });
 
 export const {
-  actions: { setEntries, setFilteredTag, setLoading },
+  actions: { setFilteredTag },
 } = guidesSlice;
 
-export const selectLoading = (state: RootState) => state.guides.loading;
+export default guidesSlice.reducer;
+
+export const selectFilteredTag = (state: RootState) => state.guides.filteredTag;
 
 export const {
   selectAll: selectEntries,
@@ -64,9 +157,7 @@ export const {
   selectEntities: selectEntryMap,
   selectIds: selectEntryIds,
   selectTotal: selectEntryTotal,
-} = guideEntryAdapter.getSelectors<RootState>((state) => state.guides.entries);
-
-export const selectFilteredTag = (state: RootState) => state.guides.filteredTag;
+} = guideEntryAdapter.getSelectors();
 
 export const selectAllTags = createSelector(selectEntries, (entries) =>
   alphabeticalSort(removeDuplicates(entries.map((entry) => entry.tags).flat(1)))
@@ -93,10 +184,10 @@ export const selectVisibilityMap = createSelector(selectEntries, (entries) => ({
 }));
 
 export const selectFilteredVisibilityMap = createSelector(
-  selectFilteredTag,
   selectEntryMap,
   selectVisibilityMap,
-  (filteredTag, entryMap, visibilityMap) =>
+  (_: unknown, filteredTag: string) => filteredTag,
+  (entryMap, visibilityMap, filteredTag) =>
     objectFromEntries<typeof visibilityMap>(
       objectEntries(visibilityMap).map(([key, ids]) => [
         key,
@@ -106,5 +197,3 @@ export const selectFilteredVisibilityMap = createSelector(
       ])
     )
 );
-
-export default guidesSlice.reducer;

@@ -1,15 +1,5 @@
 import { createStore } from "~/app/store";
-import {
-  selectAllTags,
-  selectEntries,
-  selectFilteredTag,
-  selectLoading,
-  selectVisibilityMap,
-  setEntries,
-  setFilteredTag,
-  setLoading,
-} from "@s/guides";
-import type { GuideEntryType } from "@s/guides/types";
+import { selectFilteredTag, setFilteredTag } from "@s/guides";
 
 let store = createStore();
 
@@ -18,38 +8,6 @@ beforeEach(() => {
 });
 
 const string = "tag";
-
-const blankEntry: GuideEntryType = {
-  body: "",
-  description: "",
-  id: "test",
-  name: "",
-  tags: [string],
-  title: "",
-  visibility: "all",
-};
-
-it("sets loading state", () => {
-  store.dispatch(setLoading(true));
-  const response = selectLoading(store.getState());
-  expect(response).toBe(true);
-});
-
-it("sets guides array, tags, and visibility map", () => {
-  store.dispatch(setEntries([blankEntry]));
-  const guides = selectEntries(store.getState());
-  expect(guides).toEqual([blankEntry]);
-  const tags = selectAllTags(store.getState());
-  expect(tags).toEqual([string]);
-  const visibilityMap = selectVisibilityMap(store.getState());
-  const expectedVisibilityMap = {
-    admin: [],
-    all: [blankEntry.id],
-    designer: [],
-    editor: [],
-  };
-  expect(visibilityMap).toEqual(expectedVisibilityMap);
-});
 
 it("sets filtered tag", () => {
   store.dispatch(setFilteredTag(string));

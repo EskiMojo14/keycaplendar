@@ -40,6 +40,8 @@ export const UpdateEntry = ({
 }: UpdateEntryProps) => {
   const user = useAppSelector(selectUser);
 
+  const [pinEntry] = usePinEntryMutation({ selectFromResult: () => ({}) });
+
   const { entry } = useGetUpdatesQuery(undefined, {
     selectFromResult: ({ data }) => ({
       entry: data && selectEntryById(data, entryId),
@@ -49,8 +51,6 @@ export const UpdateEntry = ({
   if (!entry) {
     return null;
   }
-
-  const [pinEntry] = usePinEntryMutation({ selectFromResult: () => ({}) });
 
   const { hash } = useLocation();
   const urlEntry = hash.substring(1);

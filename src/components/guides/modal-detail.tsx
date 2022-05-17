@@ -21,7 +21,12 @@ import { withTooltip } from "@c/util/hocs";
 import { CustomReactMarkdown } from "@c/util/react-markdown";
 import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
-import { selectEntryById, selectFilteredTag, setFilteredTag } from "@s/guides";
+import {
+  selectEntryById,
+  selectFilteredTag,
+  setFilteredTag,
+  useGetGuideEntriesQuery,
+} from "@s/guides";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
 import { createURL } from "@s/router/functions";
 import { selectUser } from "@s/user";
@@ -50,9 +55,17 @@ export const ModalDetail = ({
 
   const user = useAppSelector(selectUser);
 
-  const entry = useAppSelector((state) => selectEntryById(state, entryId));
-
   const filteredTag = useAppSelector(selectFilteredTag);
+
+  const { entry } = useGetGuideEntriesQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      entry: data && selectEntryById(data, entryId),
+    }),
+  });
+
+  if (!entry) {
+    return null;
+  }
 
   const useDrawer = device !== "mobile";
 

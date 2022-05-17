@@ -25,9 +25,12 @@ import {
 import { CustomReactMarkdown, CustomReactMde } from "@c/util/react-markdown";
 import { useAppSelector } from "@h";
 import useDevice from "@h/use-device";
-import firestore from "@s/firebase/firestore";
-import type { GuideId } from "@s/firebase/types";
-import { selectEntryById } from "@s/guides";
+import {
+  selectEntryById,
+  useCreateGuideEntryMutation,
+  useGetGuideEntriesQuery,
+  useUpdateGuideEntryMutation,
+} from "@s/guides";
 import {
   formattedVisibility,
   visibilityIcons,
@@ -262,17 +265,16 @@ export const ModalEntry = ({
 };
 
 type ModalCreateProps = {
-  getEntries: () => void;
   onClose: () => void;
   open: boolean;
 };
 
-export const ModalCreate = ({
-  getEntries,
-  onClose,
-  open,
-}: ModalCreateProps) => {
+export const ModalCreate = ({ onClose, open }: ModalCreateProps) => {
   const { nickname: name } = useAppSelector(selectUser);
+
+  const [createEntry] = useCreateGuideEntryMutation({
+    selectFromResult: () => ({}),
+  });
 
   const saveEntry = async (entry: GuideEntryType) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -280,14 +282,12 @@ export const ModalCreate = ({
     const result = GuideEntrySchema.omit({ id: true }).safeParse(data);
     if (result.success) {
       try {
-        const docRef = await firestore.collection("guides").add(result.data);
-        console.log("Document written with ID: ", docRef.id);
+        const docId = await createEntry(result.data).unwrap();
+        console.log("Document written with ID: ", docId);
         notify({ title: "Entry written successfully." });
         onClose();
-        getEntries();
       } catch (error) {
         console.error("Error adding document: ", error);
-        notify({ title: `Error adding document: ${error}` });
       }
     }
   };
@@ -297,39 +297,32 @@ export const ModalCreate = ({
 
 type ModalEditProps = {
   entryId: EntityId;
-  getEntries: () => void;
   onClose: () => void;
   open: boolean;
 };
 
-export const ModalEdit = ({
-  entryId,
-  getEntries,
-  onClose,
-  open,
-}: ModalEditProps) => {
+export const ModalEdit = ({ entryId, onClose, open }: ModalEditProps) => {
   const { nickname: name } = useAppSelector(selectUser);
 
-  const entry = useAppSelector((state) => selectEntryById(state, entryId));
+  const { entry } = useGetGuideEntriesQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      entry: data && selectEntryById(data, entryId),
+    }),
+  });
+
+  const [updateEntry] = useUpdateGuideEntryMutation({
+    selectFromResult: () => ({}),
+  });
 
   const saveEntry = async (entry: GuideEntryType) => {
     const result = GuideEntrySchema.safeParse(entry);
     if (result.success) {
-      const {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        data: { id, ...data },
-      } = result;
       try {
-        await firestore
-          .collection("guides")
-          .doc(entryId as GuideId)
-          .set({ ...data, name });
+        await updateEntry({ ...result.data, name }).unwrap();
         notify({ title: "Entry edited successfully." });
         onClose();
-        getEntries();
       } catch (error) {
         console.error("Error adding document: ", error);
-        notify({ title: `Error adding document: ${error}` });
       }
     }
   };

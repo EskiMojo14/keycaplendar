@@ -23,6 +23,7 @@ import {
   selectFilteredTag,
   selectFilteredVisibilityMap,
   setFilteredTag,
+  useGetGuideEntriesQuery,
 } from "@s/guides";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
 import { iconObject, objectEntries } from "@s/util/functions";
@@ -39,10 +40,24 @@ export const EntriesList = ({ detailEntry, openEntry }: EntriesDrawerProps) => {
 
   const device = useDevice();
 
-  const entriesMap = useAppSelector(selectEntryMap);
-  const allTags = useAppSelector(selectAllTags);
   const filteredTag = useAppSelector(selectFilteredTag);
-  const filteredVisibilityMap = useAppSelector(selectFilteredVisibilityMap);
+  const {
+    allTags = [],
+    entriesMap = {},
+    filteredVisibilityMap = {
+      admin: [],
+      all: [],
+      designer: [],
+      editor: [],
+    },
+  } = useGetGuideEntriesQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      allTags: data && selectAllTags(data),
+      entriesMap: data && selectEntryMap(data),
+      filteredVisibilityMap:
+        data && selectFilteredVisibilityMap(data, filteredTag),
+    }),
+  });
 
   const setScroll = () => {
     const chipSet = document.getElementById("filter-chip-set");
