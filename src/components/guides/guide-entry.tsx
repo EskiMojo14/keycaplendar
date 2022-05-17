@@ -17,7 +17,7 @@ import {
   selectEntryById,
   selectFilteredTag,
   setFilteredTag,
-  useGetGuideEntriesQuery,
+  useGetGuidesQuery,
 } from "@s/guides";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
 import { createURL } from "@s/router/functions";
@@ -43,7 +43,7 @@ export const GuideEntry = ({
 
   const filteredTag = useAppSelector(selectFilteredTag);
 
-  const { entry } = useGetGuideEntriesQuery(undefined, {
+  const { entry } = useGetGuidesQuery(undefined, {
     selectFromResult: ({ data }) => ({
       entry: data && selectEntryById(data, entryId),
     }),

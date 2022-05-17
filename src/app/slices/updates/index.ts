@@ -26,7 +26,7 @@ const updateEntryAdapter = createEntityAdapter<UpdateEntryType>({
 
 export const updateApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    createEntry: build.mutation<UpdateId, Omit<UpdateEntryType, "id">>({
+    createUpdateEntry: build.mutation<UpdateId, Omit<UpdateEntryType, "id">>({
       invalidatesTags: () => [
         { id: "LIST", type: "Update" as const },
         { id: "NEW", type: "Update" as const },
@@ -42,7 +42,7 @@ export const updateApi = baseApi.injectEndpoints({
         }
       },
     }),
-    deleteEntry: build.mutation<void, EntityId>({
+    deleteUpdateEntry: build.mutation<void, EntityId>({
       invalidatesTags: (_, __, id) => [
         { id, type: "Update" as const },
         { id: "NEW", type: "Update" as const },
@@ -120,7 +120,7 @@ export const updateApi = baseApi.injectEndpoints({
         }
       },
     }),
-    pinEntry: build.mutation<void, UpdateEntryType>({
+    pinUpdateEntry: build.mutation<void, UpdateEntryType>({
       invalidatesTags: (_, __, entry) => [
         { id: entry.id, type: "Update" as const },
       ],
@@ -137,7 +137,7 @@ export const updateApi = baseApi.injectEndpoints({
         }
       },
     }),
-    updateEntry: build.mutation<void, UpdateEntryType>({
+    updateUpdateEntry: build.mutation<void, UpdateEntryType>({
       invalidatesTags: (_, __, { id }) => [{ id, type: "Update" as const }],
       queryFn: async ({ id, ...entry }) => {
         try {
@@ -157,12 +157,12 @@ export const updateApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useCreateEntryMutation,
-  useDeleteEntryMutation,
+  useCreateUpdateEntryMutation,
+  useDeleteUpdateEntryMutation,
   useGetNewUpdateQuery,
   useGetUpdatesQuery,
-  usePinEntryMutation,
-  useUpdateEntryMutation,
+  usePinUpdateEntryMutation,
+  useUpdateUpdateEntryMutation,
 } = updateApi;
 
 export const setupUpdateListeners = combineListeners(
@@ -170,12 +170,12 @@ export const setupUpdateListeners = combineListeners(
     ...createErrorMessagesListeners(
       updateApi.endpoints,
       {
-        createEntry: "Failed to create update entry",
-        deleteEntry: "Failed to delete update entry",
+        createUpdateEntry: "Failed to create update entry",
+        deleteUpdateEntry: "Failed to delete update entry",
         getNewUpdate: "",
         getUpdates: "Failed to get update entries",
-        pinEntry: "Failed to pin entry",
-        updateEntry: "Failed to update entry",
+        pinUpdateEntry: "Failed to pin entry",
+        updateUpdateEntry: "Failed to update entry",
       },
       startListening
     ),

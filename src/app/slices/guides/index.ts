@@ -63,7 +63,7 @@ export const guideApi = baseApi.injectEndpoints({
         }
       },
     }),
-    getGuideEntries: build.query<EntityState<GuideEntryType>, void>({
+    getGuides: build.query<EntityState<GuideEntryType>, void>({
       providesTags: (result) =>
         result
           ? [
@@ -106,7 +106,7 @@ export const guideApi = baseApi.injectEndpoints({
 export const {
   useCreateGuideEntryMutation,
   useDeleteGuideEntryMutation,
-  useGetGuideEntriesQuery,
+  useGetGuidesQuery,
   useUpdateGuideEntryMutation,
 } = guideApi;
 
@@ -117,7 +117,7 @@ export const setupGuideListeners = combineListeners(
       {
         createGuideEntry: "Failed to create guide entry",
         deleteGuideEntry: "Failed to delete guide entry",
-        getGuideEntries: "Failed to get guide entries",
+        getGuides: "Failed to get guide entries",
         updateGuideEntry: "Failed to update entry",
       },
       startListening

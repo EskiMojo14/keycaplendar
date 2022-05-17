@@ -23,7 +23,7 @@ import {
   selectFilteredTag,
   selectFilteredVisibilityMap,
   setFilteredTag,
-  useGetGuideEntriesQuery,
+  useGetGuidesQuery,
 } from "@s/guides";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
 import { iconObject, objectEntries } from "@s/util/functions";
@@ -50,7 +50,7 @@ export const EntriesList = ({ detailEntry, openEntry }: EntriesDrawerProps) => {
       designer: [],
       editor: [],
     },
-  } = useGetGuideEntriesQuery(undefined, {
+  } = useGetGuidesQuery(undefined, {
     selectFromResult: ({ data }) => ({
       allTags: data && selectAllTags(data),
       entriesMap: data && selectEntryMap(data),

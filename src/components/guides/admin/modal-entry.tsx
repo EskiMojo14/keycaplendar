@@ -28,7 +28,7 @@ import useDevice from "@h/use-device";
 import {
   selectEntryById,
   useCreateGuideEntryMutation,
-  useGetGuideEntriesQuery,
+  useGetGuidesQuery,
   useUpdateGuideEntryMutation,
 } from "@s/guides";
 import {
@@ -304,7 +304,7 @@ type ModalEditProps = {
 export const ModalEdit = ({ entryId, onClose, open }: ModalEditProps) => {
   const { nickname: name } = useAppSelector(selectUser);
 
-  const { entry } = useGetGuideEntriesQuery(undefined, {
+  const { entry } = useGetGuidesQuery(undefined, {
     selectFromResult: ({ data }) => ({
       entry: data && selectEntryById(data, entryId),
     }),

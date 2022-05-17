@@ -24,7 +24,7 @@ import { pageTitle } from "@s/router/constants";
 import {
   selectEntryIds,
   selectEntryMap,
-  useDeleteEntryMutation,
+  useDeleteUpdateEntryMutation,
   useGetUpdatesQuery,
 } from "@s/updates";
 import { selectUser } from "@s/user";
@@ -96,7 +96,7 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
     closeModal();
   };
 
-  const [deleteEntry] = useDeleteEntryMutation({
+  const [deleteEntry] = useDeleteUpdateEntryMutation({
     selectFromResult: () => ({}),
   });
 

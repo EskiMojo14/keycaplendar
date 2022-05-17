@@ -20,7 +20,7 @@ import { createURL } from "@s/router/functions";
 import {
   selectEntryById,
   useGetUpdatesQuery,
-  usePinEntryMutation,
+  usePinUpdateEntryMutation,
 } from "@s/updates";
 import { selectUser } from "@s/user";
 import { iconObject, ordinal } from "@s/util/functions";
@@ -40,7 +40,9 @@ export const UpdateEntry = ({
 }: UpdateEntryProps) => {
   const user = useAppSelector(selectUser);
 
-  const [pinEntry] = usePinEntryMutation({ selectFromResult: () => ({}) });
+  const [pinEntry] = usePinUpdateEntryMutation({
+    selectFromResult: () => ({}),
+  });
 
   const { entry } = useGetUpdatesQuery(undefined, {
     selectFromResult: ({ data }) => ({

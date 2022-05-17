@@ -28,9 +28,9 @@ import { useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import {
   selectEntryById,
-  useCreateEntryMutation,
+  useCreateUpdateEntryMutation,
   useGetUpdatesQuery,
-  useUpdateEntryMutation,
+  useUpdateUpdateEntryMutation,
 } from "@s/updates";
 import { partialUpdate } from "@s/updates/constructors";
 import { UpdateEntrySchema } from "@s/updates/schemas";
@@ -227,7 +227,7 @@ type ModalCreateProps = Omit<ModalEntryProps, "name" | "onSubmit">;
 
 export const ModalCreate = ({ onClose, open }: ModalCreateProps) => {
   const { nickname: name } = useAppSelector(selectUser);
-  const [createEntry] = useCreateEntryMutation({
+  const [createEntry] = useCreateUpdateEntryMutation({
     selectFromResult: () => ({}),
   });
   const saveEntry = async (entry: UpdateEntryType) => {
@@ -260,7 +260,7 @@ export const ModalEdit = ({ entryId, onClose, open }: ModalEditProps) => {
       entry: data && selectEntryById(data, entryId),
     }),
   });
-  const [updateEntry] = useUpdateEntryMutation({
+  const [updateEntry] = useUpdateUpdateEntryMutation({
     selectFromResult: () => ({}),
   });
   const saveEntry = async (entry: UpdateEntryType) => {

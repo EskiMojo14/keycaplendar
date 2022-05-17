@@ -30,7 +30,7 @@ import {
   selectEntries,
   selectEntryMap,
   useDeleteGuideEntryMutation,
-  useGetGuideEntriesQuery,
+  useGetGuidesQuery,
 } from "@s/guides";
 import { replace } from "@s/router";
 import { pageTitle } from "@s/router/constants";
@@ -49,16 +49,13 @@ type ContentGuidesProps = {
 export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   const dispatch = useAppDispatch();
 
-  const { entries, entryMap, loading, refetch } = useGetGuideEntriesQuery(
-    undefined,
-    {
-      selectFromResult: ({ data, isFetching }) => ({
-        entries: data && selectEntries(data),
-        entryMap: data && selectEntryMap(data),
-        loading: isFetching,
-      }),
-    }
-  );
+  const { entries, entryMap, loading, refetch } = useGetGuidesQuery(undefined, {
+    selectFromResult: ({ data, isFetching }) => ({
+      entries: data && selectEntries(data),
+      entryMap: data && selectEntryMap(data),
+      loading: isFetching,
+    }),
+  });
 
   const device = useDevice();
 
