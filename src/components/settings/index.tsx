@@ -423,7 +423,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
                   </ListItem>
                   <ListItem
                     className="mint"
-                    onClick={() => setLightTheme("mint")}
+                    onClick={() => dispatch(setLightTheme("mint"))}
                   >
                     Mint
                     <ListItemMeta>
