@@ -633,7 +633,7 @@
       themes.overlay-elevation(map-get($theme, surface), 1),
       map-get($theme, surface)
     );
-    color: map-get($variables, on-surface);
+    color: map-get($theme, on-surface);
     &.mdc-card--selected {
       .mdc-typography--headline5 {
         color: map-get($theme, primary);
