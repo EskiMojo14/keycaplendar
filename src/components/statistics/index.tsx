@@ -30,14 +30,13 @@ import { replace } from "@s/router";
 import { pageTitle } from "@s/router/constants";
 import {
   selectData,
-  selectLoading,
   selectSettings,
   selectSort,
   setStatisticsSetting,
   setStatisticsSort,
+  useGetStatisticsDataQuery,
 } from "@s/statistics";
 import { statsTabs } from "@s/statistics/constants";
-import { getData } from "@s/statistics/thunks";
 import type { StatisticsType, StatsTab } from "@s/statistics/types";
 import { capitalise, hasKey, iconObject } from "@s/util/functions";
 import {
@@ -71,7 +70,11 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
     }
   }, [statisticsTab]);
 
-  const loading = useAppSelector(selectLoading);
+  const { loading } = useGetStatisticsDataQuery(undefined, {
+    selectFromResult: ({ isLoading }) => ({
+      loading: isLoading,
+    }),
+  });
 
   const statisticsData = useLocatedSelector(selectData);
   const settings = useAppSelector(selectSettings);
@@ -82,12 +85,6 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
     setCategoryDialogOpen,
     "setCategoryDialogOpen"
   );
-
-  useEffect(() => {
-    if (statisticsData.timelines.icDate.summary.count.total === 0) {
-      dispatch(getData());
-    }
-  }, []);
 
   const handleChangeIndex = (index: number) =>
     dispatch(replace(`/statistics/${statsTabs[index]}`));

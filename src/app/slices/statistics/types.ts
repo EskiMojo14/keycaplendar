@@ -119,4 +119,5 @@ export type StatisticsData = {
   status: StatusData;
   timelines: TimelinesData;
   vendors: VendorData;
+  timestamp?: string;
 };

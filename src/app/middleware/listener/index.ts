@@ -6,6 +6,7 @@ import { setupAuditListeners } from "@s/audit";
 import { setupCommonListeners } from "@s/common";
 import { setupGuideListeners } from "@s/guides";
 import { setupHiddenSetsListener } from "@s/main";
+import { setupStatisticsListeners } from "@s/statistics";
 import { setupUpdateListeners } from "@s/updates";
 
 export const listenerMiddleware = createListenerMiddleware();
@@ -29,6 +30,8 @@ setupAuditListeners(startAppListening);
 setupCommonListeners(startAppListening);
 
 setupGuideListeners(startAppListening);
+
+setupStatisticsListeners(startAppListening);
 
 setupUpdateListeners(startAppListening);
 

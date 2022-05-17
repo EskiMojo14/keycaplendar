@@ -4,10 +4,8 @@ import { createStore } from "~/app/store";
 import {
   initialState,
   selectData,
-  selectLoading,
   selectSettings,
   selectSort,
-  setLoading,
   setStatisticsData,
   setStatisticsSetting,
   setStatisticsSort,
@@ -17,12 +15,6 @@ let store = createStore();
 
 beforeEach(() => {
   store = createStore();
-});
-
-it("sets loading state", () => {
-  store.dispatch(setLoading(true));
-  const response = selectLoading(store.getState());
-  expect(response).toBe(true);
 });
 
 it("sets statistics data", () => {
