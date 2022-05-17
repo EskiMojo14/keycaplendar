@@ -1392,8 +1392,8 @@
       );
       $ink-color: if(
         $dark,
-        map-get($variables, text-high),
-        rgba(map-get($variables, on-primary), 0.87)
+        map-get($theme, text-high),
+        rgba(map-get($theme, on-primary), 0.87)
       );
       @include chips.ink-color($ink-color);
       @include chips.leading-icon-color($ink-color);
