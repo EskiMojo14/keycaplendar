@@ -118,16 +118,16 @@ export const auditApi = baseApi.injectEndpoints({
 
 export const { useDeleteActionMutation, useGetActionsQuery } = auditApi;
 
-export const setupAuditListeners = combineListeners((startListening) => [
-  ...createErrorMessagesListeners(
+export const setupAuditListeners = combineListeners((startListening) =>
+  createErrorMessagesListeners(
     auditApi.endpoints,
     {
       deleteAction: "Failed to delete audit entry",
       getActions: "Failed to get audit entries",
     },
     startListening
-  ),
-]);
+  )
+);
 
 export type AuditState = {
   filter: {

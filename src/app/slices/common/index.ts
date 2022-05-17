@@ -47,13 +47,13 @@ export const commonApi = baseApi.injectEndpoints({
 
 export const { useGetGlobalsQuery } = commonApi;
 
-export const setupCommonListeners = combineListeners((startListening) => [
-  ...createErrorMessagesListeners(
+export const setupCommonListeners = combineListeners((startListening) =>
+  createErrorMessagesListeners(
     commonApi.endpoints,
     { getGlobals: "Failed to get global settings" },
     startListening
-  ),
-]);
+  )
+);
 
 export type CommonState = {
   systemTheme: "dark" | "light";

@@ -5,11 +5,10 @@ import {
   appendImages,
   selectCurrentFolder,
   setCurrentFolder,
-  setFolders,
   setImages,
   setLoading,
 } from "@s/images";
-import { alphabeticalSortCurried, getStorageFolders } from "@s/util/functions";
+import { alphabeticalSortCurried } from "@s/util/functions";
 import { partialImage } from "./constructors";
 
 const storage = firebase.storage();
@@ -58,17 +57,6 @@ export const listAll =
     };
     paginatedListAll();
   };
-
-export const getFolders = (): AppThunk<Promise<void>> => async (dispatch) => {
-  const folders = await getStorageFolders();
-  const sortOrder = ["thumbs", "card", "list", "image-list"];
-  folders.sort((a, b) => {
-    const indexA = sortOrder.indexOf(a);
-    const indexB = sortOrder.indexOf(b);
-    return indexA - indexB;
-  });
-  dispatch(setFolders(folders));
-};
 
 export const setFolder =
   (folder: string): AppThunk<void> =>

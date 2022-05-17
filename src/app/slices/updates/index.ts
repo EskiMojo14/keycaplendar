@@ -164,8 +164,8 @@ export const {
   useUpdateUpdateEntryMutation,
 } = updateApi;
 
-export const setupUpdateListeners = combineListeners((startListening) => [
-  ...createErrorMessagesListeners(
+export const setupUpdateListeners = combineListeners((startListening) =>
+  createErrorMessagesListeners(
     updateApi.endpoints,
     {
       createUpdateEntry: "Failed to create update entry",
@@ -176,8 +176,8 @@ export const setupUpdateListeners = combineListeners((startListening) => [
       updateUpdateEntry: "Failed to update entry",
     },
     startListening
-  ),
-]);
+  )
+);
 
 export const {
   selectAll: selectEntries,

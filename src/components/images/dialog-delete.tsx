@@ -14,9 +14,9 @@ import { notify } from "~/app/snackbar-queue";
 import { useAppDispatch, useAppSelector } from "@h";
 import {
   imageAdapter,
-  selectFolders,
   selectImageMap,
   setLoading,
+  useGetStorageFoldersQuery,
 } from "@s/images";
 import { listAll } from "@s/images/thunks";
 import { batchStorageDelete, filterFalsey, pluralise } from "@s/util/functions";
@@ -39,7 +39,10 @@ export const DialogDelete = ({
 }: DialogDeleteProps) => {
   const dispatch = useAppDispatch();
 
-  const folders = useAppSelector(selectFolders);
+  const { folders = [] } = useGetStorageFoldersQuery(undefined, {
+    selectFromResult: ({ data }) => ({ folders: data }),
+  });
+
   const imagesMap = useAppSelector(selectImageMap);
   const images = useMemo(
     () => checkedImages.map((id) => imagesMap[id]).filter(filterFalsey),

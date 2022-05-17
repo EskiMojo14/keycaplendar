@@ -2,11 +2,9 @@ import { createStore } from "~/app/store";
 import {
   appendImages,
   selectCurrentFolder,
-  selectFolders,
   selectImages,
   selectLoading,
   setCurrentFolder,
-  setFolders,
   setImages,
   setLoading,
 } from "@s/images";
@@ -33,12 +31,6 @@ it("sets current folder", () => {
   store.dispatch(setCurrentFolder(folder));
   const response = selectCurrentFolder(store.getState());
   expect(response).toBe(folder);
-});
-
-it("sets folder array", () => {
-  store.dispatch(setFolders([folder]));
-  const response = selectFolders(store.getState());
-  expect(response).toEqual([folder]);
 });
 
 it("sets image array", () => {

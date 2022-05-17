@@ -21,7 +21,7 @@ import {
   selectImages,
   selectImagesByUsage,
 } from "@s/images";
-import { getFolders, listAll } from "@s/images/thunks";
+import { listAll } from "@s/images/thunks";
 import {
   addOrRemove,
   closeModal,
@@ -72,7 +72,6 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
 
   useEffect(() => {
     if (images.length === 0) {
-      dispatch(getFolders());
       dispatch(listAll());
     }
   }, []);

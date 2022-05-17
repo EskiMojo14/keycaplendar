@@ -109,8 +109,8 @@ export const {
   useUpdateGuideEntryMutation,
 } = guideApi;
 
-export const setupGuideListeners = combineListeners((startListening) => [
-  ...createErrorMessagesListeners(
+export const setupGuideListeners = combineListeners((startListening) =>
+  createErrorMessagesListeners(
     guideApi.endpoints,
     {
       createGuideEntry: "Failed to create guide entry",
@@ -119,8 +119,8 @@ export const setupGuideListeners = combineListeners((startListening) => [
       updateGuideEntry: "Failed to update entry",
     },
     startListening
-  ),
-]);
+  )
+);
 
 type GuidesState = {
   filteredTag: string;

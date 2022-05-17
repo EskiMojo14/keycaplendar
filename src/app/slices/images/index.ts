@@ -5,11 +5,15 @@ import {
 } from "@reduxjs/toolkit";
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
+import { combineListeners } from "@mw/listener/functions";
+import baseApi from "@s/api";
+import { createErrorMessagesListeners } from "@s/api/functions";
 import { selectAllSets } from "@s/main";
 import {
   alphabeticalSort,
   alphabeticalSortCurried,
   arrayIncludes,
+  getStorageFolders,
 } from "@s/util/functions";
 import type { ImageType } from "./types";
 
@@ -22,20 +26,47 @@ export const imageAdapter = createEntityAdapter<ImageType>({
   },
 });
 
+export const imageApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    getStorageFolders: build.query<string[], void>({
+      queryFn: async () => {
+        try {
+          const folders = await getStorageFolders();
+          const sortOrder = ["thumbs", "card", "list", "image-list"];
+          folders.sort((a, b) => {
+            const indexA = sortOrder.indexOf(a);
+            const indexB = sortOrder.indexOf(b);
+            return indexA - indexB;
+          });
+          return { data: folders };
+        } catch (error) {
+          return { error };
+        }
+      },
+    }),
+  }),
+  overrideExisting: true,
+});
+
+export const { useGetStorageFoldersQuery } = imageApi;
+
+export const setupImageListeners = combineListeners((startListening) =>
+  createErrorMessagesListeners(
+    imageApi.endpoints,
+    { getStorageFolders: "Failed to get storage folders" },
+    startListening
+  )
+);
+
 type ImagesState = {
   currentFolder: string;
-  folders: string[];
   images: EntityState<ImageType>;
   loading: boolean;
 };
 
 export const initialState: ImagesState = {
   currentFolder: "thumbs",
-  folders: [],
-  images: imageAdapter.getInitialState({
-    duplicateSetImages: [],
-    setImages: [],
-  }),
+  images: imageAdapter.getInitialState(),
   loading: false,
 };
 
@@ -49,9 +80,6 @@ export const imagesSlice = createSlice({
     setCurrentFolder: (state, { payload }: PayloadAction<string>) => {
       state.currentFolder = payload;
     },
-    setFolders: (state, { payload }: PayloadAction<string[]>) => {
-      state.folders = payload;
-    },
     setImages: (state, { payload }: PayloadAction<ImageType[]>) => {
       imageAdapter.setAll(state.images, payload);
     },
@@ -62,21 +90,13 @@ export const imagesSlice = createSlice({
 });
 
 export const {
-  actions: {
-    appendImages,
-    setCurrentFolder,
-    setFolders,
-    setImages,
-    setLoading,
-  },
+  actions: { appendImages, setCurrentFolder, setImages, setLoading },
 } = imagesSlice;
 
 export const selectLoading = (state: RootState) => state.images.loading;
 
 export const selectCurrentFolder = (state: RootState) =>
   state.images.currentFolder;
-
-export const selectFolders = (state: RootState) => state.images.folders;
 
 const fileNameRegex = /keysets%2F(.*)\?/;
 export const selectSetImages = createSelector(selectAllSets, (sets) =>

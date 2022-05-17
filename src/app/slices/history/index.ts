@@ -88,13 +88,13 @@ export const historyApi = baseApi.injectEndpoints({
 
 export const { useGetChangelogQuery } = historyApi;
 
-export const setupHistoryListeners = combineListeners((startListening) => [
-  ...createErrorMessagesListeners(
+export const setupHistoryListeners = combineListeners((startListening) =>
+  createErrorMessagesListeners(
     historyApi.endpoints,
     { getChangelog: "Failed to get changelog entries" },
     startListening
-  ),
-]);
+  )
+);
 
 export const {
   selectAll: selectProcessedActions,

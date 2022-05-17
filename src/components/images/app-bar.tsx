@@ -19,7 +19,11 @@ import { useAppDispatch, useAppSelector } from "@h";
 import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
-import { selectCurrentFolder, selectFolders, selectLoading } from "@s/images";
+import {
+  selectCurrentFolder,
+  selectLoading,
+  useGetStorageFoldersQuery,
+} from "@s/images";
 import { setFolder } from "@s/images/thunks";
 import { pageTitle } from "@s/router/constants";
 import { iconObject } from "@s/util/functions";
@@ -48,7 +52,11 @@ export const ImageAppBar = ({
   const loading = useAppSelector(selectLoading);
 
   const currentFolder = useAppSelector(selectCurrentFolder);
-  const folders = useAppSelector(selectFolders);
+
+  const { folders = [] } = useGetStorageFoldersQuery(undefined, {
+    selectFromResult: ({ data }) => ({ folders: data }),
+  });
+
   const [folderMenuOpen, setFolderMenuOpen] = useState(false);
   const [closeFolderMenu, openFolderMenu] = useBoolStates(
     setFolderMenuOpen,
