@@ -398,6 +398,19 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
                     </ListItemMeta>
                   </ListItem>
                   <ListItem
+                    className="mint"
+                    onClick={() => setLightTheme("mint")}
+                  >
+                    Mint
+                    <ListItemMeta>
+                      <Radio
+                        checked={lightTheme === "mint"}
+                        readOnly
+                        tabIndex={-1}
+                      />
+                    </ListItemMeta>
+                  </ListItem>
+                  <ListItem
                     className="sepia"
                     onClick={() => setLightTheme("sepia")}
                   >
