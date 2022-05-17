@@ -5,7 +5,6 @@ import {
 } from "@reduxjs/toolkit";
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import type { AppStartListening } from "@mw/listener";
 import { combineListeners } from "@mw/listener/functions";
 import baseApi from "@s/api";
 import { createErrorMessagesListeners } from "@s/api/functions";
@@ -110,20 +109,18 @@ export const {
   useUpdateGuideEntryMutation,
 } = guideApi;
 
-export const setupGuideListeners = combineListeners(
-  (startListening: AppStartListening) => [
-    ...createErrorMessagesListeners(
-      guideApi.endpoints,
-      {
-        createGuideEntry: "Failed to create guide entry",
-        deleteGuideEntry: "Failed to delete guide entry",
-        getGuides: "Failed to get guide entries",
-        updateGuideEntry: "Failed to update entry",
-      },
-      startListening
-    ),
-  ]
-);
+export const setupGuideListeners = combineListeners((startListening) => [
+  ...createErrorMessagesListeners(
+    guideApi.endpoints,
+    {
+      createGuideEntry: "Failed to create guide entry",
+      deleteGuideEntry: "Failed to delete guide entry",
+      getGuides: "Failed to get guide entries",
+      updateGuideEntry: "Failed to update entry",
+    },
+    startListening
+  ),
+]);
 
 type GuidesState = {
   filteredTag: string;

@@ -14,8 +14,13 @@ import { DateTime } from "luxon";
 import LazyLoad from "react-lazy-load";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { useAppDispatch, useAppSelector } from "@h";
-import { selectRecentSetById } from "@s/history";
-import { pageConditions, selectLinkedFavorites, selectSetById } from "@s/main";
+import { selectRecentSetById, useGetChangelogQuery } from "@s/history";
+import {
+  pageConditions,
+  selectLinkedFavorites,
+  selectSetById,
+  selectSetMap,
+} from "@s/main";
 import { push } from "@s/router";
 import { mainPages, pageIcons, pageTitle } from "@s/router/constants";
 import { selectBought, selectFavorites, selectHidden } from "@s/user";
@@ -43,9 +48,13 @@ export const RecentSetCard = ({
 }: RecentSetCardProps) => {
   const dispatch = useAppDispatch();
 
-  const recentSet = useAppSelector((state) =>
-    selectRecentSetById(state, recentSetId)
-  );
+  const setMap = useAppSelector(selectSetMap);
+  const { recentSet } = useGetChangelogQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      recentSet: data && selectRecentSetById(data, setMap, recentSetId),
+    }),
+  });
+
   const { deleted, id = "" } = recentSet ?? {};
   const currentSet = useAppSelector((state) => selectSetById(state, id));
   const favorites = useAppSelector(selectFavorites);

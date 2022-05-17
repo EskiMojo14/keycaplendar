@@ -6,7 +6,6 @@ import {
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import isEqual from "lodash.isequal";
 import type { RootState } from "~/app/store";
-import type { AppStartListening } from "@mw/listener";
 import { combineListeners } from "@mw/listener/functions";
 import baseApi from "@s/api";
 import { createErrorMessagesListeners } from "@s/api/functions";
@@ -119,18 +118,16 @@ export const auditApi = baseApi.injectEndpoints({
 
 export const { useDeleteActionMutation, useGetActionsQuery } = auditApi;
 
-export const setupAuditListeners = combineListeners(
-  (startListening: AppStartListening) => [
-    ...createErrorMessagesListeners(
-      auditApi.endpoints,
-      {
-        deleteAction: "Failed to delete audit entry",
-        getActions: "Failed to get audit entries",
-      },
-      startListening
-    ),
-  ]
-);
+export const setupAuditListeners = combineListeners((startListening) => [
+  ...createErrorMessagesListeners(
+    auditApi.endpoints,
+    {
+      deleteAction: "Failed to delete audit entry",
+      getActions: "Failed to get audit entries",
+    },
+    startListening
+  ),
+]);
 
 export type AuditState = {
   filter: {

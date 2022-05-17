@@ -7,7 +7,6 @@ import api from "@s/api";
 import audit from "@s/audit";
 import common from "@s/common";
 import guides from "@s/guides";
-import history from "@s/history";
 import images from "@s/images";
 import main from "@s/main";
 import { reducer as router } from "@s/router";
@@ -22,7 +21,6 @@ const reducer = combineReducers({
   audit,
   common,
   guides,
-  history,
   images,
   main,
   router,

@@ -26,14 +26,13 @@ import useBottomNav from "@h/use-bottom-nav";
 import useDelayedValue from "@h/use-delayed-value";
 import {
   processedActionsAdapter,
-  selectLoading,
   selectProcessedActions,
-  selectRecentSetsIds,
+  selectRecentSetIds,
+  useGetChangelogQuery,
 } from "@s/history";
 import { historyTabs } from "@s/history/constants";
-import { getData } from "@s/history/thunks";
 import type { HistoryTab } from "@s/history/types";
-import { selectAllSets, selectKeysetByString } from "@s/main";
+import { selectAllSets, selectKeysetByString, selectSetMap } from "@s/main";
 import { replace } from "@s/router";
 import { pageTitle } from "@s/router/constants";
 import {
@@ -79,18 +78,20 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
     }
   }, [tab]);
 
-  const loading = useAppSelector(selectLoading);
-
-  const processedActions = useAppSelector(selectProcessedActions);
-  const recentSets = useAppSelector(selectRecentSetsIds);
+  const setMap = useAppSelector(selectSetMap);
+  const {
+    loading,
+    processedActions = [],
+    recentSets = [],
+  } = useGetChangelogQuery(undefined, {
+    selectFromResult: ({ data, isFetching }) => ({
+      loading: isFetching,
+      processedActions: data && selectProcessedActions(data),
+      recentSets: data && selectRecentSetIds(data, setMap),
+    }),
+  });
 
   const [swiping, setSwiping] = useState(false);
-
-  useEffect(() => {
-    if (processedActions.length === 0) {
-      dispatch(getData());
-    }
-  }, []);
 
   const [salesSet, setSalesSet] = useState<EntityId>("");
   const [salesOpen, setSalesOpen] = useState(false);

@@ -1,7 +1,6 @@
 import { createEntityAdapter } from "@reduxjs/toolkit";
 import type { EntityId, EntityState } from "@reduxjs/toolkit";
 import { DateTime } from "luxon";
-import type { AppStartListening } from "@mw/listener";
 import { combineListeners } from "@mw/listener/functions";
 import baseApi from "@s/api";
 import { createErrorMessagesListeners } from "@s/api/functions";
@@ -165,22 +164,20 @@ export const {
   useUpdateUpdateEntryMutation,
 } = updateApi;
 
-export const setupUpdateListeners = combineListeners(
-  (startListening: AppStartListening) => [
-    ...createErrorMessagesListeners(
-      updateApi.endpoints,
-      {
-        createUpdateEntry: "Failed to create update entry",
-        deleteUpdateEntry: "Failed to delete update entry",
-        getNewUpdate: "",
-        getUpdates: "Failed to get update entries",
-        pinUpdateEntry: "Failed to pin entry",
-        updateUpdateEntry: "Failed to update entry",
-      },
-      startListening
-    ),
-  ]
-);
+export const setupUpdateListeners = combineListeners((startListening) => [
+  ...createErrorMessagesListeners(
+    updateApi.endpoints,
+    {
+      createUpdateEntry: "Failed to create update entry",
+      deleteUpdateEntry: "Failed to delete update entry",
+      getNewUpdate: "",
+      getUpdates: "Failed to get update entries",
+      pinUpdateEntry: "Failed to pin entry",
+      updateUpdateEntry: "Failed to update entry",
+    },
+    startListening
+  ),
+]);
 
 export const {
   selectAll: selectEntries,

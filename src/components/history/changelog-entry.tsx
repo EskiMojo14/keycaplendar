@@ -22,11 +22,10 @@ import {
 import { Typography } from "@rmwc/typography";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
-import { useAppSelector } from "@h";
 import { auditProperties, auditPropertiesFormatted } from "@s/audit/constants";
 import type { ActionSetType } from "@s/audit/types";
 import type { KeysetDoc } from "@s/firebase/types";
-import { selectProcessedActionById } from "@s/history";
+import { selectProcessedActionById, useGetChangelogQuery } from "@s/history";
 import type { VendorType } from "@s/main/types";
 import { arrayIncludes, hasKey, objectKeys, ordinal } from "@s/util/functions";
 import "./changelog-entry.scss";
@@ -54,9 +53,11 @@ type ChangelogEntryProps = {
 };
 
 export const ChangelogEntry = ({ actionId }: ChangelogEntryProps) => {
-  const action = useAppSelector((state) =>
-    selectProcessedActionById(state, actionId)
-  );
+  const { action } = useGetChangelogQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      action: data && selectProcessedActionById(data, actionId),
+    }),
+  });
 
   if (!action) {
     return null;

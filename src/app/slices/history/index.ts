@@ -1,18 +1,54 @@
-import {
-  createEntityAdapter,
-  createSelector,
-  createSlice,
-} from "@reduxjs/toolkit";
-import type { EntityState, PayloadAction } from "@reduxjs/toolkit";
-import type { RootState } from "~/app/store";
-import { selectSetMap } from "@s/main";
+import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
+import type { Dictionary, EntityId, EntityState } from "@reduxjs/toolkit";
+import isEqual from "lodash.isequal";
+import { combineListeners } from "@mw/listener/functions";
+import baseApi from "@s/api";
+import { createErrorMessagesListeners } from "@s/api/functions";
+import { auditProperties } from "@s/audit/constants";
+import firebase from "@s/firebase";
 import type { SetType } from "@s/main/types";
 import {
   alphabeticalSortProp,
   alphabeticalSortPropCurried,
   removeDuplicates,
 } from "@s/util/functions";
-import type { ProcessedPublicActionType, RecentSet } from "./types";
+import type {
+  ProcessedPublicActionType,
+  PublicActionType,
+  RecentSet,
+} from "./types";
+
+export const processAction = (
+  action: PublicActionType
+): ProcessedPublicActionType => {
+  const { after, before, ...restAction } = action;
+  const title =
+    action.action !== "deleted"
+      ? `${action.after.profile} ${action.after.colorway}`
+      : `${action.before.profile} ${action.before.colorway}`;
+  if (before && after) {
+    auditProperties.forEach((prop) => {
+      const { [prop]: beforeProp } = before;
+      const { [prop]: afterProp } = after;
+      if (
+        isEqual(beforeProp, afterProp) ||
+        (!(typeof beforeProp === "boolean") &&
+          !beforeProp &&
+          !(typeof afterProp === "boolean") &&
+          !afterProp)
+      ) {
+        delete before[prop];
+        delete after[prop];
+      }
+    });
+  }
+  return {
+    ...restAction,
+    after,
+    before,
+    title,
+  };
+};
 
 export const processedActionsAdapter =
   createEntityAdapter<ProcessedPublicActionType>({
@@ -25,37 +61,40 @@ export const recentSetsAdapter = createEntityAdapter<RecentSet>({
   sortComparer: alphabeticalSortPropCurried("latestTimestamp", true),
 });
 
-type HistoryState = {
-  loading: boolean;
-  processedActions: EntityState<ProcessedPublicActionType>;
-};
+const getPublicAudit = firebase.functions().httpsCallable("getPublicAudit");
 
-export const initialState: HistoryState = {
-  loading: false,
-  processedActions: processedActionsAdapter.getInitialState(),
-};
-
-export const historySlice = createSlice({
-  initialState,
-  name: "history",
-  reducers: {
-    setLoading: (state, { payload }: PayloadAction<boolean>) => {
-      state.loading = payload;
-    },
-    setProcessedActions: (
-      state,
-      { payload }: PayloadAction<ProcessedPublicActionType[]>
-    ) => {
-      processedActionsAdapter.setAll(state.processedActions, payload);
-    },
-  },
+export const historyApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    getChangelog: build.query<
+      EntityState<ProcessedPublicActionType>,
+      number | undefined
+    >({
+      queryFn: async (num = 25) => {
+        try {
+          return {
+            data: processedActionsAdapter.setAll(
+              processedActionsAdapter.getInitialState(),
+              (await getPublicAudit({ num })).data.map(processAction)
+            ),
+          };
+        } catch (error) {
+          return { error };
+        }
+      },
+    }),
+  }),
+  overrideExisting: true,
 });
 
-export const {
-  actions: { setLoading, setProcessedActions },
-} = historySlice;
+export const { useGetChangelogQuery } = historyApi;
 
-export const selectLoading = (state: RootState) => state.history.loading;
+export const setupHistoryListeners = combineListeners((startListening) => [
+  ...createErrorMessagesListeners(
+    historyApi.endpoints,
+    { getChangelog: "Failed to get changelog entries" },
+    startListening
+  ),
+]);
 
 export const {
   selectAll: selectProcessedActions,
@@ -63,13 +102,11 @@ export const {
   selectEntities: selectProcessedActionsMap,
   selectIds: selectProcessedActionsIds,
   selectTotal: selectProcessedActionsTotal,
-} = processedActionsAdapter.getSelectors<RootState>(
-  (state) => state.history.processedActions
-);
+} = processedActionsAdapter.getSelectors();
 
 export const selectRecentSets = createSelector(
   selectProcessedActions,
-  selectSetMap,
+  (_: unknown, setMap: Dictionary<SetType>) => setMap,
   (processedActions, setMap) =>
     recentSetsAdapter.setAll(
       recentSetsAdapter.getInitialState(),
@@ -114,12 +151,31 @@ export const selectRecentSets = createSelector(
     )
 );
 
-export const {
-  selectAll: selectAllRecentSets,
-  selectById: selectRecentSetById,
-  selectEntities: selectRecentSetsMap,
-  selectIds: selectRecentSetsIds,
-  selectTotal: selectRecentSetsTotal,
-} = recentSetsAdapter.getSelectors<RootState>(selectRecentSets);
+const {
+  selectAll: selectAllRecent,
+  selectEntities: selectRecentEntities,
+  selectIds: selectRecentIds,
+  selectTotal: selectRecentTotal,
+} = recentSetsAdapter.getSelectors();
 
-export default historySlice.reducer;
+export const selectRecentSetIds = createSelector(
+  selectRecentSets,
+  selectRecentIds
+);
+export const selectRecentSetMap = createSelector(
+  selectRecentSets,
+  selectRecentEntities
+);
+export const selectRecentSetTotal = createSelector(
+  selectRecentSets,
+  selectRecentTotal
+);
+export const selectAllRecentSets = createSelector(
+  selectRecentSets,
+  selectAllRecent
+);
+export const selectRecentSetById = createSelector(
+  selectRecentSetMap,
+  (_: unknown, __: unknown, id: EntityId) => id,
+  (recentSetMap, id) => recentSetMap[id]
+);
