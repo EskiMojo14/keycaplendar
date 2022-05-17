@@ -155,7 +155,7 @@ $overlay-values: (
       }
     }
     .mdc-chip {
-      @include chips.fill-color-accessible(
+      @include chips.fill-color(
         mix(
           map-get($variables, on-surface),
           if(
@@ -166,10 +166,6 @@ $overlay-values: (
           12%
         )
       );
-      @include chips.selected-ink-color(map-get($variables, primary));
-      &[disabled] {
-        @include chips.ink-color(map-get($variables, text-disabled));
-      }
     }
     .mdc-typography--overline,
     .mdc-typography--caption {
@@ -324,7 +320,7 @@ $overlay-values: (
     &-drawer.mdc-drawer {
       @include drawer.surface-fill-color(transparent);
       .mdc-chip {
-        @include chips.fill-color-accessible(
+        @include chips.fill-color(
           mix(
             map-get($variables, on-surface),
             map-get($variables, background),
@@ -342,7 +338,7 @@ $overlay-values: (
           map-get($variables, surface)
         );
         .mdc-chip {
-          @include chips.fill-color-accessible(
+          @include chips.fill-color(
             mix(
               map-get($variables, on-surface),
               if(
@@ -955,9 +951,12 @@ $overlay-values: (
   }
 
   .mdc-chip {
-    @include chips.fill-color-accessible(
+    @include chips.fill-color(
       mix(map-get($variables, on-surface), map-get($variables, surface), 12%)
     );
+    @include chips.ink-color(map-get($variables, text-high));
+    @include chips.leading-icon-color(map-get($variables, text-high));
+    @include chips.trailing-icon-color(map-get($variables, text-high));
     @include chips.selected-ink-color(map-get($variables, primary));
     &[disabled] {
       @include chips.ink-color(map-get($variables, text-disabled));
@@ -996,7 +995,7 @@ $overlay-values: (
     @include dialog.content-ink-color(map-get($variables, text-medium));
     color: map-get($variables, text-high);
     .mdc-chip {
-      @include chips.fill-color-accessible(
+      @include chips.fill-color(
         mix(
           map-get($variables, on-surface),
           if(
@@ -1020,13 +1019,17 @@ $overlay-values: (
   }
 
   .mdc-drawer {
-    @include drawer.fill-color-accessible(
+    @include drawer.surface-fill-color(
       if(
         $dark,
         overlay-elevation(map-get($variables, surface), 16),
         map-get($variables, surface)
       )
     );
+    @include drawer.title-ink-color(map-get($variables, text-high));
+    @include drawer.subtitle-ink-color(map-get($variables, text-medium));
+    @include drawer.item-text-ink-color(map-get($variables, text-high));
+    @include drawer.item-icon-ink-color(map-get($variables, text-medium));
     @include drawer.item-activated-icon-ink-color(map-get($variables, primary));
     @include drawer.item-activated-text-ink-color(map-get($variables, primary));
     @include drawer.scrim-fill-color(
@@ -1051,7 +1054,7 @@ $overlay-values: (
           map-get($variables, surface)
         )};
       .mdc-chip {
-        @include chips.fill-color-accessible(
+        @include chips.fill-color(
           mix(
             map-get($variables, on-surface),
             if(
@@ -1146,7 +1149,7 @@ $overlay-values: (
       }
     }
     .mdc-chip {
-      @include chips.fill-color-accessible(
+      @include chips.fill-color(
         mix(
           map-get($variables, on-surface),
           if(
@@ -1632,7 +1635,7 @@ $overlay-values: (
       }
     }
     .mdc-chip {
-      @include chips.fill-color-accessible(
+      @include chips.fill-color(
         mix(
           map-get($variables, on-surface),
           if(
@@ -1643,6 +1646,14 @@ $overlay-values: (
           12%
         )
       );
+      $ink-color: if(
+        $dark,
+        map-get($variables, text-high),
+        rgba(map-get($variables, on-primary), 0.87)
+      );
+      @include chips.ink-color($ink-color);
+      @include chips.leading-icon-color($ink-color);
+      @include chips.trailing-icon-color($ink-color);
     }
     .search-bar {
       &--persistent .search-bar__field.mdc-text-field {
