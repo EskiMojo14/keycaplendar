@@ -2,11 +2,7 @@
   "extends": "./tsconfig.paths.json",
   "compilerOptions": {
     "target": "es6",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -29,24 +25,14 @@
       }
     ]
   },
-  "include": [
-    "src/**/*",
-    "types/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "build"
-  ],
+  "include": ["src/**/*", "gulp/**/*", "types/**/*"],
+  "exclude": ["node_modules", "build"],
   "ts-node": {
     "compilerOptions": {
       "module": "CommonJS",
       "paths": {
-        "gulp": [
-          "./node_modules/@types/gulp"
-        ],
-        "transform-css-to-js": [
-          "./types/transform-css-to-js"
-        ]
+        "gulp": ["./node_modules/@types/gulp"],
+        "transform-css-to-js": ["./types/transform-css-to-js"]
       }
     }
   }
