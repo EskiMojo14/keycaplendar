@@ -201,7 +201,7 @@ export const ElementCard = ({
           })}
           onClick={() => {
             if (!selected) {
-              details(set.alias);
+              details(setId);
             } else {
               closeDetails();
             }

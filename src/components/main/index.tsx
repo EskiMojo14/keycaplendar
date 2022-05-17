@@ -388,7 +388,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
           edit={openEdit}
           open={!!originalUrlSet}
           openSales={openSales}
-          set={urlSet?.id}
+          set={urlSet}
         />
         <BoolWrapper
           condition={device === "desktop"}

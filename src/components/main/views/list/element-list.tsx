@@ -112,7 +112,7 @@ export const ElementList = ({
     <ListItem
       onClick={() => {
         if (!selected) {
-          details(set.alias);
+          details(setId);
         } else {
           closeDetails();
         }

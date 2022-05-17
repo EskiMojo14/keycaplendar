@@ -109,7 +109,7 @@ export const ElementImage = ({
         className={classNames("image-list-item", { selected })}
         onClick={() => {
           if (!selected) {
-            details(set.alias);
+            details(setId);
           } else {
             closeDetails();
           }

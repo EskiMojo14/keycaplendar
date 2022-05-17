@@ -24,7 +24,8 @@ import { withTooltip } from "@c/util/hocs";
 import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import usePage from "@h/use-page";
-import { selectSearch, selectSetById, setSearch } from "@s/main";
+import { selectSearch, setSearch } from "@s/main";
+import type { SetType } from "@s/main/types";
 import { mainPages } from "@s/router/constants";
 import { createURL } from "@s/router/functions";
 import { selectView } from "@s/settings";
@@ -60,7 +61,7 @@ type DrawerDetailsProps = {
   close: () => void;
   open: boolean;
   openSales: (set: EntityId) => void;
-  set: EntityId | undefined;
+  set: SetType | undefined;
   delete?: (set: EntityId) => void;
   edit?: (set: EntityId) => void;
 };
@@ -71,7 +72,7 @@ export const DrawerDetails = ({
   edit,
   open,
   openSales,
-  set: setId = "",
+  set,
 }: DrawerDetailsProps) => {
   const dispatch = useAppDispatch();
 
@@ -80,19 +81,19 @@ export const DrawerDetails = ({
   const page = usePage();
 
   const selectFavorited = useCallback(createSelectSetFavorited(), []);
-  const favorited = useAppSelector((state) => selectFavorited(state, setId));
+  const favorited = useAppSelector((state) =>
+    selectFavorited(state, set?.id ?? "")
+  );
   const selectHidden = useCallback(createSelectSetHidden(), []);
-  const hidden = useAppSelector((state) => selectHidden(state, setId));
+  const hidden = useAppSelector((state) => selectHidden(state, set?.id ?? ""));
   const selectBought = useCallback(createSelectSetBought(), []);
-  const bought = useAppSelector((state) => selectBought(state, setId));
+  const bought = useAppSelector((state) => selectBought(state, set?.id ?? ""));
 
   const view = useAppSelector(selectView);
 
   const user = useAppSelector(selectUser);
 
   const search = useAppSelector(selectSearch);
-
-  const set = useAppSelector((state) => selectSetById(state, setId));
 
   const copyLink = async () => {
     if (set) {
@@ -303,7 +304,7 @@ export const DrawerDetails = ({
           className="edit"
           icon={iconObject(<Edit />)}
           label="Edit"
-          onClick={() => edit(setId)}
+          onClick={() => edit(set?.id ?? "")}
           outlined
         />
         {user.isEditor && (
@@ -312,7 +313,7 @@ export const DrawerDetails = ({
             danger
             icon={iconObject(<Delete />)}
             label="Delete"
-            onClick={() => deleteSet(setId)}
+            onClick={() => deleteSet(set?.id ?? "")}
             outlined
           />
         )}
@@ -331,7 +332,7 @@ export const DrawerDetails = ({
           checked={favorited}
           className="favorite"
           icon="favorite_border"
-          onClick={() => dispatch(toggleFavorite(setId))}
+          onClick={() => dispatch(toggleFavorite(set?.id ?? ""))}
           onIcon={iconObject(<Favorite />)}
         />,
         favorited ? "Unfavorite" : "Favorite"
@@ -341,7 +342,7 @@ export const DrawerDetails = ({
           checked={bought}
           className="bought"
           icon={iconObject(<ShoppingBasketOff />)}
-          onClick={() => dispatch(toggleBought(setId))}
+          onClick={() => dispatch(toggleBought(set?.id ?? ""))}
           onIcon={iconObject(<ShoppingBasket />)}
         />,
         bought ? "Bought" : "Not bought"
@@ -351,7 +352,7 @@ export const DrawerDetails = ({
           checked={hidden}
           className="hide"
           icon={iconObject(<Visibility />)}
-          onClick={() => dispatch(toggleHidden(setId))}
+          onClick={() => dispatch(toggleHidden(set?.id ?? ""))}
           onIcon={iconObject(<VisibilityOff />)}
         />,
         hidden ? "Unhide" : "Hide"
@@ -368,7 +369,7 @@ export const DrawerDetails = ({
     <Button
       icon="bar_chart"
       label="Sales"
-      onClick={() => openSales(setId)}
+      onClick={() => openSales(set?.id ?? "")}
       outlined
     />
   );

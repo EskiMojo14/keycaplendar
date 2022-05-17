@@ -227,7 +227,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
             close={closeDetails}
             open={!!originalUrlSet && tab === "recent"}
             openSales={openSales}
-            set={urlSet?.id}
+            set={urlSet}
           />
           <DialogSales close={closeSales} open={salesOpen} set={salesSet} />
           <VirtualizeSwipeableViews

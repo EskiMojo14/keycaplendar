@@ -89,7 +89,7 @@ export const ElementCompact = ({
     <ListItem
       onClick={() => {
         if (!selected) {
-          details(set.alias);
+          details(setId);
         } else {
           closeDetails();
         }
