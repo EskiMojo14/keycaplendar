@@ -102,11 +102,26 @@
               @include radio.unchecked-stroke-color(rgba(black, 0.6));
               @include ripple.states(black);
             }
+            .mint {
+              background-color: palette.$teal-50;
+              color: rgba(black, 0.87);
+              @include radio.unchecked-stroke-color(rgba(black, 0.6));
+              @include ripple.states(black);
+            }
             .sepia {
               background-color: #e2dfd6;
               color: rgba(#3d3d38, 0.87);
               @include radio.unchecked-stroke-color(rgba(#3d3d38, 0.6));
               @include ripple.states(black);
+            }
+            .ocean,
+            .grey,
+            .deep-ocean,
+            .deep,
+            .dark {
+              color: rgba(white, 0.87);
+              @include radio.unchecked-stroke-color(rgba(white, 0.6));
+              @include ripple.states(white);
             }
             .ocean {
               background-color: #243647;
@@ -131,19 +146,14 @@
               @include radio.checked-stroke-color(palette.$deep-orange-200);
               @include radio.ink-color(palette.$deep-orange-200);
             }
+            .mint {
+              @include radio.checked-stroke-color(#96000f);
+              @include radio.ink-color(#96000f);
+            }
             .ocean,
             .deep-ocean {
               @include radio.checked-stroke-color(palette.$light-green-200);
               @include radio.ink-color(palette.$light-green-200);
-            }
-            .ocean,
-            .grey,
-            .deep-ocean,
-            .deep,
-            .dark {
-              color: rgba(white, 0.87);
-              @include radio.unchecked-stroke-color(rgba(white, 0.6));
-              @include ripple.states(white);
             }
           }
         }
