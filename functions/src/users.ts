@@ -35,9 +35,9 @@ export const listUsers = functions.https.onCall(async (data, context) => {
       error: "Current user is not an admin. Access is not permitted.",
     };
   }
-  const listUsers = async (nextPageToken: string) => {
-    const processResult = (result: admin.auth.ListUsersResult) => {
-      const users = result.users.map((user) => {
+  const processResult = (result: admin.auth.ListUsersResult) => {
+    return {
+      users: result.users.map((user) => {
         const dateCreated = DateTime.fromHTTP(
           user.metadata.creationTime
         ).toISO();
@@ -47,61 +47,43 @@ export const listUsers = functions.https.onCall(async (data, context) => {
         const lastActive = user.metadata.lastRefreshTime
           ? DateTime.fromHTTP(user.metadata.lastRefreshTime).toISO()
           : "";
-        if (user.customClaims) {
-          return {
-            id: user.uid,
-            displayName: user.displayName,
-            email: user.email,
-            photoURL: user.photoURL,
-            nickname: user.customClaims.nickname ?? "",
-            designer: user.customClaims.designer ?? false,
-            editor: user.customClaims.editor ?? false,
-            admin: user.customClaims.admin ?? false,
-            dateCreated: dateCreated,
-            lastSignIn: lastSignIn,
-            lastActive: lastActive,
-          };
-        } else {
-          return {
-            id: user.uid,
-            displayName: user.displayName,
-            email: user.email,
-            photoURL: user.photoURL,
-            nickname: "",
-            designer: false,
-            editor: false,
-            admin: false,
-            dateCreated: dateCreated,
-            lastSignIn: lastSignIn,
-            lastActive: lastActive,
-          };
-        }
-      });
-      return { users: users, nextPageToken: result.pageToken };
+        return {
+          id: user.uid,
+          displayName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+          nickname:
+            user.customClaims && user.customClaims.nickname // TODO: work out why optional chaining doesn't get compiled to something that works
+              ? user.customClaims.nickname
+              : "",
+          designer:
+            user.customClaims && user.customClaims.designer
+              ? user.customClaims.designer
+              : false,
+          editor:
+            user.customClaims && user.customClaims.editor
+              ? user.customClaims.editor
+              : false,
+          admin:
+            user.customClaims && user.customClaims.admin
+              ? user.customClaims.admin
+              : false,
+          dateCreated: dateCreated,
+          lastSignIn: lastSignIn,
+          lastActive: lastActive,
+        };
+      }),
+      nextPageToken: result.pageToken,
     };
-    if (nextPageToken) {
-      const result = await admin
-        .auth()
-        .listUsers(data.length, nextPageToken)
-        .then((result) => processResult(result))
-        .catch((error) => {
-          return { error: "Error listing users: " + error };
-        });
-      return result;
-    } else {
-      const result = await admin
-        .auth()
-        .listUsers(data.length)
-        .then((result) => processResult(result))
-        .catch((error) => {
-          return { error: "Error listing users: " + error };
-        });
-      return result;
-    }
   };
   // List batch of users, 1000 at a time.
-  const result = await listUsers(data.nextPageToken);
-  return result;
+  return await admin
+    .auth()
+    .listUsers(data.length, data.nextPageToken)
+    .then((result) => processResult(result))
+    .catch((error) => {
+      return { error: "Error listing users: " + error };
+    });
 });
 
 /**
