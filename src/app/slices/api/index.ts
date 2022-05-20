@@ -4,7 +4,7 @@ export const baseApi = createApi({
   baseQuery: fakeBaseQuery(),
   endpoints: () => ({}),
   reducerPath: "api",
-  tagTypes: ["Audit", "Guide", "Update"],
+  tagTypes: ["Guide", "Update"],
 });
 
 export default baseApi;

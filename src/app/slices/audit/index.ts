@@ -53,15 +53,29 @@ export const processAction = ({
 
 export const auditApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    deleteAction: build.mutation<void, EntityId>({
-      invalidatesTags: (_, __, id) => [{ id, type: "Audit" as const }],
+    deleteAction: build.mutation<string, EntityId>({
+      onQueryStarted: async (id, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          for (const length of [50, 100, 150, 200, 250]) {
+            dispatch(
+              auditApi.util.updateQueryData(
+                "getActions",
+                length,
+                (entityState) => actionAdapter.removeOne(entityState, id)
+              )
+            );
+          }
+        } catch {}
+      },
       queryFn: async (id) => {
         try {
+          await firestore
+            .collection("changelog")
+            .doc(id as ChangelogId)
+            .delete();
           return {
-            data: await firestore
-              .collection("changelog")
-              .doc(id as ChangelogId)
-              .delete(),
+            data: "Success",
           };
         } catch (error) {
           return { error };
@@ -69,13 +83,6 @@ export const auditApi = baseApi.injectEndpoints({
       },
     }),
     getActions: build.query<EntityState<ActionType>, number>({
-      providesTags: (result) =>
-        result
-          ? [
-              ...result.ids.map((id) => ({ id, type: "Audit" as const })),
-              { id: "LIST", type: "Audit" as const },
-            ]
-          : [{ id: "LIST", type: "Audit" as const }],
       queryFn: async (length) => {
         try {
           const querySnapshot = await firestore
