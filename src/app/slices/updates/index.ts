@@ -26,10 +26,26 @@ const updateEntryAdapter = createEntityAdapter<UpdateEntryType>({
 export const updateApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     createUpdateEntry: build.mutation<UpdateId, Omit<UpdateEntryType, "id">>({
-      invalidatesTags: () => [
-        { id: "LIST", type: "Update" as const },
-        { id: "NEW", type: "Update" as const },
-      ],
+      onQueryStarted: async (entry, { dispatch, queryFulfilled }) => {
+        try {
+          const { data: id } = await queryFulfilled;
+          dispatch(
+            updateApi.util.updateQueryData(
+              "getNewUpdate",
+              undefined,
+              () => true
+            )
+          );
+          dispatch(
+            updateApi.util.updateQueryData(
+              "getUpdates",
+              undefined,
+              (entityState) =>
+                updateEntryAdapter.setOne(entityState, { ...entry, id })
+            )
+          );
+        } catch {}
+      },
       queryFn: async (entry) => {
         try {
           const docRef = await firestore.collection("updates").add(entry);
@@ -41,18 +57,30 @@ export const updateApi = baseApi.injectEndpoints({
         }
       },
     }),
-    deleteUpdateEntry: build.mutation<void, EntityId>({
-      invalidatesTags: (_, __, id) => [
-        { id, type: "Update" as const },
-        { id: "NEW", type: "Update" as const },
-      ],
+    deleteUpdateEntry: build.mutation<"Success", EntityId>({
+      onQueryStarted: async (id, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          dispatch(
+            updateApi.util.prefetch("getNewUpdate", undefined, { force: true })
+          );
+          dispatch(
+            updateApi.util.updateQueryData(
+              "getUpdates",
+              undefined,
+              (entityState) => updateEntryAdapter.removeOne(entityState, id)
+            )
+          );
+        } catch {}
+      },
       queryFn: async (id) => {
         try {
+          await firestore
+            .collection("updates")
+            .doc(id as UpdateId)
+            .delete();
           return {
-            data: await firestore
-              .collection("updates")
-              .doc(id as UpdateId)
-              .delete(),
+            data: "Success",
           };
         } catch (error) {
           return { error };
@@ -60,7 +88,6 @@ export const updateApi = baseApi.injectEndpoints({
       },
     }),
     getNewUpdate: build.query<boolean, void>({
-      providesTags: () => [{ id: "NEW", type: "Update" as const }],
       queryFn: async () => {
         const lastWeek = DateTime.utc().minus({ days: 7 });
         try {
@@ -85,13 +112,6 @@ export const updateApi = baseApi.injectEndpoints({
       },
     }),
     getUpdates: build.query<EntityState<UpdateEntryType>, void>({
-      providesTags: (result) =>
-        result
-          ? [
-              ...result.ids.map((id) => ({ id, type: "Update" as const })),
-              { id: "LIST", type: "Update" as const },
-            ]
-          : [{ id: "LIST", type: "Update" as const }],
       queryFn: async () => {
         try {
           const querySnapshot = await firestore
@@ -119,32 +139,61 @@ export const updateApi = baseApi.injectEndpoints({
         }
       },
     }),
-    pinUpdateEntry: build.mutation<void, UpdateEntryType>({
-      invalidatesTags: (_, __, entry) => [
-        { id: entry.id, type: "Update" as const },
-      ],
+    pinUpdateEntry: build.mutation<"Success", UpdateEntryType>({
+      onQueryStarted: async (entry, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          dispatch(
+            updateApi.util.updateQueryData(
+              "getUpdates",
+              undefined,
+              (entityState) => {
+                const {
+                  entities: { [entry.id]: entryInState },
+                } = entityState;
+                if (entryInState) {
+                  entryInState.pinned === !entry.pinned;
+                }
+              }
+            )
+          );
+        } catch {}
+      },
       queryFn: async (entry) => {
         try {
+          await firestore
+            .collection("updates")
+            .doc(entry.id as UpdateId)
+            .set({ pinned: !entry.pinned }, { merge: true });
           return {
-            data: await firestore
-              .collection("updates")
-              .doc(entry.id as UpdateId)
-              .set({ pinned: !entry.pinned }, { merge: true }),
+            data: "Success",
           };
         } catch (error) {
           return { error };
         }
       },
     }),
-    updateUpdateEntry: build.mutation<void, UpdateEntryType>({
-      invalidatesTags: (_, __, { id }) => [{ id, type: "Update" as const }],
+    updateUpdateEntry: build.mutation<"Success", UpdateEntryType>({
+      onQueryStarted: async (entry, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          dispatch(
+            updateApi.util.updateQueryData(
+              "getUpdates",
+              undefined,
+              (entityState) => updateEntryAdapter.setOne(entityState, entry)
+            )
+          );
+        } catch {}
+      },
       queryFn: async ({ id, ...entry }) => {
         try {
+          await firestore
+            .collection("updates")
+            .doc(id as UpdateId)
+            .set(entry);
           return {
-            data: await firestore
-              .collection("updates")
-              .doc(id as UpdateId)
-              .set(entry),
+            data: "Success",
           };
         } catch (error) {
           return { error };

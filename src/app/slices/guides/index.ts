@@ -59,7 +59,7 @@ export const guideApi = baseApi.injectEndpoints({
         }
       },
     }),
-    deleteGuideEntry: build.mutation<string, EntityId>({
+    deleteGuideEntry: build.mutation<"Success", EntityId>({
       onQueryStarted: async (id, { dispatch, queryFulfilled }) => {
         try {
           await queryFulfilled;
@@ -100,7 +100,7 @@ export const guideApi = baseApi.injectEndpoints({
         }
       },
     }),
-    updateGuideEntry: build.mutation<string, GuideEntryType>({
+    updateGuideEntry: build.mutation<"Success", GuideEntryType>({
       onQueryStarted: async (entry, { dispatch, queryFulfilled }) => {
         try {
           await queryFulfilled;

@@ -53,7 +53,7 @@ export const processAction = ({
 
 export const auditApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    deleteAction: build.mutation<string, EntityId>({
+    deleteAction: build.mutation<"Success", EntityId>({
       onQueryStarted: async (id, { dispatch, getState, queryFulfilled }) => {
         try {
           await queryFulfilled;
