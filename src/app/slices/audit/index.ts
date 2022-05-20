@@ -7,7 +7,7 @@ import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import isEqual from "lodash.isequal";
 import type { RootState } from "~/app/store";
 import { combineListeners } from "@mw/listener/functions";
-import baseApi from "@s/api";
+import baseApi, { selectAllCachedArgsByQuery } from "@s/api";
 import { createErrorMessagesListeners } from "@s/api/functions";
 import { auditProperties } from "@s/audit/constants";
 import firestore from "@s/firebase/firestore";
@@ -54,10 +54,13 @@ export const processAction = ({
 export const auditApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     deleteAction: build.mutation<string, EntityId>({
-      onQueryStarted: async (id, { dispatch, queryFulfilled }) => {
+      onQueryStarted: async (id, { dispatch, getState, queryFulfilled }) => {
         try {
           await queryFulfilled;
-          for (const length of [50, 100, 150, 200, 250]) {
+          for (const length of selectAllCachedArgsByQuery(
+            getState() as RootState,
+            "getActions"
+          )) {
             dispatch(
               auditApi.util.updateQueryData(
                 "getActions",
