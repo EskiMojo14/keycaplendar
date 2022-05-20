@@ -35,7 +35,19 @@ const getGuides = firebase.functions().httpsCallable("getGuides");
 export const guideApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     createGuideEntry: build.mutation<GuideId, Omit<GuideEntryType, "id">>({
-      invalidatesTags: () => [{ id: "LIST", type: "Guide" as const }],
+      onQueryStarted: async (entry, { dispatch, queryFulfilled }) => {
+        try {
+          const { data: id } = await queryFulfilled;
+          dispatch(
+            guideApi.util.updateQueryData(
+              "getGuides",
+              undefined,
+              (entityState) =>
+                guideEntryAdapter.setOne(entityState, { ...entry, id })
+            )
+          );
+        } catch {}
+      },
       queryFn: async (entry) => {
         try {
           const docRef = await firestore.collection("guides").add(entry);
@@ -47,15 +59,27 @@ export const guideApi = baseApi.injectEndpoints({
         }
       },
     }),
-    deleteGuideEntry: build.mutation<void, EntityId>({
-      invalidatesTags: (_, __, id) => [{ id, type: "Guide" as const }],
+    deleteGuideEntry: build.mutation<string, EntityId>({
+      onQueryStarted: async (id, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          dispatch(
+            guideApi.util.updateQueryData(
+              "getGuides",
+              undefined,
+              (entityState) => guideEntryAdapter.removeOne(entityState, id)
+            )
+          );
+        } catch {}
+      },
       queryFn: async (id) => {
         try {
+          await firestore
+            .collection("guides")
+            .doc(id as GuideId)
+            .delete();
           return {
-            data: await firestore
-              .collection("guides")
-              .doc(id as GuideId)
-              .delete(),
+            data: "Success",
           };
         } catch (error) {
           return { error };
@@ -63,13 +87,6 @@ export const guideApi = baseApi.injectEndpoints({
       },
     }),
     getGuides: build.query<EntityState<GuideEntryType>, void>({
-      providesTags: (result) =>
-        result
-          ? [
-              ...result.ids.map((id) => ({ id, type: "Guide" as const })),
-              { id: "LIST", type: "Guide" as const },
-            ]
-          : [{ id: "LIST", type: "Guide" as const }],
       queryFn: async () => {
         try {
           return {
@@ -83,15 +100,27 @@ export const guideApi = baseApi.injectEndpoints({
         }
       },
     }),
-    updateGuideEntry: build.mutation<void, GuideEntryType>({
-      invalidatesTags: (_, __, { id }) => [{ id, type: "Guide" as const }],
+    updateGuideEntry: build.mutation<string, GuideEntryType>({
+      onQueryStarted: async (entry, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          dispatch(
+            guideApi.util.updateQueryData(
+              "getGuides",
+              undefined,
+              (entityState) => guideEntryAdapter.setOne(entityState, entry)
+            )
+          );
+        } catch {}
+      },
       queryFn: async ({ id, ...entry }) => {
         try {
+          await firestore
+            .collection("guides")
+            .doc(id as GuideId)
+            .set(entry);
           return {
-            data: await firestore
-              .collection("guides")
-              .doc(id as GuideId)
-              .set(entry),
+            data: "Success",
           };
         } catch (error) {
           return { error };
