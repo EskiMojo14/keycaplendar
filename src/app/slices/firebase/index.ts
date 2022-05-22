@@ -22,7 +22,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 //firebase.analytics();
 
-const emulateFn = false;
+const emulateFn = true;
 
 if (process.env.NODE_ENV === "development" && emulateFn) {
   // eslint-disable-next-line import/no-named-as-default-member

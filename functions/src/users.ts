@@ -31,9 +31,10 @@ export const getClaims = functions.https.onCall((data, context) => {
 
 export const listUsers = functions.https.onCall(async (data, context) => {
   if (!context.auth || context.auth.token.admin !== true) {
-    return {
-      error: "Current user is not an admin. Access is not permitted.",
-    };
+    throw new functions.https.HttpsError(
+      "permission-denied",
+      "Current user is not an admin. Access is not permitted."
+    );
   }
   const processResult = (result: admin.auth.ListUsersResult) => {
     return {
@@ -76,14 +77,18 @@ export const listUsers = functions.https.onCall(async (data, context) => {
       nextPageToken: result.pageToken,
     };
   };
-  // List batch of users, 1000 at a time.
-  return await admin
-    .auth()
-    .listUsers(data.length, data.nextPageToken)
-    .then((result) => processResult(result))
-    .catch((error) => {
-      return { error: "Error listing users: " + error };
-    });
+  try {
+    return await admin
+      .auth()
+      .listUsers(data.length, data.nextPageToken ?? undefined)
+      .then((result) => processResult(result));
+  } catch (error) {
+    throw new functions.https.HttpsError(
+      "unknown",
+      "Error listing users",
+      error
+    );
+  }
 });
 
 /**
@@ -92,46 +97,95 @@ export const listUsers = functions.https.onCall(async (data, context) => {
 
 export const deleteUser = functions.https.onCall(async (data, context) => {
   if (!context.auth || context.auth.token.admin !== true) {
-    return {
-      error: "Current user is not an admin. Access is not permitted.",
-    };
+    throw new functions.https.HttpsError(
+      "permission-denied",
+      "Current user is not an admin. Access is not permitted."
+    );
   }
   if (data.email === functions.config().admin.email) {
-    return {
-      error: "This user cannot be deleted",
-    };
+    throw new functions.https.HttpsError(
+      "permission-denied",
+      "This user cannot be deleted"
+    );
   }
-  const currentUser = await admin.auth().getUser(context.auth.uid);
-  const user = await admin.auth().getUserByEmail(data.email);
-  admin
-    .auth()
-    .deleteUser(user.uid)
-    .then(() => {
-      console.log(
-        currentUser.displayName +
-          " successfully deleted account of " +
-          user.displayName +
-          "."
+  try {
+    const [currentUser, currentUserErr] = await handle(
+      admin.auth().getUser(context.auth.uid)
+    );
+    if (currentUserErr) {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "User not found",
+        currentUserErr
       );
-      return null;
-    })
-    .catch((error) => {
-      return { error: "Error deleting user: " + error };
-    });
+    }
 
-  admin
-    .firestore()
-    .collection("users")
-    .doc(user.uid as UserId)
-    .delete()
-    .then(() => {
-      console.log("Deleted user preference file for " + user.displayName + ".");
-      return null;
-    })
-    .catch((error) => {
-      console.log("Failed to delete user preference file:" + error);
-    });
-  return "Success";
+    const [user, userErr] = await handle(
+      admin.auth().getUserByEmail(data.email)
+    );
+    if (userErr) {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "User not found",
+        userErr
+      );
+    }
+    const results = await Promise.all([
+      await admin
+        .auth()
+        .deleteUser(user!.uid)
+        .then(() =>
+          console.log(
+            currentUser!.displayName +
+              " successfully deleted account of " +
+              user!.displayName +
+              "."
+          )
+        )
+        .catch(
+          (error) =>
+            new functions.https.HttpsError(
+              "unknown",
+              "Error deleting user",
+              error
+            )
+        ),
+      await admin
+        .firestore()
+        .collection("users")
+        .doc(user!.uid as UserId)
+        .delete()
+        .then(() =>
+          console.log(
+            "Deleted user preference file for " + user!.displayName + "."
+          )
+        )
+        .catch(
+          (error) =>
+            new functions.https.HttpsError(
+              "unknown",
+              "Failed to delete user preference file",
+              error
+            )
+        ),
+    ]);
+    for (const result of results) {
+      if (result instanceof functions.https.HttpsError) {
+        throw result;
+      }
+    }
+    return "Success";
+  } catch (error) {
+    if (error instanceof functions.https.HttpsError) {
+      throw error;
+    } else {
+      throw new functions.https.HttpsError(
+        "unknown",
+        "Something went wrong",
+        error
+      );
+    }
+  }
 });
 
 /**
@@ -140,32 +194,60 @@ export const deleteUser = functions.https.onCall(async (data, context) => {
 
 export const setRoles = functions.https.onCall(async (data, context) => {
   if (!context.auth || context.auth.token.admin !== true) {
-    return {
-      error: "User not admin.",
-    };
+    throw new functions.https.HttpsError(
+      "permission-denied",
+      "Current user is not an admin. Access is not permitted."
+    );
   }
-  const currentUser = await admin.auth().getUser(context.auth.uid);
-  const user = await admin.auth().getUserByEmail(data.email);
-  const claims = {
-    designer: data.designer,
-    nickname: data.nickname,
-    editor: data.editor,
-    admin: data.admin,
-  };
-  await admin
-    .auth()
-    .setCustomUserClaims(user.uid, claims)
-    .then(() => {
-      console.log(
-        `${currentUser.displayName} successfully edited account of ${user.displayName}. Designer: ${data.designer}, editor: ${data.editor}, admin: ${data.admin}, nickname: ${data.nickname}`
+  const { id, ...claims } = data;
+  try {
+    const [currentUser, currentUserErr] = await handle(
+      admin.auth().getUser(context.auth.uid)
+    );
+    if (currentUserErr) {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "Current user not found",
+        currentUserErr
       );
-      return null;
-    })
-    .catch((error) => {
-      return { error: "Error setting roles: " + error };
-    });
-  const newUser = await admin.auth().getUserByEmail(data.email);
-  return newUser.customClaims;
+    }
+
+    const [user, userErr] = await handle(admin.auth().getUser(id));
+    if (userErr) {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "User not found",
+        userErr
+      );
+    }
+    await admin.auth().setCustomUserClaims(user!.uid, claims);
+    console.log(
+      `${currentUser!.displayName} successfully edited account of ${
+        user!.displayName
+      }. Designer: ${data.designer}, editor: ${data.editor}, admin: ${
+        data.admin
+      }, nickname: ${data.nickname}`
+    );
+    const [newUser, newUserErr] = await handle(admin.auth().getUser(id));
+    if (newUserErr) {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "User not found",
+        newUserErr
+      );
+    }
+    return newUser!.customClaims;
+  } catch (error) {
+    if (error instanceof functions.https.HttpsError) {
+      throw error;
+    } else {
+      throw new functions.https.HttpsError(
+        "unknown",
+        "Something went wrong",
+        error
+      );
+    }
+  }
 });
 
 /**
@@ -174,59 +256,69 @@ export const setRoles = functions.https.onCall(async (data, context) => {
 
 export const deleteOwnUser = functions.https.onCall(async (data, context) => {
   if (!context.auth) {
-    return {
-      error: "No current user signed in.",
-    };
+    throw new functions.https.HttpsError(
+      "permission-denied",
+      "No current user signed in."
+    );
   }
   const [currentUser, userErr] = await handle<admin.auth.UserRecord>(
     admin.auth().getUser(context.auth.uid)
   );
   if (userErr) {
-    return {
-      error: userErr.errorInfo.message,
-    };
+    throw new functions.https.HttpsError(
+      "permission-denied",
+      "Current user not found",
+      userErr
+    );
   }
-  if (currentUser) {
-    if (currentUser.email === functions.config().admin.email) {
-      return {
-        error: "This user cannot be deleted.",
-      };
+  if (currentUser!.email === functions.config().admin.email) {
+    if (data.email === functions.config().admin.email) {
+      throw new functions.https.HttpsError(
+        "permission-denied",
+        "This user cannot be deleted"
+      );
     }
-    const deleteUser = admin
+  }
+  const results = await Promise.all([
+    await admin
       .auth()
-      .deleteUser(currentUser.uid)
-      .then(() => {
+      .deleteUser(currentUser!.uid)
+      .then(() =>
         console.log(
-          currentUser.displayName + " successfully deleted own account."
-        );
-        return null;
-      })
-      .catch((error) => {
-        console.log(
-          "Error deleting user " + currentUser.displayName + ": " + error
-        );
-        return { error: "Error deleting user: " + error };
-      });
-    const deleteFile = admin
+          currentUser!.displayName + " successfully deleted own account."
+        )
+      )
+      .catch(
+        (error) =>
+          new functions.https.HttpsError(
+            "unknown",
+            "Error deleting user",
+            error
+          )
+      ),
+    await admin
       .firestore()
       .collection("users")
-      .doc(currentUser.uid as UserId)
+      .doc(currentUser!.uid as UserId)
       .delete()
-      .then(() => {
+      .then(() =>
         console.log(
-          "Deleted user preference file for " + currentUser.displayName + "."
-        );
-        return null;
-      })
-      .catch((error) => {
-        console.log("Failed to delete user preference file: " + error);
-        return { error: "Failed to delete user preference file: " + error };
-      });
-    return Promise.all([deleteUser, deleteFile]);
-  } else {
-    return {
-      error: "Unknown error.",
-    };
+          "Deleted user preference file for " + currentUser!.displayName + "."
+        )
+      )
+      .catch(
+        (error) =>
+          new functions.https.HttpsError(
+            "unknown",
+            "Failed to delete user preference file",
+            error
+          )
+      ),
+  ]);
+  for (const result of results) {
+    if (result instanceof functions.https.HttpsError) {
+      throw result;
+    }
   }
 });
 

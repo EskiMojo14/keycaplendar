@@ -1,16 +1,20 @@
 import type { userRoles } from "./constants";
 
-export type UserType = {
+export type CustomClaims = {
   admin: boolean;
-  dateCreated: string;
   designer: boolean;
+  editor: boolean;
+  nickname: string;
+};
+
+export type UserType = CustomClaims & {
+  dateCreated: string;
   displayName: string;
   editor: boolean;
   email: string;
   id: string;
   lastActive: string;
   lastSignIn: string;
-  nickname: string;
   photoURL: string;
 };
 

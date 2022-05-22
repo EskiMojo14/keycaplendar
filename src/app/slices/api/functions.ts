@@ -21,6 +21,7 @@ export const createErrorMessagesListeners = <
       startListening({
         effect: ({ error }) => {
           if (error.name !== "ConditionError") {
+            console.error(error);
             notify({ title: errorMessage });
           }
         },

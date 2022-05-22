@@ -3,38 +3,150 @@ import {
   createSelector,
   createSlice,
 } from "@reduxjs/toolkit";
-import type { EntityState, PayloadAction } from "@reduxjs/toolkit";
-import produce from "immer";
-import { is } from "typescript-is";
+import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
+import { combineListeners } from "@mw/listener/functions";
+import baseApi from "@s/api";
+import { createErrorMessagesListeners } from "@s/api/functions";
+import firebase from "@s/firebase";
 import type { sortProps } from "@s/users/constants";
 import {
   alphabeticalSortCurried,
   alphabeticalSortPropCurried,
 } from "@s/util/functions";
-import type { UserType } from "./types";
+import type { CustomClaims, UserType } from "./types";
+
+export const defaultUserLength = 1000;
 
 const userAdapter = createEntityAdapter<UserType>();
 
+const listUsers = firebase.functions().httpsCallable("listUsers");
+const deleteUser = firebase.functions().httpsCallable("deleteUser");
+const setRoles = firebase.functions().httpsCallable("setRoles");
+
+export const usersApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    deleteUser: build.mutation<
+      string,
+      { user: UserType; length?: number; nextPageToken?: string }
+    >({
+      onQueryStarted: async (
+        { length, nextPageToken, user: { id } },
+        { dispatch, queryFulfilled }
+      ) => {
+        try {
+          await queryFulfilled;
+          dispatch(
+            usersApi.util.updateQueryData(
+              "getUsers",
+              { length, nextPageToken },
+              (draftState) => {
+                userAdapter.removeOne(draftState.users, id);
+              }
+            )
+          );
+        } catch (e) {}
+      },
+      queryFn: async (user) => {
+        try {
+          const result = await deleteUser(user);
+
+          return { data: result.data };
+        } catch (error) {
+          return { error };
+        }
+      },
+    }),
+    getUsers: build.query<
+      { users: EntityState<UserType>; nextPageToken?: string },
+      { length?: number; nextPageToken?: string } | undefined
+    >({
+      queryFn: async ({ length = defaultUserLength, nextPageToken } = {}) => {
+        try {
+          const result = await listUsers({ length, nextPageToken });
+          return {
+            data: {
+              nextPageToken: result.data.nextPageToken,
+              users: userAdapter.setAll(
+                userAdapter.getInitialState(),
+                result.data.users
+              ),
+            },
+          };
+        } catch (error) {
+          return { error };
+        }
+      },
+    }),
+    setRoles: build.mutation<
+      CustomClaims,
+      {
+        claims: CustomClaims & { id: string };
+        length?: number;
+        nextPageToken?: string;
+      }
+    >({
+      onQueryStarted: async (
+        { claims: { id, ...claims }, length, nextPageToken },
+        { dispatch, queryFulfilled }
+      ) => {
+        try {
+          await queryFulfilled;
+          dispatch(
+            usersApi.util.updateQueryData(
+              "getUsers",
+              { length, nextPageToken },
+              (draftState) => {
+                if (draftState.users.entities[id]) {
+                  Object.assign(draftState.users.entities[id], claims);
+                }
+              }
+            )
+          );
+        } catch (e) {}
+      },
+      queryFn: async ({ claims }) => {
+        try {
+          const result = await setRoles(claims);
+
+          return { data: result.data };
+        } catch (error) {
+          return { error };
+        }
+      },
+    }),
+  }),
+  overrideExisting: true,
+});
+
+export const { useDeleteUserMutation, useGetUsersQuery, useSetRolesMutation } =
+  usersApi;
+
+export const setupUsersListeners = combineListeners((startListening) =>
+  createErrorMessagesListeners(
+    usersApi.endpoints,
+    {
+      deleteUser: "Failed to delete user",
+      getUsers: "Failed to get users",
+      setRoles: "Failed to set roles",
+    },
+    startListening
+  )
+);
+
 type UserState = {
-  loading: boolean;
-  nextPageToken: string;
   page: number;
   reverseSort: boolean;
   rowsPerPage: number;
   sort: typeof sortProps[number];
-  users: EntityState<UserType>;
   view: "card" | "table";
 };
 
 export const initialState: UserState = {
-  loading: false,
-  nextPageToken: "",
   page: 1,
   reverseSort: false,
   rowsPerPage: 25,
   sort: "editor",
-  users: userAdapter.getInitialState(),
   view: "table",
 };
 
@@ -42,15 +154,6 @@ export const usersSlice = createSlice({
   initialState,
   name: "users",
   reducers: {
-    appendUsers: (state, { payload }: PayloadAction<UserType[]>) => {
-      userAdapter.addMany(state.users, payload);
-    },
-    setLoading: (state, { payload }: PayloadAction<boolean>) => {
-      state.loading = payload;
-    },
-    setNextPageToken: (state, { payload }: PayloadAction<string>) => {
-      state.nextPageToken = payload;
-    },
     setPage: (state, { payload }: PayloadAction<number>) => {
       state.page = payload;
     },
@@ -63,9 +166,6 @@ export const usersSlice = createSlice({
       state.sort = payload;
       state.page = 1;
     },
-    setUsers: (state, { payload }: PayloadAction<UserType[]>) => {
-      userAdapter.setAll(state.users, payload);
-    },
     setView: (state, { payload }: PayloadAction<"card" | "table">) => {
       state.view = payload;
     },
@@ -73,86 +173,96 @@ export const usersSlice = createSlice({
 });
 
 export const {
-  actions: {
-    appendUsers,
-    setLoading,
-    setNextPageToken,
-    setPage,
-    setRowsPerPage,
-    setSort,
-    setUsers,
-    setView,
-  },
+  actions: { setPage, setRowsPerPage, setSort, setView },
 } = usersSlice;
 
 export const selectView = (state: RootState) => state.users.view;
 
-export const selectLoading = (state: RootState) => state.users.loading;
-
 export const selectSort = (state: RootState) => state.users.sort;
 
 export const selectReverseSort = (state: RootState) => state.users.reverseSort;
-
-export const selectNextPageToken = (state: RootState) =>
-  state.users.nextPageToken;
 
 export const selectRowsPerPage = (state: RootState) => state.users.rowsPerPage;
 
 export const selectPage = (state: RootState) => state.users.page;
 
 export const selectSortedUsers = createSelector(
-  (state: RootState) => state.users.users,
-  selectSort,
-  selectReverseSort,
-  (entityState, sort, reverseSort) =>
-    produce(entityState, (draftEntityState) => {
-      draftEntityState.ids = Object.values(draftEntityState.entities)
-        .sort((a, b) => {
-          if (a && b) {
-            const { [sort]: aVal } = a;
-            const { [sort]: bVal } = b;
-            if (is<string>(aVal) && is<string>(bVal)) {
-              if (
-                (aVal === "" || bVal === "") &&
-                !(aVal === "" && bVal === "")
-              ) {
-                return aVal === "" ? 1 : -1;
-              }
-              return (
-                alphabeticalSortCurried(reverseSort)(aVal, bVal) ||
-                alphabeticalSortPropCurried("nickname")(a, b) ||
-                alphabeticalSortPropCurried("email")(a, b)
-              );
-            } else {
-              if (
-                (aVal === null || bVal === null) &&
-                !(aVal === null && bVal === null)
-              ) {
-                return aVal === null ? 1 : -1;
-              }
-              return (
-                alphabeticalSortCurried(
-                  is<boolean>(aVal) && is<boolean>(bVal)
-                    ? !reverseSort
-                    : reverseSort
-                )(aVal, bVal) ||
-                alphabeticalSortPropCurried("nickname")(a, b) ||
-                alphabeticalSortPropCurried("email")(a, b)
-              );
+  (data: EntityState<UserType>) => data,
+  (_: unknown, sort: typeof sortProps[number]) => sort,
+  (_: unknown, __: unknown, reverseSort: boolean) => reverseSort,
+  (entityState, sort, reverseSort) => ({
+    ...entityState,
+    ids: Object.values(entityState.entities)
+      .sort((a, b) => {
+        if (a && b) {
+          const { [sort]: aVal } = a;
+          const { [sort]: bVal } = b;
+          if (typeof aVal === "string" && typeof bVal === "string") {
+            if ((aVal === "" || bVal === "") && !(aVal === "" && bVal === "")) {
+              return aVal === "" ? 1 : -1;
             }
+            return (
+              alphabeticalSortCurried(reverseSort)(aVal, bVal) ||
+              alphabeticalSortPropCurried("nickname")(a, b) ||
+              alphabeticalSortPropCurried("email")(a, b)
+            );
+          } else {
+            if (
+              (aVal === null || bVal === null) &&
+              !(aVal === null && bVal === null)
+            ) {
+              return aVal === null ? 1 : -1;
+            }
+            return (
+              alphabeticalSortCurried(
+                typeof aVal === "boolean" && typeof bVal === "boolean"
+                  ? !reverseSort
+                  : reverseSort
+              )(aVal, bVal) ||
+              alphabeticalSortPropCurried("nickname")(a, b) ||
+              alphabeticalSortPropCurried("email")(a, b)
+            );
           }
-          return 0;
-        })
-        .map((user) => userAdapter.selectId(user!));
-    })
+        }
+        return 0;
+      })
+      .map((user) => userAdapter.selectId(user!)),
+  })
 );
 
-export const {
-  selectAll: selectUsers,
-  selectById: selectUserById,
-  selectEntities: selectUserMap,
-  selectIds: selectUserIds,
-  selectTotal: selectUserTotal,
-} = userAdapter.getSelectors<RootState>(selectSortedUsers);
+const {
+  selectAll: selectAllLocalUser,
+  selectEntities: selectLocalUserEntities,
+  selectIds: selectLocalUserIds,
+  selectTotal: selectLocalUserTotal,
+} = userAdapter.getSelectors();
+
+export const selectUserIds = createSelector(
+  selectSortedUsers,
+  selectLocalUserIds
+);
+export const selectUserMap = createSelector(
+  selectSortedUsers,
+  selectLocalUserEntities
+);
+export const selectUserTotal = createSelector(
+  selectSortedUsers,
+  selectLocalUserTotal
+);
+export const selectUsers = createSelector(
+  selectSortedUsers,
+  selectAllLocalUser
+);
+export const selectUserById = createSelector(
+  selectUserMap,
+  (_: unknown, __: unknown, ___: unknown, id: EntityId) => id,
+  (userMap, id) => userMap[id]
+);
+
+export const selectUserByEmail = createSelector(
+  selectAllLocalUser,
+  (_: unknown, email: string) => email,
+  (users, email) => users.find((user) => user.email === email)
+);
 
 export default usersSlice.reducer;

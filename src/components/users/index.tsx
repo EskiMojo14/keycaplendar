@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { EntityId } from "@reduxjs/toolkit";
 import { Button } from "@rmwc/button";
 import { Card } from "@rmwc/card";
@@ -40,24 +40,23 @@ import { useAppDispatch, useAppSelector } from "@h";
 import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
-import firebase from "@s/firebase";
 import { pageTitle } from "@s/router/constants";
 import {
-  selectLoading,
-  selectNextPageToken,
+  defaultUserLength,
   selectPage,
   selectReverseSort,
   selectRowsPerPage,
   selectSort,
-  selectUserById,
   selectUserIds,
+  selectUserMap,
   selectUserTotal,
   selectView,
-  setLoading,
   setPage,
   setRowsPerPage,
   setSort,
   setView,
+  useDeleteUserMutation,
+  useGetUsersQuery,
 } from "@s/users";
 import {
   sortLabels,
@@ -67,13 +66,10 @@ import {
   views,
 } from "@s/users/constants";
 import { paginateUsers } from "@s/users/functions";
-import { getUsers } from "@s/users/thunks";
-import { selectFromState } from "@s/util/thunks";
 import { UserCard } from "./user-card";
 import { UserRow } from "./user-row";
 import "./index.scss";
 
-const length = 1000;
 const rows = 25;
 
 type ContentUsersProps = {
@@ -87,17 +83,32 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
   const bottomNav = useBottomNav();
 
   const view = useAppSelector(selectView);
-  const loading = useAppSelector(selectLoading);
 
   const userSort = useAppSelector(selectSort);
   const reverseUserSort = useAppSelector(selectReverseSort);
-
-  const total = useAppSelector(selectUserTotal);
-  const ids = useAppSelector(selectUserIds);
-
-  const nextPageToken = useAppSelector(selectNextPageToken);
   const rowsPerPage = useAppSelector(selectRowsPerPage);
   const page = useAppSelector(selectPage);
+
+  const [nextPageToken, setNextPageToken] = useState<string | undefined>();
+
+  const {
+    ids = [],
+    userMap,
+    loading,
+    nPT,
+    total = 0,
+  } = useGetUsersQuery(
+    { nextPageToken },
+    {
+      selectFromResult: ({ data, isFetching }) => ({
+        ids: data && selectUserIds(data.users, userSort, reverseUserSort),
+        loading: isFetching,
+        nPT: data?.nextPageToken,
+        total: data && selectUserTotal(data.users, userSort, reverseUserSort),
+        userMap: data && selectUserMap(data.users, userSort, reverseUserSort),
+      }),
+    }
+  );
 
   const {
     first,
@@ -119,39 +130,24 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
     "setSortMenuOpen"
   );
 
-  useEffect(() => {
-    if (total === 0) {
-      dispatch(getUsers());
-    }
-  }, []);
+  const [deleteUser] = useDeleteUserMutation({ selectFromResult: () => ({}) });
 
   const openDeleteDialog = async (id: EntityId) => {
-    const user = dispatch(
-      selectFromState((state) => selectUserById(state, id))
-    );
+    const { [id]: user } = userMap ?? {};
     if (user) {
       const confirmed = await confirmDelete({
         body: `Are you sure you want to delete the user ${user.displayName}?`,
         title: "Delete User",
       });
       if (confirmed) {
-        dispatch(setLoading(true));
-        const deleteUser = firebase.functions().httpsCallable("deleteUser");
         try {
-          const result = await deleteUser(user);
+          await deleteUser({ nextPageToken, user }).unwrap();
 
-          if (result.data.error) {
-            notify({ title: result.data.error });
-            dispatch(setLoading(false));
-          } else {
-            notify({
-              title: `User ${user?.displayName} successfully deleted.`,
-            });
-            dispatch(getUsers());
-          }
-        } catch (error) {
-          notify({ title: `Error deleting user: ${error}` });
-          dispatch(setLoading(false));
+          notify({
+            title: `User ${user?.displayName} successfully deleted.`,
+          });
+        } catch (e) {
+          console.error(e);
         }
       }
     }
@@ -347,6 +343,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                           <UserRow
                             key={user}
                             delete={openDeleteDialog}
+                            nextPageToken={nextPageToken}
                             userId={user}
                           />
                         ))}
@@ -355,11 +352,9 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                     <DataTablePagination>
                       <div className="button-container">
                         <Button
-                          disabled={!nextPageToken}
-                          label={`Next ${length}`}
-                          onClick={() => {
-                            dispatch(getUsers(true));
-                          }}
+                          disabled={!nPT}
+                          label={`Next ${defaultUserLength}`}
+                          onClick={() => setNextPageToken(nPT)}
                           outlined
                         />
                       </div>
@@ -424,6 +419,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                     <UserCard
                       key={user}
                       delete={openDeleteDialog}
+                      nextPageToken={nextPageToken}
                       userId={user}
                     />
                   ))}

@@ -12,13 +12,17 @@ import { DateTime } from "luxon";
 import { useImmer } from "use-immer";
 import { notify } from "~/app/snackbar-queue";
 import { Autocomplete } from "@c/util/autocomplete";
-import { useAppDispatch, useAppSelector } from "@h";
-import firebase from "@s/firebase";
+import { useAppSelector } from "@h";
 import { selectAllDesigners } from "@s/main";
 import { selectUser } from "@s/user";
-import { selectUserById } from "@s/users";
+import {
+  selectReverseSort,
+  selectSort,
+  selectUserById,
+  useGetUsersQuery,
+  useSetRolesMutation,
+} from "@s/users";
 import { partialUser } from "@s/users/constructors";
-import { getUsers } from "@s/users/thunks";
 import type { UserType } from "@s/users/types";
 import {
   arrayIncludes,
@@ -32,20 +36,34 @@ import { Delete, Save } from "@i";
 type UserRowProps = {
   delete: (user: EntityId) => void;
   userId: EntityId;
+  nextPageToken?: string;
 };
 
 const roles = ["designer", "editor", "admin"] as const;
 
-export const UserRow = ({ delete: deleteFn, userId }: UserRowProps) => {
-  const dispatch = useAppDispatch();
-
+export const UserRow = ({
+  delete: deleteFn,
+  nextPageToken,
+  userId,
+}: UserRowProps) => {
   const currentUser = useAppSelector(selectUser);
-  const propsUser = useAppSelector((state) => selectUserById(state, userId));
+
+  const userSort = useAppSelector(selectSort);
+  const reverseUserSort = useAppSelector(selectReverseSort);
+
+  const { propsUser } = useGetUsersQuery(
+    { nextPageToken },
+    {
+      selectFromResult: ({ data }) => ({
+        propsUser:
+          data && selectUserById(data.users, userSort, reverseUserSort, userId),
+      }),
+    }
+  );
 
   const allDesigners = useAppSelector(selectAllDesigners);
 
   const [user, updateUser] = useImmer<UserType>(partialUser());
-  const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState("");
 
   const edited = propsUser !== user;
@@ -85,38 +103,25 @@ export const UserRow = ({ delete: deleteFn, userId }: UserRowProps) => {
     value: UserType[Key]
   ) => updateUser(keyedUpdate(prop, value));
 
-  const setRoles = async () => {
-    setLoading(true);
-    const setRolesFn = firebase.functions().httpsCallable("setRoles");
+  const [setRoles, { loading }] = useSetRolesMutation({
+    selectFromResult: ({ isLoading }) => ({ loading: isLoading }),
+  });
+
+  const saveRoles = async () => {
     try {
-      const result = await setRolesFn({
-        admin: user.admin,
-        designer: user.designer,
-        editor: user.editor,
-        email: user.email,
-        nickname: user.nickname,
-      });
-      setLoading(false);
-      if (
-        result.data.designer === user.designer &&
-        result.data.editor === user.editor &&
-        result.data.admin === user.admin
-      ) {
-        notify({ title: "Successfully edited user permissions." });
-        dispatch(getUsers());
-      } else if (result.data.error) {
-        notify({
-          title: `Failed to edit user permissions: ${result.data.error}`,
-        });
-      } else {
-        notify({ title: "Failed to edit user permissions." });
-      }
-    } catch (error) {
-      notify({
-        title: `Failed to edit user permissions: ${error}`,
-      });
-    }
+      await setRoles({
+        claims: {
+          admin: user.admin,
+          designer: user.designer,
+          editor: user.editor,
+          id: user.id,
+          nickname: user.nickname,
+        },
+      }).unwrap();
+      notify({ title: "Successfully edited user permissions." });
+    } catch {}
   };
+
   const saveButton = loading ? (
     <CircularProgress />
   ) : (
@@ -125,7 +130,7 @@ export const UserRow = ({ delete: deleteFn, userId }: UserRowProps) => {
       icon={iconObject(<Save />)}
       onClick={() => {
         if (edited) {
-          setRoles();
+          saveRoles();
         }
       }}
     />
