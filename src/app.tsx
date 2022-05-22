@@ -33,6 +33,7 @@ import {
   selectToTimeTheme,
 } from "@s/settings";
 import { acceptCookies, checkStorage } from "@s/settings/thunks";
+import { selectUser, useGetUserDocQuery } from "@s/user";
 import { setupAuthListener } from "@s/user/thunks";
 import "./app.scss";
 
@@ -43,6 +44,9 @@ export const App = () => {
     [history, dispatch]
   );
   useEffect(() => dispatch(addRouterListener(history)), [history]);
+
+  const user = useAppSelector(selectUser);
+  useGetUserDocQuery(user.id);
 
   const device = useDevice();
   const theme = useAppSelector(selectTheme);

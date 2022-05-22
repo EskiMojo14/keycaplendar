@@ -5,13 +5,68 @@ import {
 } from "@reduxjs/toolkit";
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
+import baseApi from "@s/api";
+import firestore from "@s/firebase/firestore";
+import type { UserId, UserPreferencesDoc } from "@s/firebase/types";
+import { selectAllRegions } from "@s/main";
+import { updatePreset } from "@s/main/functions";
 import type { PresetType } from "@s/main/types";
 import { alphabeticalSortPropCurried } from "@s/util/functions";
+import type { Overwrite } from "@s/util/types";
 import type { CurrentUserType } from "./types";
 
 export const userPresetAdapter = createEntityAdapter<PresetType>({
   sortComparer: alphabeticalSortPropCurried("name", false, "Default"),
 });
+
+export const userApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    getUserDoc: build.query<
+      | Overwrite<
+          UserPreferencesDoc,
+          { filterPresets?: EntityState<PresetType> }
+        >
+      | "No user",
+      string | undefined
+    >({
+      queryFn: async (id, { getState }) => {
+        if (!id) {
+          throw new Error("No ID provided");
+        }
+        try {
+          const doc = await firestore
+            .collection("users")
+            .doc(id as UserId)
+            .get();
+          const data = doc.data();
+          if (!data) {
+            throw new Error("No doc found");
+          }
+
+          const regions = selectAllRegions(getState() as RootState);
+          return {
+            data: {
+              ...data,
+              filterPresets:
+                data.filterPresets &&
+                userPresetAdapter.setMany(
+                  userPresetAdapter.getInitialState(),
+                  data.filterPresets.map((preset) =>
+                    updatePreset(preset, { regions })
+                  )
+                ),
+            },
+          };
+        } catch (error) {
+          return { error };
+        }
+      },
+    }),
+  }),
+  overrideExisting: true,
+});
+
+export const { useGetUserDocQuery } = userApi;
 
 export const blankCurrentUser: CurrentUserType = {
   avatar: "",
