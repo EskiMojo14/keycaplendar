@@ -1,7 +1,7 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import produce from "immer";
-import type { RootState } from "~/app/store";
+import type { AppThunk, RootState } from "~/app/store";
 import { combineListeners } from "@mw/listener/functions";
 import baseApi from "@s/api";
 import { createErrorMessagesListeners } from "@s/api/functions";
@@ -124,3 +124,19 @@ export const selectTheme = createSelector(
 );
 
 export default commonSlice.reducer;
+
+export const setupSystemThemeListener =
+  (): AppThunk<() => void> => (dispatch) => {
+    dispatch(
+      setSystemTheme(window.matchMedia("(prefers-color-scheme: dark)").matches)
+    );
+    const checkThemeListener = (e: MediaQueryListEvent) =>
+      dispatch(setSystemTheme(e.matches));
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", checkThemeListener);
+    return () =>
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .removeEventListener("change", checkThemeListener);
+  };

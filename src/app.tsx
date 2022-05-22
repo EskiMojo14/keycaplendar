@@ -18,17 +18,12 @@ import useDevice from "@h/use-device";
 import {
   selectTheme,
   selectTimed,
-  setSystemTheme,
   setTimed,
+  setupSystemThemeListener,
   useGetGlobalsQuery,
 } from "@s/common";
-import firebase from "@s/firebase";
-import {
-  selectDefaultPreset,
-  selectTransition,
-  setCurrentPreset,
-} from "@s/main";
-import { getData, testSets } from "@s/main/thunks";
+import { selectTransition } from "@s/main";
+import { getData } from "@s/main/thunks";
 import { addRouterListener, setupLocationChangeListener } from "@s/router";
 import { routes } from "@s/router/constants";
 import { handleLegacyParams } from "@s/router/functions";
@@ -39,8 +34,7 @@ import {
   selectToTimeTheme,
 } from "@s/settings";
 import { acceptCookies, checkStorage } from "@s/settings/thunks";
-import { resetUser, setUser } from "@s/user";
-import { getUserPreferences } from "@s/user/thunks";
+import { setupAuthListener } from "@s/user/thunks";
 import { Interval } from "@s/util/constructors";
 import { isBetweenTimes } from "@s/util/functions";
 import "./app.scss";
@@ -102,69 +96,15 @@ export const App = () => {
 
   const transition = useAppSelector(selectTransition);
 
-  const defaultPreset = useAppSelector(selectDefaultPreset);
-
   useGetGlobalsQuery(undefined, { selectFromResult: () => ({}) });
 
   useEffect(() => {
     dispatch([getData(), checkStorage()]);
-
-    const checkThemeListener = (e: MediaQueryListEvent) => {
-      e.preventDefault();
-      dispatch(setSystemTheme(e.matches));
-    };
-
-    dispatch(
-      setSystemTheme(window.matchMedia("(prefers-color-scheme: dark)").matches)
-    );
-    window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", checkThemeListener);
-
-    const authObserver = firebase.auth().onAuthStateChanged(async (user) => {
-      if (user) {
-        const getClaimsFn = firebase.functions().httpsCallable("getClaims");
-        try {
-          const result = await getClaimsFn();
-          dispatch(
-            setUser({
-              avatar: user.photoURL ?? "",
-              email: user.email ?? "",
-              id: user.uid,
-              isAdmin: result.data.admin,
-              isDesigner: result.data.designer,
-              isEditor: result.data.editor,
-              name: user.displayName ?? "",
-              nickname: result.data.nickname,
-            })
-          );
-          if (result.data.admin) {
-            dispatch(testSets());
-          }
-        } catch (error) {
-          notify({ title: `Error verifying custom claims: ${error}` });
-          dispatch(
-            setUser({
-              avatar: user.photoURL ?? "",
-              email: user.email ?? "",
-              id: user.uid,
-              name: user.displayName ?? "",
-            })
-          );
-        }
-        dispatch(getUserPreferences(user.uid));
-      } else {
-        dispatch(resetUser());
-        if (defaultPreset.name) {
-          dispatch(setCurrentPreset("default"));
-        }
-      }
-    });
+    const checkThemeListener = dispatch(setupSystemThemeListener());
+    const authObserver = dispatch(setupAuthListener());
     return () => {
       authObserver();
-      window
-        .matchMedia("(prefers-color-scheme: dark)")
-        .removeEventListener("change", checkThemeListener);
+      checkThemeListener();
     };
   }, []);
   return (

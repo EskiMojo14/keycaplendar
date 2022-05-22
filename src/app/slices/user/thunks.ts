@@ -8,15 +8,19 @@ import firebase from "@s/firebase";
 import firestore from "@s/firebase/firestore";
 import type { UserId } from "@s/firebase/types";
 import {
+  selectDefaultPreset,
+  setCurrentPreset,
   setLinkedFavorites,
   setLinkedFavoritesLoading,
   updatePreset,
 } from "@s/main";
+import { testSets } from "@s/main/thunks";
 import type { PresetType } from "@s/main/types";
 import { setShareNameLoading } from "@s/settings";
 import { setSyncSettings, settingFns } from "@s/settings/thunks";
 import {
   addUserPreset as _addUserPreset,
+  resetUser,
   selectBought,
   selectFavorites,
   selectHidden,
@@ -26,6 +30,7 @@ import {
   setFavoritesId,
   setHidden,
   setShareName,
+  setUser,
   setUserPresets,
 } from "@s/user";
 import { addOrRemove, hasKey } from "@s/util/functions";
@@ -120,6 +125,49 @@ export const getUserPreferences =
       }
     }
   };
+
+const getClaims = firebase.functions().httpsCallable("getClaims");
+export const setupAuthListener =
+  (): AppThunk<firebase.Unsubscribe> => (dispatch, getState) =>
+    firebase.auth().onAuthStateChanged(async (user) => {
+      if (user) {
+        try {
+          const result = await getClaims();
+          dispatch(
+            setUser({
+              avatar: user.photoURL ?? "",
+              email: user.email ?? "",
+              id: user.uid,
+              isAdmin: result.data.admin,
+              isDesigner: result.data.designer,
+              isEditor: result.data.editor,
+              name: user.displayName ?? "",
+              nickname: result.data.nickname,
+            })
+          );
+          if (result.data.admin) {
+            dispatch(testSets());
+          }
+        } catch (error) {
+          notify({ title: `Error verifying custom claims: ${error}` });
+          dispatch(
+            setUser({
+              avatar: user.photoURL ?? "",
+              email: user.email ?? "",
+              id: user.uid,
+              name: user.displayName ?? "",
+            })
+          );
+        }
+        dispatch(getUserPreferences(user.uid));
+      } else {
+        dispatch(resetUser());
+        const defaultPreset = selectDefaultPreset(getState());
+        if (defaultPreset.name) {
+          dispatch(setCurrentPreset("default"));
+        }
+      }
+    });
 
 export const toggleFavorite =
   (id: EntityId): AppThunk<Promise<void>> =>
