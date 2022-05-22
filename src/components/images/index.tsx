@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { EntityId } from "@reduxjs/toolkit";
 import { Button } from "@rmwc/button";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -11,17 +11,17 @@ import { Footer } from "@c/common/footer";
 import ImageAppBar from "@c/images/app-bar";
 import ImageItem from "@c/images/image-item";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
-import { useAppDispatch, useAppSelector } from "@h";
+import { useAppSelector } from "@h";
 import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import {
   selectCurrentFolder,
   selectDuplicateImages,
-  selectImages,
   selectImagesByUsage,
+  selectSetImages,
+  useGetAllImagesQuery,
 } from "@s/images";
-import { listAll } from "@s/images/thunks";
 import {
   addOrRemove,
   closeModal,
@@ -46,17 +46,22 @@ type ContentImagesProps = {
 };
 
 export const ContentImages = ({ openNav }: ContentImagesProps) => {
-  const dispatch = useAppDispatch();
   const device = useDevice();
 
   const bottomNav = useBottomNav();
 
   const currentFolder = useAppSelector(selectCurrentFolder);
+  const setImages = useAppSelector(selectSetImages);
 
-  const images = useAppSelector(selectImages);
-  const { unused: unusedImages, used: usedImages } =
-    useAppSelector(selectImagesByUsage);
-  const duplicateImages = useAppSelector(selectDuplicateImages);
+  const {
+    imagesByUsage: { unused: unusedImages = [], used: usedImages = [] } = {},
+    duplicateImages = [],
+  } = useGetAllImagesQuery(currentFolder, {
+    selectFromResult: ({ data }) => ({
+      duplicateImages: data && selectDuplicateImages(data, setImages),
+      imagesByUsage: data && selectImagesByUsage(data, setImages),
+    }),
+  });
 
   const [checkedImages, setCheckedImages] = useImmer<EntityId[]>([]);
 
@@ -69,12 +74,6 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
     setDeleteOpen,
     "setDeleteOpen"
   );
-
-  useEffect(() => {
-    if (images.length === 0) {
-      dispatch(listAll());
-    }
-  }, []);
 
   const closeSearch = () => {
     if (device !== "desktop") {

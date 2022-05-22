@@ -11,7 +11,11 @@ import { Ripple } from "@rmwc/ripple";
 import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
 import { useAppSelector } from "@h";
-import { selectImageById } from "@s/images";
+import {
+  selectCurrentFolder,
+  selectImageById,
+  useGetAllImagesQuery,
+} from "@s/images";
 import "./image-item.scss";
 
 export type ImageItemProps = {
@@ -29,7 +33,14 @@ export const ImageItem = ({
   selected,
   toggleChecked,
 }: ImageItemProps) => {
-  const image = useAppSelector((state) => selectImageById(state, imageId));
+  const currentFolder = useAppSelector(selectCurrentFolder);
+
+  const { image } = useGetAllImagesQuery(currentFolder, {
+    selectFromResult: ({ data }) => ({
+      image: data && selectImageById(data, imageId),
+    }),
+  });
+
   return image ? (
     <Ripple>
       <ImageListItem

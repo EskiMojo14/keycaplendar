@@ -11,15 +11,15 @@ import {
   DialogTitle,
 } from "@rmwc/dialog";
 import { notify } from "~/app/snackbar-queue";
-import { useAppDispatch, useAppSelector } from "@h";
+import { useAppSelector } from "@h";
 import {
   imageAdapter,
+  selectCurrentFolder,
   selectImageMap,
-  setLoading,
-  useGetStorageFoldersQuery,
+  useDeleteImagesMutation,
+  useGetAllImagesQuery,
 } from "@s/images";
-import { listAll } from "@s/images/thunks";
-import { batchStorageDelete, filterFalsey, pluralise } from "@s/util/functions";
+import { filterFalsey, pluralise } from "@s/util/functions";
 import "./dialog-delete.scss";
 
 type DialogDeleteProps = {
@@ -37,13 +37,14 @@ export const DialogDelete = ({
   open,
   toggleImageChecked,
 }: DialogDeleteProps) => {
-  const dispatch = useAppDispatch();
+  const currentFolder = useAppSelector(selectCurrentFolder);
 
-  const { folders = [] } = useGetStorageFoldersQuery(undefined, {
-    selectFromResult: ({ data }) => ({ folders: data }),
+  const { imagesMap = {} } = useGetAllImagesQuery(currentFolder, {
+    selectFromResult: ({ data }) => ({
+      imagesMap: data && selectImageMap(data),
+    }),
   });
 
-  const imagesMap = useAppSelector(selectImageMap);
   const images = useMemo(
     () => checkedImages.map((id) => imagesMap[id]).filter(filterFalsey),
     [checkedImages, imagesMap]
@@ -53,26 +54,17 @@ export const DialogDelete = ({
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setDeleteAllVersions(e.target.checked);
   };
-  const createArray = (allVersions = deleteAllVersions) =>
-    allVersions
-      ? images
-          .map((image) => folders.map((folder) => `${folder}/${image.name}`))
-          .flat(1)
-      : images.map((image) => image.fullPath);
+  const [deleteImagesFn] = useDeleteImagesMutation({
+    selectFromResult: () => ({}),
+  });
   const deleteImages = async () => {
-    const array = createArray();
-    dispatch(setLoading(true));
     try {
-      await batchStorageDelete(array);
-
+      await deleteImagesFn({ all: deleteAllVersions, images }).unwrap();
       notify({ title: "Successfully deleted files." });
       clearChecked();
       close();
-      dispatch(listAll());
     } catch (error) {
-      notify({ title: `Failed to delete files: ${error}` });
       console.log(error);
-      dispatch(setLoading(false));
     }
   };
   return (

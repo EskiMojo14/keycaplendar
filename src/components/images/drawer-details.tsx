@@ -16,7 +16,11 @@ import { withTooltip } from "@c/util/hocs";
 import { useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import firebase from "@s/firebase";
-import { selectImageById } from "@s/images";
+import {
+  selectCurrentFolder,
+  selectImageById,
+  useGetAllImagesQuery,
+} from "@s/images";
 import { formatBytes, objectKeys, ordinal } from "@s/util/functions";
 import "./drawer-details.scss";
 
@@ -33,7 +37,13 @@ type DrawerDetailsProps = {
 export const DrawerDetails = ({ close, imageId, open }: DrawerDetailsProps) => {
   const device = useDevice();
 
-  const image = useAppSelector((state) => selectImageById(state, imageId));
+  const currentFolder = useAppSelector(selectCurrentFolder);
+
+  const { image } = useGetAllImagesQuery(currentFolder, {
+    selectFromResult: ({ data }) => ({
+      image: data && selectImageById(data, imageId),
+    }),
+  });
 
   const [metadata, setMetadata] = useState<Record<string, any>>({});
 

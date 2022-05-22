@@ -11,7 +11,11 @@ import {
 import reactStringReplace from "react-string-replace";
 import { withTooltip } from "@c/util/hocs";
 import { useAppSelector } from "@h";
-import { selectImageById } from "@s/images";
+import {
+  selectCurrentFolder,
+  selectImageById,
+  useGetAllImagesQuery,
+} from "@s/images";
 import "./search-item.scss";
 
 export type SearchItemProps = {
@@ -21,7 +25,14 @@ export type SearchItemProps = {
 };
 
 export const SearchItem = ({ checked, imageId, search }: SearchItemProps) => {
-  const image = useAppSelector((state) => selectImageById(state, imageId));
+  const currentFolder = useAppSelector(selectCurrentFolder);
+
+  const { image } = useGetAllImagesQuery(currentFolder, {
+    selectFromResult: ({ data }) => ({
+      image: data && selectImageById(data, imageId),
+    }),
+  });
+
   return image ? (
     <ListItem className="search-drawer-item" disabled>
       <ListItemGraphic

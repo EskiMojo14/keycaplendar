@@ -21,10 +21,10 @@ import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import {
   selectCurrentFolder,
-  selectLoading,
+  setCurrentFolder,
+  useGetAllImagesQuery,
   useGetStorageFoldersQuery,
 } from "@s/images";
-import { setFolder } from "@s/images/thunks";
 import { pageTitle } from "@s/router/constants";
 import { iconObject } from "@s/util/functions";
 import { Delete, PermMedia } from "@i";
@@ -49,9 +49,11 @@ export const ImageAppBar = ({
   const device = useDevice();
 
   const bottomNav = useBottomNav();
-  const loading = useAppSelector(selectLoading);
 
   const currentFolder = useAppSelector(selectCurrentFolder);
+  const { loading } = useGetAllImagesQuery(currentFolder, {
+    selectFromResult: ({ isFetching }) => ({ loading: isFetching }),
+  });
 
   const { folders = [] } = useGetStorageFoldersQuery(undefined, {
     selectFromResult: ({ data }) => ({ folders: data }),
@@ -129,7 +131,7 @@ export const ImageAppBar = ({
                     {folders.map((folder) => (
                       <MenuItem
                         key={folder}
-                        onClick={() => dispatch(setFolder(folder))}
+                        onClick={() => dispatch(setCurrentFolder(folder))}
                         selected={currentFolder === folder}
                       >
                         {`${folder}/`}
@@ -143,7 +145,7 @@ export const ImageAppBar = ({
                     <SegmentedButtonSegment
                       key={folder}
                       label={folder}
-                      onClick={() => dispatch(setFolder(folder))}
+                      onClick={() => dispatch(setCurrentFolder(folder))}
                       selected={currentFolder === folder}
                     />
                   ))}

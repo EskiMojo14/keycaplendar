@@ -8,8 +8,13 @@ import { TextField } from "@rmwc/textfield";
 import { SearchItem } from "@c/images/search-item";
 import { withTooltip } from "@c/util/hocs";
 import { useAppSelector } from "@h";
+import useDebouncedValue from "@h/use-debounced-value";
 import useDevice from "@h/use-device";
-import { selectSearchedImages } from "@s/images";
+import {
+  selectCurrentFolder,
+  selectSearchedImages,
+  useGetAllImagesQuery,
+} from "@s/images";
 import { iconObject } from "@s/util/functions";
 import { Regex, RegexOff } from "@i";
 import "./drawer-search.scss";
@@ -36,17 +41,20 @@ export const DrawerSearch = ({
   const [search, setSearch] = useState("");
   const [regexSearch, setRegexSearch] = useState(false);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const debouncedSearch = useDebouncedValue(search);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     setSearch(e.target.value);
-  };
 
-  const toggleRegex = () => {
-    setRegexSearch(!regexSearch);
-  };
+  const toggleRegex = () => setRegexSearch((cur) => !cur);
 
-  const searchedImages = useAppSelector((state) =>
-    selectSearchedImages(state, search, regexSearch)
-  );
+  const currentFolder = useAppSelector(selectCurrentFolder);
+  const { searchedImages = [] } = useGetAllImagesQuery(currentFolder, {
+    selectFromResult: ({ data }) => ({
+      searchedImages:
+        data && selectSearchedImages(data, debouncedSearch, regexSearch),
+    }),
+  });
 
   return (
     <Drawer
