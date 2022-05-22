@@ -17,9 +17,8 @@ import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import {
   selectTheme,
-  selectTimed,
-  setTimed,
   setupSystemThemeListener,
+  setupTimedListener,
   useGetGlobalsQuery,
 } from "@s/common";
 import { selectTransition } from "@s/main";
@@ -35,8 +34,6 @@ import {
 } from "@s/settings";
 import { acceptCookies, checkStorage } from "@s/settings/thunks";
 import { setupAuthListener } from "@s/user/thunks";
-import { Interval } from "@s/util/constructors";
-import { isBetweenTimes } from "@s/util/functions";
 import "./app.scss";
 
 export const App = () => {
@@ -61,20 +58,10 @@ export const App = () => {
 
   const fromTimeTheme = useAppSelector(selectFromTimeTheme);
   const toTimeTheme = useAppSelector(selectToTimeTheme);
-  useEffect(() => {
-    dispatch(setTimed(isBetweenTimes(fromTimeTheme, toTimeTheme)));
-    const syncTime = new Interval(
-      () =>
-        dispatch((dispatch, getState) => {
-          const newVal = isBetweenTimes(fromTimeTheme, toTimeTheme);
-          if ((selectTimed(getState()) === "dark") !== newVal) {
-            dispatch(setTimed(isBetweenTimes(fromTimeTheme, toTimeTheme)));
-          }
-        }),
-      60000
-    );
-    return () => syncTime.clear();
-  }, [dispatch, fromTimeTheme, toTimeTheme]);
+  useEffect(
+    () => dispatch(setupTimedListener(fromTimeTheme, toTimeTheme)),
+    [dispatch, fromTimeTheme, toTimeTheme]
+  );
 
   const density = useAppSelector(selectDensity);
 

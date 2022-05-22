@@ -17,6 +17,8 @@ import {
   selectLightTheme,
   selectManualTheme,
 } from "@s/settings";
+import { Interval } from "@s/util/constructors";
+import { isBetweenTimes } from "@s/util/functions";
 
 export const commonApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -139,4 +141,17 @@ export const setupSystemThemeListener =
       window
         .matchMedia("(prefers-color-scheme: dark)")
         .removeEventListener("change", checkThemeListener);
+  };
+
+export const setupTimedListener =
+  (fromTimeTheme: string, toTimeTheme: string): AppThunk<() => void> =>
+  (dispatch, getState) => {
+    dispatch(setTimed(isBetweenTimes(fromTimeTheme, toTimeTheme)));
+    const syncTime = new Interval(() => {
+      const newVal = isBetweenTimes(fromTimeTheme, toTimeTheme);
+      if ((selectTimed(getState()) === "dark") !== newVal) {
+        dispatch(setTimed(isBetweenTimes(fromTimeTheme, toTimeTheme)));
+      }
+    }, 60000);
+    return () => syncTime.clear();
   };
