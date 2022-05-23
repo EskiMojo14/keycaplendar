@@ -10,7 +10,7 @@ import { List, ListItem, ListItemMeta } from "@rmwc/list";
 import { Radio } from "@rmwc/radio";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "@h";
-import { selectSettings, setStatisticsSetting } from "@s/statistics";
+import { selectSettings, statisticsSetting } from "@s/statistics";
 import type { Categories, Properties, StatsTab } from "@s/statistics/types";
 import { hasKey } from "@s/util/functions";
 import "./dialog-statistics.scss";
@@ -53,7 +53,7 @@ export const DialogStatistics = ({ onClose, open }: DialogStatisticsProps) => {
         ? "timelinesGroup"
         : statisticsTab;
     if (key && hasKey(settings, key) && settings[key] !== statistics) {
-      setStatisticsSetting(key, statistics);
+      statisticsSetting(key, statistics);
     }
   };
 

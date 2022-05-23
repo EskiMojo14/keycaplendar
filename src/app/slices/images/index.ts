@@ -189,14 +189,14 @@ export const imagesSlice = createSlice({
   initialState,
   name: "images",
   reducers: {
-    setCurrentFolder: (state, { payload }: PayloadAction<string>) => {
+    folderChange: (state, { payload }: PayloadAction<string>) => {
       state.currentFolder = payload;
     },
   },
 });
 
 export const {
-  actions: { setCurrentFolder },
+  actions: { folderChange },
 } = imagesSlice;
 
 export const selectCurrentFolder = (state: RootState) =>

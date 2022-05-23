@@ -32,8 +32,8 @@ import {
   selectData,
   selectSettings,
   selectSort,
-  setStatisticsSetting,
-  setStatisticsSort,
+  statisticsSetting,
+  statisticsSort,
   useGetStatisticsDataQuery,
 } from "@s/statistics";
 import { statsTabs } from "@s/statistics/constants";
@@ -78,7 +78,7 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
 
   const statisticsData = useLocatedSelector(selectData);
   const settings = useAppSelector(selectSettings);
-  const statisticsSort = useAppSelector(selectSort);
+  const statisticsSorts = useAppSelector(selectSort);
 
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const [closeCategoryDialog, openCategoryDialog] = useBoolStates(
@@ -96,17 +96,17 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
       <SegmentedButton toggle>
         <SegmentedButtonSegment
           label="Profile"
-          onClick={() => dispatch(setStatisticsSetting(tab, "profile"))}
+          onClick={() => dispatch(statisticsSetting(tab, "profile"))}
           selected={settings[tab] === "profile"}
         />
         <SegmentedButtonSegment
           label="Designer"
-          onClick={() => dispatch(setStatisticsSetting(tab, "designer"))}
+          onClick={() => dispatch(statisticsSetting(tab, "designer"))}
           selected={settings[tab] === "designer"}
         />
         <SegmentedButtonSegment
           label="Vendor"
-          onClick={() => dispatch(setStatisticsSetting(tab, "vendor"))}
+          onClick={() => dispatch(statisticsSetting(tab, "vendor"))}
           selected={settings[tab] === "vendor"}
         />
       </SegmentedButton>
@@ -130,13 +130,13 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
           <SegmentedButtonSegment
             icon={iconObject(<SortNumericVariant />)}
             onClick={() => {
-              if (hasKey(statisticsSort, statisticsTab)) {
-                dispatch(setStatisticsSort(statisticsTab, "total"));
+              if (hasKey(statisticsSorts, statisticsTab)) {
+                dispatch(statisticsSort(statisticsTab, "total"));
               }
             }}
             selected={
-              hasKey(statisticsSort, statisticsTab) &&
-              statisticsSort[statisticsTab] === "total"
+              hasKey(statisticsSorts, statisticsTab) &&
+              statisticsSorts[statisticsTab] === "total"
             }
           />,
           "Sort by total",
@@ -146,13 +146,13 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
           <SegmentedButtonSegment
             icon={iconObject(<SortAlphabeticalVariant />)}
             onClick={() => {
-              if (hasKey(statisticsSort, statisticsTab)) {
-                dispatch(setStatisticsSort(statisticsTab, "alphabetical"));
+              if (hasKey(statisticsSorts, statisticsTab)) {
+                dispatch(statisticsSort(statisticsTab, "alphabetical"));
               }
             }}
             selected={
-              hasKey(statisticsSort, statisticsTab) &&
-              statisticsSort[statisticsTab] === "alphabetical"
+              hasKey(statisticsSorts, statisticsTab) &&
+              statisticsSorts[statisticsTab] === "alphabetical"
             }
           />,
           "Sort alphabetically",
@@ -170,8 +170,8 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
           {withTooltip(
             <SegmentedButtonSegment
               icon={iconObject(<SortNumericVariant />)}
-              onClick={() => dispatch(setStatisticsSort("duration", "total"))}
-              selected={statisticsSort.duration === "total"}
+              onClick={() => dispatch(statisticsSort("duration", "total"))}
+              selected={statisticsSorts.duration === "total"}
             />,
             "Sort by total",
             { align: tooltipAlign }
@@ -180,9 +180,9 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
             <SegmentedButtonSegment
               icon={iconObject(<SortNumericVariant />)}
               onClick={() =>
-                dispatch(setStatisticsSort("duration", "alphabetical"))
+                dispatch(statisticsSort("duration", "alphabetical"))
               }
-              selected={statisticsSort.duration === "alphabetical"}
+              selected={statisticsSorts.duration === "alphabetical"}
             />,
             "Sort alphabetically",
             { align: tooltipAlign }
@@ -190,10 +190,8 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
           {withTooltip(
             <SegmentedButtonSegment
               icon={iconObject(<DateRange />)}
-              onClick={() =>
-                dispatch(setStatisticsSort("duration", "duration"))
-              }
-              selected={statisticsSort.duration === "duration"}
+              onClick={() => dispatch(statisticsSort("duration", "duration"))}
+              selected={statisticsSorts.duration === "duration"}
             />,
             "Sort by duration",
             { align: tooltipAlign }
@@ -202,15 +200,13 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
         <SegmentedButton toggle>
           <SegmentedButtonSegment
             label="IC"
-            onClick={() =>
-              dispatch(setStatisticsSetting("durationCat", "icDate"))
-            }
+            onClick={() => dispatch(statisticsSetting("durationCat", "icDate"))}
             selected={settings.durationCat === "icDate"}
           />
           <SegmentedButtonSegment
             label="GB"
             onClick={() =>
-              dispatch(setStatisticsSetting("durationCat", "gbLaunch"))
+              dispatch(statisticsSetting("durationCat", "gbLaunch"))
             }
             selected={settings.durationCat === "gbLaunch"}
           />
@@ -225,14 +221,12 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
         <SegmentedButton toggle>
           <SegmentedButtonSegment
             label="IC"
-            onClick={() => dispatch(setStatisticsSetting("summary", "icDate"))}
+            onClick={() => dispatch(statisticsSetting("summary", "icDate"))}
             selected={settings.summary === "icDate"}
           />
           <SegmentedButtonSegment
             label="GB"
-            onClick={() =>
-              dispatch(setStatisticsSetting("summary", "gbLaunch"))
-            }
+            onClick={() => dispatch(statisticsSetting("summary", "gbLaunch"))}
             selected={settings.summary === "gbLaunch"}
           />
         </SegmentedButton>
@@ -244,8 +238,8 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
           {withTooltip(
             <SegmentedButtonSegment
               icon={iconObject(<SortNumericVariant />)}
-              onClick={() => dispatch(setStatisticsSort("timelines", "total"))}
-              selected={statisticsSort.timelines === "total"}
+              onClick={() => dispatch(statisticsSort("timelines", "total"))}
+              selected={statisticsSorts.timelines === "total"}
             />,
             "Sort by total",
             { align: tooltipAlign }
@@ -254,9 +248,9 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
             <SegmentedButtonSegment
               icon={iconObject(<SortAlphabeticalVariant />)}
               onClick={() =>
-                dispatch(setStatisticsSort("timelines", "alphabetical"))
+                dispatch(statisticsSort("timelines", "alphabetical"))
               }
-              selected={statisticsSort.timelines === "alphabetical"}
+              selected={statisticsSorts.timelines === "alphabetical"}
             />,
             "Sort alphabetically",
             { align: tooltipAlign }
@@ -266,14 +260,14 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
           <SegmentedButtonSegment
             label="IC"
             onClick={() =>
-              dispatch(setStatisticsSetting("timelinesCat", "icDate"))
+              dispatch(statisticsSetting("timelinesCat", "icDate"))
             }
             selected={settings.timelinesCat === "icDate"}
           />
           <SegmentedButtonSegment
             label="GB"
             onClick={() =>
-              dispatch(setStatisticsSetting("timelinesCat", "gbLaunch"))
+              dispatch(statisticsSetting("timelinesCat", "gbLaunch"))
             }
             selected={settings.timelinesCat === "gbLaunch"}
           />

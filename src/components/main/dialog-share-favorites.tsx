@@ -10,8 +10,8 @@ import { nanoid } from "nanoid";
 import { notify } from "~/app/snackbar-queue";
 import { useAppDispatch, useAppSelector } from "@h";
 import { createURL } from "@s/router/functions";
-import { selectShareNameLoading, setShareNameLoading } from "@s/settings";
-import { selectFavoritesId, selectShareName, setFavoritesId } from "@s/user";
+import { selectShareNameLoading, shareNameLoad } from "@s/settings";
+import { favoritesIdChange, selectFavoritesId, selectShareName } from "@s/user";
 import {
   createDebouncedSyncFavoritesId,
   createDebouncedSyncShareName,
@@ -51,7 +51,7 @@ export const DialogShareFavorites = ({
   }: ChangeEvent<HTMLInputElement>) => {
     if (name === "shareName") {
       setShareName(value);
-      dispatch(setShareNameLoading(true));
+      dispatch(shareNameLoad(true));
       debouncedSyncShareName(value);
     }
   };
@@ -82,7 +82,7 @@ export const DialogShareFavorites = ({
   }: ChangeEvent<HTMLInputElement>) => {
     if (name === "shareFavorites") {
       const newId = checked ? nanoid() : "";
-      dispatch(setFavoritesId(newId));
+      dispatch(favoritesIdChange(newId));
       debouncedSyncFavoritesId(newId);
     }
   };

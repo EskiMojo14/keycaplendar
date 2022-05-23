@@ -20,8 +20,8 @@ import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import {
+  folderChange,
   selectCurrentFolder,
-  setCurrentFolder,
   useGetAllImagesQuery,
   useGetStorageFoldersQuery,
 } from "@s/images";
@@ -131,7 +131,7 @@ export const ImageAppBar = ({
                     {folders.map((folder) => (
                       <MenuItem
                         key={folder}
-                        onClick={() => dispatch(setCurrentFolder(folder))}
+                        onClick={() => dispatch(folderChange(folder))}
                         selected={currentFolder === folder}
                       >
                         {`${folder}/`}
@@ -145,7 +145,7 @@ export const ImageAppBar = ({
                     <SegmentedButtonSegment
                       key={folder}
                       label={folder}
-                      onClick={() => dispatch(setCurrentFolder(folder))}
+                      onClick={() => dispatch(folderChange(folder))}
                       selected={currentFolder === folder}
                     />
                   ))}

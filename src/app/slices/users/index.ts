@@ -154,26 +154,29 @@ export const usersSlice = createSlice({
   initialState,
   name: "users",
   reducers: {
-    setPage: (state, { payload }: PayloadAction<number>) => {
+    pageChange: (state, { payload }: PayloadAction<number>) => {
       state.page = payload;
     },
-    setRowsPerPage: (state, { payload }: PayloadAction<number>) => {
+    rowsPerPageChange: (state, { payload }: PayloadAction<number>) => {
       state.rowsPerPage = payload;
       state.page = 1;
     },
-    setSort: (state, { payload }: PayloadAction<typeof sortProps[number]>) => {
+    sortChange: (
+      state,
+      { payload }: PayloadAction<typeof sortProps[number]>
+    ) => {
       state.reverseSort = state.sort === payload ? !state.reverseSort : false;
       state.sort = payload;
       state.page = 1;
     },
-    setView: (state, { payload }: PayloadAction<"card" | "table">) => {
+    viewChange: (state, { payload }: PayloadAction<"card" | "table">) => {
       state.view = payload;
     },
   },
 });
 
 export const {
-  actions: { setPage, setRowsPerPage, setSort, setView },
+  actions: { pageChange, rowsPerPageChange, sortChange, viewChange },
 } = usersSlice;
 
 export const selectView = (state: RootState) => state.users.view;

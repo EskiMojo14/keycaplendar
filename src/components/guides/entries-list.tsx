@@ -18,11 +18,11 @@ import { BoolWrapper } from "@c/util/conditional-wrapper";
 import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import {
+  filterTag,
   selectAllTags,
   selectEntryMap,
   selectFilteredTag,
   selectFilteredVisibilityMap,
-  setFilteredTag,
   useGetGuidesQuery,
 } from "@s/guides";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
@@ -75,7 +75,7 @@ export const EntriesList = ({ detailEntry, openEntry }: EntriesDrawerProps) => {
   useEffect(setScroll, [filteredTag]);
 
   const setFilter = (tag: string) =>
-    dispatch(setFilteredTag(filteredTag === tag ? "" : tag));
+    dispatch(filterTag(filteredTag === tag ? "" : tag));
 
   const filterChips = (
     <div className="filter-chips-container">

@@ -112,53 +112,56 @@ export const userSlice = createSlice({
   initialState,
   name: "user",
   reducers: {
-    addUserPreset: (state, { payload }: PayloadAction<PresetType>) => {
-      userPresetAdapter.setOne(state.userPresets, payload);
-    },
-    deleteUserPreset: (state, { payload }: PayloadAction<EntityId>) => {
-      userPresetAdapter.removeOne(state.userPresets, payload);
-    },
-    resetUser: () => initialState,
-    setBought: (state, { payload }: PayloadAction<EntityId[]>) => {
+    boughtChange: (state, { payload }: PayloadAction<EntityId[]>) => {
       state.bought = payload;
     },
-    setFavorites: (state, { payload }: PayloadAction<EntityId[]>) => {
+    favoritesChange: (state, { payload }: PayloadAction<EntityId[]>) => {
       state.favorites = payload;
     },
-    setFavoritesId: (state, { payload }: PayloadAction<string>) => {
+    favoritesIdChange: (state, { payload }: PayloadAction<string>) => {
       state.favoritesId = payload;
     },
-    setHidden: (state, { payload }: PayloadAction<EntityId[]>) => {
+    hiddenChange: (state, { payload }: PayloadAction<EntityId[]>) => {
       state.hidden = payload;
     },
-    setShareName: (state, { payload }: PayloadAction<string>) => {
+    shareNameChange: (state, { payload }: PayloadAction<string>) => {
       state.shareName = payload;
     },
-    setUser: (state, { payload }: PayloadAction<Partial<CurrentUserType>>) => {
+    userLogin: (
+      state,
+      { payload }: PayloadAction<Partial<CurrentUserType>>
+    ) => {
       state.user = { ...blankCurrentUser, ...payload };
     },
-    setUserPresets: (state, { payload }: PayloadAction<PresetType[]>) => {
+    userPresetAdded: (state, { payload }: PayloadAction<PresetType>) => {
+      userPresetAdapter.setOne(state.userPresets, payload);
+    },
+    userPresetDeleted: (state, { payload }: PayloadAction<EntityId>) => {
+      userPresetAdapter.removeOne(state.userPresets, payload);
+    },
+    userPresetsLoaded: (state, { payload }: PayloadAction<PresetType[]>) => {
       userPresetAdapter.setAll(state.userPresets, payload);
     },
-    upsertUserPreset: (state, { payload }: PayloadAction<PresetType>) => {
+    userPresetUpdated: (state, { payload }: PayloadAction<PresetType>) => {
       userPresetAdapter.upsertOne(state.userPresets, payload);
     },
+    userReset: () => initialState,
   },
 });
 
 export const {
   actions: {
-    addUserPreset,
-    deleteUserPreset,
-    resetUser,
-    setBought,
-    setFavorites,
-    setFavoritesId,
-    setHidden,
-    setShareName,
-    setUser,
-    setUserPresets,
-    upsertUserPreset,
+    boughtChange,
+    favoritesChange,
+    favoritesIdChange,
+    hiddenChange,
+    shareNameChange,
+    userLogin,
+    userPresetAdded,
+    userPresetDeleted,
+    userPresetsLoaded,
+    userPresetUpdated,
+    userReset,
   },
 } = userSlice;
 

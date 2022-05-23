@@ -39,13 +39,13 @@ export const settingsSlice = createSlice({
   initialState,
   name: "settings",
   reducers: {
-    setCookies: (state, { payload }: PayloadAction<boolean>) => {
+    cookieDecision: (state, { payload }: PayloadAction<boolean>) => {
       state.cookies = payload;
     },
-    setManualTheme: (state, { payload }: PayloadAction<boolean>) => {
+    manualThemeChange: (state, { payload }: PayloadAction<boolean>) => {
       state.manualTheme = payload ? "dark" : "light";
     },
-    setSetting: {
+    settingChange: {
       prepare: <K extends keyof SettingsState>(
         key: K,
         value: SettingsState[K]
@@ -58,14 +58,14 @@ export const settingsSlice = createSlice({
         state[key] = value;
       },
     },
-    setSettings: (
+    settingsChange: (
       state,
       { payload }: PayloadAction<Partial<SettingsState>>
     ) => ({
       ...state,
       ...payload,
     }),
-    setShareNameLoading: (state, { payload }: PayloadAction<boolean>) => {
+    shareNameLoad: (state, { payload }: PayloadAction<boolean>) => {
       state.shareNameLoading = payload;
     },
     toggleLich: (state) => {
@@ -76,10 +76,10 @@ export const settingsSlice = createSlice({
 
 export const {
   actions: {
-    setCookies,
-    setManualTheme,
-    setSettings,
-    setShareNameLoading,
+    cookieDecision,
+    manualThemeChange,
+    settingsChange,
+    shareNameLoad,
     toggleLich,
   },
 } = settingsSlice;
@@ -120,20 +120,23 @@ export const selectManualTheme = (state: RootState) =>
 export default settingsSlice.reducer;
 
 const {
-  actions: { setSetting: _setSetting },
+  actions: { settingChange: _settingChange },
 } = settingsSlice;
 
 /** wrapper to make sure generics work */
-export const setSetting = (<K extends keyof SettingsState>(
+export const settingChange = (<K extends keyof SettingsState>(
   key: K,
   value: SettingsState[K]
-) => _setSetting(key, value)) as Pick<typeof _setSetting, "match" | "type"> &
+) => _settingChange(key, value)) as Pick<
+  typeof _settingChange,
+  "match" | "type"
+> &
   (<K extends keyof SettingsState>(
     // eslint-disable-next-line no-use-before-define
     key: K,
     // eslint-disable-next-line no-use-before-define
     value: SettingsState[K]
-  ) => ReturnType<typeof _setSetting>);
+  ) => ReturnType<typeof _settingChange>);
 
 // carry over type and match properties
-Object.assign(setSetting, _setSetting);
+Object.assign(settingChange, _settingChange);

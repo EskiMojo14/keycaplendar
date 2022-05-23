@@ -156,23 +156,23 @@ export const auditSlice = createSlice({
   initialState,
   name: "audit",
   reducers: {
-    setFilterAction: (
+    filterAction: (
       state,
       { payload }: PayloadAction<"created" | "deleted" | "none" | "updated">
     ) => {
       state.filter.action = payload;
     },
-    setFilterUser: (state, { payload }: PayloadAction<string>) => {
+    filterUser: (state, { payload }: PayloadAction<string>) => {
       state.filter.user = payload;
     },
-    setLength: (state, { payload }: PayloadAction<number>) => {
+    lengthChange: (state, { payload }: PayloadAction<number>) => {
       state.length = payload;
     },
   },
 });
 
 export const {
-  actions: { setFilterAction, setFilterUser, setLength },
+  actions: { filterAction, filterUser, lengthChange },
 } = auditSlice;
 
 export const selectFilter = (state: RootState) => state.audit.filter;

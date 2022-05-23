@@ -1,5 +1,5 @@
 import { createStore } from "~/app/store";
-import { selectCurrentFolder, setCurrentFolder } from "@s/images";
+import { folderChange, selectCurrentFolder } from "@s/images";
 
 let store = createStore();
 
@@ -10,7 +10,7 @@ beforeEach(() => {
 const folder = "test";
 
 it("sets current folder", () => {
-  store.dispatch(setCurrentFolder(folder));
+  store.dispatch(folderChange(folder));
   const response = selectCurrentFolder(store.getState());
   expect(response).toBe(folder);
 });

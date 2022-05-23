@@ -43,6 +43,8 @@ import useDevice from "@h/use-device";
 import { pageTitle } from "@s/router/constants";
 import {
   defaultUserLength,
+  pageChange,
+  rowsPerPageChange,
   selectPage,
   selectReverseSort,
   selectRowsPerPage,
@@ -51,12 +53,10 @@ import {
   selectUserMap,
   selectUserTotal,
   selectView,
-  setPage,
-  setRowsPerPage,
-  setSort,
-  setView,
+  sortChange,
   useDeleteUserMutation,
   useGetUsersQuery,
+  viewChange,
 } from "@s/users";
 import {
   sortLabels,
@@ -124,10 +124,10 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
     setViewMenuOpen,
     "setViewMenuOpen"
   );
-  const [sortMenuOpen, setSortMenuOpen] = useState(false);
+  const [sortMenuOpen, sortChangeMenuOpen] = useState(false);
   const [closeSortMenu, openSortMenu] = useBoolStates(
-    setSortMenuOpen,
-    "setSortMenuOpen"
+    sortChangeMenuOpen,
+    "sortChangeMenuOpen"
   );
 
   const [deleteUser] = useDeleteUserMutation({ selectFromResult: () => ({}) });
@@ -158,7 +158,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
       <Menu
         anchorCorner="bottomLeft"
         onClose={closeSortMenu}
-        onSelect={(e) => dispatch(setSort(sortProps[e.detail.index]))}
+        onSelect={(e) => dispatch(sortChange(sortProps[e.detail.index]))}
         open={sortMenuOpen}
       >
         {sortProps.map((prop) => (
@@ -178,7 +178,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
       <Menu
         anchorCorner="bottomLeft"
         onClose={closeViewMenu}
-        onSelect={(e) => dispatch(setView(views[e.detail.index]))}
+        onSelect={(e) => dispatch(viewChange(views[e.detail.index]))}
         open={viewMenuOpen}
       >
         {views.map((viewType) => (
@@ -220,7 +220,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                         <DataTableRow>
                           <DataTableHeadCell></DataTableHeadCell>
                           <DataTableHeadCell
-                            onClick={() => dispatch(setSort("displayName"))}
+                            onClick={() => dispatch(sortChange("displayName"))}
                             sort={
                               userSort === "displayName"
                                 ? reverseUserSort
@@ -232,7 +232,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             User
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            onClick={() => dispatch(setSort("email"))}
+                            onClick={() => dispatch(sortChange("email"))}
                             sort={
                               userSort === "email"
                                 ? reverseUserSort
@@ -244,7 +244,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Email
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            onClick={() => dispatch(setSort("dateCreated"))}
+                            onClick={() => dispatch(sortChange("dateCreated"))}
                             sort={
                               userSort === "dateCreated"
                                 ? reverseUserSort
@@ -256,7 +256,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Date created
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            onClick={() => dispatch(setSort("lastSignIn"))}
+                            onClick={() => dispatch(sortChange("lastSignIn"))}
                             sort={
                               userSort === "lastSignIn"
                                 ? reverseUserSort
@@ -268,7 +268,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Last sign in
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            onClick={() => dispatch(setSort("lastActive"))}
+                            onClick={() => dispatch(sortChange("lastActive"))}
                             sort={
                               userSort === "lastActive"
                                 ? reverseUserSort
@@ -280,7 +280,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Last active
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            onClick={() => dispatch(setSort("nickname"))}
+                            onClick={() => dispatch(sortChange("nickname"))}
                             sort={
                               userSort === "nickname"
                                 ? reverseUserSort
@@ -292,7 +292,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Nickname
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            onClick={() => dispatch(setSort("designer"))}
+                            onClick={() => dispatch(sortChange("designer"))}
                             sort={
                               userSort === "designer"
                                 ? reverseUserSort
@@ -304,7 +304,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Designer
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            onClick={() => dispatch(setSort("editor"))}
+                            onClick={() => dispatch(sortChange("editor"))}
                             sort={
                               userSort === "editor"
                                 ? reverseUserSort
@@ -316,7 +316,7 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Editor
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            onClick={() => dispatch(setSort("admin"))}
+                            onClick={() => dispatch(sortChange("admin"))}
                             sort={
                               userSort === "admin"
                                 ? reverseUserSort
@@ -367,7 +367,9 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             enhanced
                             onChange={(e) =>
                               dispatch(
-                                setRowsPerPage(parseInt(e.currentTarget.value))
+                                rowsPerPageChange(
+                                  parseInt(e.currentTarget.value)
+                                )
                               )
                             }
                             options={Array(3)
@@ -386,26 +388,28 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             className="rtl-flip"
                             disabled={first === 0}
                             icon="first_page"
-                            onClick={() => dispatch(setPage(1))}
+                            onClick={() => dispatch(pageChange(1))}
                           />
                           <DataTablePaginationButton
                             className="rtl-flip"
                             disabled={first === 0}
                             icon="chevron_left"
-                            onClick={() => dispatch(setPage(page - 1))}
+                            onClick={() => dispatch(pageChange(page - 1))}
                           />
                           <DataTablePaginationButton
                             className="rtl-flip"
                             disabled={last === total - 1}
                             icon="chevron_right"
-                            onClick={() => dispatch(setPage(page + 1))}
+                            onClick={() => dispatch(pageChange(page + 1))}
                           />
                           <DataTablePaginationButton
                             className="rtl-flip"
                             disabled={last === total - 1}
                             icon="last_page"
                             onClick={() =>
-                              dispatch(setPage(Math.ceil(total / rowsPerPage)))
+                              dispatch(
+                                pageChange(Math.ceil(total / rowsPerPage))
+                              )
                             }
                           />
                         </DataTablePaginationNavigation>

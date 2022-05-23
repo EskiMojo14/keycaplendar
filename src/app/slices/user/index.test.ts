@@ -3,7 +3,10 @@ import { createStore } from "~/app/store";
 import { partialPreset } from "@s/main/constructors";
 import {
   blankCurrentUser,
-  deleteUserPreset,
+  boughtChange,
+  favoritesChange,
+  favoritesIdChange,
+  hiddenChange,
   selectAllUserPresets,
   selectBought,
   selectFavorites,
@@ -12,14 +15,11 @@ import {
   selectShareName,
   selectUser,
   selectUserPresetById,
-  setBought,
-  setFavorites,
-  setFavoritesId,
-  setHidden,
-  setShareName,
-  setUser,
-  setUserPresets,
-  upsertUserPreset,
+  shareNameChange,
+  userLogin,
+  userPresetDeleted,
+  userPresetsLoaded,
+  userPresetUpdated,
 } from "@s/user";
 import { addUserPreset } from "@s/user/thunks";
 import type { CurrentUserType } from "@s/user/types";
@@ -44,14 +44,14 @@ const user: CurrentUserType = {
 const array = ["test"];
 
 it("sets user", () => {
-  store.dispatch(setUser(user));
+  store.dispatch(userLogin(user));
   const response = selectUser(store.getState());
   expect(response).toEqual(user);
 });
 
 it("sets partial user", () => {
   const { email } = user;
-  store.dispatch(setUser({ email }));
+  store.dispatch(userLogin({ email }));
   const response = selectUser(store.getState());
   const expected = produce(blankCurrentUser, (draftUser) => {
     draftUser.email = email;
@@ -61,14 +61,14 @@ it("sets partial user", () => {
 
 it("sets shareName", () => {
   const name = "me :)";
-  store.dispatch(setShareName(name));
+  store.dispatch(shareNameChange(name));
   const response = selectShareName(store.getState());
   expect(response).toBe(name);
 });
 
 it("sets user presets", () => {
   const presets = [partialPreset({ name: "hi" })];
-  store.dispatch(setUserPresets(presets));
+  store.dispatch(userPresetsLoaded(presets));
   const response = selectAllUserPresets(store.getState());
   expect(response).toEqual(presets);
 });
@@ -88,7 +88,7 @@ it("upserts a user preset", () => {
   const editedPreset = produce(newPreset, (draft) => {
     draft.name = "bye";
   });
-  store.dispatch(upsertUserPreset(editedPreset));
+  store.dispatch(userPresetUpdated(editedPreset));
   const response = selectUserPresetById(store.getState(), newPreset.id);
   expect(response).toEqual(editedPreset);
 });
@@ -101,33 +101,33 @@ it("deletes a user preset", () => {
   const check = selectUserPresetById(store.getState(), newPreset.id);
   expect(check).toEqual(newPreset);
 
-  store.dispatch(deleteUserPreset(newPreset.id));
+  store.dispatch(userPresetDeleted(newPreset.id));
 
   const response = selectUserPresetById(store.getState(), newPreset.id);
   expect(response).toBeUndefined();
 });
 
 it("sets favourites", () => {
-  store.dispatch(setFavorites(array));
+  store.dispatch(favoritesChange(array));
   const response = selectFavorites(store.getState());
   expect(response).toEqual(array);
 });
 
 it("sets favourites ID", () => {
   const id = "test";
-  store.dispatch(setFavoritesId(id));
+  store.dispatch(favoritesIdChange(id));
   const response = selectFavoritesId(store.getState());
   expect(response).toBe(id);
 });
 
 it("sets bought", () => {
-  store.dispatch(setBought(array));
+  store.dispatch(boughtChange(array));
   const response = selectBought(store.getState());
   expect(response).toEqual(array);
 });
 
 it("sets hidden", () => {
-  store.dispatch(setHidden(array));
+  store.dispatch(hiddenChange(array));
   const response = selectHidden(store.getState());
   expect(response).toEqual(array);
 });

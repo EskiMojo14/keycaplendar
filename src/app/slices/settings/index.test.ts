@@ -1,14 +1,14 @@
 import produce from "immer";
 import { createStore } from "~/app/store";
 import {
+  cookieDecision,
   initialState,
   selectCookies,
   selectSettings,
   selectShareNameLoading,
-  setCookies,
-  setSetting,
-  setSettings,
-  setShareNameLoading,
+  settingChange,
+  settingsChange,
+  shareNameLoad,
   toggleLich,
 } from "@s/settings";
 
@@ -19,7 +19,7 @@ beforeEach(() => {
 });
 
 it("sets a specific setting", () => {
-  store.dispatch(setSetting("bottomNav", true));
+  store.dispatch(settingChange("bottomNav", true));
   const response = selectSettings(store.getState());
   const expected = produce(initialState, (draftState) => {
     draftState.bottomNav = true;
@@ -28,7 +28,7 @@ it("sets a specific setting", () => {
 });
 
 it("merges settings objects", () => {
-  store.dispatch(setSettings({ bottomNav: true, darkTheme: "test" }));
+  store.dispatch(settingsChange({ bottomNav: true, darkTheme: "test" }));
   const response = selectSettings(store.getState());
   const expected = produce(initialState, (draftState) => {
     draftState.bottomNav = true;
@@ -47,13 +47,13 @@ it("toggles lich theme", () => {
 });
 
 it("sets cookies", () => {
-  store.dispatch(setCookies(true));
+  store.dispatch(cookieDecision(true));
   const response = selectCookies(store.getState());
   expect(response).toBe(true);
 });
 
 it("sets loading state for public name", () => {
-  store.dispatch(setShareNameLoading(true));
+  store.dispatch(shareNameLoad(true));
   const response = selectShareNameLoading(store.getState());
   expect(response).toBe(true);
 });

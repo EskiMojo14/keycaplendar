@@ -1,5 +1,5 @@
 import { createStore } from "~/app/store";
-import { selectFilteredTag, setFilteredTag } from "@s/guides";
+import { filterTag, selectFilteredTag } from "@s/guides";
 
 let store = createStore();
 
@@ -10,7 +10,7 @@ beforeEach(() => {
 const string = "tag";
 
 it("sets filtered tag", () => {
-  store.dispatch(setFilteredTag(string));
+  store.dispatch(filterTag(string));
   const response = selectFilteredTag(store.getState());
   expect(response).toBe(string);
 });

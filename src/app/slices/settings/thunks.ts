@@ -6,11 +6,11 @@ import { selectLoading, setTransition } from "@s/main";
 import { selectUser } from "@s/user";
 import { hasKey } from "@s/util/functions";
 import {
+  cookieDecision,
+  manualThemeChange,
   selectCookies,
   selectSyncSettings,
-  setCookies,
-  setManualTheme as setManualThemeAction,
-  setSetting,
+  settingChange,
   toggleLich,
 } from ".";
 import type { Settings, ViewType } from "./types";
@@ -48,12 +48,12 @@ export const getStorage = (name: string) => {
 };
 
 export const acceptCookies = (): AppThunk<void> => (dispatch) => {
-  dispatch(setCookies(true));
+  dispatch(cookieDecision(true));
   dispatch(setStorage("accepted", true));
 };
 
 export const clearCookies = (): AppThunk<void> => (dispatch) => {
-  dispatch(setCookies(false));
+  dispatch(cookieDecision(false));
   localStorage.removeItem("accepted");
 };
 
@@ -104,14 +104,14 @@ export const setView =
         dispatch(setTransition(true));
         setTimeout(() => {
           document.documentElement.scrollTop = 0;
-          dispatch(setSetting("view", view));
+          dispatch(settingChange("view", view));
         }, 90);
         setTimeout(() => {
           dispatch(setTransition(true));
         }, 300);
       });
     } else {
-      dispatch(setSetting("view", view));
+      dispatch(settingChange("view", view));
     }
     if (write) {
       syncSetting("view", view);
@@ -121,7 +121,7 @@ export const setView =
 export const setApplyTheme =
   (applyTheme: string, write = true): AppThunk<void> =>
   (dispatch) => {
-    dispatch(setSetting("applyTheme", applyTheme));
+    dispatch(settingChange("applyTheme", applyTheme));
     if (write) {
       dispatch(syncSetting("applyTheme", applyTheme));
     }
@@ -130,7 +130,7 @@ export const setApplyTheme =
 export const setLightTheme =
   (theme: string, write = true): AppThunk<void> =>
   (dispatch) => {
-    dispatch(setSetting("lightTheme", theme));
+    dispatch(settingChange("lightTheme", theme));
     if (write) {
       dispatch(syncSetting("lightTheme", theme));
     }
@@ -139,7 +139,7 @@ export const setLightTheme =
 export const setDarkTheme =
   (theme: string, write = true): AppThunk<void> =>
   (dispatch) => {
-    dispatch(setSetting("darkTheme", theme));
+    dispatch(settingChange("darkTheme", theme));
     if (write) {
       dispatch(syncSetting("darkTheme", theme));
     }
@@ -148,7 +148,7 @@ export const setDarkTheme =
 export const setManualTheme =
   (bool: boolean, write = true): AppThunk<void> =>
   (dispatch) => {
-    dispatch(setManualThemeAction(bool));
+    dispatch(manualThemeChange(bool));
     if (write) {
       dispatch(syncSetting("manualTheme", bool));
     }
@@ -157,7 +157,7 @@ export const setManualTheme =
 export const setFromTimeTheme =
   (time: string, write = true): AppThunk<void> =>
   (dispatch) => {
-    dispatch(setSetting("fromTimeTheme", time));
+    dispatch(settingChange("fromTimeTheme", time));
     if (write) {
       dispatch(syncSetting("fromTimeTheme", time));
     }
@@ -166,7 +166,7 @@ export const setFromTimeTheme =
 export const setToTimeTheme =
   (time: string, write = true): AppThunk<void> =>
   (dispatch) => {
-    dispatch(setSetting("toTimeTheme", time));
+    dispatch(settingChange("toTimeTheme", time));
     if (write) {
       dispatch(syncSetting("toTimeTheme", time));
     }
@@ -180,7 +180,7 @@ export const setBottomNav =
   (value: boolean, write = true): AppThunk<void> =>
   (dispatch) => {
     document.documentElement.scrollTop = 0;
-    dispatch(setSetting("bottomNav", value));
+    dispatch(settingChange("bottomNav", value));
     if (write) {
       dispatch(syncSetting("bottomNav", value));
     }
@@ -189,7 +189,7 @@ export const setBottomNav =
 export const setDensity =
   (density: string, write = true): AppThunk<void> =>
   (dispatch) => {
-    dispatch(setSetting("density", density));
+    dispatch(settingChange("density", density));
     if (write) {
       dispatch(syncSetting("density", density));
     }
@@ -214,7 +214,7 @@ export const checkStorage = (): AppThunk<void> => (dispatch) => {
   const acceptedCookie = getCookie("accepted");
   const accepted = getStorage("accepted");
   if (acceptedCookie === "true" || accepted) {
-    dispatch(setCookies(true));
+    dispatch(cookieDecision(true));
 
     const convertCookie = (
       key: string,
@@ -256,7 +256,7 @@ export const setSyncSettings =
     const state = getState();
     const { settings } = state;
     const user = selectUser(state);
-    dispatch(setSetting("syncSettings", bool));
+    dispatch(settingChange("syncSettings", bool));
     if (write) {
       const settingsObject: Record<string, any> = {};
       if (bool) {

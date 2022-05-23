@@ -107,10 +107,7 @@ export const statisticsSlice = createSlice({
   initialState,
   name: "statistics",
   reducers: {
-    setStatisticsData: (state, { payload }: PayloadAction<StatisticsData>) => {
-      state.data = payload;
-    },
-    setStatisticsSetting: {
+    statisticsSetting: {
       prepare: <T extends keyof StatisticsType>(
         key: T,
         value: StatisticsType[T]
@@ -123,7 +120,7 @@ export const statisticsSlice = createSlice({
         state.settings[key] = value;
       },
     },
-    setStatisticsSort: {
+    statisticsSort: {
       prepare: <T extends keyof StatisticsSortType>(
         key: T,
         value: StatisticsSortType[T]
@@ -138,10 +135,6 @@ export const statisticsSlice = createSlice({
     },
   },
 });
-
-export const {
-  actions: { setStatisticsData },
-} = statisticsSlice;
 
 export const selectUnsortedData = (state: RootState) => state.statistics.data;
 
@@ -218,14 +211,14 @@ export default statisticsSlice.reducer;
 
 const {
   actions: {
-    setStatisticsSetting: _setStatisticsSetting,
-    setStatisticsSort: _setStatisticsSort,
+    statisticsSetting: _statisticsSetting,
+    statisticsSort: _statisticsSort,
   },
 } = statisticsSlice;
 
 /** wrapper for generics */
-export const setStatisticsSetting = _setStatisticsSetting as Pick<
-  typeof _setStatisticsSetting,
+export const statisticsSetting = _statisticsSetting as Pick<
+  typeof _statisticsSetting,
   "match" | "type"
 > &
   (<K extends keyof StatisticsType>(
@@ -233,14 +226,14 @@ export const setStatisticsSetting = _setStatisticsSetting as Pick<
     key: K,
     // eslint-disable-next-line no-use-before-define
     value: StatisticsType[K]
-  ) => ReturnType<typeof _setStatisticsSetting>);
+  ) => ReturnType<typeof _statisticsSetting>);
 
 // carry over type and match properties
-Object.assign(setStatisticsSetting, _setStatisticsSetting);
+Object.assign(statisticsSetting, _statisticsSetting);
 
 /** wrapper for generics */
-export const setStatisticsSort = _setStatisticsSort as Pick<
-  typeof _setStatisticsSort,
+export const statisticsSort = _statisticsSort as Pick<
+  typeof _statisticsSort,
   "match" | "type"
 > &
   (<K extends keyof StatisticsSortType>(
@@ -248,7 +241,7 @@ export const setStatisticsSort = _setStatisticsSort as Pick<
     key: K,
     // eslint-disable-next-line no-use-before-define
     value: StatisticsSortType[K]
-  ) => ReturnType<typeof _setStatisticsSort>);
+  ) => ReturnType<typeof _statisticsSort>);
 
 // carry over type and match properties
-Object.assign(setStatisticsSort, _setStatisticsSort);
+Object.assign(statisticsSort, _statisticsSort);

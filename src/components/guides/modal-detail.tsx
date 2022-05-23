@@ -22,9 +22,9 @@ import { CustomReactMarkdown } from "@c/util/react-markdown";
 import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import {
+  filterTag,
   selectEntryById,
   selectFilteredTag,
-  setFilteredTag,
   useGetGuidesQuery,
 } from "@s/guides";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
@@ -70,7 +70,7 @@ export const ModalDetail = ({
   const useDrawer = device !== "mobile";
 
   const setFilter = (tag: string) =>
-    dispatch(setFilteredTag(filteredTag === tag ? "" : tag));
+    dispatch(filterTag(filteredTag === tag ? "" : tag));
 
   const copyLink = async () => {
     const url = createURL({ pathname: `/guides/${entryId}`, search: "" });

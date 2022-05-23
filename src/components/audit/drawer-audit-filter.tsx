@@ -10,13 +10,13 @@ import { withTooltip } from "@c/util/hocs";
 import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import {
+  filterAction,
+  filterUser,
+  lengthChange,
   selectFilterAction,
   selectFilterUser,
   selectLength,
   selectUsers,
-  setFilterAction,
-  setFilterUser,
-  setLength,
   useGetActionsQuery,
 } from "@s/audit";
 import { arrayIncludes } from "@s/util/functions";
@@ -33,8 +33,8 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
   const device = useDevice();
 
   const auditLength = useAppSelector(selectLength);
-  const filterAction = useAppSelector(selectFilterAction);
-  const filterUser = useAppSelector(selectFilterUser);
+  const filteredAction = useAppSelector(selectFilterAction);
+  const filteredUser = useAppSelector(selectFilterUser);
 
   const { users = [], isFetching } = useGetActionsQuery(auditLength, {
     selectFromResult: ({ data, isFetching }) => ({
@@ -56,12 +56,12 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
     val: string
   ) => {
     if (prop === "filterUser") {
-      dispatch(setFilterUser(val));
+      dispatch(filterUser(val));
     } else if (
       prop === "filterAction" &&
       arrayIncludes(["none", "created", "updated", "deleted"] as const, val)
     ) {
-      dispatch(setFilterAction(val));
+      dispatch(filterAction(val));
     }
   };
 
@@ -74,7 +74,7 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
   const handleLengthChange = (e: ChangeEvent<HTMLInputElement>) => {
     const length = parseInt(e.target.value);
     if (!isFetching && length >= 50 && length % 50 === 0 && length <= 250) {
-      dispatch(setLength(length));
+      dispatch(lengthChange(length));
     }
   };
 
@@ -104,7 +104,7 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
               min={50}
               onInput={(e) => {
                 if (e.detail.value !== auditLength) {
-                  dispatch(setLength(e.detail.value));
+                  dispatch(lengthChange(e.detail.value));
                 }
               }}
               step={50}
@@ -139,7 +139,7 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
               { label: "Deleted", value: "deleted" },
             ]}
             outlined
-            value={filterAction}
+            value={filteredAction}
           />
         </div>
         <div className="filter-group">
@@ -154,7 +154,7 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
             }
             options={userOptions}
             outlined
-            value={filterUser}
+            value={filteredUser}
           />
         </div>
       </DrawerContent>

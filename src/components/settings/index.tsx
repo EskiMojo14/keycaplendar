@@ -48,7 +48,7 @@ import {
   selectSettings,
   selectShareNameLoading,
   selectSyncSettings,
-  setShareNameLoading,
+  shareNameLoad,
 } from "@s/settings";
 import {
   setApplyTheme,
@@ -61,7 +61,7 @@ import {
   setSyncSettings,
   setToTimeTheme,
 } from "@s/settings/thunks";
-import { selectShareName, selectUser, setUser } from "@s/user";
+import { selectShareName, selectUser, userReset } from "@s/user";
 import { createDebouncedSyncShareName } from "@s/user/thunks";
 import { userRoleIcons } from "@s/users/constants";
 import "./index.scss";
@@ -107,7 +107,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
   }: ChangeEvent<HTMLInputElement>) => {
     if (name === "shareName") {
       setShareName(value);
-      dispatch(setShareNameLoading(true));
+      dispatch(shareNameLoad(true));
       debouncedSyncShareName(value);
     }
   };
@@ -115,7 +115,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
   const signOut = async () => {
     try {
       await firebase.auth().signOut();
-      dispatch(setUser({}));
+      dispatch(userReset());
     } catch (error) {
       console.log(`Error signing out: ${error}`);
       notify({ title: `Error signing out: ${error}` });

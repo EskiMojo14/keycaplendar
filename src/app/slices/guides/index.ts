@@ -163,14 +163,14 @@ export const guidesSlice = createSlice({
   initialState,
   name: "guides",
   reducers: {
-    setFilteredTag: (state, { payload }: PayloadAction<string>) => {
+    filterTag: (state, { payload }: PayloadAction<string>) => {
       state.filteredTag = payload;
     },
   },
 });
 
 export const {
-  actions: { setFilteredTag },
+  actions: { filterTag },
 } = guidesSlice;
 
 export default guidesSlice.reducer;

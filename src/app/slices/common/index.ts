@@ -71,17 +71,17 @@ export const commonSlice = createSlice({
   initialState,
   name: "common",
   reducers: {
-    setSystemTheme: (state, { payload }: PayloadAction<boolean>) => {
+    systemThemeMatch: (state, { payload }: PayloadAction<boolean>) => {
       state.systemTheme = payload ? "dark" : "light";
     },
-    setTimed: (state, { payload }: PayloadAction<boolean>) => {
+    timedMatch: (state, { payload }: PayloadAction<boolean>) => {
       state.timed = payload ? "dark" : "light";
     },
   },
 });
 
 export const {
-  actions: { setSystemTheme, setTimed },
+  actions: { systemThemeMatch, timedMatch },
 } = commonSlice;
 
 export const selectSystemTheme = (state: RootState) => state.common.systemTheme;
@@ -130,10 +130,12 @@ export default commonSlice.reducer;
 export const setupSystemThemeListener =
   (): AppThunk<() => void> => (dispatch) => {
     dispatch(
-      setSystemTheme(window.matchMedia("(prefers-color-scheme: dark)").matches)
+      systemThemeMatch(
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      )
     );
     const checkThemeListener = (e: MediaQueryListEvent) =>
-      dispatch(setSystemTheme(e.matches));
+      dispatch(systemThemeMatch(e.matches));
     window
       .matchMedia("(prefers-color-scheme: dark)")
       .addEventListener("change", checkThemeListener);
@@ -146,11 +148,11 @@ export const setupSystemThemeListener =
 export const setupTimedListener =
   (fromTimeTheme: string, toTimeTheme: string): AppThunk<() => void> =>
   (dispatch, getState) => {
-    dispatch(setTimed(isBetweenTimes(fromTimeTheme, toTimeTheme)));
+    dispatch(timedMatch(isBetweenTimes(fromTimeTheme, toTimeTheme)));
     const syncTime = new Interval(() => {
       const newVal = isBetweenTimes(fromTimeTheme, toTimeTheme);
       if ((selectTimed(getState()) === "dark") !== newVal) {
-        dispatch(setTimed(isBetweenTimes(fromTimeTheme, toTimeTheme)));
+        dispatch(timedMatch(isBetweenTimes(fromTimeTheme, toTimeTheme)));
       }
     }, 60000);
     return () => syncTime.clear();

@@ -16,22 +16,22 @@ import {
 } from "@s/main";
 import { testSets } from "@s/main/thunks";
 import type { PresetType } from "@s/main/types";
-import { setShareNameLoading } from "@s/settings";
+import { shareNameLoad } from "@s/settings";
 import { setSyncSettings, settingFns } from "@s/settings/thunks";
 import {
-  addUserPreset as _addUserPreset,
-  resetUser,
+  boughtChange,
+  favoritesChange,
+  favoritesIdChange,
+  hiddenChange,
   selectBought,
   selectFavorites,
   selectHidden,
   selectUser,
-  setBought,
-  setFavorites,
-  setFavoritesId,
-  setHidden,
-  setShareName,
-  setUser,
-  setUserPresets,
+  shareNameChange,
+  userLogin,
+  userPresetAdded,
+  userPresetsLoaded,
+  userReset,
 } from "@s/user";
 import { addOrRemove, hasKey } from "@s/util/functions";
 import type { Overwrite } from "@s/util/types";
@@ -40,7 +40,7 @@ export const addUserPreset =
   (userPreset: Overwrite<PresetType, { id?: string }>): AppThunk<PresetType> =>
   (dispatch) => {
     const preset: PresetType = { ...userPreset, id: userPreset.id ?? nanoid() };
-    dispatch(_addUserPreset(preset));
+    dispatch(userPresetAdded(preset));
     return preset;
   };
 
@@ -71,28 +71,28 @@ export const getUserPreferences =
             const actions: AnyAction[] = [];
 
             if (shareName) {
-              actions.push(setShareName(shareName));
+              actions.push(shareNameChange(shareName));
             }
 
             if (favoritesId) {
-              actions.push(setFavoritesId(favoritesId));
+              actions.push(favoritesIdChange(favoritesId));
             }
 
             if (is<string[]>(favorites)) {
-              actions.push(setFavorites(favorites));
+              actions.push(favoritesChange(favorites));
             }
             if (is<string[]>(bought)) {
-              actions.push(setBought(bought));
+              actions.push(boughtChange(bought));
             }
             if (is<string[]>(hidden)) {
-              actions.push(setHidden(hidden));
+              actions.push(hiddenChange(hidden));
             }
 
             if (filterPresets) {
               const updatedPresets = filterPresets.map((preset) =>
                 dispatch(updatePreset(preset))
               );
-              actions.push(setUserPresets(updatedPresets));
+              actions.push(userPresetsLoaded(updatedPresets));
             }
 
             if (is<boolean>(syncSettings)) {
@@ -134,7 +134,7 @@ export const setupAuthListener =
         try {
           const result = await getClaims();
           dispatch(
-            setUser({
+            userLogin({
               avatar: user.photoURL ?? "",
               email: user.email ?? "",
               id: user.uid,
@@ -151,7 +151,7 @@ export const setupAuthListener =
         } catch (error) {
           notify({ title: `Error verifying custom claims: ${error}` });
           dispatch(
-            setUser({
+            userLogin({
               avatar: user.photoURL ?? "",
               email: user.email ?? "",
               id: user.uid,
@@ -161,7 +161,7 @@ export const setupAuthListener =
         }
         dispatch(getUserPreferences(user.uid));
       } else {
-        dispatch(resetUser());
+        dispatch(userReset());
         const defaultPreset = selectDefaultPreset(getState());
         if (defaultPreset.name) {
           dispatch(setCurrentPreset("default"));
@@ -176,7 +176,7 @@ export const toggleFavorite =
     const user = selectUser(state);
     const userFavorites = selectFavorites(state);
     const favorites = addOrRemove([...userFavorites], id);
-    dispatch(setFavorites(favorites));
+    dispatch(favoritesChange(favorites));
     if (user.id) {
       try {
         await firestore
@@ -202,7 +202,7 @@ export const toggleBought =
     const user = selectUser(state);
     const userBought = selectBought(state);
     const bought = addOrRemove([...userBought], id);
-    dispatch(setBought(bought));
+    dispatch(boughtChange(bought));
     if (user.id) {
       try {
         await firestore
@@ -228,7 +228,7 @@ export const toggleHidden =
     const user = selectUser(state);
     const userHidden = selectHidden(state);
     const hidden = addOrRemove([...userHidden], id);
-    dispatch(setHidden(hidden));
+    dispatch(hiddenChange(hidden));
     const isHidden = hidden.includes(id);
     notify({
       actions: [
@@ -266,7 +266,7 @@ export const syncShareName =
   async (dispatch, getState) => {
     const state = getState();
     const user = selectUser(state);
-    dispatch(setShareNameLoading(true));
+    dispatch(shareNameLoad(true));
     try {
       await firestore
         .collection("users")
@@ -277,7 +277,7 @@ export const syncShareName =
           },
           { merge: true }
         );
-      dispatch(setShareNameLoading(false));
+      dispatch(shareNameLoad(false));
     } catch (error) {
       console.log(`Failed to sync display name: ${error}`);
       notify({ title: `Failed to sync display name: ${error}` });

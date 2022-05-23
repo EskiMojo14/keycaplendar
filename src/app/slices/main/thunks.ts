@@ -33,10 +33,10 @@ import { getPageName, replace } from "@s/router";
 import { createURL } from "@s/router/functions";
 import type { MainPage } from "@s/router/types";
 import {
-  deleteUserPreset,
   selectAllUserPresets,
   selectUser,
-  upsertUserPreset,
+  userPresetDeleted,
+  userPresetUpdated,
 } from "@s/user";
 import { addUserPreset } from "@s/user/thunks";
 import { arrayIncludes, objectEntries } from "@s/util/functions";
@@ -245,14 +245,14 @@ export const newPreset =
 export const editPreset =
   (preset: PresetType): AppThunk<Promise<void>> =>
   async (dispatch) => {
-    dispatch([setCurrentPreset(preset.id), upsertUserPreset(preset)]);
+    dispatch([setCurrentPreset(preset.id), userPresetUpdated(preset)]);
     await dispatch(syncPresets());
   };
 
 export const deletePreset =
   (presetId: EntityId): AppThunk<Promise<void>> =>
   async (dispatch) => {
-    dispatch([setCurrentPreset("default"), deleteUserPreset(presetId)]);
+    dispatch([setCurrentPreset("default"), userPresetDeleted(presetId)]);
     await dispatch(syncPresets());
   };
 
