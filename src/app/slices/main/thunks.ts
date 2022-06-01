@@ -17,9 +17,7 @@ import {
   selectAllAppPresets,
   selectAllSets,
   selectPresetById,
-  setAllSets,
   setCurrentPreset,
-  setLoading,
   upsertAppPreset,
 } from "@s/main";
 import {
@@ -28,7 +26,6 @@ import {
   reverseSortDatePages,
   whitelistParams,
 } from "@s/main/constants";
-import { addLastDate } from "@s/main/functions";
 import { getPageName, replace } from "@s/router";
 import { createURL } from "@s/router/functions";
 import type { MainPage } from "@s/router/types";
@@ -84,39 +81,6 @@ export const setWhitelist =
       dispatch(replace(newUrl));
     }
   };
-
-export const getData = (): AppThunk<Promise<void>> => async (dispatch) => {
-  dispatch(setLoading(true));
-  try {
-    const querySnapshot = await firestore.collection("keysets").get();
-    const sets: SetType[] = [];
-    querySnapshot.forEach((doc) => {
-      if (doc.data().profile) {
-        const {
-          gbLaunch: docGbLaunch,
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          latestEditor,
-          ...data
-        } = doc.data();
-
-        sets.push({
-          id: doc.id,
-          ...data,
-          gbLaunch:
-            data.gbMonth && docGbLaunch && !docGbLaunch.includes("Q")
-              ? addLastDate(docGbLaunch)
-              : docGbLaunch,
-        });
-      }
-    });
-
-    dispatch([setAllSets(sets), setLoading(false)]);
-  } catch (error) {
-    console.log(`Error getting data: ${error}`);
-    notify({ title: `Error getting data: ${error}` });
-    dispatch(setLoading(false));
-  }
-};
 
 export const testSets = (): AppThunk<void> => (dispatch, getState) => {
   const sets = selectAllSets(getState());

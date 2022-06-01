@@ -21,8 +21,7 @@ import {
   setupTimedListener,
   useGetGlobalsQuery,
 } from "@s/common";
-import { selectTransition } from "@s/main";
-import { getData } from "@s/main/thunks";
+import { selectTransition, useGetAllKeysetsQuery } from "@s/main";
 import { addRouterListener, setupLocationChangeListener } from "@s/router";
 import { routes } from "@s/router/constants";
 import { handleLegacyParams } from "@s/router/functions";
@@ -89,8 +88,10 @@ export const App = () => {
 
   useGetGlobalsQuery(undefined, { selectFromResult: () => ({}) });
 
+  useGetAllKeysetsQuery(undefined, { selectFromResult: () => ({}) });
+
   useEffect(() => {
-    dispatch([getData(), checkStorage()]);
+    dispatch(checkStorage());
     const checkThemeListener = dispatch(setupSystemThemeListener());
     const authObserver = dispatch(setupAuthListener());
     return () => {

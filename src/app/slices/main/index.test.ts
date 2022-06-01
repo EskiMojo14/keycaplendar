@@ -5,7 +5,6 @@ import {
   deleteSet,
   mergeWhitelist,
   selectAllAppPresets,
-  selectAllSets,
   selectAppPresetById,
   selectCurrentPresetId,
   selectEditedWhitelist,
@@ -16,7 +15,6 @@ import {
   selectSortByPage,
   selectSortOrderByPage,
   selectTransition,
-  setAllSets,
   setAppPresets,
   setCurrentPreset,
   setLinkedFavorites,
@@ -31,12 +29,7 @@ import {
 import { blankKeyset } from "@s/main/constants";
 import { partialPreset } from "@s/main/constructors";
 import { addAppPreset } from "@s/main/thunks";
-import type {
-  SetType,
-  SortOrderType,
-  SortType,
-  WhitelistType,
-} from "@s/main/types";
+import type { SortOrderType, SortType, WhitelistType } from "@s/main/types";
 import type { MainPage } from "@s/router/types";
 
 let store = createStore();
@@ -71,13 +64,6 @@ it("sets sort order", () => {
   store.dispatch(setSortOrder(page, sortOrder));
   const response = selectSortOrderByPage(store.getState(), page);
   expect(response).toBe(sortOrder);
-});
-
-it("sets all sets", () => {
-  const list: SetType[] = [blankKeyset];
-  store.dispatch(setAllSets(list));
-  const response = selectAllSets(store.getState());
-  expect(response).toEqual(list);
 });
 
 it("sets a set", () => {

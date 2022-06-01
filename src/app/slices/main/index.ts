@@ -3,6 +3,7 @@ import {
   createEntityAdapter,
   createSelector,
   createSlice,
+  isAnyOf,
 } from "@reduxjs/toolkit";
 import type {
   Dictionary,
@@ -17,7 +18,11 @@ import { notify } from "~/app/snackbar-queue";
 import type { AppThunk, RootState } from "~/app/store";
 import type { AppStartListening } from "@mw/listener";
 // eslint-disable-next-line import/no-cycle
+import { combineListeners } from "@mw/listener/functions";
+import baseApi from "@s/api";
+import { createErrorMessagesListeners } from "@s/api/functions";
 import { commonApi } from "@s/common";
+import firestore from "@s/firebase/firestore";
 import {
   arraySorts,
   dateSorts,
@@ -26,7 +31,7 @@ import {
   sortHiddenCheck,
 } from "@s/main/constants";
 import { partialPreset } from "@s/main/constructors";
-import { updatePreset as _updatePreset } from "@s/main/functions";
+import { updatePreset as _updatePreset, addLastDate } from "@s/main/functions";
 import {
   getLocatedSelectors,
   getPageName,
@@ -76,6 +81,54 @@ export const setGroupAdapter = createEntityAdapter<SetGroup>({
   selectId: ({ title }) => title,
 });
 
+export const mainApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    getAllKeysets: build.query<EntityState<SetType>, void>({
+      queryFn: async () => {
+        try {
+          const querySnapshot = await firestore.collection("keysets").get();
+          const sets: SetType[] = [];
+          querySnapshot.forEach((doc) => {
+            if (doc.data().profile) {
+              const {
+                gbLaunch: docGbLaunch,
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                latestEditor,
+                ...data
+              } = doc.data();
+
+              sets.push({
+                id: doc.id,
+                ...data,
+                gbLaunch:
+                  data.gbMonth && docGbLaunch && !docGbLaunch.includes("Q")
+                    ? addLastDate(docGbLaunch)
+                    : docGbLaunch,
+              });
+            }
+          });
+          return {
+            data: keysetAdapter.setAll(keysetAdapter.getInitialState(), sets),
+          };
+        } catch (error) {
+          return { error };
+        }
+      },
+    }),
+  }),
+  overrideExisting: true,
+});
+
+export const { useGetAllKeysetsQuery } = mainApi;
+
+export const setupMainListeners = combineListeners((startListening) =>
+  createErrorMessagesListeners(
+    mainApi.endpoints,
+    { getAllKeysets: "Failed to get keysets" },
+    startListening
+  )
+);
+
 export type MainState = {
   keysets: EntityState<SetType>;
   linkedFavorites: { array: EntityId[]; displayName: string };
@@ -113,6 +166,27 @@ export const mainSlice = createSlice({
           appPresetAdapter.setAll(state.presets, filterPresets as PresetType[]);
         }
       )
+      .addMatcher(mainApi.endpoints.getAllKeysets.matchPending, (state) => {
+        state.loading = true;
+      })
+      .addMatcher(
+        mainApi.endpoints.getAllKeysets.matchFulfilled,
+        (state, { payload }) => {
+          keysetAdapter.setAll(
+            state.keysets,
+            payload.entities as Record<EntityId, SetType>
+          );
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          mainApi.endpoints.getAllKeysets.matchFulfilled,
+          mainApi.endpoints.getAllKeysets.matchRejected
+        ),
+        (state) => {
+          state.loading = false;
+        }
+      )
       .addMatcher(navigationMatcher, (state) => {
         ({ linkedFavorites: state.linkedFavorites, search: state.search } =
           initialState);
@@ -138,9 +212,6 @@ export const mainSlice = createSlice({
     },
     resetWhitelist: (state) => {
       ({ whitelist: state.whitelist } = initialState);
-    },
-    setAllSets: (state, { payload }: PayloadAction<SetType[]>) => {
-      keysetAdapter.setAll(state.keysets, payload);
     },
     setAppPresets: (state, { payload }: PayloadAction<PresetType[]>) => {
       appPresetAdapter.setAll(state.presets, payload);
@@ -211,7 +282,6 @@ export const {
     deleteSet,
     mergeWhitelist,
     resetWhitelist,
-    setAllSets,
     setAppPresets,
     setCurrentPreset,
     setLinkedFavorites,
