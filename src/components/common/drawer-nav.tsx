@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import usePage from "@h/use-page";
+import useScrollLock from "@h/use-scroll-lock";
 import { selectLinkedFavorites } from "@s/main";
 import { push } from "@s/router";
 import {
@@ -47,6 +48,8 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
 
   const device = useDevice();
   const dismissible = device === "desktop";
+
+  useScrollLock(open && !dismissible, "nav-drawer");
 
   const bottomNav = useBottomNav();
 

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { IconOptions, IconPropT } from "@rmwc/types";
 import { DateTime } from "luxon";
+import { nanoid } from "nanoid";
 import { is } from "typescript-is";
 import { replaceChars } from "@s/common/constants";
 import firebase from "@s/firebase";
@@ -459,25 +460,20 @@ export const iconObject = (
 
 /**
  * Adds scroll-lock class to body, to prevent scrolling while modal is open.
+ * Namespaces class and returns namespace for reuse (in closeModal)
  */
 
-export const openModal = () => {
-  const body = document.querySelector("body");
-  if (body) {
-    body.classList.add("scroll-lock");
-  }
+export const openModal = (namespace = nanoid(10)) => {
+  document.querySelector("body")?.classList.add(`scroll-lock-${namespace}`);
+  return namespace;
 };
 
 /**
  * Removes scroll-lock class from body, to allow scrolling once modal is closed.
  */
 
-export const closeModal = () => {
-  const body = document.querySelector("body");
-  if (body) {
-    body.classList.remove("scroll-lock");
-  }
-};
+export const closeModal = (namespace?: string) =>
+  document.querySelector("body")?.classList.remove(`scroll-lock-${namespace}`);
 
 /**
  * Takes an array of set objects, and returns a month range of the specfied property, in the specified format (uses Luxon).
@@ -702,3 +698,12 @@ export const isBetweenTimes = (
     ? startToday <= timeNow || timeNow <= endToday
     : startToday <= timeNow && timeNow <= endToday;
 };
+
+export const logFn = <Fn extends (...args: any[]) => any>(
+  fn: Fn,
+  name = fn.name
+) =>
+  ((...args) => {
+    console.log(`calling ${name} with ${JSON.stringify(args)}`);
+    return fn(...args);
+  }) as Fn;

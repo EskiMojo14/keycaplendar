@@ -9,6 +9,7 @@ import { Typography } from "@rmwc/typography";
 import { withTooltip } from "@c/util/hocs";
 import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
+import useScrollLock from "@h/use-scroll-lock";
 import {
   filterAction,
   filterUser,
@@ -78,11 +79,15 @@ export const DrawerAuditFilter = ({ close, open }: DrawerAuditFilterProps) => {
     }
   };
 
+  const dismissible = device === "desktop";
+
+  useScrollLock(open && !dismissible, "filter-drawer");
+
   return (
     <Drawer
       className="drawer-right audit-filter"
-      dismissible={device === "desktop"}
-      modal={device !== "desktop"}
+      dismissible={dismissible}
+      modal={!dismissible}
       onClose={close}
       open={open}
     >

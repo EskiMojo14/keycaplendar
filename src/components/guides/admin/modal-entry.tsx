@@ -25,6 +25,7 @@ import {
 import { CustomReactMarkdown, CustomReactMde } from "@c/util/react-markdown";
 import { useAppSelector } from "@h";
 import useDevice from "@h/use-device";
+import useScrollLock from "@h/use-scroll-lock";
 import {
   selectEntryById,
   useCreateGuideEntryMutation,
@@ -59,6 +60,8 @@ export const ModalEntry = ({
   onSubmit,
   open,
 }: ModalEntryProps) => {
+  useScrollLock(open, "entry-modal");
+
   const device = useDevice();
 
   const [entry, updateEntry] = useImmer(partialGuide({ name }));

@@ -17,6 +17,7 @@ import { Footer } from "@c/common/footer";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
 import { useAppSelector } from "@h";
+import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import {
@@ -27,7 +28,6 @@ import {
 } from "@s/audit";
 import { filterActions } from "@s/audit/functions";
 import { pageTitle } from "@s/router/constants";
-import { closeModal, openModal } from "@s/util/functions";
 import { AuditEntry } from "./audit-entry";
 import { DrawerAuditFilter } from "./drawer-audit-filter";
 import "./index.scss";
@@ -59,21 +59,10 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
   );
 
   const [filterOpen, setFilterOpen] = useState(false);
-
-  const toggleFilter = () => {
-    if (filterOpen && device !== "desktop") {
-      closeModal();
-    } else if (device !== "desktop") {
-      openModal();
-    }
-    setFilterOpen((filterOpen) => !filterOpen);
-  };
-  const closeFilter = () => {
-    if (device !== "desktop") {
-      closeModal();
-    }
-    setFilterOpen(false);
-  };
+  const [closeFilter, , toggleFilter] = useBoolStates(
+    setFilterOpen,
+    "setFilterOpen"
+  );
 
   const refreshButton = isFetching ? (
     <CircularProgress />

@@ -24,6 +24,7 @@ import { withTooltip } from "@c/util/hocs";
 import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import usePage from "@h/use-page";
+import useScrollLock from "@h/use-scroll-lock";
 import { selectSearch, setSearch } from "@s/main";
 import type { SetType } from "@s/main/types";
 import { mainPages } from "@s/router/constants";
@@ -134,6 +135,9 @@ export const DrawerDetails = ({
     device === "desktop" &&
     view !== "compact" &&
     arrayIncludes(mainPages, page);
+
+  useScrollLock(open && !dismissible, "detail-drawer");
+
   const today = DateTime.utc();
   let gbLaunch: DateTime | string = "";
   let gbEnd: DateTime | "" = "";

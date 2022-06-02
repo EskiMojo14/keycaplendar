@@ -26,6 +26,7 @@ import { DatePicker } from "@c/util/pickers/date-picker";
 import { CustomReactMarkdown, CustomReactMde } from "@c/util/react-markdown";
 import { useAppSelector } from "@h";
 import useDevice from "@h/use-device";
+import useScrollLock from "@h/use-scroll-lock";
 import {
   selectEntryById,
   useCreateUpdateEntryMutation,
@@ -55,6 +56,7 @@ export const ModalEntry = ({
   onSubmit,
   open,
 }: ModalEntryProps) => {
+  useScrollLock(open);
   const device = useDevice();
 
   const [entry, updateEntry] = useImmer(partialUpdate({ name }));

@@ -15,6 +15,7 @@ import { notify } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import { useAppSelector } from "@h";
 import useDevice from "@h/use-device";
+import useScrollLock from "@h/use-scroll-lock";
 import firebase from "@s/firebase";
 import {
   selectCurrentFolder,
@@ -66,6 +67,9 @@ export const DrawerDetails = ({ close, imageId, open }: DrawerDetailsProps) => {
   }, [image?.fullPath]);
 
   const dismissible = device === "desktop";
+
+  useScrollLock(open && !dismissible, "details-drawer");
+
   const closeIcon =
     dismissible &&
     withTooltip(

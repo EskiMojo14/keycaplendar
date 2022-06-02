@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { HTMLAttributes } from "react";
 import { DrawerAppContent } from "@rmwc/drawer";
 import classNames from "classnames";
@@ -19,7 +19,7 @@ import useDevice from "@h/use-device";
 import usePage from "@h/use-page";
 import { mainPages, routes } from "@s/router/constants";
 import { selectUser } from "@s/user";
-import { arrayIncludes, closeModal, openModal } from "@s/util/functions";
+import { arrayIncludes } from "@s/util/functions";
 import "./content.scss";
 
 type ContentProps = HTMLAttributes<HTMLDivElement>;
@@ -33,29 +33,11 @@ export const Content = ({ className, ...props }: ContentProps) => {
 
   const page = usePage();
 
-  const [navOpen, setNavOpen] = useState(false);
-  const [navEdited, setNavEdited] = useState(false);
+  const [navOpen, setNavOpen] = useState(device === "desktop");
   const openNav = () => {
-    if (device !== "desktop") {
-      openModal();
-    }
     setNavOpen(true);
-    if (!navEdited && device !== "desktop") {
-      setNavEdited(true);
-    }
   };
-  const closeNav = () => {
-    if (device !== "desktop") {
-      closeModal();
-    }
-    setNavOpen(false);
-  };
-
-  useEffect(() => {
-    if (device === "desktop" && !navEdited) {
-      setNavOpen(true);
-    }
-  }, [device, navEdited]);
+  const closeNav = () => setNavOpen(false);
 
   return (
     <div

@@ -10,6 +10,7 @@ import { withTooltip } from "@c/util/hocs";
 import { useAppSelector } from "@h";
 import useDebouncedValue from "@h/use-debounced-value";
 import useDevice from "@h/use-device";
+import useScrollLock from "@h/use-scroll-lock";
 import {
   selectCurrentFolder,
   selectSearchedImages,
@@ -32,6 +33,7 @@ export const DrawerSearch = ({
 }: DrawerSearchProps) => {
   const device = useDevice();
   const dismissible = device === "desktop";
+  useScrollLock(open && !dismissible, "search-drawer");
   const closeIcon =
     dismissible &&
     withTooltip(

@@ -21,6 +21,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import usePage from "@h/use-page";
+import useScrollLock from "@h/use-scroll-lock";
 import {
   selectAllAppPresets,
   selectAllProfiles,
@@ -260,6 +261,8 @@ export const DrawerFilter = ({
   };
 
   const dismissible = device === "desktop" && view !== "compact";
+
+  useScrollLock(open && !dismissible, "filter-drawer");
 
   const closeIcon =
     dismissible &&

@@ -22,6 +22,7 @@ import { ModalCreate, ModalEdit } from "@c/guides/admin/modal-entry";
 import { AppBarIndent } from "@c/util/app-bar-indent";
 import { withTooltip } from "@c/util/hocs";
 import { useAppDispatch, useAppSelector } from "@h";
+import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
 import useDelayedValue from "@h/use-delayed-value";
 import useDevice from "@h/use-device";
@@ -35,7 +36,6 @@ import {
 import { replace } from "@s/router";
 import { pageTitle } from "@s/router/constants";
 import { selectUser } from "@s/user";
-import { closeModal, openModal } from "@s/util/functions";
 import { EntriesList } from "./entries-list";
 import { GuideEntry } from "./guide-entry";
 import { ModalDetail } from "./modal-detail";
@@ -87,23 +87,15 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   }, [entries, urlEntry, searchParams]);
 
   const [createOpen, setCreateOpen] = useState(false);
-  const openCreate = () => {
-    setCreateOpen(true);
-    openModal();
-  };
-  const closeCreate = () => {
-    setCreateOpen(false);
-    closeModal();
-  };
+  const [closeCreate, openCreate] = useBoolStates(
+    setCreateOpen,
+    "setCreateOpen"
+  );
 
-  const [editEntry, setEditEntry] = useState<EntityId>("");
-  const [editOpen, setEditOpen] = useState(false);
+  const [_editEntry, setEditEntry] = useState<EntityId>("");
+  const editEntry = useDelayedValue(_editEntry, 300, { delayed: [""] });
   const openEdit = (entry: EntityId) => {
-    const open = () => {
-      setEditOpen(true);
-      setEditEntry(entry);
-      openModal();
-    };
+    const open = () => setEditEntry(entry);
     if (urlEntry && device !== "desktop") {
       closeDetail();
       setTimeout(() => open(), 300);
@@ -111,13 +103,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
       open();
     }
   };
-  const closeEdit = () => {
-    setEditOpen(false);
-    setTimeout(() => {
-      setEditEntry("");
-    }, 300);
-    closeModal();
-  };
+  const closeEdit = () => setEditEntry("");
 
   const [deleteEntry] = useDeleteGuideEntryMutation({
     selectFromResult: () => ({}),
@@ -165,7 +151,7 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
         onClick={openCreate}
       />
       <ModalCreate onClose={closeCreate} open={createOpen} />
-      <ModalEdit entryId={editEntry} onClose={closeEdit} open={editOpen} />
+      <ModalEdit entryId={editEntry} onClose={closeEdit} open={!!_editEntry} />
     </>
   );
 

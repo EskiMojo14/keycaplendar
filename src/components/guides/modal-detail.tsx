@@ -21,6 +21,7 @@ import { withTooltip } from "@c/util/hocs";
 import { CustomReactMarkdown } from "@c/util/react-markdown";
 import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
+import useScrollLock from "@h/use-scroll-lock";
 import {
   filterTag,
   selectEntryById,
@@ -49,6 +50,8 @@ export const ModalDetail = ({
   onClose,
   open,
 }: ModalCreateProps) => {
+  useScrollLock(open, "detail-modal");
+
   const dispatch = useAppDispatch();
 
   const device = useDevice();

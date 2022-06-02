@@ -18,7 +18,9 @@ import { Footer } from "@c/common/footer";
 import { ModalCreate, ModalEdit } from "@c/updates/admin/modal-entry";
 import { AppBarIndent } from "@c/util/app-bar-indent";
 import { useAppSelector } from "@h";
+import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
+import useDelayedValue from "@h/use-delayed-value";
 import useDevice from "@h/use-device";
 import { pageTitle } from "@s/router/constants";
 import {
@@ -28,7 +30,6 @@ import {
   useGetUpdatesQuery,
 } from "@s/updates";
 import { selectUser } from "@s/user";
-import { closeModal, openModal } from "@s/util/functions";
 import { UpdateEntry } from "./update-entry";
 import "./index.scss";
 
@@ -72,29 +73,15 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
   }, [entryMap, urlEntry]);
 
   const [createOpen, setCreateOpen] = useState(false);
-  const openCreate = () => {
-    setCreateOpen(true);
-    openModal();
-  };
-  const closeCreate = () => {
-    setCreateOpen(false);
-    closeModal();
-  };
+  const [closeCreate, openCreate] = useBoolStates(
+    setCreateOpen,
+    "setCreateOpen"
+  );
 
-  const [editEntry, setEditEntry] = useState<EntityId>("");
-  const [editOpen, setEditOpen] = useState(false);
-  const openEdit = (entry: EntityId) => {
-    setEditOpen(true);
-    setEditEntry(entry);
-    openModal();
-  };
-  const closeEdit = () => {
-    setEditOpen(false);
-    setTimeout(() => {
-      setEditEntry("");
-    }, 300);
-    closeModal();
-  };
+  const [_editEntry, setEditEntry] = useState<EntityId>("");
+  const editEntry = useDelayedValue(_editEntry, 300, { delayed: [""] });
+  const openEdit = (entry: EntityId) => setEditEntry(entry);
+  const closeEdit = () => setEditEntry("");
 
   const [deleteEntry] = useDeleteUpdateEntryMutation({
     selectFromResult: () => ({}),
@@ -129,7 +116,7 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
         onClick={openCreate}
       />
       <ModalCreate onClose={closeCreate} open={createOpen} />
-      <ModalEdit entryId={editEntry} onClose={closeEdit} open={editOpen} />
+      <ModalEdit entryId={editEntry} onClose={closeEdit} open={!!_editEntry} />
     </>
   );
   return (

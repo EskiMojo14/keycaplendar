@@ -7,13 +7,14 @@ import { useCallback, useDebugValue } from "react";
  */
 
 export const useBoolStates = <T>(
-  func: (bool: boolean) => T,
+  func: (bool: boolean | ((bool: boolean) => boolean)) => T,
   name?: string
-): [setFalse: () => T, setTrue: () => T] => {
+): [setFalse: () => T, setTrue: () => T, toggleState: () => T] => {
   useDebugValue(name ?? func.name);
   return [
     useCallback(() => func(false), [func]),
     useCallback(() => func(true), [func]),
+    useCallback(() => func((bool) => !bool), [func]),
   ];
 };
 

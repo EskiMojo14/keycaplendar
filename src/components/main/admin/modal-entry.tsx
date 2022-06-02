@@ -43,6 +43,7 @@ import { withTooltip } from "@c/util/hocs";
 import { DatePicker } from "@c/util/pickers/date-picker";
 import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
+import useScrollLock from "@h/use-scroll-lock";
 import firebase from "@s/firebase";
 import firestore from "@s/firebase/firestore";
 import type { KeysetId } from "@s/firebase/types";
@@ -116,6 +117,8 @@ export const ModalEntry = ({
   open,
   user,
 }: ModalEntryProps) => {
+  useScrollLock(open, "entry-modal");
+
   const device = useDevice();
 
   const allDesigners = useAppSelector(selectAllDesigners);

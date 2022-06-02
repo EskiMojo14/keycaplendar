@@ -25,6 +25,7 @@ import {
 } from "@c/util/segmented-button";
 import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
+import useScrollLock from "@h/use-scroll-lock";
 import {
   editGlobalPreset,
   editPreset,
@@ -46,6 +47,8 @@ export const ModalFilterPreset = ({
   open,
   preset,
 }: ModalFilterPresetProps) => {
+  useScrollLock(open, "filter-preset-modal");
+
   const dispatch = useAppDispatch();
 
   const device = useDevice();

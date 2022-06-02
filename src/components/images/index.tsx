@@ -14,6 +14,7 @@ import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { useAppSelector } from "@h";
 import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
+import useDelayedValue from "@h/use-delayed-value";
 import useDevice from "@h/use-device";
 import {
   selectCurrentFolder,
@@ -22,13 +23,7 @@ import {
   selectSetImages,
   useGetAllImagesQuery,
 } from "@s/images";
-import {
-  addOrRemove,
-  closeModal,
-  hasKey,
-  openModal,
-  removeDuplicates,
-} from "@s/util/functions";
+import { addOrRemove, hasKey, removeDuplicates } from "@s/util/functions";
 import { DialogDelete } from "./dialog-delete";
 import { DrawerDetails } from "./drawer-details";
 import { DrawerSearch } from "./drawer-search";
@@ -65,39 +60,22 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
 
   const [checkedImages, setCheckedImages] = useImmer<EntityId[]>([]);
 
-  const [detailImage, setDetailImage] = useState<EntityId>("");
+  const [_detailImage, setDetailImage] = useState<EntityId>("");
+  const detailImage = useDelayedValue(_detailImage, 300, { delayed: [""] });
+  const closeDetails = () => setDetailImage("");
 
-  const [detailOpen, setDetailOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const closeSearch = () => setSearchOpen(false);
+
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [closeDelete, openDelete] = useBoolStates(
     setDeleteOpen,
     "setDeleteOpen"
   );
 
-  const closeSearch = () => {
-    if (device !== "desktop") {
-      closeModal();
-    }
-    setSearchOpen(false);
-  };
-
-  const closeDetails = () => {
-    if (device !== "desktop") {
-      closeModal();
-    }
-    setDetailOpen(false);
-    setTimeout(() => setDetailImage(""), 300);
-  };
-
   const openSearch = () => {
-    const open = () => {
-      if (device !== "desktop") {
-        openModal();
-      }
-      setSearchOpen(true);
-    };
-    if (detailOpen) {
+    const open = () => setSearchOpen(true);
+    if (_detailImage) {
       closeDetails();
       setTimeout(() => open(), 300);
     } else {
@@ -110,10 +88,6 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
       if (detailImage === image) {
         closeDetails();
       } else {
-        setDetailOpen(true);
-        if (device !== "desktop") {
-          openModal();
-        }
         setDetailImage(image);
       }
     };
@@ -158,7 +132,7 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
       {!bottomNav && <TopAppBarFixedAdjust />}
       <div
         className={classNames("content-container", {
-          "drawer-open": device === "desktop" && detailOpen,
+          "drawer-open": device === "desktop" && detailImage,
         })}
       >
         <div className="main">
@@ -170,7 +144,7 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
           <DrawerDetails
             close={closeDetails}
             imageId={detailImage}
-            open={detailOpen}
+            open={!!_detailImage}
           />
           <DialogDelete
             checkedImages={checkedImages}

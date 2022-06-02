@@ -15,6 +15,7 @@ import { ContentGrid } from "@c/main/content/content-grid";
 import ContentSkeleton from "@c/main/content/content-skeleton";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { useAppDispatch, useAppSelector } from "@h";
+import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
 import useDelayedValue from "@h/use-delayed-value";
 import useDevice from "@h/use-device";
@@ -45,7 +46,6 @@ import {
   batchStorageDelete,
   closeModal,
   getStorageFolders,
-  openModal,
 } from "@s/util/functions";
 import { selectFromState } from "@s/util/thunks";
 import { DialogSales } from "./dialog-sales";
@@ -147,27 +147,15 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   };
 
   const [createOpen, setCreateOpen] = useState(false);
-  const openCreate = () => {
-    openModal();
-    setCreateOpen(true);
-  };
-  const closeCreate = () => {
-    closeModal();
-    setCreateOpen(false);
-  };
+  const [closeCreate, openCreate] = useBoolStates(
+    setCreateOpen,
+    "setCreateOpen"
+  );
 
-  const [editOpen, setEditOpen] = useState(false);
-  const [editSet, setEditSet] = useState<EntityId>("");
-  const openEdit = (set: EntityId) => {
-    openModal();
-    setEditOpen(true);
-    setEditSet(set);
-  };
-  const closeEdit = () => {
-    closeModal();
-    setEditOpen(false);
-    setTimeout(() => setEditSet(""), 300);
-  };
+  const [_editSet, setEditSet] = useState<EntityId>("");
+  const editSet = useDelayedValue(_editSet, 300, { delayed: [""] });
+  const openEdit = (set: EntityId) => setEditSet(set);
+  const closeEdit = () => setEditSet("");
 
   const openDeleteSnackbar = ({ id, ...set }: SetType) => {
     const deleteImages = async (name: string) => {
@@ -258,7 +246,6 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   const [filterPreset, setFilterPreset] = useState(blankPreset);
   const openFilterPreset = (preset: PresetType) => {
     const open = () => {
-      openModal();
       setFilterPresetOpen(true);
       setFilterPreset(preset);
     };
@@ -270,7 +257,6 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
     }
   };
   const closeFilterPreset = () => {
-    closeModal();
     setFilterPresetOpen(false);
     setTimeout(() => setFilterPreset(blankPreset), 300);
   };
@@ -305,14 +291,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   };
 
   const [shareOpen, setShareOpen] = useState(false);
-  const openShare = () => {
-    openModal();
-    setShareOpen(true);
-  };
-  const closeShare = () => {
-    closeModal();
-    setShareOpen(false);
-  };
+  const [closeShare, openShare] = useBoolStates(setShareOpen, "setShareOpen");
 
   const shareDialog = page === "favorites" &&
     user.email &&
@@ -342,7 +321,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
         onClick={openCreate}
       />
       <ModalCreate onClose={closeCreate} open={createOpen} />
-      <ModalEdit onClose={closeEdit} open={editOpen} set={editSet} />
+      <ModalEdit onClose={closeEdit} open={!!_editSet} set={editSet} />
     </ConditionalWrapper>
   );
 

@@ -150,7 +150,8 @@ code {
   -webkit-tap-highlight-color: transparent;
 }
 
-.scroll-lock {
+[class^="scroll-lock-"],
+[class*=" scroll-lock-"] {
   overflow: hidden;
 }
 
