@@ -122,10 +122,19 @@ export const ModalEntry = ({
 
   const device = useDevice();
 
-  const allDesigners = useAppSelector(selectAllDesigners);
-  const allProfiles = useAppSelector(selectAllProfiles);
-  const allVendors = useAppSelector(selectAllVendors);
-  const allVendorRegions = useAppSelector(selectAllVendorRegions);
+  const {
+    allDesigners = [],
+    allProfiles = [],
+    allVendors = [],
+    allVendorRegions = [],
+  } = useGetAllKeysetsQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      allDesigners: data && selectAllDesigners(data),
+      allProfiles: data && selectAllProfiles(data),
+      allVendorRegions: data && selectAllVendorRegions(data),
+      allVendors: data && selectAllVendors(data),
+    }),
+  });
 
   const [keyset, updateKeyset] = useImmer<KeysetState>(
     partialSet({ alias: nanoid(10) })

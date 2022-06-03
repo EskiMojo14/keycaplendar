@@ -13,7 +13,7 @@ import { useImmer } from "use-immer";
 import { notify } from "~/app/snackbar-queue";
 import { Autocomplete } from "@c/util/autocomplete";
 import { useAppSelector } from "@h";
-import { selectAllDesigners } from "@s/main";
+import { selectAllDesigners, useGetAllKeysetsQuery } from "@s/main";
 import { selectUser } from "@s/user";
 import {
   selectReverseSort,
@@ -61,7 +61,11 @@ export const UserRow = ({
     }
   );
 
-  const allDesigners = useAppSelector(selectAllDesigners);
+  const { allDesigners = [] } = useGetAllKeysetsQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      allDesigners: data && selectAllDesigners(data),
+    }),
+  });
 
   const [user, updateUser] = useImmer<UserType>(partialUser());
   const [focused, setFocused] = useState("");

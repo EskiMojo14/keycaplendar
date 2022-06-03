@@ -8,7 +8,6 @@ import firebase from "@s/firebase";
 import firestore from "@s/firebase/firestore";
 import type { UserId } from "@s/firebase/types";
 import {
-  selectDefaultPreset,
   setCurrentPreset,
   setLinkedFavorites,
   setLinkedFavoritesLoading,
@@ -128,7 +127,7 @@ export const getUserPreferences =
 
 const getClaims = firebase.functions().httpsCallable("getClaims");
 export const setupAuthListener =
-  (): AppThunk<firebase.Unsubscribe> => (dispatch, getState) =>
+  (): AppThunk<firebase.Unsubscribe> => (dispatch) =>
     firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
         try {
@@ -162,10 +161,7 @@ export const setupAuthListener =
         dispatch(getUserPreferences(user.uid));
       } else {
         dispatch(userReset());
-        const defaultPreset = selectDefaultPreset(getState());
-        if (defaultPreset.name) {
-          dispatch(setCurrentPreset("default"));
-        }
+        dispatch(setCurrentPreset("default"));
       }
     });
 

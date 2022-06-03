@@ -17,7 +17,7 @@ import useBoolStates from "@h/use-bool-states";
 import useBottomNav from "@h/use-bottom-nav";
 import useDevice from "@h/use-device";
 import usePage from "@h/use-page";
-import { selectLinkedFavorites, selectLoading } from "@s/main";
+import { selectLinkedFavorites, useGetAllKeysetsQuery } from "@s/main";
 import { pageTitle } from "@s/router/constants";
 import { selectView } from "@s/settings";
 import { viewIcons } from "@s/settings/constants";
@@ -56,7 +56,9 @@ export const AppBar = ({
 
   const user = useAppSelector(selectUser);
 
-  const loading = useAppSelector(selectLoading);
+  const { loading } = useGetAllKeysetsQuery(undefined, {
+    selectFromResult: ({ isFetching }) => ({ loading: isFetching }),
+  });
 
   const linkedFavorites = useAppSelector(selectLinkedFavorites);
 

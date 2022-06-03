@@ -33,7 +33,7 @@ import {
 } from "@c/util/segmented-button";
 import { useAppSelector } from "@h";
 import useDevice from "@h/use-device";
-import { selectAllDesigners } from "@s/main";
+import { selectAllDesigners, useGetAllKeysetsQuery } from "@s/main";
 import { selectUser } from "@s/user";
 import {
   selectReverseSort,
@@ -77,7 +77,12 @@ export const UserCard = ({
     }
   );
 
-  const allDesigners = useAppSelector(selectAllDesigners);
+  const { allDesigners = [] } = useGetAllKeysetsQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      allDesigners: data && selectAllDesigners(data),
+    }),
+  });
+
   const [user, updateUser] = useImmer<UserType>(partialUser());
   const [focused, setFocused] = useState("");
 

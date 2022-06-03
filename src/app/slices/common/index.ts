@@ -8,7 +8,7 @@ import { createErrorMessagesListeners } from "@s/api/functions";
 import firestore from "@s/firebase/firestore";
 import type { GlobalDoc } from "@s/firebase/types";
 // eslint-disable-next-line import/no-cycle
-import { selectAllRegions } from "@s/main";
+import { selectAllRegionsFromState } from "@s/main";
 import { updatePreset } from "@s/main/functions";
 import {
   selectApplyTheme,
@@ -30,7 +30,7 @@ export const commonApi = baseApi.injectEndpoints({
           if (data === undefined) {
             throw new Error("Data returned undefined");
           }
-          const regions = selectAllRegions(getState() as RootState);
+          const regions = selectAllRegionsFromState(getState() as RootState);
           return {
             data: produce(data, (draftData) => {
               draftData.filterPresets = draftData.filterPresets.map((preset) =>

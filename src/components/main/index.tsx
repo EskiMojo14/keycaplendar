@@ -29,7 +29,6 @@ import {
   selectKeysetByString,
   selectLinkedFavorites,
   selectLinkedFavoritesLoading,
-  selectLoading,
   selectPresetById,
   selectSetById,
   selectSetGroupTotal,
@@ -72,16 +71,15 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
 
   const user = useAppSelector(selectUser);
 
-  const loading = useAppSelector(selectLoading);
-
   const contentBool = useLocatedSelector(
     (state, location) => !!selectSetGroupTotal(state, location)
   );
 
   const { keyset = "" } = useParams<{ keyset?: string }>();
 
-  const { originalUrlSet } = useGetAllKeysetsQuery(undefined, {
-    selectFromResult: ({ data }) => ({
+  const { loading, originalUrlSet } = useGetAllKeysetsQuery(undefined, {
+    selectFromResult: ({ data, isFetching }) => ({
+      loading: isFetching,
       originalUrlSet: data && selectKeysetByString(data, keyset),
     }),
   });

@@ -1,5 +1,4 @@
 import {
-  createDraftSafeSelector,
   createEntityAdapter,
   createSelector,
   createSlice,
@@ -421,17 +420,17 @@ export const selectURLKeyset = createSelector(
   }
 );
 
-export const selectAllDesigners = createSelector(selectAllSets, (sets) =>
+export const selectAllDesigners = createSelector(selectAllSetsLocal, (sets) =>
   alphabeticalSort(
     removeDuplicates(sets.map((set) => set.designer ?? []).flat())
   )
 );
 
-export const selectAllProfiles = createSelector(selectAllSets, (sets) =>
+export const selectAllProfiles = createSelector(selectAllSetsLocal, (sets) =>
   alphabeticalSort(removeDuplicates(sets.map((set) => set.profile)))
 );
 
-export const selectAllRegions = createDraftSafeSelector(selectAllSets, (sets) =>
+export const selectAllRegions = createSelector(selectAllSetsLocal, (sets) =>
   alphabeticalSort(
     removeDuplicates(
       sets
@@ -445,7 +444,12 @@ export const selectAllRegions = createDraftSafeSelector(selectAllSets, (sets) =>
   )
 );
 
-export const selectAllVendors = createSelector(selectAllSets, (sets) =>
+export const selectAllRegionsFromState = (state: RootState) =>
+  selectAllRegions(
+    selectAllKeysetsResult(state)?.data ?? keysetAdapter.getInitialState()
+  );
+
+export const selectAllVendors = createSelector(selectAllSetsLocal, (sets) =>
   alphabeticalSort(
     removeDuplicates(
       sets.map((set) => set.vendors?.map((vendor) => vendor.name) ?? []).flat()
@@ -453,20 +457,22 @@ export const selectAllVendors = createSelector(selectAllSets, (sets) =>
   )
 );
 
-export const selectAllVendorRegions = createSelector(selectAllSets, (sets) =>
-  alphabeticalSort(
-    removeDuplicates(
-      sets
-        .map(
-          (set) =>
-            set.vendors?.map((vendor) => [
-              vendor.region,
-              ...vendor.region.split(", "),
-            ]) ?? []
-        )
-        .flat(2)
+export const selectAllVendorRegions = createSelector(
+  selectAllSetsLocal,
+  (sets) =>
+    alphabeticalSort(
+      removeDuplicates(
+        sets
+          .map(
+            (set) =>
+              set.vendors?.map((vendor) => [
+                vendor.region,
+                ...vendor.region.split(", "),
+              ]) ?? []
+          )
+          .flat(2)
+      )
     )
-  )
 );
 
 export const selectDefaultPreset = createSelector(
@@ -483,6 +489,11 @@ export const selectDefaultPreset = createSelector(
     })
 );
 
+export const selectDefaultPresetFromState = (state: RootState) =>
+  selectDefaultPreset(
+    selectAllKeysetsResult(state)?.data ?? keysetAdapter.getInitialState()
+  );
+
 export const {
   selectAll: selectAllAppPresets,
   selectById: selectAppPresetById,
@@ -494,7 +505,7 @@ export const {
 export const selectCurrentPreset = createSelector(
   selectAppPresetMap,
   selectUserPresetMap,
-  selectDefaultPreset,
+  selectDefaultPresetFromState,
   selectCurrentPresetId,
   (appPresets, userPresets, defaultPreset, currentId) =>
     currentId === "default"
@@ -507,7 +518,7 @@ export const selectEditedWhitelist = (state: RootState) => state.main.whitelist;
 export const selectWhitelist = createSelector(
   selectEditedWhitelist,
   selectCurrentPreset,
-  selectDefaultPreset,
+  selectDefaultPresetFromState,
   (editedWhitelist, currentPreset, defaultPreset): WhitelistType => ({
     ...defaultPreset.whitelist,
     ...currentPreset.whitelist,
@@ -518,7 +529,7 @@ export const selectWhitelist = createSelector(
 export const selectPresetById = createSelector(
   selectAppPresetMap,
   selectUserPresetMap,
-  selectDefaultPreset,
+  selectDefaultPresetFromState,
   (state: RootState, id: "default" | (EntityId & Record<never, never>)) => id,
   (appPresets, userPresets, defaultPreset, presetId) =>
     presetId === "default"
@@ -946,6 +957,9 @@ export default mainSlice.reducer;
 export const updatePreset =
   (preset: OldPresetType | PresetType): AppThunk<PresetType> =>
   (dispatch, getState) => {
-    const regions = selectAllRegions(getState());
+    const regions = selectAllRegions(
+      selectAllKeysetsResult(getState())?.data ??
+        keysetAdapter.getInitialState()
+    );
     return _updatePreset(preset, { regions });
   };

@@ -8,7 +8,7 @@ import type { RootState } from "~/app/store";
 import baseApi from "@s/api";
 import firestore from "@s/firebase/firestore";
 import type { UserId, UserPreferencesDoc } from "@s/firebase/types";
-import { selectAllRegions } from "@s/main";
+import { selectAllRegionsFromState } from "@s/main";
 import { updatePreset } from "@s/main/functions";
 import type { PresetType } from "@s/main/types";
 import { alphabeticalSortPropCurried } from "@s/util/functions";
@@ -43,7 +43,7 @@ export const userApi = baseApi.injectEndpoints({
             throw new Error("No doc found");
           }
 
-          const regions = selectAllRegions(getState() as RootState);
+          const regions = selectAllRegionsFromState(getState() as RootState);
           return {
             data: {
               ...data,

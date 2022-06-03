@@ -30,6 +30,7 @@ import {
   selectCurrentPreset,
   selectDefaultPreset,
   selectWhitelist,
+  useGetAllKeysetsQuery,
 } from "@s/main";
 import {
   showAllPages,
@@ -97,20 +98,29 @@ export const DrawerFilter = ({
   const user = useAppSelector(selectUser);
   const userPresets = useAppSelector(selectAllUserPresets);
 
-  const profiles = useAppSelector(selectAllProfiles);
-  const vendors = useAppSelector(selectAllVendors);
-  const regions = useAppSelector(selectAllRegions);
+  const {
+    defaultPreset,
+    profiles = [],
+    regions = [],
+    vendors = [],
+  } = useGetAllKeysetsQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      defaultPreset: data && selectDefaultPreset(data),
+      profiles: data && selectAllProfiles(data),
+      regions: data && selectAllRegions(data),
+      vendors: data && selectAllVendors(data),
+    }),
+  });
   const lists = { profiles, regions, vendors };
 
   const preset = useAppSelector(selectCurrentPreset);
   const appPresets = useAppSelector(selectAllAppPresets);
-  const defaultPreset = useAppSelector(selectDefaultPreset);
   const mainWhitelist = useAppSelector(selectWhitelist);
 
   const modified = useMemo(() => {
     const equal = isEqual(
-      sortInternalArrays({ ...preset.whitelist }),
-      sortInternalArrays({ ...mainWhitelist })
+      sortInternalArrays(preset.whitelist),
+      sortInternalArrays(mainWhitelist)
     );
     return !equal;
   }, [preset.whitelist, mainWhitelist]);
@@ -234,18 +244,20 @@ export const DrawerFilter = ({
           const plural = `${param}s` as const;
           if (
             mainWhitelist[plural].length !==
-            defaultPreset.whitelist[plural].length
+            defaultPreset?.whitelist[plural].length
           ) {
             setSearchParamArray(params, param, mainWhitelist[plural]);
           }
         } else if (param === "vendorMode") {
-          if (mainWhitelist.vendorMode !== defaultPreset.whitelist.vendorMode) {
+          if (
+            mainWhitelist.vendorMode !== defaultPreset?.whitelist.vendorMode
+          ) {
             params.set(param, mainWhitelist[param]);
           }
         } else if (param === "shipped") {
           if (
             mainWhitelist[param].length !==
-            defaultPreset.whitelist[param].length
+            defaultPreset?.whitelist[param].length
           ) {
             setSearchParamArray(params, param, mainWhitelist[param]);
           }

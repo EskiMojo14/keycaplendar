@@ -10,7 +10,7 @@ import ElementList from "@c/main/views/list/element-list";
 import { SkeletonBlock } from "@c/util/skeleton-block";
 import { useAppSelector } from "@h";
 import useLocatedSelector from "@h/use-located-selector";
-import { selectAllSetGroups, selectLoading } from "@s/main";
+import { selectAllSetGroups, useGetAllKeysetsQuery } from "@s/main";
 import { selectView } from "@s/settings";
 import "./content-grid.scss";
 import "./view-card.scss";
@@ -33,7 +33,9 @@ export const ContentGrid = ({
   const view = useAppSelector(selectView);
 
   const setGroups = useLocatedSelector(selectAllSetGroups);
-  const loading = useAppSelector(selectLoading);
+  const { loading } = useGetAllKeysetsQuery(undefined, {
+    selectFromResult: ({ isLoading }) => ({ loading: isLoading }),
+  });
 
   const createGroup = (sets: EntityId[]) => {
     switch (view) {
