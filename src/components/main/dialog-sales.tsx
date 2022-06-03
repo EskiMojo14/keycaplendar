@@ -6,8 +6,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@rmwc/dialog";
-import { useAppSelector } from "@h";
-import { selectSetById } from "@s/main";
+import { selectSetByIdLocal, useGetAllKeysetsQuery } from "@s/main";
 import "./dialog-sales.scss";
 
 type DialogSalesProps = {
@@ -17,7 +16,11 @@ type DialogSalesProps = {
 };
 
 export const DialogSales = ({ close, open, set: setId }: DialogSalesProps) => {
-  const set = useAppSelector((state) => selectSetById(state, setId));
+  const { set } = useGetAllKeysetsQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      set: data && selectSetByIdLocal(data, setId),
+    }),
+  });
   return (
     <Dialog className="sales-dialog" onClose={close} open={open}>
       <DialogTitle>{`Sales - ${set?.profile ?? ""} ${

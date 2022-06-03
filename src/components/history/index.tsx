@@ -21,7 +21,7 @@ import type { SlideRendererCallback } from "react-swipeable-views-utils";
 import { Footer } from "@c/common/footer";
 import { DialogSales } from "@c/main/dialog-sales";
 import { DrawerDetails } from "@c/main/drawer-details";
-import { useAppDispatch, useAppSelector } from "@h";
+import { useAppDispatch } from "@h";
 import useBottomNav from "@h/use-bottom-nav";
 import useDelayedValue from "@h/use-delayed-value";
 import {
@@ -32,7 +32,11 @@ import {
 } from "@s/history";
 import { historyTabs } from "@s/history/constants";
 import type { HistoryTab } from "@s/history/types";
-import { selectAllSets, selectKeysetByString, selectSetMap } from "@s/main";
+import {
+  selectKeysetByString,
+  selectSetMapLocal,
+  useGetAllKeysetsQuery,
+} from "@s/main";
 import { replace } from "@s/router";
 import { pageTitle } from "@s/router/constants";
 import {
@@ -57,13 +61,17 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
 
   const bottomNav = useBottomNav();
 
-  const allSets = useAppSelector(selectAllSets);
-
   const { keyset = "", tab } =
     useParams<{ keyset?: string; tab?: HistoryTab }>();
 
-  const originalUrlSet = useAppSelector((state) =>
-    selectKeysetByString(state, keyset)
+  const { isFetching: keysetFetching, originalUrlSet } = useGetAllKeysetsQuery(
+    undefined,
+    {
+      selectFromResult: ({ data, isFetching }) => ({
+        isFetching,
+        originalUrlSet: data && selectKeysetByString(data, keyset),
+      }),
+    }
   );
 
   const urlSet = useDelayedValue(originalUrlSet, 300, { delayed: [undefined] });
@@ -78,7 +86,11 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
     }
   }, [tab]);
 
-  const setMap = useAppSelector(selectSetMap);
+  const { setMap = {} } = useGetAllKeysetsQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      setMap: data && selectSetMapLocal(data),
+    }),
+  });
   const {
     loading,
     processedActions = [],
@@ -214,7 +226,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
           {clearFilterButton}
         </TopAppBarRow>
         {!bottomNav && tabRow}
-        <LinearProgress closed={allSets.length > 0 && !loading} />
+        <LinearProgress closed={!(keysetFetching || loading)} />
       </TopAppBar>
       {!bottomNav && <TopAppBarFixedAdjust />}
       <div className="content-container">

@@ -16,10 +16,12 @@ import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { useAppDispatch, useAppSelector } from "@h";
 import { selectRecentSetById, useGetChangelogQuery } from "@s/history";
 import {
+  mainApi,
   pageConditions,
   selectLinkedFavorites,
-  selectSetById,
-  selectSetMap,
+  selectSetByIdLocal,
+  selectSetMapLocal,
+  useGetAllKeysetsQuery,
 } from "@s/main";
 import { push } from "@s/router";
 import { mainPages, pageIcons, pageTitle } from "@s/router/constants";
@@ -48,15 +50,26 @@ export const RecentSetCard = ({
 }: RecentSetCardProps) => {
   const dispatch = useAppDispatch();
 
-  const setMap = useAppSelector(selectSetMap);
+  const { setMap = {} } = useGetAllKeysetsQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      setMap: data && selectSetMapLocal(data),
+    }),
+  });
   const { recentSet } = useGetChangelogQuery(undefined, {
     selectFromResult: ({ data }) => ({
       recentSet: data && selectRecentSetById(data, setMap, recentSetId),
     }),
   });
-
   const { deleted, id = "" } = recentSet ?? {};
-  const currentSet = useAppSelector((state) => selectSetById(state, id));
+  const { currentSet } = mainApi.endpoints.getAllKeysets.useQueryState(
+    undefined,
+    {
+      selectFromResult: ({ data }) => ({
+        currentSet: data && selectSetByIdLocal(data, id),
+      }),
+    }
+  );
+
   const favorites = useAppSelector(selectFavorites);
   const bought = useAppSelector(selectBought);
   const hidden = useAppSelector(selectHidden);

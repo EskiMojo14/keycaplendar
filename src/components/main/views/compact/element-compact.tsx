@@ -12,10 +12,9 @@ import Twemoji from "react-twemoji";
 import { notify } from "~/app/snackbar-queue";
 import { SkeletonCompact } from "@c/main/views/compact/skeleton-compact";
 import { withTooltip } from "@c/util/hocs";
-import { useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import usePage from "@h/use-page";
-import { selectSetById } from "@s/main";
+import { selectSetByIdLocal, useGetAllKeysetsQuery } from "@s/main";
 import { getSetDetails } from "@s/main/functions";
 import { createURL } from "@s/router/functions";
 import { iconObject } from "@s/util/functions";
@@ -37,7 +36,11 @@ export const ElementCompact = ({
   selected,
   setId,
 }: ElementCompactProps) => {
-  const set = useAppSelector((state) => selectSetById(state, setId));
+  const { set } = useGetAllKeysetsQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      set: data && selectSetByIdLocal(data, setId),
+    }),
+  });
 
   if (!set) {
     return null;

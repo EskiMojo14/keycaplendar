@@ -347,22 +347,35 @@ export const selectLinkedFavorites = (state: RootState) =>
 export const selectCurrentPresetId = (state: RootState) =>
   state.main.presets.currentPreset;
 
+export const selectAllKeysetsResult = mainApi.endpoints.getAllKeysets.select();
+
 export const {
   selectAll: selectAllSets,
   selectById: selectSetById,
   selectEntities: selectSetMap,
   selectIds: selectSetIds,
   selectTotal: selectSetTotal,
-} = keysetAdapter.getSelectors((state: RootState) => state.main.keysets);
+} = keysetAdapter.getSelectors(
+  (state: RootState) =>
+    selectAllKeysetsResult(state)?.data ?? keysetAdapter.getInitialState()
+);
 
-export const selectSetsByAlias = createSelector(selectAllSets, (allSets) =>
+export const {
+  selectAll: selectAllSetsLocal,
+  selectById: selectSetByIdLocal,
+  selectEntities: selectSetMapLocal,
+  selectIds: selectSetIdsLocal,
+  selectTotal: selectSetTotalLocal,
+} = keysetAdapter.getSelectors();
+
+export const selectSetsByAlias = createSelector(selectAllSetsLocal, (allSets) =>
   allSets.reduce<Dictionary<SetType>>((dict, set) => {
     dict[set.alias] = set;
     return dict;
   }, {})
 );
 
-export const selectSetsByName = createSelector(selectAllSets, (allSets) =>
+export const selectSetsByName = createSelector(selectAllSetsLocal, (allSets) =>
   allSets.reduce<Dictionary<SetType>>((dict, set) => {
     dict[`${set.profile} ${set.colorway}`] = set;
     return dict;
@@ -383,7 +396,7 @@ export const findKeysetByString = (
 
 export const selectKeysetByString = createSelector(
   (_: unknown, string: string) => string,
-  selectSetMap,
+  selectSetMapLocal,
   selectSetsByAlias,
   selectSetsByName,
   findKeysetByString
@@ -391,7 +404,7 @@ export const selectKeysetByString = createSelector(
 
 export const selectURLKeyset = createSelector(
   selectLocation,
-  selectSetMap,
+  selectSetMapLocal,
   selectSetsByAlias,
   selectSetsByName,
   (location, setMap, setsByAlias, setsByName) => {

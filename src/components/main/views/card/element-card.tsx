@@ -21,7 +21,7 @@ import { withTooltip } from "@c/util/hocs";
 import { useAppDispatch, useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import usePage from "@h/use-page";
-import { selectSetById } from "@s/main";
+import { selectSetByIdLocal, useGetAllKeysetsQuery } from "@s/main";
 import { getSetDetails } from "@s/main/functions";
 import { createURL } from "@s/router/functions";
 import {
@@ -71,7 +71,11 @@ export const ElementCard = ({
   const selectHidden = useCallback(createSelectSetHidden(), []);
   const hidden = useAppSelector((state) => selectHidden(state, setId));
 
-  const set = useAppSelector((state) => selectSetById(state, setId));
+  const { set } = useGetAllKeysetsQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      set: data && selectSetByIdLocal(data, setId),
+    }),
+  });
 
   if (!set) {
     return null;

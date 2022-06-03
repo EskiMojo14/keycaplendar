@@ -52,8 +52,9 @@ import {
   selectAllProfiles,
   selectAllVendorRegions,
   selectAllVendors,
-  selectSetById,
+  selectSetByIdLocal,
   setSet,
+  useGetAllKeysetsQuery,
 } from "@s/main";
 import { partialSet } from "@s/main/constructors";
 import { addLastDate } from "@s/main/functions";
@@ -967,7 +968,11 @@ export const ModalEdit = ({ onClose, open, set: setId }: ModalEditProps) => {
   const dispatch = useAppDispatch();
 
   const user = useAppSelector(selectUser);
-  const set = useAppSelector((state) => selectSetById(state, setId));
+  const { set } = useGetAllKeysetsQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      set: data && selectSetByIdLocal(data, setId),
+    }),
+  });
 
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingDoc, setUploadingDoc] = useState(false);

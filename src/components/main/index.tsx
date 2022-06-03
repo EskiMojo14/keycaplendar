@@ -34,6 +34,7 @@ import {
   selectSetById,
   selectSetGroupTotal,
   setSet,
+  useGetAllKeysetsQuery,
 } from "@s/main";
 import { blankPreset } from "@s/main/constants";
 import { deleteGlobalPreset, deletePreset } from "@s/main/thunks";
@@ -79,9 +80,11 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
 
   const { keyset = "" } = useParams<{ keyset?: string }>();
 
-  const originalUrlSet = useAppSelector((state) =>
-    selectKeysetByString(state, keyset)
-  );
+  const { originalUrlSet } = useGetAllKeysetsQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      originalUrlSet: data && selectKeysetByString(data, keyset),
+    }),
+  });
 
   const urlSet = useDelayedValue(originalUrlSet, 300, { delayed: [undefined] });
 
