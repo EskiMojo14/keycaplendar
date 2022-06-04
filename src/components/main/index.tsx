@@ -25,14 +25,14 @@ import { useSearchParams } from "@h/use-search-params";
 import firestore from "@s/firebase/firestore";
 import type { KeysetDoc, KeysetId } from "@s/firebase/types";
 import {
-  deleteSet,
   selectKeysetByString,
   selectLinkedFavorites,
   selectLinkedFavoritesLoading,
   selectPresetById,
   selectSetById,
   selectSetGroupTotal,
-  setSet,
+  useAddKeysetMutation,
+  useDeleteKeysetMutation,
   useGetAllKeysetsQuery,
 } from "@s/main";
 import { blankPreset } from "@s/main/constants";
@@ -158,6 +158,8 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   const openEdit = (set: EntityId) => setEditSet(set);
   const closeEdit = () => setEditSet("");
 
+  const [addKeyset] = useAddKeysetMutation({ selectFromResult: () => ({}) });
+
   const openDeleteSnackbar = ({ id, ...set }: SetType) => {
     const deleteImages = async (name: string) => {
       try {
@@ -172,20 +174,13 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
     };
     const recreateEntry = async () => {
       try {
-        await firestore
-          .collection("keysets")
-          .doc(id as KeysetId)
-          .set(
-            {
-              ...set,
-              gbLaunch: set.gbMonth ? set.gbLaunch.slice(0, 7) : set.gbLaunch,
-              latestEditor: user.id,
-            },
-            { merge: true }
-          );
+        await addKeyset({
+          ...set,
+          gbLaunch: set.gbMonth ? set.gbLaunch.slice(0, 7) : set.gbLaunch,
+          latestEditor: user.id,
+        }).unwrap();
         console.log("Document recreated with ID: ", id);
         notify({ title: "Entry successfully recreated." });
-        dispatch(setSet({ id, ...set }));
       } catch (error) {
         console.error("Error recreating document: ", error);
         notify({ title: `Error recreating document: ${error}` });
@@ -217,6 +212,8 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
     });
   };
 
+  const [deleteSet] = useDeleteKeysetMutation({ selectFromResult: () => ({}) });
+
   const openDeleteDialog = async (id: EntityId) => {
     closeDetails();
     const set = dispatch(selectFromState((state) => selectSetById(state, id)));
@@ -234,7 +231,7 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
               latestEditor: user.id,
             } as KeysetDoc);
           openDeleteSnackbar(set);
-          dispatch(deleteSet(set.id));
+          deleteSet(set.id);
         } catch (error) {
           console.error("Error deleting document: ", error);
           notify({ title: `Error deleting document: ${error}` });

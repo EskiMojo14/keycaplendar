@@ -28,6 +28,7 @@ export const SetSchema = schemaForType<SetType>()(
     icDate: zodDate({ required: true }),
     id: z.string().min(1),
     image: z.string().url(),
+    latestEditor: z.string(),
     notes: z.string(),
     profile: z.string().min(1),
     sales: z.object({

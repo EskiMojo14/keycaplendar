@@ -2,31 +2,25 @@ import produce from "immer";
 import { createStore } from "~/app/store";
 import {
   deleteAppPreset,
-  deleteSet,
   mergeWhitelist,
   selectAllAppPresets,
   selectAppPresetById,
   selectCurrentPresetId,
   selectEditedWhitelist,
   selectLinkedFavorites,
-  selectLoading,
   selectSearch,
-  selectSetById,
   selectSortByPage,
   selectSortOrderByPage,
   selectTransition,
   setAppPresets,
   setCurrentPreset,
   setLinkedFavorites,
-  setLoading,
   setSearch,
-  setSet,
   setSort,
   setSortOrder,
   setTransition,
   upsertAppPreset,
 } from "@s/main";
-import { blankKeyset } from "@s/main/constants";
 import { partialPreset } from "@s/main/constructors";
 import { addAppPreset } from "@s/main/thunks";
 import type { SortOrderType, SortType, WhitelistType } from "@s/main/types";
@@ -44,12 +38,6 @@ it("sets transition", () => {
   expect(response).toBe(true);
 });
 
-it("sets loading", () => {
-  store.dispatch(setLoading(true));
-  const response = selectLoading(store.getState());
-  expect(response).toBe(true);
-});
-
 const page: MainPage = "timeline";
 
 it("sets sort", () => {
@@ -64,21 +52,6 @@ it("sets sort order", () => {
   store.dispatch(setSortOrder(page, sortOrder));
   const response = selectSortOrderByPage(store.getState(), page);
   expect(response).toBe(sortOrder);
-});
-
-it("sets a set", () => {
-  store.dispatch(setSet(blankKeyset));
-  const response = selectSetById(store.getState(), blankKeyset.id);
-  expect(response).toEqual(blankKeyset);
-});
-
-it("deletes a set", () => {
-  store.dispatch(setSet(blankKeyset));
-  const check = selectSetById(store.getState(), blankKeyset.id);
-  expect(check).toEqual(blankKeyset);
-  store.dispatch(deleteSet(blankKeyset.id));
-  const response = selectSetById(store.getState(), blankKeyset.id);
-  expect(response).toBeUndefined();
 });
 
 it("sets search", () => {

@@ -2,7 +2,7 @@ import { notify } from "~/app/snackbar-queue";
 import type { AppThunk } from "~/app/store";
 import firestore from "@s/firebase/firestore";
 import type { UserId } from "@s/firebase/types";
-import { selectLoading, setTransition } from "@s/main";
+import { setTransition } from "@s/main";
 import { selectUser } from "@s/user";
 import { hasKey } from "@s/util/functions";
 import {
@@ -98,8 +98,7 @@ export const setView =
   (dispatch, getState) => {
     const state = getState();
     const { settings } = state;
-    const loading = selectLoading(state);
-    if (view !== settings.view && !loading) {
+    if (view !== settings.view) {
       dispatch((dispatch) => {
         dispatch(setTransition(true));
         setTimeout(() => {

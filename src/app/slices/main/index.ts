@@ -2,7 +2,6 @@ import {
   createEntityAdapter,
   createSelector,
   createSlice,
-  isAnyOf,
 } from "@reduxjs/toolkit";
 import type {
   Dictionary,
@@ -11,6 +10,7 @@ import type {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import { DateTime } from "luxon";
+import { nanoid } from "nanoid";
 import { matchPath } from "react-router-dom";
 import { history } from "~/app/history";
 import { notify } from "~/app/snackbar-queue";
@@ -22,6 +22,7 @@ import baseApi from "@s/api";
 import { createErrorMessagesListeners } from "@s/api/functions";
 import { commonApi } from "@s/common";
 import firestore from "@s/firebase/firestore";
+import type { KeysetDoc, KeysetId } from "@s/firebase/types";
 import {
   arraySorts,
   dateSorts,
@@ -80,30 +81,103 @@ export const setGroupAdapter = createEntityAdapter<SetGroup>({
   selectId: ({ title }) => title,
 });
 
+export const prepareKeyset = (keysetDoc: KeysetDoc, id: EntityId): SetType => ({
+  id,
+  ...keysetDoc,
+  gbLaunch:
+    keysetDoc.gbMonth && keysetDoc.gbLaunch && !keysetDoc.gbLaunch.includes("Q")
+      ? addLastDate(keysetDoc.gbLaunch)
+      : keysetDoc.gbLaunch,
+});
+
 export const mainApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
+    addKeyset: build.mutation<
+      { alias: string; id: EntityId },
+      Omit<SetType, "alias" | "id"> & Partial<Pick<SetType, "alias" | "id">>
+    >({
+      onQueryStarted: async (
+        { alias, id, ...setInput },
+        { dispatch, getState, queryFulfilled }
+      ) => {
+        try {
+          ({
+            data: { alias, id },
+          } = await queryFulfilled);
+          const { id: latestEditor } = selectUser(getState() as RootState);
+          dispatch(
+            mainApi.util.updateQueryData(
+              "getAllKeysets",
+              undefined,
+              (entityState) =>
+                keysetAdapter.setOne(
+                  entityState,
+                  prepareKeyset(
+                    { ...setInput, alias: alias!, latestEditor },
+                    id!
+                  )
+                )
+            )
+          );
+        } catch {}
+      },
+      queryFn: async ({ alias, id, ...setInput }, { getState }) => {
+        try {
+          const { id: latestEditor } = selectUser(getState() as RootState);
+          alias ??= nanoid(10);
+          const set = { ...setInput, alias, latestEditor };
+          if (id) {
+            await firestore
+              .collection("keysets")
+              .doc(id as KeysetId)
+              .set(set, { merge: true });
+            return { data: { alias, id } };
+          } else {
+            const { id } = await firestore.collection("keysets").add(set);
+            return { data: { alias, id } };
+          }
+        } catch (error) {
+          return { error };
+        }
+      },
+    }),
+    deleteKeyset: build.mutation<"Success", EntityId>({
+      onQueryStarted: async (id, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          dispatch(
+            mainApi.util.updateQueryData(
+              "getAllKeysets",
+              undefined,
+              (entityState) => keysetAdapter.removeOne(entityState, id)
+            )
+          );
+        } catch {}
+      },
+      queryFn: async (id, { getState }) => {
+        try {
+          const { id: latestEditor } = selectUser(getState() as RootState);
+          await firestore
+            .collection("keysets")
+            .doc(id as KeysetId)
+            .set({
+              latestEditor,
+            } as KeysetDoc);
+          return { data: "Success" };
+        } catch (error) {
+          return { error };
+        }
+      },
+    }),
     getAllKeysets: build.query<EntityState<SetType>, void>({
       queryFn: async () => {
         try {
           const querySnapshot = await firestore.collection("keysets").get();
           const sets: SetType[] = [];
           querySnapshot.forEach((doc) => {
-            if (doc.data().profile) {
-              const {
-                gbLaunch: docGbLaunch,
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                latestEditor,
-                ...data
-              } = doc.data();
-
-              sets.push({
-                id: doc.id,
-                ...data,
-                gbLaunch:
-                  data.gbMonth && docGbLaunch && !docGbLaunch.includes("Q")
-                    ? addLastDate(docGbLaunch)
-                    : docGbLaunch,
-              });
+            const data = doc.data();
+            if (data.profile) {
+              sets.push(prepareKeyset(data, doc.id));
             }
           });
           return {
@@ -114,25 +188,68 @@ export const mainApi = baseApi.injectEndpoints({
         }
       },
     }),
+    updateKeyset: build.mutation<"Success", SetType>({
+      onQueryStarted: async (
+        { id, ...setInput },
+        { dispatch, getState, queryFulfilled }
+      ) => {
+        try {
+          await queryFulfilled;
+          const { id: latestEditor } = selectUser(getState() as RootState);
+          dispatch(
+            mainApi.util.updateQueryData(
+              "getAllKeysets",
+              undefined,
+              (entityState) =>
+                keysetAdapter.setOne(
+                  entityState,
+                  prepareKeyset({ ...setInput, latestEditor }, id)
+                )
+            )
+          );
+        } catch {}
+      },
+      queryFn: async ({ id, ...setInput }, { getState }) => {
+        try {
+          const { id: latestEditor } = selectUser(getState() as RootState);
+          const set = { ...setInput, latestEditor };
+          await firestore
+            .collection("keysets")
+            .doc(id as KeysetId)
+            .update(set);
+          return { data: "Success" };
+        } catch (error) {
+          return { error };
+        }
+      },
+    }),
   }),
   overrideExisting: true,
 });
 
-export const { useGetAllKeysetsQuery } = mainApi;
+export const {
+  useAddKeysetMutation,
+  useDeleteKeysetMutation,
+  useGetAllKeysetsQuery,
+  useUpdateKeysetMutation,
+} = mainApi;
 
 export const setupMainListeners = combineListeners((startListening) =>
   createErrorMessagesListeners(
     mainApi.endpoints,
-    { getAllKeysets: "Failed to get keysets" },
+    {
+      addKeyset: "Failed to add keyset",
+      deleteKeyset: "Failed to delete keyset",
+      getAllKeysets: "Failed to get keysets",
+      updateKeyset: "Failed to update keyset",
+    },
     startListening
   )
 );
 
 export type MainState = {
-  keysets: EntityState<SetType>;
   linkedFavorites: { array: EntityId[]; displayName: string };
   linkedFavoritesLoading: boolean;
-  loading: boolean;
   presets: EntityState<PresetType> & {
     currentPreset: EntityId;
   };
@@ -143,10 +260,8 @@ export type MainState = {
 };
 
 export const initialState: MainState = {
-  keysets: keysetAdapter.getInitialState(),
   linkedFavorites: { array: [], displayName: "" },
   linkedFavoritesLoading: false,
-  loading: true,
   presets: appPresetAdapter.getInitialState({
     currentPreset: "default",
   }),
@@ -165,27 +280,6 @@ export const mainSlice = createSlice({
           appPresetAdapter.setAll(state.presets, filterPresets as PresetType[]);
         }
       )
-      .addMatcher(mainApi.endpoints.getAllKeysets.matchPending, (state) => {
-        state.loading = true;
-      })
-      .addMatcher(
-        mainApi.endpoints.getAllKeysets.matchFulfilled,
-        (state, { payload }) => {
-          keysetAdapter.setAll(
-            state.keysets,
-            payload.entities as Record<EntityId, SetType>
-          );
-        }
-      )
-      .addMatcher(
-        isAnyOf(
-          mainApi.endpoints.getAllKeysets.matchFulfilled,
-          mainApi.endpoints.getAllKeysets.matchRejected
-        ),
-        (state) => {
-          state.loading = false;
-        }
-      )
       .addMatcher(navigationMatcher, (state) => {
         ({ linkedFavorites: state.linkedFavorites, search: state.search } =
           initialState);
@@ -199,9 +293,6 @@ export const mainSlice = createSlice({
     },
     deleteAppPreset: (state, { payload }: PayloadAction<EntityId>) => {
       appPresetAdapter.removeOne(state.presets, payload);
-    },
-    deleteSet: (state, { payload }: PayloadAction<EntityId>) => {
-      keysetAdapter.removeOne(state.keysets, payload);
     },
     mergeWhitelist: (
       state,
@@ -230,14 +321,8 @@ export const mainSlice = createSlice({
     setLinkedFavoritesLoading: (state, { payload }: PayloadAction<boolean>) => {
       state.linkedFavoritesLoading = payload;
     },
-    setLoading: (state, { payload }: PayloadAction<boolean>) => {
-      state.loading = payload;
-    },
     setSearch: (state, { payload }: PayloadAction<string>) => {
       state.search = payload;
-    },
-    setSet: (state, { payload }: PayloadAction<SetType>) => {
-      keysetAdapter.setOne(state.keysets, payload);
     },
     setSort: {
       prepare: (page: MainPage, sort: SortType) => ({
@@ -278,16 +363,13 @@ export const {
   actions: {
     addAppPreset,
     deleteAppPreset,
-    deleteSet,
     mergeWhitelist,
     resetWhitelist,
     setAppPresets,
     setCurrentPreset,
     setLinkedFavorites,
     setLinkedFavoritesLoading,
-    setLoading,
     setSearch,
-    setSet,
     setSort,
     setSortOrder,
     setTransition,
@@ -296,8 +378,6 @@ export const {
 } = mainSlice;
 
 export const selectTransition = (state: RootState) => state.main.transition;
-
-export const selectLoading = (state: RootState) => state.main.loading;
 
 export const selectLinkedFavoritesLoading = (state: RootState) =>
   state.main.linkedFavoritesLoading;

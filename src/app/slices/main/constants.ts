@@ -36,6 +36,7 @@ export const blankKeyset: SetType = {
   icDate: "",
   id: "",
   image: "",
+  latestEditor: "",
   notes: "",
   profile: "",
   sales: {

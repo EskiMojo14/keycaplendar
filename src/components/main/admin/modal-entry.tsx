@@ -41,23 +41,21 @@ import {
 } from "@c/util/full-screen-dialog";
 import { withTooltip } from "@c/util/hocs";
 import { DatePicker } from "@c/util/pickers/date-picker";
-import { useAppDispatch, useAppSelector } from "@h";
+import { useAppSelector } from "@h";
 import useDevice from "@h/use-device";
 import useScrollLock from "@h/use-scroll-lock";
 import firebase from "@s/firebase";
-import firestore from "@s/firebase/firestore";
-import type { KeysetId } from "@s/firebase/types";
 import {
   selectAllDesigners,
   selectAllProfiles,
   selectAllVendorRegions,
   selectAllVendors,
   selectSetByIdLocal,
-  setSet,
+  useAddKeysetMutation,
   useGetAllKeysetsQuery,
+  useUpdateKeysetMutation,
 } from "@s/main";
 import { partialSet } from "@s/main/constructors";
-import { addLastDate } from "@s/main/functions";
 import { gbMonthCheck, SetSchema } from "@s/main/schemas";
 import type { SetType, VendorType } from "@s/main/types";
 import { selectUser } from "@s/user";
@@ -866,42 +864,26 @@ type ModalCreateProps = {
 };
 
 export const ModalCreate = ({ onClose, open }: ModalCreateProps) => {
-  const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
 
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [uploadingDoc, setUploadingDoc] = useState(false);
   const [imageUploadProgress, setImageUploadProgress] = useState(0);
+
+  const [addKeyset, { isLoading: uploadingDoc }] = useAddKeysetMutation({
+    selectFromResult: ({ isLoading }) => ({ isLoading }),
+  });
 
   const createEntry = async (entry: SetType) => {
     const result = SetSchema.omit({ id: true }).safeParse(entry);
     if (result.success && !uploadingImage && !uploadingDoc) {
-      setUploadingDoc(true);
-      const set = {
-        ...result.data,
-        alias: nanoid(10),
-        latestEditor: user.id,
-      };
       try {
-        const docRef = await firestore.collection("keysets").add(set);
-        console.log("Document written with ID: ", docRef.id);
+        const { id } = await addKeyset(result.data).unwrap();
+        console.log("Document written with ID: ", id);
         notify({ title: "Entry written successfully." });
-        dispatch(
-          setSet({
-            ...set,
-            gbLaunch:
-              set.gbMonth && !set.gbLaunch.includes("Q")
-                ? addLastDate(set.gbLaunch)
-                : set.gbLaunch,
-            id: docRef.id,
-          })
-        );
         onClose();
       } catch (error) {
         console.error(error);
         notify({ title: `Error adding document: ${error}` });
-      } finally {
-        setUploadingDoc(false);
       }
     } else {
       console.log(result);
@@ -974,8 +956,6 @@ type ModalEditProps = ModalCreateProps & {
 };
 
 export const ModalEdit = ({ onClose, open, set: setId }: ModalEditProps) => {
-  const dispatch = useAppDispatch();
-
   const user = useAppSelector(selectUser);
   const { set } = useGetAllKeysetsQuery(undefined, {
     selectFromResult: ({ data }) => ({
@@ -984,29 +964,22 @@ export const ModalEdit = ({ onClose, open, set: setId }: ModalEditProps) => {
   });
 
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [uploadingDoc, setUploadingDoc] = useState(false);
   const [imageUploadProgress, setImageUploadProgress] = useState(0);
+
+  const [updateKeyset, { isLoading: uploadingDoc }] = useUpdateKeysetMutation({
+    selectFromResult: ({ isLoading }) => ({ isLoading }),
+  });
 
   const editEntry = async (entry: SetType) => {
     const result = SetSchema.safeParse(entry);
     if (result.success && !uploadingImage && !uploadingDoc) {
-      setUploadingDoc(true);
-      const {
-        data: { id, ...data },
-      } = result;
       try {
-        await firestore
-          .collection("keysets")
-          .doc(id as KeysetId)
-          .update({ ...data, latestEditor: user.id });
+        await updateKeyset(result.data).unwrap();
         notify({ title: "Entry edited successfully." });
         onClose();
-        dispatch(setSet(result.data));
       } catch (error) {
         notify({ title: `Error editing document: ${error}` });
         console.error(error);
-      } finally {
-        setUploadingDoc(false);
       }
     }
   };

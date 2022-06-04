@@ -36,8 +36,9 @@ export type SetType = {
   gbLaunch: string;
   gbMonth: boolean;
   icDate: string;
-  id: string;
+  id: EntityId;
   image: string;
+  latestEditor: string;
   notes: string;
   profile: string;
   sales: {
