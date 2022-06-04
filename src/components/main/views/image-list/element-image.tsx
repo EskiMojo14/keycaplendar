@@ -17,7 +17,7 @@ import { notify } from "~/app/snackbar-queue";
 import { SkeletonImage } from "@c/main/views/image-list/skeleton-image";
 import { withTooltip } from "@c/util/hocs";
 import useDevice from "@h/use-device";
-import { selectSetByIdLocal, useGetAllKeysetsQuery } from "@s/main";
+import { selectSetById, useGetAllKeysetsQuery } from "@s/main";
 import { getSetDetails } from "@s/main/functions";
 import { createURL } from "@s/router/functions";
 import { iconObject, pluralise } from "@s/util/functions";
@@ -41,7 +41,7 @@ export const ElementImage = ({
 }: ElementImageProps) => {
   const { set } = useGetAllKeysetsQuery(undefined, {
     selectFromResult: ({ data }) => ({
-      set: data && selectSetByIdLocal(data, setId),
+      set: data && selectSetById(data, setId),
     }),
   });
 

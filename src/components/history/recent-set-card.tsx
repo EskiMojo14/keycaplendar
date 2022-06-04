@@ -19,8 +19,8 @@ import {
   mainApi,
   pageConditions,
   selectLinkedFavorites,
-  selectSetByIdLocal,
-  selectSetMapLocal,
+  selectSetById,
+  selectSetMap,
   useGetAllKeysetsQuery,
 } from "@s/main";
 import { push } from "@s/router";
@@ -52,7 +52,7 @@ export const RecentSetCard = ({
 
   const { setMap = {} } = useGetAllKeysetsQuery(undefined, {
     selectFromResult: ({ data }) => ({
-      setMap: data && selectSetMapLocal(data),
+      setMap: data && selectSetMap(data),
     }),
   });
   const { recentSet } = useGetChangelogQuery(undefined, {
@@ -65,7 +65,7 @@ export const RecentSetCard = ({
     undefined,
     {
       selectFromResult: ({ data }) => ({
-        currentSet: data && selectSetByIdLocal(data, id),
+        currentSet: data && selectSetById(data, id),
       }),
     }
   );

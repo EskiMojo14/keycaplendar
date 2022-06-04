@@ -14,7 +14,7 @@ import { SkeletonCompact } from "@c/main/views/compact/skeleton-compact";
 import { withTooltip } from "@c/util/hocs";
 import useDevice from "@h/use-device";
 import usePage from "@h/use-page";
-import { selectSetByIdLocal, useGetAllKeysetsQuery } from "@s/main";
+import { selectSetById, useGetAllKeysetsQuery } from "@s/main";
 import { getSetDetails } from "@s/main/functions";
 import { createURL } from "@s/router/functions";
 import { iconObject } from "@s/util/functions";
@@ -38,7 +38,7 @@ export const ElementCompact = ({
 }: ElementCompactProps) => {
   const { set } = useGetAllKeysetsQuery(undefined, {
     selectFromResult: ({ data }) => ({
-      set: data && selectSetByIdLocal(data, setId),
+      set: data && selectSetById(data, setId),
     }),
   });
 

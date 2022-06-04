@@ -23,6 +23,7 @@ import {
   selectSetImages,
   useGetAllImagesQuery,
 } from "@s/images";
+import { useGetAllKeysetsQuery } from "@s/main";
 import { addOrRemove, hasKey, removeDuplicates } from "@s/util/functions";
 import { DialogDelete } from "./dialog-delete";
 import { DrawerDetails } from "./drawer-details";
@@ -46,7 +47,12 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
   const bottomNav = useBottomNav();
 
   const currentFolder = useAppSelector(selectCurrentFolder);
-  const setImages = useAppSelector(selectSetImages);
+
+  const { setImages = {} } = useGetAllKeysetsQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      setImages: data && selectSetImages(data),
+    }),
+  });
 
   const {
     imagesByUsage: { unused: unusedImages = [], used: usedImages = [] } = {},

@@ -50,7 +50,7 @@ import {
   selectAllProfiles,
   selectAllVendorRegions,
   selectAllVendors,
-  selectSetByIdLocal,
+  selectSetById,
   useAddKeysetMutation,
   useGetAllKeysetsQuery,
   useUpdateKeysetMutation,
@@ -959,7 +959,7 @@ export const ModalEdit = ({ onClose, open, set: setId }: ModalEditProps) => {
   const user = useAppSelector(selectUser);
   const { set } = useGetAllKeysetsQuery(undefined, {
     selectFromResult: ({ data }) => ({
-      set: data && selectSetByIdLocal(data, setId),
+      set: data && selectSetById(data, setId),
     }),
   });
 

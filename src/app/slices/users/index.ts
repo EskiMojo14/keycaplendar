@@ -233,29 +233,13 @@ export const selectSortedUsers = createSelector(
   })
 );
 
-const {
-  selectAll: selectAllLocalUser,
-  selectEntities: selectLocalUserEntities,
-  selectIds: selectLocalUserIds,
-  selectTotal: selectLocalUserTotal,
-} = userAdapter.getSelectors();
+const { selectAll, selectEntities, selectIds, selectTotal } =
+  userAdapter.getSelectors();
 
-export const selectUserIds = createSelector(
-  selectSortedUsers,
-  selectLocalUserIds
-);
-export const selectUserMap = createSelector(
-  selectSortedUsers,
-  selectLocalUserEntities
-);
-export const selectUserTotal = createSelector(
-  selectSortedUsers,
-  selectLocalUserTotal
-);
-export const selectUsers = createSelector(
-  selectSortedUsers,
-  selectAllLocalUser
-);
+export const selectUserIds = createSelector(selectSortedUsers, selectIds);
+export const selectUserMap = createSelector(selectSortedUsers, selectEntities);
+export const selectUserTotal = createSelector(selectSortedUsers, selectTotal);
+export const selectUsers = createSelector(selectSortedUsers, selectAll);
 export const selectUserById = createSelector(
   selectUserMap,
   (_: unknown, __: unknown, ___: unknown, id: EntityId) => id,
@@ -263,7 +247,7 @@ export const selectUserById = createSelector(
 );
 
 export const selectUserByEmail = createSelector(
-  selectAllLocalUser,
+  selectAll,
   (_: unknown, email: string) => email,
   (users, email) => users.find((user) => user.email === email)
 );

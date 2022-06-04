@@ -6,7 +6,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@rmwc/dialog";
-import { selectSetByIdLocal, useGetAllKeysetsQuery } from "@s/main";
+import { selectSetById, useGetAllKeysetsQuery } from "@s/main";
 import "./dialog-sales.scss";
 
 type DialogSalesProps = {
@@ -18,7 +18,7 @@ type DialogSalesProps = {
 export const DialogSales = ({ close, open, set: setId }: DialogSalesProps) => {
   const { set } = useGetAllKeysetsQuery(undefined, {
     selectFromResult: ({ data }) => ({
-      set: data && selectSetByIdLocal(data, setId),
+      set: data && selectSetById(data, setId),
     }),
   });
   return (

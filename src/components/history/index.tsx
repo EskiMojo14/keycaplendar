@@ -34,7 +34,7 @@ import { historyTabs } from "@s/history/constants";
 import type { HistoryTab } from "@s/history/types";
 import {
   selectKeysetByString,
-  selectSetMapLocal,
+  selectSetMap,
   useGetAllKeysetsQuery,
 } from "@s/main";
 import { replace } from "@s/router";
@@ -88,7 +88,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
 
   const { setMap = {} } = useGetAllKeysetsQuery(undefined, {
     selectFromResult: ({ data }) => ({
-      setMap: data && selectSetMapLocal(data),
+      setMap: data && selectSetMap(data),
     }),
   });
   const {

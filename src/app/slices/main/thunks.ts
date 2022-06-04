@@ -15,7 +15,7 @@ import {
   mergeWhitelist,
   resetWhitelist,
   selectAllAppPresets,
-  selectAllSets,
+  selectAllSetsGlobal,
   selectPresetById,
   setCurrentPreset,
   upsertAppPreset,
@@ -83,7 +83,7 @@ export const setWhitelist =
   };
 
 export const testSets = (): AppThunk<void> => (dispatch, getState) => {
-  const sets = selectAllSets(getState());
+  const sets = selectAllSetsGlobal(getState());
   const testValue = (set: SetType, key: string, value?: string) => {
     if (value) {
       const endSpace = /\s+$/m;

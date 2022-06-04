@@ -29,7 +29,7 @@ import {
   selectLinkedFavorites,
   selectLinkedFavoritesLoading,
   selectPresetById,
-  selectSetById,
+  selectSetByIdGlobal,
   selectSetGroupTotal,
   useAddKeysetMutation,
   useDeleteKeysetMutation,
@@ -216,7 +216,9 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
 
   const openDeleteDialog = async (id: EntityId) => {
     closeDetails();
-    const set = dispatch(selectFromState((state) => selectSetById(state, id)));
+    const set = dispatch(
+      selectFromState((state) => selectSetByIdGlobal(state, id))
+    );
     if (set) {
       const confirmed = await confirmDelete({
         body: `Are you sure you want to delete the entry for ${set.profile} ${set.colorway}?`,

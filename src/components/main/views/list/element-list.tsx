@@ -15,7 +15,7 @@ import { SkeletonList } from "@c/main/views/list/skeleton-list";
 import { withTooltip } from "@c/util/hocs";
 import useDevice from "@h/use-device";
 import usePage from "@h/use-page";
-import { selectSetByIdLocal, useGetAllKeysetsQuery } from "@s/main";
+import { selectSetById, useGetAllKeysetsQuery } from "@s/main";
 import { getSetDetails } from "@s/main/functions";
 import { createURL } from "@s/router/functions";
 import { iconObject, pluralise } from "@s/util/functions";
@@ -39,7 +39,7 @@ export const ElementList = ({
 }: ElementListProps) => {
   const { set } = useGetAllKeysetsQuery(undefined, {
     selectFromResult: ({ data }) => ({
-      set: data && selectSetByIdLocal(data, setId),
+      set: data && selectSetById(data, setId),
     }),
   });
 

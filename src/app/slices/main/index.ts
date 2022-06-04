@@ -428,33 +428,39 @@ export const selectCurrentPresetId = (state: RootState) =>
 
 export const selectAllKeysetsResult = mainApi.endpoints.getAllKeysets.select();
 
+const globaliseKeysetSelector =
+  <Selected>(selector: (entityState: EntityState<SetType>) => Selected) =>
+  (state: RootState) =>
+    selector(
+      selectAllKeysetsResult(state)?.data ?? keysetAdapter.getInitialState()
+    );
+
+export const {
+  selectAll: selectAllSetsGlobal,
+  selectById: selectSetByIdGlobal,
+  selectEntities: selectSetMapGlobal,
+  selectIds: selectSetIdsGlobal,
+  selectTotal: selectSetTotalGlobal,
+} = keysetAdapter.getSelectors(
+  globaliseKeysetSelector((entityState) => entityState)
+);
+
 export const {
   selectAll: selectAllSets,
   selectById: selectSetById,
   selectEntities: selectSetMap,
   selectIds: selectSetIds,
   selectTotal: selectSetTotal,
-} = keysetAdapter.getSelectors(
-  (state: RootState) =>
-    selectAllKeysetsResult(state)?.data ?? keysetAdapter.getInitialState()
-);
-
-export const {
-  selectAll: selectAllSetsLocal,
-  selectById: selectSetByIdLocal,
-  selectEntities: selectSetMapLocal,
-  selectIds: selectSetIdsLocal,
-  selectTotal: selectSetTotalLocal,
 } = keysetAdapter.getSelectors();
 
-export const selectSetsByAlias = createSelector(selectAllSetsLocal, (allSets) =>
+export const selectSetsByAlias = createSelector(selectAllSets, (allSets) =>
   allSets.reduce<Dictionary<SetType>>((dict, set) => {
     dict[set.alias] = set;
     return dict;
   }, {})
 );
 
-export const selectSetsByName = createSelector(selectAllSetsLocal, (allSets) =>
+export const selectSetsByName = createSelector(selectAllSets, (allSets) =>
   allSets.reduce<Dictionary<SetType>>((dict, set) => {
     dict[`${set.profile} ${set.colorway}`] = set;
     return dict;
@@ -475,7 +481,7 @@ export const findKeysetByString = (
 
 export const selectKeysetByString = createSelector(
   (_: unknown, string: string) => string,
-  selectSetMapLocal,
+  selectSetMap,
   selectSetsByAlias,
   selectSetsByName,
   findKeysetByString
@@ -483,7 +489,7 @@ export const selectKeysetByString = createSelector(
 
 export const selectURLKeyset = createSelector(
   selectLocation,
-  selectSetMapLocal,
+  selectSetMap,
   selectSetsByAlias,
   selectSetsByName,
   (location, setMap, setsByAlias, setsByName) => {
@@ -500,17 +506,17 @@ export const selectURLKeyset = createSelector(
   }
 );
 
-export const selectAllDesigners = createSelector(selectAllSetsLocal, (sets) =>
+export const selectAllDesigners = createSelector(selectAllSets, (sets) =>
   alphabeticalSort(
     removeDuplicates(sets.map((set) => set.designer ?? []).flat())
   )
 );
 
-export const selectAllProfiles = createSelector(selectAllSetsLocal, (sets) =>
+export const selectAllProfiles = createSelector(selectAllSets, (sets) =>
   alphabeticalSort(removeDuplicates(sets.map((set) => set.profile)))
 );
 
-export const selectAllRegions = createSelector(selectAllSetsLocal, (sets) =>
+export const selectAllRegions = createSelector(selectAllSets, (sets) =>
   alphabeticalSort(
     removeDuplicates(
       sets
@@ -524,12 +530,10 @@ export const selectAllRegions = createSelector(selectAllSetsLocal, (sets) =>
   )
 );
 
-export const selectAllRegionsFromState = (state: RootState) =>
-  selectAllRegions(
-    selectAllKeysetsResult(state)?.data ?? keysetAdapter.getInitialState()
-  );
+export const selectAllRegionsFromState =
+  globaliseKeysetSelector(selectAllRegions);
 
-export const selectAllVendors = createSelector(selectAllSetsLocal, (sets) =>
+export const selectAllVendors = createSelector(selectAllSets, (sets) =>
   alphabeticalSort(
     removeDuplicates(
       sets.map((set) => set.vendors?.map((vendor) => vendor.name) ?? []).flat()
@@ -537,22 +541,20 @@ export const selectAllVendors = createSelector(selectAllSetsLocal, (sets) =>
   )
 );
 
-export const selectAllVendorRegions = createSelector(
-  selectAllSetsLocal,
-  (sets) =>
-    alphabeticalSort(
-      removeDuplicates(
-        sets
-          .map(
-            (set) =>
-              set.vendors?.map((vendor) => [
-                vendor.region,
-                ...vendor.region.split(", "),
-              ]) ?? []
-          )
-          .flat(2)
-      )
+export const selectAllVendorRegions = createSelector(selectAllSets, (sets) =>
+  alphabeticalSort(
+    removeDuplicates(
+      sets
+        .map(
+          (set) =>
+            set.vendors?.map((vendor) => [
+              vendor.region,
+              ...vendor.region.split(", "),
+            ]) ?? []
+        )
+        .flat(2)
     )
+  )
 );
 
 export const selectDefaultPreset = createSelector(
@@ -569,10 +571,8 @@ export const selectDefaultPreset = createSelector(
     })
 );
 
-export const selectDefaultPresetFromState = (state: RootState) =>
-  selectDefaultPreset(
-    selectAllKeysetsResult(state)?.data ?? keysetAdapter.getInitialState()
-  );
+export const selectDefaultPresetFromState =
+  globaliseKeysetSelector(selectDefaultPreset);
 
 export const {
   selectAll: selectAllAppPresets,
@@ -677,7 +677,7 @@ export const pageConditions = (set: SetType) =>
     mainPages.map((page) => [page, pageCondition(set, page)])
   );
 
-export const selectSetsByPage = createSelector(selectAllSets, (sets) =>
+export const selectSetsByPage = createSelector(selectAllSetsGlobal, (sets) =>
   sets.reduce<Record<typeof mainPages[number], SetType[]>>((acc, set) => {
     mainPages.forEach((page) => {
       if (pageCondition(set, page)) {
@@ -690,7 +690,7 @@ export const selectSetsByPage = createSelector(selectAllSets, (sets) =>
 
 export const selectFilteredSets = createSelector(
   selectPage,
-  selectSetMap,
+  selectSetMapGlobal,
   selectSetsByPage,
   selectSearch,
   selectWhitelist,
@@ -1037,9 +1037,6 @@ export default mainSlice.reducer;
 export const updatePreset =
   (preset: OldPresetType | PresetType): AppThunk<PresetType> =>
   (dispatch, getState) => {
-    const regions = selectAllRegions(
-      selectAllKeysetsResult(getState())?.data ??
-        keysetAdapter.getInitialState()
-    );
+    const regions = selectAllRegionsFromState(getState());
     return _updatePreset(preset, { regions });
   };
