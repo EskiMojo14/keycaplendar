@@ -3,7 +3,7 @@ import type { Dictionary, EntityId, EntityState } from "@reduxjs/toolkit";
 import isEqual from "lodash.isequal";
 import { combineListeners } from "@mw/listener/functions";
 import baseApi from "@s/api";
-import { createErrorMessagesListeners } from "@s/api/functions";
+import { createErrorMessagesListener } from "@s/api/functions";
 import { auditProperties } from "@s/audit/constants";
 import firebase from "@s/firebase";
 import type { SetType } from "@s/main/types";
@@ -88,13 +88,13 @@ export const historyApi = baseApi.injectEndpoints({
 
 export const { useGetChangelogQuery } = historyApi;
 
-export const setupHistoryListeners = combineListeners((startListening) =>
-  createErrorMessagesListeners(
+export const setupHistoryListeners = combineListeners((startListening) => [
+  createErrorMessagesListener(
     historyApi.endpoints,
     { getChangelog: "Failed to get changelog entries" },
     startListening
-  )
-);
+  ),
+]);
 
 export const {
   selectAll: selectProcessedActions,

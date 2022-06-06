@@ -12,7 +12,7 @@ import type {
 import type { RootState } from "~/app/store";
 import { combineListeners } from "@mw/listener/functions";
 import baseApi, { selectAllCachedArgsByQuery } from "@s/api";
-import { createErrorMessagesListeners } from "@s/api/functions";
+import { createErrorMessagesListener } from "@s/api/functions";
 import firebase from "@s/firebase";
 import { selectAllSets } from "@s/main";
 import {
@@ -165,8 +165,8 @@ export const {
   useGetStorageFoldersQuery,
 } = imageApi;
 
-export const setupImageListeners = combineListeners((startListening) =>
-  createErrorMessagesListeners(
+export const setupImageListeners = combineListeners((startListening) => [
+  createErrorMessagesListener(
     imageApi.endpoints,
     {
       deleteImages: "Failed to delete images",
@@ -174,8 +174,8 @@ export const setupImageListeners = combineListeners((startListening) =>
       getStorageFolders: "Failed to get storage folders",
     },
     startListening
-  )
-);
+  ),
+]);
 
 type ImagesState = {
   currentFolder: string;

@@ -7,7 +7,7 @@ import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
 import { combineListeners } from "@mw/listener/functions";
 import baseApi from "@s/api";
-import { createErrorMessagesListeners } from "@s/api/functions";
+import { createErrorMessagesListener } from "@s/api/functions";
 import firebase from "@s/firebase";
 import firestore from "@s/firebase/firestore";
 import type { GuideId } from "@s/firebase/types";
@@ -138,8 +138,8 @@ export const {
   useUpdateGuideEntryMutation,
 } = guideApi;
 
-export const setupGuideListeners = combineListeners((startListening) =>
-  createErrorMessagesListeners(
+export const setupGuideListeners = combineListeners((startListening) => [
+  createErrorMessagesListener(
     guideApi.endpoints,
     {
       createGuideEntry: "Failed to create guide entry",
@@ -148,8 +148,8 @@ export const setupGuideListeners = combineListeners((startListening) =>
       updateGuideEntry: "Failed to update entry",
     },
     startListening
-  )
-);
+  ),
+]);
 
 type GuidesState = {
   filteredTag: string;

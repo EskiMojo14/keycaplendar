@@ -7,7 +7,7 @@ import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
 import { combineListeners } from "@mw/listener/functions";
 import baseApi from "@s/api";
-import { createErrorMessagesListeners } from "@s/api/functions";
+import { createErrorMessagesListener } from "@s/api/functions";
 import firebase from "@s/firebase";
 import type { sortProps } from "@s/users/constants";
 import {
@@ -122,8 +122,8 @@ export const usersApi = baseApi.injectEndpoints({
 export const { useDeleteUserMutation, useGetUsersQuery, useSetRolesMutation } =
   usersApi;
 
-export const setupUsersListeners = combineListeners((startListening) =>
-  createErrorMessagesListeners(
+export const setupUsersListeners = combineListeners((startListening) => [
+  createErrorMessagesListener(
     usersApi.endpoints,
     {
       deleteUser: "Failed to delete user",
@@ -131,8 +131,8 @@ export const setupUsersListeners = combineListeners((startListening) =>
       setRoles: "Failed to set roles",
     },
     startListening
-  )
-);
+  ),
+]);
 
 type UserState = {
   page: number;

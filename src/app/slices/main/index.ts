@@ -19,7 +19,7 @@ import type { AppStartListening } from "@mw/listener";
 // eslint-disable-next-line import/no-cycle
 import { combineListeners } from "@mw/listener/functions";
 import baseApi from "@s/api";
-import { createErrorMessagesListeners } from "@s/api/functions";
+import { createErrorMessagesListener } from "@s/api/functions";
 import { commonApi } from "@s/common";
 import firestore from "@s/firebase/firestore";
 import type { KeysetDoc, KeysetId } from "@s/firebase/types";
@@ -234,8 +234,8 @@ export const {
   useUpdateKeysetMutation,
 } = mainApi;
 
-export const setupMainListeners = combineListeners((startListening) =>
-  createErrorMessagesListeners(
+export const setupMainListeners = combineListeners((startListening) => [
+  createErrorMessagesListener(
     mainApi.endpoints,
     {
       addKeyset: "Failed to add keyset",
@@ -244,8 +244,8 @@ export const setupMainListeners = combineListeners((startListening) =>
       updateKeyset: "Failed to update keyset",
     },
     startListening
-  )
-);
+  ),
+]);
 
 export type MainState = {
   linkedFavorites: { array: EntityId[]; displayName: string };

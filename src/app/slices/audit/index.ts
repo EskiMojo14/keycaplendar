@@ -8,7 +8,7 @@ import isEqual from "lodash.isequal";
 import type { RootState } from "~/app/store";
 import { combineListeners } from "@mw/listener/functions";
 import baseApi, { selectAllCachedArgsByQuery } from "@s/api";
-import { createErrorMessagesListeners } from "@s/api/functions";
+import { createErrorMessagesListener } from "@s/api/functions";
 import { auditProperties } from "@s/audit/constants";
 import firestore from "@s/firebase/firestore";
 import type { ChangelogId } from "@s/firebase/types";
@@ -128,16 +128,16 @@ export const auditApi = baseApi.injectEndpoints({
 
 export const { useDeleteActionMutation, useGetActionsQuery } = auditApi;
 
-export const setupAuditListeners = combineListeners((startListening) =>
-  createErrorMessagesListeners(
+export const setupAuditListeners = combineListeners((startListening) => [
+  createErrorMessagesListener(
     auditApi.endpoints,
     {
       deleteAction: "Failed to delete audit entry",
       getActions: "Failed to get audit entries",
     },
     startListening
-  )
-);
+  ),
+]);
 
 export type AuditState = {
   filter: {
