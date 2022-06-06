@@ -5,9 +5,8 @@ import {
 } from "@reduxjs/toolkit";
 import type { EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { combineListeners } from "@mw/listener/functions";
 import baseApi from "@s/api";
-import { createErrorMessagesListener } from "@s/api/functions";
+import { addErrorMessages } from "@s/api/functions";
 import firebase from "@s/firebase";
 import firestore from "@s/firebase/firestore";
 import type { GuideId } from "@s/firebase/types";
@@ -89,6 +88,7 @@ export const guideApi = baseApi.injectEndpoints({
     getGuides: build.query<EntityState<GuideEntryType>, void>({
       queryFn: async () => {
         try {
+          throw new Error("lol");
           return {
             data: guideEntryAdapter.setAll(
               guideEntryAdapter.getInitialState(),
@@ -138,18 +138,12 @@ export const {
   useUpdateGuideEntryMutation,
 } = guideApi;
 
-export const setupGuideListeners = combineListeners((startListening) => [
-  createErrorMessagesListener(
-    guideApi.endpoints,
-    {
-      createGuideEntry: "Failed to create guide entry",
-      deleteGuideEntry: "Failed to delete guide entry",
-      getGuides: "Failed to get guide entries",
-      updateGuideEntry: "Failed to update entry",
-    },
-    startListening
-  ),
-]);
+addErrorMessages<typeof guideApi.endpoints>({
+  createGuideEntry: "Failed to create guide entry",
+  deleteGuideEntry: "Failed to delete guide entry",
+  getGuides: "Failed to get guide entries",
+  updateGuideEntry: "Failed to update entry",
+});
 
 type GuidesState = {
   filteredTag: string;

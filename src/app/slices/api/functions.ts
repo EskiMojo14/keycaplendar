@@ -1,41 +1,51 @@
-import { isAnyOf } from "@reduxjs/toolkit";
 import type {
   ApiEndpointMutation,
   ApiEndpointQuery,
 } from "@reduxjs/toolkit/dist/query/core/module";
 import { notify } from "~/app/snackbar-queue";
 import type { AppStartListening } from "@mw/listener";
-import { objectKeys } from "@s/util/functions";
 
-export const createErrorMessagesListener = <
+const errorMessagesByEndpoint: Record<string, string> = {};
+
+export const addErrorMessages = <
   Endpoints extends Record<
     string,
     ApiEndpointMutation<any, any> | ApiEndpointQuery<any, any>
   >
 >(
-  endpoints: Endpoints,
-  errorMessagesByEndpoint: Partial<Record<keyof Endpoints, string>>,
+  newMessages: Partial<Record<keyof Endpoints, string>>
+) => {
+  Object.assign(errorMessagesByEndpoint, newMessages);
+};
+
+const isRejectedEndpoint: (
+  reducerPath: string
+) =>
+  | ApiEndpointMutation<any, any>["matchRejected"]
+  | ApiEndpointQuery<any, any>["matchRejected"] = (reducerPath: string) =>
+  ((action: any) =>
+    action?.type === `${reducerPath}/executeQuery/rejected`) as any;
+
+export const createErrorMessagesListener = (
+  reducerPath: string,
   startListening: AppStartListening
 ) => {
-  const isRejectedEndpoint = isAnyOf(
-    ...(objectKeys(errorMessagesByEndpoint).map(
-      (key) => endpoints[key].matchRejected
-    ) as [Endpoints[keyof Endpoints]["matchRejected"]])
-  );
+  const matchRejected = isRejectedEndpoint(reducerPath);
   return startListening({
     effect: ({
-      error,
       meta: {
         arg: { endpointName },
       },
     }) => {
-      console.error(error);
       notify({
-        title: errorMessagesByEndpoint[endpointName] ?? "Unknown error",
+        title: errorMessagesByEndpoint[endpointName],
       });
     },
     matcher: ((action) =>
-      isRejectedEndpoint(action) &&
-      !action.meta.condition) as Endpoints[keyof Endpoints]["matchRejected"],
+      matchRejected(action) &&
+      !action.meta.condition &&
+      errorMessagesByEndpoint[
+        action.meta.arg.endpointName
+      ]) as typeof matchRejected,
   });
 };

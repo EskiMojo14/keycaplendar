@@ -1,9 +1,8 @@
 import { createEntityAdapter } from "@reduxjs/toolkit";
 import type { EntityId, EntityState } from "@reduxjs/toolkit";
 import { DateTime } from "luxon";
-import { combineListeners } from "@mw/listener/functions";
 import baseApi from "@s/api";
-import { createErrorMessagesListener } from "@s/api/functions";
+import { addErrorMessages } from "@s/api/functions";
 import firestore from "@s/firebase/firestore";
 import type { UpdateId } from "@s/firebase/types";
 import { alphabeticalSortPropCurried } from "@s/util/functions";
@@ -213,19 +212,13 @@ export const {
   useUpdateUpdateEntryMutation,
 } = updateApi;
 
-export const setupUpdateListeners = combineListeners((startListening) => [
-  createErrorMessagesListener(
-    updateApi.endpoints,
-    {
-      createUpdateEntry: "Failed to create update entry",
-      deleteUpdateEntry: "Failed to delete update entry",
-      getUpdates: "Failed to get update entries",
-      pinUpdateEntry: "Failed to pin entry",
-      updateUpdateEntry: "Failed to update entry",
-    },
-    startListening
-  ),
-]);
+addErrorMessages<typeof updateApi.endpoints>({
+  createUpdateEntry: "Failed to create update entry",
+  deleteUpdateEntry: "Failed to delete update entry",
+  getUpdates: "Failed to get update entries",
+  pinUpdateEntry: "Failed to pin entry",
+  updateUpdateEntry: "Failed to update entry",
+});
 
 export const {
   selectAll: selectEntries,

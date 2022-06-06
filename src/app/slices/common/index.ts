@@ -2,9 +2,8 @@ import { createSelector, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import produce from "immer";
 import type { AppThunk, RootState } from "~/app/store";
-import { combineListeners } from "@mw/listener/functions";
 import baseApi from "@s/api";
-import { createErrorMessagesListener } from "@s/api/functions";
+import { addErrorMessages } from "@s/api/functions";
 import firestore from "@s/firebase/firestore";
 import type { GlobalDoc } from "@s/firebase/types";
 // eslint-disable-next-line import/no-cycle
@@ -49,13 +48,9 @@ export const commonApi = baseApi.injectEndpoints({
 
 export const { useGetGlobalsQuery } = commonApi;
 
-export const setupCommonListeners = combineListeners((startListening) => [
-  createErrorMessagesListener(
-    commonApi.endpoints,
-    { getGlobals: "Failed to get global settings" },
-    startListening
-  ),
-]);
+addErrorMessages<typeof commonApi.endpoints>({
+  getGlobals: "Failed to get global settings",
+});
 
 export type CommonState = {
   systemTheme: "dark" | "light";

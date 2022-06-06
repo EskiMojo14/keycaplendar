@@ -5,9 +5,8 @@ import { DateTime } from "luxon";
 import { matchPath } from "react-router-dom";
 import { notify } from "~/app/snackbar-queue";
 import type { RootState } from "~/app/store";
-import { combineListeners } from "@mw/listener/functions";
 import baseApi from "@s/api";
-import { createErrorMessagesListener } from "@s/api/functions";
+import { addErrorMessages } from "@s/api/functions";
 import firebase from "@s/firebase";
 import { selectLocation } from "@s/router";
 import {
@@ -61,13 +60,9 @@ export const statisticsApi = baseApi.injectEndpoints({
 
 export const { useGetStatisticsDataQuery } = statisticsApi;
 
-export const setupStatisticsListeners = combineListeners((startListening) => [
-  createErrorMessagesListener(
-    statisticsApi.endpoints,
-    { getStatisticsData: "Failed to get statistics data" },
-    startListening
-  ),
-]);
+addErrorMessages<typeof statisticsApi.endpoints>({
+  getStatisticsData: "Failed to get statistics data",
+});
 
 type StatisticsState = {
   data: StatisticsData;

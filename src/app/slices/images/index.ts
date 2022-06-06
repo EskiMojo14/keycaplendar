@@ -10,9 +10,8 @@ import type {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { combineListeners } from "@mw/listener/functions";
 import baseApi, { selectAllCachedArgsByQuery } from "@s/api";
-import { createErrorMessagesListener } from "@s/api/functions";
+import { addErrorMessages } from "@s/api/functions";
 import firebase from "@s/firebase";
 import { selectAllSets } from "@s/main";
 import {
@@ -165,17 +164,11 @@ export const {
   useGetStorageFoldersQuery,
 } = imageApi;
 
-export const setupImageListeners = combineListeners((startListening) => [
-  createErrorMessagesListener(
-    imageApi.endpoints,
-    {
-      deleteImages: "Failed to delete images",
-      getAllImages: "Failed to get images",
-      getStorageFolders: "Failed to get storage folders",
-    },
-    startListening
-  ),
-]);
+addErrorMessages<typeof imageApi.endpoints>({
+  deleteImages: "Failed to delete images",
+  getAllImages: "Failed to get images",
+  getStorageFolders: "Failed to get storage folders",
+});
 
 type ImagesState = {
   currentFolder: string;

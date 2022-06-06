@@ -16,10 +16,8 @@ import { history } from "~/app/history";
 import { notify } from "~/app/snackbar-queue";
 import type { AppThunk, RootState } from "~/app/store";
 import type { AppStartListening } from "@mw/listener";
-// eslint-disable-next-line import/no-cycle
-import { combineListeners } from "@mw/listener/functions";
 import baseApi from "@s/api";
-import { createErrorMessagesListener } from "@s/api/functions";
+import { addErrorMessages } from "@s/api/functions";
 import { commonApi } from "@s/common";
 import firestore from "@s/firebase/firestore";
 import type { KeysetDoc, KeysetId } from "@s/firebase/types";
@@ -234,18 +232,12 @@ export const {
   useUpdateKeysetMutation,
 } = mainApi;
 
-export const setupMainListeners = combineListeners((startListening) => [
-  createErrorMessagesListener(
-    mainApi.endpoints,
-    {
-      addKeyset: "Failed to add keyset",
-      deleteKeyset: "Failed to delete keyset",
-      getAllKeysets: "Failed to get keysets",
-      updateKeyset: "Failed to update keyset",
-    },
-    startListening
-  ),
-]);
+addErrorMessages<typeof mainApi.endpoints>({
+  addKeyset: "Failed to add keyset",
+  deleteKeyset: "Failed to delete keyset",
+  getAllKeysets: "Failed to get keysets",
+  updateKeyset: "Failed to update keyset",
+});
 
 export type MainState = {
   linkedFavorites: { array: EntityId[]; displayName: string };
