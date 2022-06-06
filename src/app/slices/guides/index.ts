@@ -88,7 +88,6 @@ export const guideApi = baseApi.injectEndpoints({
     getGuides: build.query<EntityState<GuideEntryType>, void>({
       queryFn: async () => {
         try {
-          throw new Error("lol");
           return {
             data: guideEntryAdapter.setAll(
               guideEntryAdapter.getInitialState(),
