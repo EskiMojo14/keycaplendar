@@ -3,10 +3,12 @@ import type { AppStartListening } from "@mw/listener";
 
 export const combineListeners =
   (
-    mapListeners: (startListening: AppStartListening) => UnsubscribeListener[]
+    ...setupListeners: ((
+      startListening: AppStartListening
+    ) => UnsubscribeListener)[]
   ) =>
   (startListening: AppStartListening): UnsubscribeListener => {
-    const subscriptions = mapListeners(startListening);
+    const subscriptions = setupListeners.map((setup) => setup(startListening));
     return (...args) =>
       subscriptions.map((subscription) => subscription(...args));
   };
