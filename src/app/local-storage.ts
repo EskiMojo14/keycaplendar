@@ -56,7 +56,6 @@ export const sanitiseState = (
       "allVendors",
       "appPresets",
       "currentPreset",
-      "defaultPreset",
       "sort",
       "sortOrder",
       "whitelist"
