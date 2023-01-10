@@ -118,7 +118,7 @@
     "lodash.isequal": "^4.5.0",
     "lodash.pick": "^4.4.0",
     "lodash.throttle": "^4.1.1",
-    "luxon": "^1.27.0",
+    "luxon": "^1.28.1",
     "mathjs": "^7.5.0",
     "nanoid": "^3.1.31",
     "node-sass": "npm:sass@^1.26.11",
